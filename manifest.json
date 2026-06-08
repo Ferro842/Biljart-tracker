@@ -1,0 +1,15 @@
+{
+  "name": "Biljart Tracker",
+  "short_name": "Biljart",
+  "start_url": "/Biljart-tracker/",
+  "display": "standalone",
+  "background_color": "#1a2e1a",
+  "theme_color": "#1a2e1a",
+  "icons": [
+    {
+      "src": "/Biljart-tracker/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

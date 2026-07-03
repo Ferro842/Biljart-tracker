@@ -406,15 +406,15 @@ function BiljartTracker(){
     if(fase==="gemist"){
       const gs=[...sel].filter(k=>k.startsWith("G__"));
       return(
-        <div style={{flex:1,display:"flex",flexDirection:"column"}}>
-          <div style={{padding:"7px 14px",borderBottom:`1px solid ${KBDR}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-            <div style={{fontSize:12,color:ROOD,fontWeight:"bold"}}>❌ Gemist door — {car} caramboles</div>
-            {gs.length>0&&<span style={{fontSize:11,color:ROOD}}>{gs.length}×</span>}
-          </div>
-          <div style={{flex:1,overflowY:"auto"}}>
+        <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+          <div>
+            <div style={{padding:"7px 14px",borderBottom:`1px solid ${KBDR}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontSize:12,color:ROOD,fontWeight:"bold"}}>❌ Gemist door — {car} caramboles</div>
+              {gs.length>0&&<span style={{fontSize:11,color:ROOD}}>{gs.length}×</span>}
+            </div>
             <OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={toggle}/>
           </div>
-          <div style={{padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
+          <div style={{padding:"10px 14px",display:"flex",gap:8}}>
             <button style={{flex:1,padding:15,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:12,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
               onClick={()=>setFase("goed")}>Wat ging goed? →</button>
             <button style={{padding:"15px 12px",background:"none",border:`1px solid ${KBDR}`,borderRadius:12,color:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}
@@ -427,15 +427,15 @@ function BiljartTracker(){
     if(fase==="goed"){
       const gs=[...sel].filter(k=>k.startsWith("P__"));
       return(
-        <div style={{flex:1,display:"flex",flexDirection:"column"}}>
-          <div style={{padding:"7px 14px",borderBottom:`1px solid ${KBDR}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
-            <div style={{fontSize:12,color:GRNT,fontWeight:"bold"}}>✅ Wat ging goed?</div>
-            {gs.length>0&&<span style={{fontSize:11,color:GRNT}}>{gs.length}×</span>}
-          </div>
-          <div style={{flex:1,overflowY:"auto"}}>
+        <div style={{flex:1,display:"flex",flexDirection:"column",justifyContent:"space-between"}}>
+          <div>
+            <div style={{padding:"7px 14px",borderBottom:`1px solid ${KBDR}`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontSize:12,color:GRNT,fontWeight:"bold"}}>✅ Wat ging goed?</div>
+              {gs.length>0&&<span style={{fontSize:11,color:GRNT}}>{gs.length}×</span>}
+            </div>
             <OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={toggle}/>
           </div>
-          <div style={{padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
+          <div style={{padding:"10px 14px",display:"flex",gap:8}}>
             <button style={{flex:1,padding:15,background:`linear-gradient(135deg,${GRNT},${"#66bb6a"})`,border:"none",borderRadius:12,color:WIT,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
               onClick={noteer}>✓ Beurt opslaan</button>
             <button style={{padding:"15px 12px",background:"none",border:`1px solid ${KBDR}`,borderRadius:12,color:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}

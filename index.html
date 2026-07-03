@@ -326,7 +326,7 @@ function BiljartTracker(){
             {/* Rij 1: 4 hoofdcijfers */}
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
               {[
-                {l:"Beurt",v:beurtNr,k:WIT},
+                {l:"Beurten gespeeld",v:lp.length,k:WIT},
                 {l:"Caramboles",v:stL?stL.totCar:0,k:GOUD},
                 {l:"Gemiddelde",v:stL?stL.gemPerBeurt:"—",k:GOUDL},
                 {l:"Punten",v:stL?stL.totPunten:0,k:"#e8a84c"},
@@ -380,7 +380,7 @@ function BiljartTracker(){
               <button style={{width:46,height:46,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
                 onClick={()=>{const n=Math.max(0,car-1);setCar(n);setInp(String(n));}}>−</button>
               <div style={{textAlign:"center"}}>
-                <div style={{fontSize:9,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:4}}>Beurt {beurtNr}</div>
+                <div style={{fontSize:11,color:WITD,marginBottom:4}}>{beurtNr}<sup style={{fontSize:8}}>e</sup> Beurt</div>
                 <input ref={inputRef} type="number" inputMode="numeric" pattern="[0-9]*" value={inp}
                   onChange={e=>{const v=e.target.value;if(v===""||v==="-"){setInp(v);return;}const n=parseInt(v);if(!isNaN(n)&&n>=0){setCar(n);setInp(String(n));}}}
                   onFocus={e=>e.target.select()}

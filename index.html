@@ -26,24 +26,32 @@ const KBG="#22341f",KBDR="#3a5c35",ROOD="#e05555",GRNT="#4caf50";
 function pts(c){if(c<3)return 0;if(c<=4)return 1;if(c===5)return 2;return 2+(c-5);}
 
 const GEMIST=[
-  {label:"Trekstoot",emoji:"↩️"},{label:"Driebanden",emoji:"🔺"},
-  {label:"Moeilijk",emoji:"😓"},{label:"Bandstoot",emoji:"💢"},
-  {label:"Achterom",emoji:"🔙"},{label:"Klos",emoji:"💥"},
-  {label:"Doorstoot",emoji:"➡️"},{label:"Verzamelen",emoji:"🔄"},
-  {label:"Direct",emoji:"➤"},{label:"Slechte positie",emoji:"⚠️"},
-  {label:"Te zacht",emoji:"🐌"},{label:"Makkelijk",emoji:"😌"},
-  {label:"Acquit",emoji:"🎬"},{label:"Slechte keuze",emoji:"🤔"},
-  {label:"Positioneren",emoji:"📍"},{label:"Massé",emoji:"🌀"},
-  {label:"Piqué",emoji:"🎯"},{label:"Snijden",emoji:"✂️"},
+  // Stootuitvoering (vaak samen)
+  {label:"Trekstoot",emoji:"↩️"},{label:"Doorstoot",emoji:"➡️"},
+  {label:"Bandstoot",emoji:"💢"},{label:"Te zacht",emoji:"🐌"},
+  // Baankeuze (vaak samen)
+  {label:"Driebanden",emoji:"🔺"},{label:"Achterom",emoji:"🔙"},
+  // Positiespel (vaak samen)
+  {label:"Verzamelen",emoji:"🔄"},{label:"Positioneren",emoji:"📍"},
+  // Situatie (vaak samen)
+  {label:"Moeilijk",emoji:"😓"},{label:"Slechte positie",emoji:"⚠️"},
+  // Overige fouten
+  {label:"Klos",emoji:"💥"},{label:"Direct",emoji:"➤"},
+  {label:"Makkelijk",emoji:"😌"},{label:"Slechte keuze",emoji:"🤔"},
+  {label:"Acquit",emoji:"🎬"},{label:"Snijden",emoji:"✂️"},
+  {label:"Massé",emoji:"🌀"},{label:"Piqué",emoji:"🎯"},
   {label:"Dun",emoji:"🪶"},
 ];
 const GOED=[
-  {label:"Trekstoot",emoji:"↩️"},{label:"Driebanden",emoji:"🔺"},
-  {label:"Bandstoot",emoji:"💢"},{label:"Doorstoot",emoji:"➡️"},
-  {label:"Verzamelen",emoji:"🔄"},{label:"Direct",emoji:"➤"},
-  {label:"Acquit",emoji:"🎬"},{label:"Positioneren",emoji:"📍"},
+  // Positiespel (verreweg het meest samen)
+  {label:"Verzamelen",emoji:"🔄"},{label:"Positioneren",emoji:"📍"},
+  // Stootuitvoering (vaak samen)
+  {label:"Trekstoot",emoji:"↩️"},{label:"Doorstoot",emoji:"➡️"},
+  {label:"Bandstoot",emoji:"💢"},{label:"Direct",emoji:"➤"},
+  // Overige positief
+  {label:"Klein / Simpel",emoji:"🤏"},{label:"Acquit",emoji:"🎬"},
+  {label:"Driebanden",emoji:"🔺"},{label:"Snijden",emoji:"✂️"},
   {label:"Massé",emoji:"🌀"},{label:"Piqué",emoji:"🎯"},
-  {label:"Snijden",emoji:"✂️"},{label:"Klein / Simpel",emoji:"🤏"},
   {label:"Dun",emoji:"🪶"},
 ];
 

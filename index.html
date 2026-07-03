@@ -300,67 +300,108 @@ function BiljartTracker(){
       </div>
     );
 
-    if(fase==="invoer")return(
-      <div style={{flex:1,display:"flex",flexDirection:"column"}}>
-        {/* Voortgangsbalk */}
-        <div style={{height:3,background:KBDR,flexShrink:0}}>
-          <div style={{height:3,background:GOUD,width:`${progPct}%`,transition:"width 0.3s"}}/>
-        </div>
+    if(fase==="invoer"){
+      // Bereken serie-verdeling
+      const s57=lp.filter(b=>b.caramboles>=5&&b.caramboles<=7).length;
+      const s89=lp.filter(b=>b.caramboles>=8&&b.caramboles<=9).length;
+      const s10=lp.filter(b=>b.caramboles>=10).length;
+      const poedels=lp.filter(b=>b.caramboles===0).length;
+      const poedelPct=lp.length>0?Math.round(poedels/lp.length*100):0;
+      const opbouwPct=lp.length>0?Math.round((stL?stL.opbouw5:0)/lp.length*100):0;
 
-        {/* Mini stats blok */}
-        <div style={{padding:"10px 14px",borderBottom:`1px solid ${KBDR}`,flexShrink:0}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-            {[
-              ["Beurt", beurtNr, WIT],
-              ["Caramboles", stL?stL.totCar:0, GOUD],
-              ["Gemiddelde", stL?stL.gemPerBeurt:"0.00", GOUDL],
-              ["Opbouw 🎯", stL?`${stL.opbouw5}×`:"-", GRNT],
-            ].map(([l,v,kleur])=>(
-              <div key={l} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
-                <div style={{fontSize:20,fontWeight:"bold",color:kleur,lineHeight:1}}>{v}</div>
-                <div style={{fontSize:9,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{l}</div>
+      return(
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+
+          {/* Voortgangsbalk */}
+          <div style={{height:3,background:KBDR,flexShrink:0}}>
+            <div style={{height:3,background:GOUD,width:`${progPct}%`,transition:"width 0.3s"}}/>
+          </div>
+
+          {/* DASHBOARD */}
+          <div style={{padding:"10px 12px 6px",flexShrink:0}}>
+
+            {/* Rij 1: 4 hoofdcijfers */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
+              {[
+                {l:"Beurt",v:beurtNr,k:WIT},
+                {l:"Caramboles",v:stL?stL.totCar:0,k:GOUD},
+                {l:"Gemiddelde",v:stL?stL.gemPerBeurt:"—",k:GOUDL},
+                {l:"Punten",v:stL?stL.totPunten:0,k:"#e8a84c"},
+              ].map(({l,v,k})=>(
+                <div key={l} style={{textAlign:"center",background:"#182e14",border:`1px solid ${KBDR}`,borderRadius:8,padding:"7px 2px"}}>
+                  <div style={{fontSize:22,fontWeight:"bold",color:k,lineHeight:1}}>{v}</div>
+                  <div style={{fontSize:8,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{l}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Rij 2: opbouw + poedels + serie-verdeling */}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 2fr",gap:6,marginBottom:6}}>
+              {/* Opbouw */}
+              <div style={{background:"#182e14",border:`1px solid ${KBDR}`,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
+                <div style={{fontSize:18,fontWeight:"bold",color:GRNT,lineHeight:1}}>{stL?stL.opbouw5:0}×</div>
+                <div style={{fontSize:8,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw ≥5</div>
+                <div style={{fontSize:10,color:GRNT,marginTop:1}}>{opbouwPct}%</div>
               </div>
-            ))}
+              {/* Poedels */}
+              <div style={{background:"#182e14",border:`1px solid ${KBDR}`,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
+                <div style={{fontSize:18,fontWeight:"bold",color:poedels>0?"#e08055":WITD,lineHeight:1}}>{poedels}×</div>
+                <div style={{fontSize:8,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Poedels</div>
+                <div style={{fontSize:10,color:poedels>0?"#e08055":WITD,marginTop:1}}>{poedelPct}%</div>
+              </div>
+              {/* Serie verdeling */}
+              <div style={{background:"#182e14",border:`1px solid ${KBDR}`,borderRadius:8,padding:"7px 8px"}}>
+                <div style={{fontSize:8,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Series</div>
+                <div style={{display:"flex",gap:4,justifyContent:"space-around"}}>
+                  {[["5-7",s57,"#4caf50"],["8-9",s89,"#e8c96a"],["10+",s10,"#ff9f40"]].map(([l,n,k])=>(
+                    <div key={l} style={{textAlign:"center"}}>
+                      <div style={{fontSize:16,fontWeight:"bold",color:n>0?k:KBDR}}>{n}</div>
+                      <div style={{fontSize:8,color:WITD}}>{l}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Grafiek */}
+            {lp.length>1&&(
+              <div style={{background:"#182e14",border:`1px solid ${KBDR}`,borderRadius:8,padding:"6px 8px"}}>
+                <Grafiek beurten={lp}/>
+              </div>
+            )}
+          </div>
+
+          {/* Invoer — flex groeit om ruimte op te vullen */}
+          <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"0 20px",minHeight:0}}>
+            <div style={{fontSize:9,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Beurt {beurtNr}</div>
+            <div style={{display:"flex",alignItems:"center",gap:18,marginBottom:6}}>
+              <button style={{width:46,height:46,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
+                onClick={()=>{const n=Math.max(0,car-1);setCar(n);setInp(String(n));}}>−</button>
+              <input ref={inputRef} type="number" inputMode="numeric" pattern="[0-9]*" value={inp}
+                onChange={e=>{const v=e.target.value;if(v===""||v==="-"){setInp(v);return;}const n=parseInt(v);if(!isNaN(n)&&n>=0){setCar(n);setInp(String(n));}}}
+                onFocus={e=>e.target.select()}
+                onKeyDown={e=>{if(e.key==="Enter")setFase("gemist");}}
+                style={{width:86,fontSize:48,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:`3px solid ${car>=5?GRNT:GOUD}`,textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:3}}
+              />
+              <button style={{width:46,height:46,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
+                onClick={()=>{const n=car+1;setCar(n);setInp(String(n));}}>+</button>
+            </div>
+            <div style={{fontSize:12,color:car>=5?GRNT:GOUD,minHeight:16,textAlign:"center"}}>
+              {car===0?"Poedel":car<3?`Nog ${3-car} voor een punt`:`${ptsNu} punt${ptsNu!==1?"en":""}${car>=5?" 🎯":""}`}
+            </div>
+            {fb&&<div style={{marginTop:4,fontSize:11,color:GOUDL,textAlign:"center"}}>{fb}</div>}
+          </div>
+
+          {/* Knop */}
+          <div style={{padding:"8px 12px",display:"flex",gap:8,flexShrink:0}}>
+            <button style={{flex:1,padding:14,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+              onClick={()=>setFase("gemist")}>Volgende →</button>
+            <button style={{padding:"14px 13px",background:"none",border:`1px solid ${KBDR}`,borderRadius:12,color:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
+              onClick={()=>{if(lp.length){setLp(p=>p.slice(0,-1));setBeurtNr(n=>Math.max(1,n-1));}}}>↩</button>
           </div>
         </div>
-
-        {/* Grafiek */}
-        {lp.length>1&&(
-          <div style={{padding:"8px 14px 4px",borderBottom:`1px solid ${KBDR}`,flexShrink:0}}>
-            <Grafiek beurten={lp}/>
-          </div>
-        )}
-
-        {/* Invoer */}
-        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
-          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:10}}>Beurt {beurtNr}</div>
-          <div style={{display:"flex",alignItems:"center",gap:20,marginBottom:8}}>
-            <button style={{width:50,height:50,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:26,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
-              onClick={()=>{const n=Math.max(0,car-1);setCar(n);setInp(String(n));}}>−</button>
-            <input ref={inputRef} type="number" inputMode="numeric" pattern="[0-9]*" value={inp}
-              onChange={e=>{const v=e.target.value;if(v===""||v==="-"){setInp(v);return;}const n=parseInt(v);if(!isNaN(n)&&n>=0){setCar(n);setInp(String(n));}}}
-              onFocus={e=>e.target.select()}
-              onKeyDown={e=>{if(e.key==="Enter")setFase("gemist");}}
-              style={{width:90,fontSize:52,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:`3px solid ${GOUD}`,textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:4}}
-            />
-            <button style={{width:50,height:50,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:26,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
-              onClick={()=>{const n=car+1;setCar(n);setInp(String(n));}}>+</button>
-          </div>
-          <div style={{fontSize:13,color:car>=5?GRNT:GOUD,minHeight:18,textAlign:"center"}}>
-            {car===0?"Poedel":car<3?`Nog ${3-car} voor een punt`:`${ptsNu} punt${ptsNu!==1?"en":""}${car>=5?" 🎯":""}`}
-          </div>
-          {fb&&<div style={{marginTop:6,fontSize:12,color:GOUDL,textAlign:"center"}}>{fb}</div>}
-        </div>
-
-        {/* Knop */}
-        <div style={{padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
-          <button style={{flex:1,padding:16,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
-            onClick={()=>setFase("gemist")}>Volgende →</button>
-          <button style={{padding:"16px 14px",background:"none",border:`1px solid ${KBDR}`,borderRadius:12,color:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={()=>{if(lp.length){setLp(p=>p.slice(0,-1));setBeurtNr(n=>Math.max(1,n-1));}}}>↩</button>
-        </div>
-      </div>
-    );
+      );
+    }
 
     if(fase==="gemist"){
       const gs=[...sel].filter(k=>k.startsWith("G__"));

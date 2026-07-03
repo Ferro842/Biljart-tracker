@@ -376,10 +376,12 @@ function BiljartTracker(){
   const [inputWaarde,setInputWaarde]=useState("0");
   const [beurtNummer,setBeurtNummer]=useState(1);
   const [geselecteerd,setGeselecteerd]=useState(new Set());
-  const [fase,setFase]=useState("invoer"); // "invoer" | "gemist" | "goed"
+  const [fase,setFase]=useState("setup"); // "setup" | "invoer" | "gemist" | "goed"
   const [feedback,setFeedback]=useState("");
   const [lopendePartij,setLopendePartij]=useState([]);
   const [sessieType,setSessieType]=useState("Officieel");
+  const [doelType,setDoelType]=useState("beurten");
+  const [doelAantal,setDoelAantal]=useState(25);
   const inputRef=useRef(null);
 
   useEffect(()=>{laadData().then(setData);},[]);
@@ -402,10 +404,31 @@ function BiljartTracker(){
     if(!isNaN(n)&&n>=0){setCaramboles(n);setInputWaarde(String(n));}
   }
 
+  function startPartij(){
+    setFase("invoer");
+  }
+
   function gaVooruit(){
     if(fase==="invoer"){setFase("gemist");return;}
     if(fase==="gemist"){setFase("goed");return;}
     noteerBeurt();
+  }
+
+  function knopTekst(){
+    if(fase==="invoer") return{groot:"Vastleggen & volgende",klein:"Druk om door te gaan naar opmerkingen"};
+    if(fase==="gemist") return{groot:"✓ Vastleggen",klein:"Selecteer wat misging, dan doorgaan"};
+    if(fase==="goed") return{groot:"✓ Beurt noteren",klein:"Selecteer wat goed ging, dan opslaan"};
+    return{groot:"",klein:""};
+  }
+
+  function doelBereikt(){
+    if(!lopendePartij.length) return false;
+    if(doelType==="beurten") return lopendePartij.length>=doelAantal;
+    if(doelType==="caramboles"){
+      const tot=lopendePartij.reduce((a,b)=>a+b.caramboles,0);
+      return tot>=doelAantal;
+    }
+    return false;
   }
 
   function noteerBeurt(){
@@ -418,7 +441,7 @@ function BiljartTracker(){
     setCaramboles(0);setInputWaarde("0");
     setBeurtNummer(n=>n+1);
     setGeselecteerd(new Set());
-    setFase("invoer");
+    setFase(doelBereikt()?"invoer":"invoer");
     setFeedback(`Beurt ${beurtNummer} · ${caramboles} car · ${puntenNu>0?`+${puntenNu}pt`:caramboles===0?"poedel":""}`);
     setTimeout(()=>setFeedback(""),2000);
   }
@@ -430,7 +453,7 @@ function BiljartTracker(){
     const nd={partijen:[...data.partijen,p],huidigeId:data.huidigeId+1};
     setData(nd);slaOp(nd);
     setLopendePartij([]);setBeurtNummer(1);setCaramboles(0);setInputWaarde("0");
-    setBevestigPartij(false);setFase("invoer");
+    setBevestigPartij(false);setFase("setup");
     setFeedback(`✓ Partij afgesloten · ${st.aantalBeurten} beurten · ${st.totCar} car · 🎯 ${st.opbouw5}×5+`);
     setTimeout(()=>setFeedback(""),3000);
   }
@@ -476,18 +499,64 @@ function BiljartTracker(){
         {/* ══ SPELEN ══ */}
         {tab==="spelen"&&(
           <div>
-            {/* Sessie type */}
-            <div style={{display:"flex",gap:6,marginBottom:14}}>
+            {/* FASE: Setup */}
+            {fase==="setup"&&(
+              <div style={{background:KBG,border:`1px solid ${GOUD}`,borderRadius:12,padding:"20px 16px",marginBottom:14}}>
+                <div style={{fontSize:16,fontWeight:"bold",color:GOUD,marginBottom:16,textAlign:"center"}}>🎱 Nieuwe partij instellen</div>
+                
+                <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:10}}>Sessie type</div>
+                <div style={{display:"flex",gap:6,marginBottom:20}}>
+                  {SESSIE_TYPES.map(t=>(
+                    <button key={t.label} style={{flex:1,padding:"8px 4px",background:sessieType===t.label?"#2d4a1e":"none",border:`1px solid ${sessieType===t.label?GOUD:KBDR}`,borderRadius:8,color:sessieType===t.label?GOUD:WITD,fontSize:10,cursor:"pointer",fontFamily:"inherit",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}
+                      onClick={()=>setSessieType(t.label)}>
+                      <span>{t.emoji}</span><span>{t.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:10}}>Partij doel</div>
+                <div style={{display:"flex",gap:8,marginBottom:14}}>
+                  <button style={{flex:1,padding:"10px 8px",background:doelType==="beurten"?"#2d4a1e":"none",border:`1px solid ${doelType==="beurten"?GOUD:KBDR}`,borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                    onClick={()=>setDoelType("beurten")}>🎯 Beurten</button>
+                  <button style={{flex:1,padding:"10px 8px",background:doelType==="caramboles"?"#2d4a1e":"none",border:`1px solid ${doelType==="caramboles"?GOUD:KBDR}`,borderRadius:8,color:doelType==="caramboles"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                    onClick={()=>setDoelType("caramboles")}>⚪ Caramboles</button>
+                </div>
+
+                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:16,marginBottom:20}}>
+                  <button style={{width:44,height:44,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer"}}
+                    onClick={()=>setDoelAantal(n=>Math.max(1,n-5))}>−</button>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:48,fontWeight:"bold",color:WIT,lineHeight:1}}>{doelAantal}</div>
+                    <div style={{fontSize:12,color:WITD,marginTop:4}}>{doelType==="beurten"?"beurten":"caramboles"}</div>
+                  </div>
+                  <button style={{width:44,height:44,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer"}}
+                    onClick={()=>setDoelAantal(n=>n+5)}>+</button>
+                </div>
+
+                <div style={{display:"flex",gap:8,marginBottom:8}}>
+                  {(doelType==="beurten"?[15,20,25,30]:[50,75,100,150]).map(n=>(
+                    <button key={n} style={{flex:1,padding:"6px 0",background:doelAantal===n?"#2d4a1e":"none",border:`1px solid ${doelAantal===n?GOUD:KBDR}`,borderRadius:6,color:doelAantal===n?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12}}
+                      onClick={()=>setDoelAantal(n)}>{n}</button>
+                  ))}
+                </div>
+
+                <button style={{width:"100%",marginTop:16,padding:16,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:10,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+                  onClick={startPartij}>🎱 Partij starten</button>
+              </div>
+            )}
+
+            {/* Sessie type (alleen zichtbaar als partij bezig) */}
+            {fase!=="setup"&&(<div style={{display:"flex",gap:6,marginBottom:14}}>
               {SESSIE_TYPES.map(t=>(
                 <button key={t.label} style={{flex:1,padding:"6px 4px",background:sessieType===t.label?"#2d4a1e":"none",border:`1px solid ${sessieType===t.label?GOUD:KBDR}`,borderRadius:8,color:sessieType===t.label?GOUD:WITD,fontSize:10,cursor:"pointer",fontFamily:"inherit",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}
                   onClick={()=>setSessieType(t.label)}>
                   <span>{t.emoji}</span><span>{t.label}</span>
                 </button>
               ))}
-            </div>
+            </div>)}
 
-            {/* Top rij */}
-            <div style={{display:"flex",gap:10,marginBottom:14,alignItems:"stretch"}}>
+            {/* Top rij - alleen tonen als partij bezig */}
+            {fase!=="setup"&&<div style={{display:"flex",gap:10,marginBottom:14,alignItems:"stretch"}}>
               <div style={{flex:1,background:KBG,border:`1px solid ${KBDR}`,borderRadius:12,padding:14}}>
                 <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:4}}>Deze partij</div>
                 <div style={{display:"flex",alignItems:"baseline",gap:5}}>
@@ -510,10 +579,10 @@ function BiljartTracker(){
               </button>
             </div>
 
-            <div style={{textAlign:"center",color:GOUD,fontSize:14,marginBottom:14,minHeight:20}}>{feedback||"\u00A0"}</div>
+            {fase!=="setup"&&<div style={{textAlign:"center",color:GOUD,fontSize:14,marginBottom:14,minHeight:20}}>{feedback||"\u00A0"}</div>}
 
             {/* FASE: Invoer */}
-            {fase==="invoer"&&(
+            {fase!=="setup"&&fase==="invoer"&&(
               <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
                 <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>Caramboles beurt {beurtNummer}</div>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:16,marginBottom:8}}>
@@ -559,11 +628,11 @@ function BiljartTracker(){
             )}
 
             {/* Stap indicator */}
-            <div style={{display:"flex",gap:8,marginBottom:14,justifyContent:"center"}}>
+            {fase!=="setup"&&<div style={{display:"flex",gap:8,marginBottom:14,justifyContent:"center"}}>
               {["invoer","gemist","goed"].map((f,i)=>(
                 <div key={f} style={{width:8,height:8,borderRadius:"50%",background:fase===f?GOUD:KBDR}}/>
               ))}
-            </div>
+            </div>}
 
             {/* Lopende partij */}
             {lopendePartij.length>0&&(
@@ -582,7 +651,7 @@ function BiljartTracker(){
                 <Grafiek beurten={lopendePartij}/>
                 {!bevestigPartij
                   ?<button style={{width:"100%",marginTop:12,padding:12,background:"none",border:`1px solid ${GOUD}`,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-                    onClick={()=>setBevestigPartij(true)}>🏁 Partij afsluiten</button>
+                    onClick={()=>setBevestigPartij(true)}>🏁 Partij afsluiten ({lopendePartij.length} beurten)</button>
                   :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"14px 16px"}}>
                     <div style={{fontSize:13,color:"#e06060",marginBottom:12}}>Partij afsluiten met {lopendePartij.length} beurten?</div>
                     <div style={{display:"flex",gap:10}}>

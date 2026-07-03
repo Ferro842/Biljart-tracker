@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Biljart Tracker</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #1a2e1a; font-family: Georgia, 'Times New Roman', serif; color: #f5f0e8; }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type=number] { -moz-appearance: textfield; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Kleuren ──
+const G = "#1a2e1a", GOUD = "#c9a84c", GOUDL = "#e8c96a";
+const WIT = "#f5f0e8", WITD = "#d4cfc5", KBG = "#22341f", KBDR = "#3a5c35";
+const ROOD = "#e05555", GRNT = "#4caf50";
+
+// ── Punten ──
+function pts(c) {
+  if (c < 3) return 0;
+  if (c <= 4) return 1;
+  if (c === 5) return 2;
+  return 2 + (c - 5);
+}
+
+// ── Label lijsten ──
+const GEMIST = [
+  { label: "Trekstoot", emoji: "↩️" },
+  { label: "Driebanden", emoji: "🔺" },
+  { label: "Moeilijk", emoji: "😓" },
+  { label: "Bandstoot", emoji: "💢" },
+  { label: "Achterom", emoji: "🔙" },
+  { label: "Klos", emoji: "💥" },
+  { label: "Doorstoot", emoji: "➡️" },
+  { label: "Verzamelen", emoji: "🔄" },
+  { label: "Direct", emoji: "➤" },
+  { label: "Slechte positie", emoji: "⚠️" },
+  { label: "Te zacht", emoji: "🐌" },
+  { label: "Makkelijk", emoji: "😌" },
+  { label: "Acquit", emoji: "🎬" },
+  { label: "Slechte keuze", emoji: "🤔" },
+  { label: "Positioneren", emoji: "📍" },
+  { label: "Massé", emoji: "🌀" },
+  { label: "Piqué", emoji: "🎯" },
+  { label: "Snijden", emoji: "✂️" },
+  { label: "Dun", emoji: "🪶" },
+];
+
+const GOED = [
+  { label: "Trekstoot", emoji: "↩️" },
+  { label: "Driebanden", emoji: "🔺" },
+  { label: "Bandstoot", emoji: "💢" },
+  { label: "Doorstoot", emoji: "➡️" },
+  { label: "Verzamelen", emoji: "🔄" },
+  { label: "Direct", emoji: "➤" },
+  { label: "Acquit", emoji: "🎬" },
+  { label: "Positioneren", emoji: "📍" },
+  { label: "Massé", emoji: "🌀" },
+  { label: "Piqué", emoji: "🎯" },
+  { label: "Snijden", emoji: "✂️" },
+  { label: "Klein / Simpel", emoji: "🤏" },
+  { label: "Dun", emoji: "🪶" },
+];
+
+const SESSIE_TYPES = [
+  { label: "Officieel", emoji: "🏆" },
+  { label: "Training", emoji: "🏋️" },
+  { label: "Losspelen", emoji: "🎱" },
+  { label: "Uitleg", emoji: "📖" },
+];
+
+const SK = "biljart-tracker-v2";
+
+async function laadData() {
+  try {
+    const r = await window.storage.get(SK);
+    return r ? JSON.parse(r.value) : { partijen: [], huidigeId: 1 };
+  } catch { return { partijen: [], huidigeId: 1 }; }
+}
+
+async function slaOp(data) {
+  try { await window.storage.set(SK, JSON.stringify(data)); }
+  catch (e) { console.error(e); }
+}
+
+function stats(beurten) {
+  if (!beurten.length) return null;
+  const cars = beurten.map(b => b.caramboles);
+  const totCar = cars.reduce((a, b) => a + b, 0);
+  const max = Math.max(...cars);
+  const totPunten = beurten.reduce((a, b) => a + pts(b.caramboles), 0);
+  const poedels = beurten.filter(b => b.caramboles === 0).length;
+  const gemPerBeurt = (totCar / beurten.length).toFixed(2);
+  const opbouw5 = beurten.filter(b => b.caramboles >= 5).length;
+  const opbouw57 = beurten.filter(b => b.caramboles >= 5 && b.caramboles <= 7).length;
+  const opbouw89 = beurten.filter(b => b.caramboles >= 8 && b.caramboles <= 9).length;
+  const opbouw10 = beurten.filter(b => b.caramboles >= 10).length;
+  return { totCar, max, totPunten, aantalBeurten: beurten.length, poedels, gemPerBeurt, opbouw5, opbouw57, opbouw89, opbouw10 };
+}
+
+// ── Grafiek ──
+function Grafiek({ beurten }) {
+  if (beurten.length < 2) return null;
+  const vals = beurten.map(b => b.caramboles);
+  const maxV = Math.max(...vals, 1);
+  const ppp = Math.max(8, Math.min(20, 280 / vals.length));
+  const lp = 12, tp = 18, H = 60;
+  const W = lp + ppp * (vals.length - 1);
+  const pts2 = vals.map((v, i) => `${lp + i * ppp},${tp + H - (v / maxV) * H}`).join(" ");
+  const fs = vals.length > 25 ? 8 : vals.length > 15 ? 9 : 10;
+  return (
+    <div style={{ overflowX: "auto", paddingBottom: 4 }}>
+      <svg width={W} height={H + tp + 10} style={{ overflow: "visible", display: "block" }}>
+        <polyline points={pts2} fill="none" stroke={GOUD} strokeWidth="2" strokeLinejoin="round" />
+        {vals.map((v, i) => {
+          const cx = lp + i * ppp, cy = tp + H - (v / maxV) * H;
+          const kleur = v >= 10 ? "#ff9f40" : v >= 8 ? "#e8c96a" : v >= 5 ? "#4caf50" : GOUD;
+          return <g key={i}>
+            <circle cx={cx} cy={cy} r={v >= 5 ? 4 : 2.5} fill={kleur} />
+            <text x={cx} y={cy - 6} textAnchor="middle" fontSize={fs} fill={kleur} fontFamily="Georgia,serif" fontWeight={v >= 5 ? "bold" : "normal"}>{v}</text>
+          </g>;
+        })}
+      </svg>
+    </div>
+  );
+}
+
+// ── Opbouw indicator ──
+function OpbouwIndicator({ beurten }) {
+  if (!beurten.length) return null;
+  const n = beurten.length;
+  const v57 = beurten.filter(b => b.caramboles >= 5 && b.caramboles <= 7).length;
+  const v89 = beurten.filter(b => b.caramboles >= 8 && b.caramboles <= 9).length;
+  const v10 = beurten.filter(b => b.caramboles >= 10).length;
+  const totaal5 = v57 + v89 + v10;
+  const pct = Math.round(totaal5 / n * 100);
+  return (
+    <div style={{ background: "#1a3019", border: `1px solid ${KBDR}`, borderRadius: 10, padding: "12px 14px", marginBottom: 12 }}>
+      <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 8 }}>🎯 Opbouw (≥5 caramboles)</div>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+        <span style={{ fontSize: 32, fontWeight: "bold", color: totaal5 > 0 ? GRNT : WITD }}>{totaal5}</span>
+        <span style={{ fontSize: 16, color: WITD }}>/ {n} beurten</span>
+        <span style={{ fontSize: 14, color: totaal5 > 0 ? GRNT : WITD, marginLeft: 4 }}>{pct}%</span>
+      </div>
+      <div style={{ display: "flex", gap: 8 }}>
+        {[["5-7", v57, "#4caf50"], ["8-9", v89, "#e8c96a"], ["10+", v10, "#ff9f40"]].map(([l, v, kleur]) => (
+          <div key={l} style={{ flex: 1, background: v > 0 ? "#2d4a1e" : "#1c2e18", border: `1px solid ${v > 0 ? kleur : KBDR}`, borderRadius: 8, padding: "6px 4px", textAlign: "center" }}>
+            <div style={{ fontSize: 20, fontWeight: "bold", color: v > 0 ? kleur : "#5a7a55" }}>{v}×</div>
+            <div style={{ fontSize: 10, color: WITD, letterSpacing: 1 }}>{l}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Serie verdeling ──
+function SerieVerdeling({ beurten }) {
+  const ranges = [
+    { label: "3-4", min: 3, max: 4 },
+    { label: "5-7", min: 5, max: 7 },
+    { label: "8-9", min: 8, max: 9 },
+    { label: "10+", min: 10, max: Infinity },
+  ];
+  return (
+    <div style={{ display: "flex", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+      {ranges.map(r => {
+        const n = beurten.filter(b => b.caramboles >= r.min && b.caramboles <= r.max).length;
+        return (
+          <div key={r.label} style={{ background: n > 0 ? "#2d4a1e" : "#1c2e18", border: `1px solid ${n > 0 ? GOUD : KBDR}`, borderRadius: 8, padding: "6px 10px", textAlign: "center", minWidth: 52 }}>
+            <div style={{ fontSize: 18, fontWeight: "bold", color: n > 0 ? GOUD : "#5a7a55" }}>{n}×</div>
+            <div style={{ fontSize: 10, color: WITD, letterSpacing: 1 }}>{r.label}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Numeriek invoerveld ──
+function CarambolesInvoer({ waarde, onChange }) {
+  const [input, setInput] = useState(String(waarde));
+  const ref = useRef(null);
+
+  useEffect(() => { setInput(String(waarde)); }, [waarde]);
+
+  function verwerk(val) {
+    const n = parseInt(val);
+    if (!isNaN(n) && n >= 0) {
+      onChange(n);
+      setInput(String(n));
+    } else if (val === "") {
+      setInput("");
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 16, marginBottom: 8 }}>
+      <button style={{ width: 52, height: 52, borderRadius: "50%", background: "none", border: `2px solid ${GOUD}`, color: GOUD, fontSize: 28, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+        onClick={() => onChange(Math.max(0, waarde - 1))}>−</button>
+      <input
+        ref={ref}
+        type="number"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={input}
+        onChange={e => verwerk(e.target.value)}
+        onFocus={e => e.target.select()}
+        style={{ width: 90, fontSize: 52, fontWeight: "bold", color: WIT, background: "transparent", border: "none", borderBottom: `2px solid ${GOUD}`, textAlign: "center", fontFamily: "Georgia,serif", outline: "none", paddingBottom: 4 }}
+      />
+      <button style={{ width: 52, height: 52, borderRadius: "50%", background: "none", border: `2px solid ${GOUD}`, color: GOUD, fontSize: 28, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+        onClick={() => onChange(waarde + 1)}>+</button>
+    </div>
+  );
+}
+
+// ── Opmerking knoppen ──
+function OpmKnoppen({ titel, lijst, geselecteerd, kleur, toggle, showAnders, setShowAnders, andersText, setAndersText, andersRef }) {
+  return (
+    <div style={{ marginBottom: 12 }}>
+      <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 2, color: kleur, marginBottom: 8 }}>{titel}</div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
+        {lijst.map(o => {
+          const prefix = kleur === ROOD ? "GEMIST__" : "GOED__";
+          const actief = geselecteerd.has(`${prefix}${o.label}`);
+          return (
+            <button key={o.label}
+              style={{ background: actief ? (kleur === ROOD ? "#3a1010" : "#1a3a1a") : "#1c3019", border: `1px solid ${actief ? kleur : KBDR}`, borderRadius: 8, padding: "8px 4px", color: actief ? kleur : WITD, cursor: "pointer", fontSize: 13, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, fontFamily: "inherit" }}
+              onClick={() => toggle(`${prefix}${o.label}`)}>
+              <span>{o.emoji}</span>
+              <span style={{ fontSize: 11 }}>{o.label}</span>
+            </button>
+          );
+        })}
+        {setShowAnders && (
+          <button style={{ background: showAnders ? "#2a2010" : "#1c3019", border: `1px solid ${showAnders ? "#a08040" : KBDR}`, borderRadius: 8, padding: "8px 4px", color: showAnders ? "#a08040" : WITD, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, fontFamily: "inherit" }}
+            onClick={() => setShowAnders(v => !v)}>
+            <span>✏️</span>
+            <span style={{ fontSize: 11 }}>Anders…</span>
+          </button>
+        )}
+      </div>
+      {showAnders && (
+        <input ref={andersRef} style={{ marginTop: 10, width: "100%", background: "#1a2e1a", border: `1px solid ${GOUD}`, borderRadius: 6, color: WIT, padding: "8px 12px", fontSize: 14, fontFamily: "inherit", outline: "none" }}
+          placeholder="Typ extra opmerking…" value={andersText}
+          onChange={e => setAndersText(e.target.value)} />
+      )}
+    </div>
+  );
+}
+
+// ── Partij rij in stats ──
+function PartijRij({ partij: p, nr }) {
+  const [open, setOpen] = useState(false);
+  const st = stats(p.beurten);
+  return (
+    <div style={{ borderBottom: `1px solid ${KBDR}` }}>
+      <button style={{ width: "100%", background: "none", border: "none", color: "inherit", cursor: "pointer", fontFamily: "inherit", padding: "10px 0", display: "flex", justifyContent: "space-between", alignItems: "center", textAlign: "left" }}
+        onClick={() => setOpen(v => !v)}>
+        <div>
+          <div style={{ fontSize: 13, color: GOUD, marginBottom: 2 }}>
+            {new Date(p.datum).toLocaleDateString("nl-NL", { weekday: "short", day: "numeric", month: "short" })}
+            {p.sessieType && <span style={{ marginLeft: 8, fontSize: 11, background: "#2a2010", color: "#a08040", borderRadius: 4, padding: "2px 6px" }}>{p.sessieType}</span>}
+            <span style={{ color: WITD, fontSize: 12 }}> · partij {nr}</span>
+          </div>
+          <div style={{ fontSize: 12, color: WITD }}>{p.aantalBeurten} beurten · max {p.max} · gem {p.gemPerBeurt} · {p.poedels} poedels · {p.totPunten} pt{st && st.opbouw5 > 0 ? ` · 🎯 ${st.opbouw5}×5+` : ""}</div>
+        </div>
+        <span style={{ color: GOUD, fontSize: 16 }}>{open ? "▲" : "▼"}</span>
+      </button>
+      {open && <div style={{ paddingBottom: 12 }}>
+        <Grafiek beurten={p.beurten} />
+        <SerieVerdeling beurten={p.beurten} />
+        {st && <OpbouwIndicator beurten={p.beurten} />}
+      </div>}
+    </div>
+  );
+}
+
+// ── Data export ──
+function DataExport({ allePartijen, lopendePartij, statsAlles }) {
+  const [gekopieerd, setGekopieerd] = useState("");
+  const [aiBezig, setAiBezig] = useState(false);
+  const [aiResultaat, setAiResultaat] = useState("");
+  const [aiType, setAiType] = useState("");
+
+  function bouwTekst() {
+    const r = [];
+    const nu = new Date().toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    r.push(`BILJART DATA — ${nu}`);
+    r.push("=".repeat(40));
+    if (statsAlles) {
+      r.push("\nTOTAAL OVERZICHT");
+      r.push(`Partijen: ${allePartijen.length} · Beurten: ${statsAlles.aantalBeurten} · Caramboles: ${statsAlles.totCar}`);
+      r.push(`Hoogste serie: ${statsAlles.max} · Gem/beurt: ${statsAlles.gemPerBeurt} · Poedels: ${statsAlles.poedels} (${Math.round(statsAlles.poedels/statsAlles.aantalBeurten*100)}%) · Punten: ${statsAlles.totPunten}`);
+    }
+    const lijst = lopendePartij.length > 0
+      ? [{ datum: new Date().toISOString(), beurten: lopendePartij, lopend: true }, ...allePartijen]
+      : [...allePartijen];
+    [...lijst].reverse().forEach((p, i) => {
+      r.push("\n" + "-".repeat(40));
+      const datum = new Date(p.datum).toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" });
+      const st = stats(p.beurten);
+      r.push(`${p.lopend ? "LOPENDE PARTIJ" : `PARTIJ ${i + 1}`} · ${datum}`);
+      if (!p.lopend && st) {
+        r.push(`Beurten: ${st.aantalBeurten} · Max: ${st.max} · Gem: ${st.gemPerBeurt} · Poedels: ${st.poedels} (${Math.round(st.poedels/st.aantalBeurten*100)}%) · Punten: ${st.totPunten}`);
+        if (p.sessieType) r.push(`Type: ${p.sessieType}`);
+      }
+      r.push("");
+      p.beurten.forEach((b, j) => {
+        const gemist = (b.gemist || []).join(", ");
+        const goed = (b.goed || []).join(", ");
+        const oudOpm = (b.opmerkingen || []).filter(o => !o.includes(":")).join(", ");
+        const pt = pts(b.caramboles) > 0 ? ` (+${pts(b.caramboles)}pt)` : "";
+        const poel = b.caramboles === 0 ? " [poedel]" : "";
+        let regel = `  Beurt ${j + 1}: ${b.caramboles} caramboles${pt}${poel}`;
+        if (gemist) regel += ` — Gemist: ${gemist}`;
+        if (goed) regel += ` — Goed: ${goed}`;
+        if (oudOpm) regel += ` — ${oudOpm}`;
+        r.push(regel);
+      });
+    });
+    return r.join("\n");
+  }
+
+  async function vraagAI(type) {
+    setAiBezig(true);
+    setAiType(type);
+    setAiResultaat("");
+    const data = bouwTekst();
+    const OORZAKEN = GEMIST.map(o => o.label).join(", ");
+    const GOEDLIJST = GOED.map(o => o.label).join(", ");
+
+    let systemPrompt, userPrompt;
+    if (type === "partij") {
+      systemPrompt = `Je bent een biljartcoach voor carambole/libre, geïnspireerd door Xavier Gretillat en GJ Billiards. Analyseer partijdata en geef korte, concrete feedback in het Nederlands. Focus op patroonherkenning. Elke beurt heeft "Gemist door" (${OORZAKEN}) en "Goed" (${GOEDLIJST}) opmerkingen. Geef: ✅ Wat gaat goed ⚠️ Grootste rem 🔍 Foutpatronen (max 3) 🏋️ Trainingsadvies (1 concreet) 🎯 Focus volgende sessie`;
+      userPrompt = `Analyseer mijn meest recente partij:\n\n${data}`;
+    } else {
+      systemPrompt = `Je bent een biljartcoach voor carambole/libre. Analyseer trends over meerdere partijen: gemiddelde ontwikkeling, hoogste serie, opbouw-% (5+ caramboles), poedels, terugkerende oorzaken. Geef: 📈 Trend samenvatting ✅ Vooruitgang 🔁 Terugkerende remmers 📌 Belangrijkste trend 🏋️ Trainingsfocus komende week`;
+      userPrompt = `Analyseer mijn biljartdata:\n\n${data}`;
+    }
+
+    try {
+      const resp = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: "user", content: userPrompt }]
+        })
+      });
+      const json = await resp.json();
+      const tekst = json.content?.map(c => c.text || "").join("") || "Geen resultaat ontvangen.";
+      setAiResultaat(tekst);
+    } catch (e) {
+      setAiResultaat("Fout bij ophalen analyse: " + e.message);
+    } finally {
+      setAiBezig(false);
+    }
+  }
+
+  function kopieer(tekst, sleutel) {
+    navigator.clipboard.writeText(tekst).then(() => {
+      setGekopieerd(sleutel);
+      setTimeout(() => setGekopieerd(""), 2500);
+    });
+  }
+
+  if (!allePartijen.length && !lopendePartij.length)
+    return <div style={{ textAlign: "center", color: WITD, padding: "40px 20px", fontSize: 16 }}>Nog geen data beschikbaar.</div>;
+
+  return (
+    <div>
+      <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+        <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>🤖 AI Analyse</div>
+        <div style={{ display: "flex", gap: 10, marginBottom: aiResultaat ? 14 : 0 }}>
+          <button style={{ flex: 1, padding: 12, background: aiBezig && aiType === "partij" ? "#2a3a2a" : "none", border: `1px solid ${GOUD}`, borderRadius: 8, color: GOUD, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}
+            onClick={() => vraagAI("partij")} disabled={aiBezig}>
+            {aiBezig && aiType === "partij" ? "⏳ Laden…" : "🎯 Partijanalyse"}
+          </button>
+          <button style={{ flex: 1, padding: 12, background: aiBezig && aiType === "trend" ? "#2a3a2a" : "none", border: `1px solid ${GOUD}`, borderRadius: 8, color: GOUD, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}
+            onClick={() => vraagAI("trend")} disabled={aiBezig}>
+            {aiBezig && aiType === "trend" ? "⏳ Laden…" : "📈 Trendanalyse"}
+          </button>
+        </div>
+        {aiResultaat && (
+          <div style={{ marginTop: 12, background: "#1a2e1a", border: `1px solid ${KBDR}`, borderRadius: 8, padding: 14, fontSize: 13, color: WITD, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>
+            {aiResultaat}
+            <button style={{ display: "block", marginTop: 10, background: "none", border: `1px solid ${KBDR}`, borderRadius: 6, color: WITD, padding: "5px 12px", fontSize: 11, cursor: "pointer", fontFamily: "inherit" }}
+              onClick={() => kopieer(aiResultaat, "ai")}>
+              {gekopieerd === "ai" ? "✓ Gekopieerd!" : "📋 Kopieer analyse"}
+            </button>
+          </div>
+        )}
+      </div>
+      <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+        <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>📋 Ruwe data</div>
+        <button style={{ width: "100%", padding: 14, background: `linear-gradient(135deg,${GOUD},${GOUDL})`, border: "none", borderRadius: 10, color: G, fontSize: 15, fontWeight: "bold", cursor: "pointer", fontFamily: "inherit" }}
+          onClick={() => kopieer(bouwTekst(), "data")}>
+          {gekopieerd === "data" ? "✓ Gekopieerd!" : "📋 Kopieer ruwe data"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ── Hoofd app ──
+function BiljartTracker() {
+  const [data, setData] = useState(null);
+  const [tab, setTab] = useState("spelen");
+  const [bevestigReset, setBevestigReset] = useState(false);
+  const [bevestigPartij, setBevestigPartij] = useState(false);
+  const [caramboles, setCaramboles] = useState(0);
+  const [beurtNummer, setBeurtNummer] = useState(1);
+  const [geselecteerd, setGeselecteerd] = useState(new Set());
+  const [andersText, setAndersText] = useState("");
+  const [showAnders, setShowAnders] = useState(false);
+  const [andersGoedText, setAndersGoedText] = useState("");
+  const [showAndersGoed, setShowAndersGoed] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [lopendePartij, setLopendePartij] = useState([]);
+  const [sessieType, setSessieType] = useState("Officieel");
+  const andersRef = useRef(null);
+  const andersGoedRef = useRef(null);
+
+  useEffect(() => { laadData().then(setData); }, []);
+  useEffect(() => { if (showAnders && andersRef.current) andersRef.current.focus(); }, [showAnders]);
+  useEffect(() => { if (showAndersGoed && andersGoedRef.current) andersGoedRef.current.focus(); }, [showAndersGoed]);
+
+  if (!data) return <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", color: GOUD, fontSize: 18, background: G }}>Laden…</div>;
+
+  const allePartijen = data.partijen;
+  const alleBeurten = allePartijen.flatMap(p => p.beurten);
+  const statsAlles = stats(alleBeurten);
+  const statsLopend = stats(lopendePartij);
+  const puntenNu = pts(caramboles);
+
+  function toggleOpmerking(key) {
+    setGeselecteerd(prev => {
+      const n = new Set(prev);
+      n.has(key) ? n.delete(key) : n.add(key);
+      return n;
+    });
+  }
+
+  function noteerBeurt() {
+    const gemist = [...geselecteerd].filter(k => k.startsWith("GEMIST__")).map(k => k.replace("GEMIST__", ""));
+    const goed = [...geselecteerd].filter(k => k.startsWith("GOED__")).map(k => k.replace("GOED__", ""));
+    if (andersText.trim()) gemist.push(andersText.trim());
+    if (andersGoedText.trim()) goed.push(andersGoedText.trim());
+    const b = { id: data.huidigeId, caramboles, punten: puntenNu, gemist, goed, tijd: new Date().toISOString() };
+    const nd = { ...data, huidigeId: data.huidigeId + 1 };
+    setData(nd); slaOp(nd);
+    setLopendePartij(p => [...p, b]);
+    setCaramboles(0); setBeurtNummer(n => n + 1);
+    setGeselecteerd(new Set()); setAndersText(""); setShowAnders(false);
+    setAndersGoedText(""); setShowAndersGoed(false);
+    setFeedback(`Beurt ${beurtNummer} · ${caramboles} car · ${puntenNu > 0 ? `+${puntenNu}pt` : caramboles === 0 ? "poedel" : ""}`);
+    setTimeout(() => setFeedback(""), 2000);
+  }
+
+  function sluitPartijAf() {
+    if (!lopendePartij.length) { setBevestigPartij(false); return; }
+    const st = stats(lopendePartij);
+    const p = { id: data.huidigeId, datum: new Date().toISOString(), beurten: lopendePartij, sessieType, ...st };
+    const nd = { partijen: [...data.partijen, p], huidigeId: data.huidigeId + 1 };
+    setData(nd); slaOp(nd);
+    setLopendePartij([]); setBeurtNummer(1); setCaramboles(0); setBevestigPartij(false);
+    setFeedback(`✓ Partij afgesloten · ${st.aantalBeurten} beurten · ${st.totCar} caramboles · 🎯 ${st.opbouw5}×5+`);
+    setTimeout(() => setFeedback(""), 3000);
+  }
+
+  function verwijderLaatste() {
+    if (!lopendePartij.length) return;
+    setLopendePartij(p => p.slice(0, -1));
+    setBeurtNummer(n => Math.max(1, n - 1));
+  }
+
+  function resetAlles() {
+    const leeg = { partijen: [], huidigeId: 1 };
+    setData(leeg); slaOp(leeg);
+    setLopendePartij([]); setBeurtNummer(1); setCaramboles(0);
+    setGeselecteerd(new Set()); setBevestigReset(false);
+    setAndersText(""); setShowAnders(false);
+    setAndersGoedText(""); setShowAndersGoed(false);
+  }
+
+  function LogRij({ b, nr }) {
+    const gemist = b.gemist || (b.opmerkingen || []).filter(o => !o.includes(":"));
+    const goed = b.goed || [];
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: 8, borderBottom: `1px solid ${KBDR}`, padding: "7px 0" }}>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+          <span style={{ fontSize: 10, color: WITD, minWidth: 18 }}>{nr}</span>
+          <span style={{ fontSize: 20, fontWeight: "bold", color: b.caramboles >= 5 ? GOUDL : WIT }}>{b.caramboles}</span>
+          <span style={{ fontSize: 11, color: WITD }}>car.</span>
+        </div>
+        <div style={{ flex: 1, display: "flex", gap: 4, flexWrap: "wrap" }}>
+          {gemist.map(o => <span key={o} style={{ fontSize: 11, background: "#3a1010", color: ROOD, borderRadius: 4, padding: "2px 7px" }}>{o}</span>)}
+          {goed.map(o => <span key={o} style={{ fontSize: 11, background: "#0f2e14", color: GRNT, borderRadius: 4, padding: "2px 7px" }}>{o}</span>)}
+          {b.caramboles === 0 && !gemist.length && <span style={{ fontSize: 11, background: "#2a2010", color: "#a08040", borderRadius: 4, padding: "2px 7px" }}>poedel</span>}
+        </div>
+        <div style={{ minWidth: 36, textAlign: "right" }}>
+          {pts(b.caramboles) > 0 && <span style={{ fontSize: 11, color: G, background: GOUD, borderRadius: 4, padding: "2px 6px", fontWeight: "bold" }}>+{pts(b.caramboles)}pt</span>}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ background: G, minHeight: "100vh", fontFamily: "Georgia,'Times New Roman',serif", color: WIT, maxWidth: 480, margin: "0 auto", paddingBottom: 40 }}>
+
+      {/* Header */}
+      <div style={{ background: "linear-gradient(135deg,#0d1f0d,#1a2e1a)", borderBottom: `2px solid ${GOUD}`, padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span style={{ fontSize: 36, color: GOUD, lineHeight: 1 }}>◎</span>
+          <div>
+            <div style={{ fontSize: 20, fontWeight: "bold", color: GOUD, letterSpacing: 1 }}>Biljart Tracker</div>
+            <div style={{ fontSize: 12, color: WITD, letterSpacing: 2, textTransform: "uppercase" }}>Carambole · Serie registratie</div>
+          </div>
+        </div>
+        {statsAlles && <div style={{ fontSize: 11, color: GOUD, border: `1px solid ${GOUD}`, borderRadius: 20, padding: "4px 10px", textAlign: "right" }}>{allePartijen.length} partij{allePartijen.length !== 1 ? "en" : ""} · {statsAlles.totPunten} pt</div>}
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display: "flex", borderBottom: `1px solid ${KBDR}`, background: "#152015" }}>
+        {[["spelen","⚪ Spelen"],["stats","📊 Stats"],["data","🗂 Data"],["log","📋 Log"]].map(([k,l]) => (
+          <button key={k} style={{ flex: 1, padding: "12px 0", background: "none", border: "none", color: tab === k ? GOUD : WITD, fontSize: 12, cursor: "pointer", fontFamily: "inherit", borderBottom: tab === k ? `2px solid ${GOUD}` : "2px solid transparent", background: tab === k ? "#1c2c1c" : "none" }}
+            onClick={() => setTab(k)}>{l}</button>
+        ))}
+      </div>
+
+      <div style={{ padding: "16px 14px" }}>
+
+        {/* ══ SPELEN ══ */}
+        {tab === "spelen" && (
+          <div>
+            {/* Sessie type */}
+            <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
+              {SESSIE_TYPES.map(t => (
+                <button key={t.label} style={{ flex: 1, padding: "6px 4px", background: sessieType === t.label ? "#2d4a1e" : "none", border: `1px solid ${sessieType === t.label ? GOUD : KBDR}`, borderRadius: 8, color: sessieType === t.label ? GOUD : WITD, fontSize: 11, cursor: "pointer", fontFamily: "inherit", display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}
+                  onClick={() => setSessieType(t.label)}>
+                  <span>{t.emoji}</span>
+                  <span>{t.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Top rij: stats + noteer */}
+            <div style={{ display: "flex", gap: 10, marginBottom: 14, alignItems: "stretch" }}>
+              <div style={{ flex: 1, background: KBG, border: `1px solid ${KBDR}`, borderRadius: 12, padding: 14, display: "flex", flexDirection: "column", justifyContent: "center", gap: 4 }}>
+                <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 4 }}>Deze partij</div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+                  <span style={{ fontSize: 28, fontWeight: "bold", color: WIT, lineHeight: 1 }}>{statsLopend ? statsLopend.totCar : 0}</span>
+                  <span style={{ fontSize: 11, color: WITD }}>car.</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 5 }}>
+                  <span style={{ fontSize: 20, fontWeight: "bold", color: WITD, lineHeight: 1 }}>{beurtNummer - 1}</span>
+                  <span style={{ fontSize: 11, color: WITD }}>beurten</span>
+                </div>
+                <div style={{ fontSize: 13, color: GOUD, fontWeight: "bold", marginTop: 4 }}>
+                  {statsLopend ? statsLopend.totPunten : 0} pt
+                  {statsLopend && <span style={{ fontSize: 12, color: GOUDL, fontWeight: "normal" }}> · gem {statsLopend.gemPerBeurt}</span>}
+                  {statsLopend && statsLopend.poedels > 0 && <span style={{ fontSize: 12, color: WITD, fontWeight: "normal" }}> · {statsLopend.poedels} 🥚</span>}
+                </div>
+                {statsLopend && statsLopend.opbouw5 > 0 && (
+                  <div style={{ fontSize: 12, color: GRNT, marginTop: 2 }}>🎯 {statsLopend.opbouw5}/{statsLopend.aantalBeurten} opbouw</div>
+                )}
+              </div>
+              <button style={{ flex: 1, padding: "14px 12px", background: `linear-gradient(155deg,${GOUD},${GOUDL})`, border: "none", borderRadius: 12, color: G, cursor: "pointer", fontFamily: "inherit", boxShadow: "0 6px 24px rgba(201,168,76,0.4)", textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, minHeight: 100 }}
+                onClick={noteerBeurt}>
+                <div style={{ fontSize: 11, fontWeight: "bold", opacity: 0.65, letterSpacing: 2, textTransform: "uppercase" }}>Beurt {beurtNummer}</div>
+                <div style={{ fontSize: 20, fontWeight: "bold" }}>✓ Noteer</div>
+                <div style={{ fontSize: 12, opacity: 0.7, marginTop: 2 }}>{caramboles} car{puntenNu > 0 ? ` · +${puntenNu}pt` : caramboles === 0 ? " · poedel" : ""}</div>
+              </button>
+            </div>
+
+            <div style={{ textAlign: "center", color: GOUD, fontSize: 14, marginBottom: 14, minHeight: 20 }}>{feedback || "\u00A0"}</div>
+
+            {/* Caramboles invoer */}
+            <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+              <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>Caramboles deze beurt</div>
+              <CarambolesInvoer waarde={caramboles} onChange={setCaramboles} />
+              <div style={{ textAlign: "center", marginTop: 8, fontSize: 13, color: GOUD, minHeight: 20 }}>
+                {caramboles === 0 ? "Typ of tik + voor elke carambole"
+                  : caramboles < 3 ? `Nog ${3 - caramboles} voor een punt`
+                  : `${puntenNu} punt${puntenNu !== 1 ? "en" : ""} ✓${caramboles >= 5 ? " 🎯" : ""}`}
+              </div>
+            </div>
+
+            {/* Opmerkingen */}
+            <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+              <OpmKnoppen
+                titel="Gemist door:"
+                lijst={GEMIST}
+                geselecteerd={geselecteerd}
+                kleur={ROOD}
+                toggle={toggleOpmerking}
+                showAnders={showAnders}
+                setShowAnders={setShowAnders}
+                andersText={andersText}
+                setAndersText={setAndersText}
+                andersRef={andersRef}
+              />
+              <div style={{ borderTop: `1px solid ${KBDR}`, marginBottom: 12 }} />
+              <OpmKnoppen
+                titel="Wat ging goed:"
+                lijst={GOED}
+                geselecteerd={geselecteerd}
+                kleur={GRNT}
+                toggle={toggleOpmerking}
+                showAnders={showAndersGoed}
+                setShowAnders={setShowAndersGoed}
+                andersText={andersGoedText}
+                setAndersText={setAndersGoedText}
+                andersRef={andersGoedRef}
+              />
+              {(geselecteerd.size > 0 || andersText || andersGoedText) && (
+                <button style={{ background: "none", border: "none", color: WITD, fontSize: 11, cursor: "pointer", fontFamily: "inherit", padding: "5px 8px" }}
+                  onClick={() => { setGeselecteerd(new Set()); setAndersText(""); setShowAnders(false); setAndersGoedText(""); setShowAndersGoed(false); }}>✕ Wis alles</button>
+              )}
+            </div>
+
+            {/* Lopende partij */}
+            {lopendePartij.length > 0 && (
+              <div style={{ background: KBG, border: `1px solid ${GOUD}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                  <span style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD }}>Lopende partij · {lopendePartij.length} beurten</span>
+                  <button style={{ background: "none", border: `1px solid ${KBDR}`, color: WITD, padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: "inherit" }}
+                    onClick={verwijderLaatste}>↩ Ongedaan</button>
+                </div>
+                {statsLopend && <div style={{ display: "flex", gap: 14, flexWrap: "wrap", fontSize: 12, color: WITD, marginBottom: 10 }}>
+                  <span>Max <b>{statsLopend.max}</b></span>
+                  <span>Gem <b>{statsLopend.gemPerBeurt}</b></span>
+                  <span>Poedels <b>{statsLopend.poedels}</b></span>
+                  <span style={{ color: GRNT }}>🎯 <b>{statsLopend.opbouw5}</b>×5+</span>
+                </div>}
+                <Grafiek beurten={lopendePartij} />
+                {!bevestigPartij
+                  ? <button style={{ width: "100%", marginTop: 12, padding: 12, background: "none", border: `1px solid ${GOUD}`, borderRadius: 8, color: GOUD, fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}
+                    onClick={() => setBevestigPartij(true)}>🏁 Partij afsluiten</button>
+                  : <div style={{ marginTop: 8, background: "#2a1515", border: "1px solid #7a3030", borderRadius: 8, padding: "14px 16px" }}>
+                    <div style={{ fontSize: 13, color: "#e06060", marginBottom: 12 }}>Partij afsluiten met {lopendePartij.length} beurten?</div>
+                    <div style={{ display: "flex", gap: 10 }}>
+                      <button style={{ flex: 1, padding: 10, background: "#7a3030", border: "none", borderRadius: 6, color: WIT, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }} onClick={sluitPartijAf}>Ja, afsluiten</button>
+                      <button style={{ flex: 1, padding: 10, background: "none", border: `1px solid ${KBDR}`, borderRadius: 6, color: WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }} onClick={() => setBevestigPartij(false)}>Annuleer</button>
+                    </div>
+                  </div>}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ══ STATS ══ */}
+        {tab === "stats" && (
+          <div>
+            {!statsAlles && !statsLopend
+              ? <div style={{ textAlign: "center", color: WITD, padding: "40px 20px", fontSize: 16, lineHeight: 1.8 }}>Nog geen beurten genoteerd.<br />Ga spelen! ⚪🔴🟡</div>
+              : <>
+                {statsLopend && (
+                  <div style={{ background: KBG, border: `2px solid ${GOUD}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                    <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>⏳ Lopende partij · {statsLopend.aantalBeurten} beurten</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 10, marginBottom: 14 }}>
+                      {[["Caramboles", statsLopend.totCar], ["Hoogste serie", statsLopend.max], ["Beurten", statsLopend.aantalBeurten], ["Gem. / beurt", statsLopend.gemPerBeurt], ["Poedels", statsLopend.poedels], ["Punten", statsLopend.totPunten]].map(([l, v]) => (
+                        <div key={l} style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 12px", textAlign: "center" }}>
+                          <div style={{ fontSize: 28, fontWeight: "bold", color: GOUD }}>{v}</div>
+                          <div style={{ fontSize: 11, color: WITD, marginTop: 4, textTransform: "uppercase", letterSpacing: 1 }}>{l}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <OpbouwIndicator beurten={lopendePartij} />
+                    <Grafiek beurten={lopendePartij} />
+                  </div>
+                )}
+                {statsAlles && <>
+                  <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                    <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>Alle partijen</div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 10, marginBottom: 14 }}>
+                      {[["Totaal beurten", statsAlles.aantalBeurten], ["Hoogste serie", statsAlles.max], ["Totaal caramboles", statsAlles.totCar], ["Gem. / beurt", statsAlles.gemPerBeurt], ["Totaal punten", statsAlles.totPunten], ["Totaal poedels", statsAlles.poedels]].map(([l, v]) => (
+                        <div key={l} style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 12px", textAlign: "center" }}>
+                          <div style={{ fontSize: 28, fontWeight: "bold", color: GOUD }}>{v}</div>
+                          <div style={{ fontSize: 11, color: WITD, marginTop: 4, textTransform: "uppercase", letterSpacing: 1 }}>{l}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <OpbouwIndicator beurten={alleBeurten} />
+                  </div>
+                  <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                    <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>Serie verloop (alle partijen)</div>
+                    <Grafiek beurten={alleBeurten} />
+                  </div>
+                  <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                    <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>Per partij</div>
+                    {[...allePartijen].reverse().map((p, i) => <PartijRij key={p.id} partij={p} nr={allePartijen.length - i} />)}
+                  </div>
+                </>}
+                <div style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                  <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>Puntensysteem</div>
+                  <div style={{ fontSize: 14, lineHeight: 2, color: WITD }}>
+                    <div>3-4 caramboles → <b>1 punt</b></div>
+                    <div>5 caramboles → <b>2 punten</b></div>
+                    <div>6+ caramboles → <b>2 + (n−5) punten</b></div>
+                  </div>
+                </div>
+                {!bevestigReset
+                  ? <button style={{ width: "100%", padding: 12, background: "none", border: "1px solid #7a3030", borderRadius: 8, color: "#e06060", cursor: "pointer", fontSize: 13, fontFamily: "inherit", marginTop: 8 }}
+                    onClick={() => setBevestigReset(true)}>🗑 Alle data wissen</button>
+                  : <div style={{ marginTop: 8, background: "#2a1515", border: "1px solid #7a3030", borderRadius: 8, padding: "14px 16px" }}>
+                    <div style={{ fontSize: 13, color: "#e06060", marginBottom: 12 }}>Weet je het zeker? Dit kan niet ongedaan worden.</div>
+                    <div style={{ display: "flex", gap: 10 }}>
+                      <button style={{ flex: 1, padding: 10, background: "#7a3030", border: "none", borderRadius: 6, color: WIT, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }} onClick={resetAlles}>Ja, wis alles</button>
+                      <button style={{ flex: 1, padding: 10, background: "none", border: `1px solid ${KBDR}`, borderRadius: 6, color: WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 13 }} onClick={() => setBevestigReset(false)}>Annuleer</button>
+                    </div>
+                  </div>}
+              </>}
+          </div>
+        )}
+
+        {/* ══ DATA ══ */}
+        {tab === "data" && <DataExport allePartijen={allePartijen} lopendePartij={lopendePartij} statsAlles={statsAlles} />}
+
+        {/* ══ LOG ══ */}
+        {tab === "log" && (
+          <div>
+            {lopendePartij.length > 0 && (
+              <div style={{ background: KBG, border: `2px solid ${GOUD}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>⏳ Lopende partij</div>
+                {[...lopendePartij].reverse().map((b, i) => (
+                  <LogRij key={b.id} b={b} nr={lopendePartij.length - i} />
+                ))}
+              </div>
+            )}
+            {!allePartijen.length && !lopendePartij.length
+              ? <div style={{ textAlign: "center", color: WITD, padding: "40px 20px", fontSize: 16, lineHeight: 1.8 }}>Nog geen beurten genoteerd.</div>
+              : [...allePartijen].reverse().map((p, pi) => (
+                <div key={p.id} style={{ background: KBG, border: `1px solid ${KBDR}`, borderRadius: 10, padding: "14px 16px", marginBottom: 14 }}>
+                  <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 12 }}>
+                    Partij {allePartijen.length - pi} · {new Date(p.datum).toLocaleDateString("nl-NL", { weekday: "long", day: "numeric", month: "long" })}
+                    {p.sessieType && <span style={{ marginLeft: 8, background: "#2a2010", color: "#a08040", borderRadius: 4, padding: "2px 6px", fontWeight: "normal" }}>{p.sessieType}</span>}
+                  </div>
+                  <div style={{ display: "flex", gap: 14, flexWrap: "wrap", fontSize: 12, color: WITD, marginBottom: 10 }}>
+                    <span>{p.aantalBeurten} beurten</span><span>max <b>{p.max}</b></span>
+                    <span>gem <b>{p.gemPerBeurt}</b></span><span>{p.poedels} poedels</span><span><b>{p.totPunten}</b> pt</span>
+                    {p.opbouw5 > 0 && <span style={{ color: GRNT }}>🎯 {p.opbouw5}×5+</span>}
+                  </div>
+                  {[...p.beurten].reverse().map((b, i) => (
+                    <LogRij key={b.id} b={b} nr={p.beurten.length - i} />
+                  ))}
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<BiljartTracker />);
+</script>
+</body>
+</html>

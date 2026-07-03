@@ -565,7 +565,27 @@ function BiljartTracker(){
     <div className="app">
       <div style={{background:"linear-gradient(135deg,#0d1f0d,#1a2e1a)",borderBottom:`2px solid ${GOUD}`,padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <span style={{fontSize:26,color:GOUD}}>◎</span>
+          <svg width="44" height="44" viewBox="0 0 100 100">
+            <defs>
+              <radialGradient id="lwit" cx="35%" cy="30%"><stop offset="0%" stopColor="#ffffff"/><stop offset="100%" stopColor="#b0aa90"/></radialGradient>
+              <radialGradient id="lgeel" cx="35%" cy="30%"><stop offset="0%" stopColor="#f5e060"/><stop offset="100%" stopColor="#a07010"/></radialGradient>
+              <radialGradient id="lrood" cx="35%" cy="30%"><stop offset="0%" stopColor="#f07070"/><stop offset="100%" stopColor="#901010"/></radialGradient>
+            </defs>
+            <circle cx="50" cy="50" r="46" stroke="#c9a84c" strokeWidth="1.5" fill="#152015"/>
+            <circle cx="50" cy="50" r="46" stroke="#c9a84c" strokeWidth="1.5" fill="none"/>
+            <line x1="10" y1="14" x2="41" y2="58" stroke="#5a3a08" strokeWidth="4.5" strokeLinecap="round"/>
+            <line x1="10" y1="14" x2="41" y2="58" stroke="#c9a84c" strokeWidth="1.8" strokeLinecap="round" opacity="0.7"/>
+            <circle cx="10" cy="14" r="2" fill="#c9a84c" opacity="0.5"/>
+            <line x1="90" y1="14" x2="59" y2="58" stroke="#5a3a08" strokeWidth="4.5" strokeLinecap="round"/>
+            <line x1="90" y1="14" x2="59" y2="58" stroke="#c9a84c" strokeWidth="1.8" strokeLinecap="round" opacity="0.7"/>
+            <circle cx="90" cy="14" r="2" fill="#c9a84c" opacity="0.5"/>
+            <circle cx="32" cy="70" r="14" fill="url(#lwit)"/>
+            <circle cx="26" cy="64" r="4.5" fill="white" opacity="0.5"/>
+            <circle cx="50" cy="44" r="14" fill="url(#lrood)"/>
+            <circle cx="44" cy="38" r="4.5" fill="white" opacity="0.28"/>
+            <circle cx="68" cy="70" r="14" fill="url(#lgeel)"/>
+            <circle cx="62" cy="64" r="4.5" fill="white" opacity="0.4"/>
+          </svg>
           <div>
             <div style={{fontSize:16,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Tracker</div>
             <div style={{fontSize:9,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole · Serie registratie</div>

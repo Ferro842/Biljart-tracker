@@ -2,24 +2,24 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Biljart Tracker</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #1a2e1a; font-family: Georgia, serif; color: #f5f0e8; }
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
-input[type=number] { -moz-appearance: textfield; }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body,#root{height:100%;width:100%;overflow:hidden}
+body{background:#1a2e1a;font-family:Georgia,serif;color:#f5f0e8}
+.app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useRef } = React;
-
+const {useState,useEffect,useRef}=React;
 const G="#1a2e1a",GOUD="#c9a84c",GOUDL="#e8c96a",WIT="#f5f0e8",WITD="#d4cfc5";
 const KBG="#22341f",KBDR="#3a5c35",ROOD="#e05555",GRNT="#4caf50";
 
@@ -37,7 +37,6 @@ const GEMIST=[
   {label:"Piqué",emoji:"🎯"},{label:"Snijden",emoji:"✂️"},
   {label:"Dun",emoji:"🪶"},
 ];
-
 const GOED=[
   {label:"Trekstoot",emoji:"↩️"},{label:"Driebanden",emoji:"🔺"},
   {label:"Bandstoot",emoji:"💢"},{label:"Doorstoot",emoji:"➡️"},
@@ -48,14 +47,45 @@ const GOED=[
   {label:"Dun",emoji:"🪶"},
 ];
 
-const SESSIE_TYPES=[
-  {label:"Officieel",emoji:"🏆"},{label:"Training",emoji:"🏋️"},
-  {label:"Losspelen",emoji:"🎱"},{label:"Uitleg",emoji:"📖"},
-];
-
 const SK="biljart-tracker-v2";
 
-function berekenStats(beurten){
+const HD=[["2026-04-16T20:00:00Z",[1, 3, 2, 1, 2, 4, 6, 2, 0, 9]],
+["2026-04-16T20:30:00Z",[2, 2, 7, 4, 0, 1, 9, 2, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 4, 5, 4, 0, 1, 0, 1, 1, 3, 1, 2]],
+["2026-04-16T21:00:00Z",[7, 2, 0, 2, 1, 0, 2, 0, 3, 0, 0, 3, 3, 0, 1, 1, 2, 1, 6, 1, 1, 0, 7, 2, 0, 1, 1, 6, 0, 0]],
+["2026-04-17T20:00:00Z",[6, 8, 0, 2, 1, 0, 2, 9, 4, 5, 2, 0, 0, 0, 2, 3, 0, 3, 0, 0, 3, 0, 17, 2, 3]],
+["2026-04-21T20:00:00Z",[3, 2, 1, 2, 6, 2, 5, 0, 0, 1, 0, 2, 1, 5, 0, 0, 0, 1, 1, 1, 0, 1, 6, 4, 0, 1, 0, 1, 1, 2]],
+["2026-04-21T20:30:00Z",[1, 1, 0, 0, 0, 0, 6, 0, 0, 0, 1, 1, 9, 1, 0, 0, 0, 0, 0, 1, 1, 5, 0, 0, 0, 0, 4, 2, 0, 0]],
+["2026-04-21T21:00:00Z",[2, 7, 0, 4, 0, 0, 0, 1, 0, 1, 6, 2, 1, 0, 0, 1, 0, 1, 0, 4, 1, 0, 1, 0, 2, 8, 1, 3, 0, 2]],
+["2026-04-24T20:00:00Z",[17, 2, 2, 1, 2, 3, 0, 1, 2, 0, 3, 6, 0, 0, 1, 1, 4, 2, 1, 0, 1, 2, 2, 1, 0]],
+["2026-05-01T20:00:00Z",[3, 2, 0, 1, 2, 0, 2, 0, 1, 0, 2, 0, 0, 1, 1, 7, 3, 8, 2, 0, 7, 2, 1, 2, 3]],
+["2026-05-08T20:00:00Z",[5, 4, 4, 0, 1, 0, 1, 3, 0, 1, 0, 1, 2, 3, 1, 0, 6, 1, 0, 4, 4, 2, 4, 0, 0]],
+["2026-05-12T20:00:00Z",[2, 2, 0, 0, 0, 1, 0, 0, 0, 4, 0, 1, 0, 1, 0, 2, 1, 1, 1, 1, 1, 6, 0, 0, 2, 2, 0, 1, 3, 0]],
+["2026-05-12T20:30:00Z",[7, 7, 1, 4, 1, 0, 4, 0, 0, 0, 6, 2, 1, 0, 0, 2, 1, 3, 1, 1, 0, 0, 1, 0, 2, 1, 3, 0, 0, 0]],
+["2026-05-19T20:00:00Z",[2, 3, 0, 2, 3, 1, 5, 3, 1, 4, 2, 5, 0, 2, 0, 0, 4, 0, 1, 0, 0, 0, 2, 0, 2, 0, 1, 2, 4, 0]],
+["2026-05-19T20:30:00Z",[0, 1, 0, 1, 5, 1, 1, 6, 0, 2, 7, 1, 0, 1, 4, 1, 2, 3, 4, 5, 4, 0, 2, 2, 0, 1, 1, 7, 1, 2]],
+["2026-05-22T20:00:00Z",[0, 0, 0, 3, 1, 1, 0, 4, 3, 1, 1, 1, 3, 1, 0, 4, 0, 0, 1, 8, 0, 3, 1, 8, 4]],
+["2026-05-27T20:00:00Z",[0, 2, 10, 3, 2, 5, 0, 3, 1, 1, 1, 3, 0, 1, 2, 6, 0, 3, 2, 1, 0, 1, 0, 0, 2, 1, 0, 1, 0, 0]],
+["2026-05-27T20:30:00Z",[0, 1, 0, 0, 1, 0, 3, 3, 0, 5, 0, 6, 2, 3, 1, 0, 4, 1, 0, 0, 3, 0, 1, 0, 3, 3, 0, 0, 0, 1]],
+["2026-05-27T21:00:00Z",[0, 2, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 2, 1, 0, 0, 3, 1, 0, 0, 0, 2, 0, 4, 0, 0, 3, 1, 1]],
+["2026-05-29T20:00:00Z",[0, 5, 2, 3, 1, 0, 3, 1, 1, 6, 0, 1, 2, 0, 4, 1, 3, 2, 5, 0, 0, 1, 2, 4, 3]],
+["2026-06-03T20:00:00Z",[0, 0, 2, 2, 1, 7, 1, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 2, 0, 7, 3, 0, 2, 0, 2, 3, 3, 1, 0, 0]],
+["2026-06-03T20:30:00Z",[0, 8, 1, 1, 1, 5, 1, 6, 1, 2, 2, 1, 5, 4, 0, 3, 3, 1, 1, 0, 0, 3, 0, 5, 2, 2, 0, 2, 2, 0]],
+["2026-06-09T20:00:00Z",[0, 1, 3, 0, 0, 2, 1, 3, 0, 0, 0, 0, 0, 3, 1, 3, 4, 0, 4, 1, 0, 0, 5, 4, 4, 0, 3, 2, 2, 1]],
+["2026-06-09T20:30:00Z",[0, 0, 1, 0, 0, 0, 0, 1, 3, 4, 0, 9, 3, 2, 1, 0, 3, 8, 1, 3, 3, 1, 1, 1, 4, 1, 1, 2, 1, 2]],
+["2026-06-09T21:00:00Z",[0, 1, 3, 1, 4, 0, 0, 0, 0, 4, 3, 0, 1, 9, 1, 2, 0, 0, 4, 3, 3]],
+["2026-06-11T20:00:00Z",[1, 2, 0, 1, 0, 2, 1, 1, 5, 6, 2, 3, 0, 3, 3, 6, 7, 0, 12, 3, 0, 12, 4, 4, 4]],
+["2026-06-16T20:00:00Z",[1, 2, 2, 1, 0, 0, 1, 2, 1, 0, 3, 1, 0, 1, 7, 1, 0, 1, 8, 3, 0, 3, 1, 1, 10, 11, 1, 2, 0, 2]],
+["2026-06-16T20:30:00Z",[0, 0, 0, 1, 3, 1, 2, 4, 1, 4, 0, 1, 4, 0, 1, 4, 4, 1, 0, 0, 1, 0, 1, 1, 0, 2, 2, 0, 3, 2]],
+["2026-06-19T20:00:00Z",[1, 0, 3, 0, 2, 2, 0, 4, 3, 0, 0, 8, 2, 0, 0, 2, 3, 0, 2, 0, 5, 0, 0, 0, 4, 3, 0, 0, 1, 2, 3, 2, 3, 0, 0, 2, 0, 0, 3, 4]]];
+
+function mkPartijen(){
+  return HD.map((p,i)=>({
+    id:i+1, datum:p[0],
+    beurten:p[1].map((c,j)=>({id:i*1000+j,caramboles:c,gemist:[],goed:[]}))
+  }));
+}
+
+function stat(beurten){
   if(!beurten||!beurten.length)return null;
   const cars=beurten.map(b=>b.caramboles);
   const totCar=cars.reduce((a,b)=>a+b,0);
@@ -70,299 +100,65 @@ function berekenStats(beurten){
   return{totCar,max:mx,totPunten,aantalBeurten:beurten.length,poedels,gemPerBeurt,opbouw5,opbouw57,opbouw89,opbouw10};
 }
 
-// Historische data van alle 28 partijen
-const HISTORISCHE_DATA={huidigeId:900,partijen:[
-{id:1,datum:"2026-04-16T20:00:00.000Z",sessieType:"Training",beurten:[{id:1,caramboles:1,gemist:["Bandstoot"],goed:[]},{id:2,caramboles:3,gemist:["Driebanden"],goed:[]},{id:3,caramboles:2,gemist:["Trekstoot"],goed:[]},{id:4,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:5,caramboles:2,gemist:["Bandstoot","Trekstoot"],goed:[]},{id:6,caramboles:4,gemist:["Driebanden","Achterom"],goed:[]},{id:7,caramboles:6,gemist:["Trekstoot","Direct"],goed:[]},{id:8,caramboles:2,gemist:[],goed:[]},{id:9,caramboles:0,gemist:[],goed:[]},{id:10,caramboles:9,gemist:["Driebanden"],goed:[]}]},
-{id:2,datum:"2026-04-16T20:30:00.000Z",sessieType:"Training",beurten:[{id:11,caramboles:2,gemist:["Klos","Moeilijk","Slechte positie"],goed:[]},{id:12,caramboles:2,gemist:["Driebanden"],goed:[]},{id:13,caramboles:7,gemist:["Klos","Driebanden"],goed:[]},{id:14,caramboles:4,gemist:["Piqué"],goed:[]},{id:15,caramboles:0,gemist:["Piqué"],goed:[]},{id:16,caramboles:1,gemist:["Slechte positie"],goed:[]},{id:17,caramboles:9,gemist:["Trekstoot"],goed:[]},{id:18,caramboles:2,gemist:["Driebanden","Verzamelen"],goed:[]},{id:19,caramboles:0,gemist:["Doorstoot","Moeilijk"],goed:[]},{id:20,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:21,caramboles:1,gemist:["Klos","Driebanden"],goed:[]},{id:22,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:23,caramboles:1,gemist:["Trekstoot","Direct"],goed:[]},{id:24,caramboles:0,gemist:[],goed:[]},{id:25,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:26,caramboles:1,gemist:["Bandstoot"],goed:[]},{id:27,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:28,caramboles:0,gemist:["Driebanden"],goed:[]},{id:29,caramboles:0,gemist:["Driebanden"],goed:[]},{id:30,caramboles:4,gemist:["Snijden"],goed:[]},{id:31,caramboles:5,gemist:["Driebanden"],goed:[]},{id:32,caramboles:4,gemist:["Verzamelen"],goed:[]},{id:33,caramboles:0,gemist:["Driebanden"],goed:[]},{id:34,caramboles:1,gemist:["Piqué"],goed:[]},{id:35,caramboles:0,gemist:["Slechte positie"],goed:[]},{id:36,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:37,caramboles:1,gemist:["Driebanden"],goed:[]},{id:38,caramboles:3,gemist:["Trekstoot"],goed:[]},{id:39,caramboles:1,gemist:["Verzamelen"],goed:[]},{id:40,caramboles:2,gemist:["Driebanden"],goed:[]}]},
-{id:3,datum:"2026-04-16T21:00:00.000Z",sessieType:"Training",beurten:[{id:41,caramboles:7,gemist:["Bandstoot"],goed:[]},{id:42,caramboles:2,gemist:["Driebanden"],goed:[]},{id:43,caramboles:0,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:44,caramboles:2,gemist:["Trekstoot"],goed:[]},{id:45,caramboles:1,gemist:["Bandstoot"],goed:[]},{id:46,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:47,caramboles:2,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:48,caramboles:0,gemist:["Driebanden"],goed:[]},{id:49,caramboles:3,gemist:["Positioneren"],goed:[]},{id:50,caramboles:0,gemist:["Driebanden"],goed:[]},{id:51,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:52,caramboles:3,gemist:["Verzamelen","Trekstoot"],goed:[]},{id:53,caramboles:3,gemist:["Trekstoot","Verzamelen"],goed:[]},{id:54,caramboles:0,gemist:["Driebanden","Achterom"],goed:[]},{id:55,caramboles:1,gemist:["Verzamelen"],goed:[]},{id:56,caramboles:1,gemist:["Direct"],goed:[]},{id:57,caramboles:2,gemist:["Te zacht"],goed:[]},{id:58,caramboles:1,gemist:["Doorstoot"],goed:[]},{id:59,caramboles:6,gemist:["Direct"],goed:[]},{id:60,caramboles:1,gemist:["Driebanden"],goed:[]},{id:61,caramboles:1,gemist:["Trekstoot","Verzamelen","Direct"],goed:[]},{id:62,caramboles:0,gemist:["Bandstoot","Makkelijk"],goed:[]},{id:63,caramboles:7,gemist:["Trekstoot","Verzamelen"],goed:[]},{id:64,caramboles:2,gemist:["Bandstoot"],goed:[]},{id:65,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:66,caramboles:1,gemist:["Klos"],goed:[]},{id:67,caramboles:1,gemist:["Verzamelen"],goed:[]},{id:68,caramboles:6,gemist:["Trekstoot","Direct"],goed:[]},{id:69,caramboles:0,gemist:[],goed:[]},{id:70,caramboles:0,gemist:["Moeilijk"],goed:[]}]},
-{id:4,datum:"2026-04-17T20:00:00.000Z",sessieType:"Officieel",beurten:[{id:71,caramboles:6,gemist:[],goed:[]},{id:72,caramboles:8,gemist:[],goed:[]},{id:73,caramboles:0,gemist:[],goed:[]},{id:74,caramboles:2,gemist:[],goed:[]},{id:75,caramboles:1,gemist:[],goed:[]},{id:76,caramboles:0,gemist:[],goed:[]},{id:77,caramboles:2,gemist:[],goed:[]},{id:78,caramboles:9,gemist:[],goed:[]},{id:79,caramboles:4,gemist:[],goed:[]},{id:80,caramboles:5,gemist:[],goed:[]},{id:81,caramboles:2,gemist:[],goed:[]},{id:82,caramboles:0,gemist:[],goed:[]},{id:83,caramboles:0,gemist:[],goed:[]},{id:84,caramboles:0,gemist:[],goed:[]},{id:85,caramboles:2,gemist:[],goed:[]},{id:86,caramboles:3,gemist:[],goed:[]},{id:87,caramboles:0,gemist:[],goed:[]},{id:88,caramboles:3,gemist:[],goed:[]},{id:89,caramboles:0,gemist:[],goed:[]},{id:90,caramboles:0,gemist:[],goed:[]},{id:91,caramboles:3,gemist:[],goed:[]},{id:92,caramboles:0,gemist:[],goed:[]},{id:93,caramboles:17,gemist:[],goed:[]},{id:94,caramboles:2,gemist:[],goed:[]},{id:95,caramboles:3,gemist:[],goed:[]}]},
-{id:5,datum:"2026-04-21T20:00:00.000Z",sessieType:"Training",beurten:[{id:96,caramboles:3,gemist:["Moeilijk"],goed:["Verzamelen","Positioneren"]},{id:97,caramboles:2,gemist:[],goed:[]},{id:98,caramboles:1,gemist:[],goed:[]},{id:99,caramboles:2,gemist:["Achterom"],goed:[]},{id:100,caramboles:6,gemist:[],goed:["Verzamelen","Positioneren"]},{id:101,caramboles:2,gemist:[],goed:[]},{id:102,caramboles:5,gemist:["Trekstoot"],goed:["Verzamelen","Positioneren"]},{id:103,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:104,caramboles:0,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:105,caramboles:1,gemist:[],goed:[]},{id:106,caramboles:0,gemist:[],goed:[]},{id:107,caramboles:2,gemist:["Klos"],goed:[]},{id:108,caramboles:1,gemist:["Trekstoot","Verzamelen"],goed:[]},{id:109,caramboles:5,gemist:["Te zacht","Verzamelen"],goed:["Verzamelen","Positioneren"]},{id:110,caramboles:0,gemist:["Direct"],goed:[]},{id:111,caramboles:0,gemist:["Snijden"],goed:[]},{id:112,caramboles:0,gemist:["Trekstoot","Verzamelen"],goed:[]},{id:113,caramboles:1,gemist:["Doorstoot"],goed:[]},{id:114,caramboles:1,gemist:["Trekstoot","Verzamelen"],goed:[]},{id:115,caramboles:1,gemist:[],goed:[]},{id:116,caramboles:0,gemist:["Direct"],goed:[]},{id:117,caramboles:1,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:118,caramboles:6,gemist:["Los"],goed:["Verzamelen","Positioneren","Klein / Simpel"]},{id:119,caramboles:4,gemist:[],goed:["Verzamelen","Positioneren"]},{id:120,caramboles:0,gemist:["Makkelijk"],goed:[]},{id:121,caramboles:0,gemist:["Makkelijk"],goed:[]},{id:122,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:123,caramboles:0,gemist:["Driebanden"],goed:[]},{id:124,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:125,caramboles:1,gemist:[],goed:[]}]},
-{id:6,datum:"2026-04-21T20:30:00.000Z",sessieType:"Training",beurten:[{id:126,caramboles:1,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:127,caramboles:1,gemist:["Achterom"],goed:[]},{id:128,caramboles:0,gemist:["Driebanden"],goed:[]},{id:129,caramboles:0,gemist:[],goed:[]},{id:130,caramboles:0,gemist:["Driebanden","Moeilijk"],goed:[]},{id:131,caramboles:0,gemist:[],goed:[]},{id:132,caramboles:6,gemist:["Klos"],goed:["Verzamelen","Positioneren"]},{id:133,caramboles:0,gemist:["Verzamelen"],goed:[]},{id:134,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:135,caramboles:0,gemist:["Moeilijk","Driebanden"],goed:[]},{id:136,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:137,caramboles:1,gemist:[],goed:[]},{id:138,caramboles:9,gemist:["Driebanden"],goed:["Verzamelen","Trekstoot","Positioneren"]},{id:139,caramboles:1,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:140,caramboles:0,gemist:[],goed:[]},{id:141,caramboles:0,gemist:["Driebanden","Achterom","Verzamelen"],goed:[]},{id:142,caramboles:0,gemist:[],goed:[]},{id:143,caramboles:0,gemist:[],goed:[]},{id:144,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:145,caramboles:1,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:146,caramboles:1,gemist:["Massé"],goed:[]},{id:147,caramboles:5,gemist:["Slechte keuze"],goed:[]},{id:148,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:149,caramboles:0,gemist:[],goed:[]},{id:150,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:151,caramboles:0,gemist:["Doorstoot"],goed:[]},{id:152,caramboles:4,gemist:[],goed:[]},{id:153,caramboles:2,gemist:["Trekstoot"],goed:[]},{id:154,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:155,caramboles:0,gemist:[],goed:[]}]},
-{id:7,datum:"2026-04-21T21:00:00.000Z",sessieType:"Training",beurten:[{id:156,caramboles:2,gemist:["Slechte keuze","Verzamelen"],goed:[]},{id:157,caramboles:7,gemist:["Bandstoot"],goed:["Verzamelen","Driebanden","Positioneren"]},{id:158,caramboles:0,gemist:["Makkelijk"],goed:[]},{id:159,caramboles:4,gemist:["Direct"],goed:["Verzamelen"]},{id:160,caramboles:0,gemist:["Driebanden"],goed:[]},{id:161,caramboles:0,gemist:[],goed:[]},{id:162,caramboles:0,gemist:[],goed:[]},{id:163,caramboles:1,gemist:[],goed:[]},{id:164,caramboles:0,gemist:["Moeilijk","Doorstoot"],goed:[]},{id:165,caramboles:1,gemist:[],goed:[]},{id:166,caramboles:0,gemist:["Klos"],goed:[]},{id:167,caramboles:0,gemist:["Driebanden","Klos"],goed:[]},{id:168,caramboles:0,gemist:["Driebanden"],goed:[]},{id:169,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:170,caramboles:1,gemist:["Verzamelen"],goed:[]},{id:171,caramboles:0,gemist:[],goed:[]},{id:172,caramboles:0,gemist:["Klos"],goed:[]},{id:173,caramboles:1,gemist:["Makkelijk"],goed:[]},{id:174,caramboles:0,gemist:[],goed:[]},{id:175,caramboles:4,gemist:["Trekstoot","Verzamelen"],goed:["Verzamelen"]},{id:176,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:177,caramboles:0,gemist:["Klos","Doorstoot"],goed:[]},{id:178,caramboles:1,gemist:[],goed:[]},{id:179,caramboles:2,gemist:[],goed:[]},{id:180,caramboles:4,gemist:["Verzamelen"],goed:["Verzamelen","Positioneren"]},{id:181,caramboles:8,gemist:["Trekstoot"],goed:["Verzamelen","Positioneren"]},{id:182,caramboles:1,gemist:["Klos","Doorstoot"],goed:[]},{id:183,caramboles:3,gemist:["Trekstoot","Verzamelen"],goed:[]},{id:184,caramboles:0,gemist:[],goed:[]},{id:185,caramboles:2,gemist:[],goed:[]}]},
-{id:8,datum:"2026-04-24T20:00:00.000Z",sessieType:"Officieel",beurten:[{id:186,caramboles:17,gemist:[],goed:[]},{id:187,caramboles:2,gemist:[],goed:[]},{id:188,caramboles:2,gemist:[],goed:[]},{id:189,caramboles:1,gemist:[],goed:[]},{id:190,caramboles:2,gemist:[],goed:[]},{id:191,caramboles:3,gemist:[],goed:[]},{id:192,caramboles:0,gemist:[],goed:[]},{id:193,caramboles:1,gemist:[],goed:[]},{id:194,caramboles:2,gemist:[],goed:[]},{id:195,caramboles:0,gemist:[],goed:[]},{id:196,caramboles:3,gemist:[],goed:[]},{id:197,caramboles:6,gemist:[],goed:[]},{id:198,caramboles:0,gemist:[],goed:[]},{id:199,caramboles:0,gemist:[],goed:[]},{id:200,caramboles:1,gemist:[],goed:[]},{id:201,caramboles:1,gemist:[],goed:[]},{id:202,caramboles:4,gemist:[],goed:[]},{id:203,caramboles:2,gemist:[],goed:[]},{id:204,caramboles:1,gemist:[],goed:[]},{id:205,caramboles:0,gemist:[],goed:[]},{id:206,caramboles:1,gemist:[],goed:[]},{id:207,caramboles:2,gemist:[],goed:[]},{id:208,caramboles:2,gemist:[],goed:[]},{id:209,caramboles:1,gemist:[],goed:[]},{id:210,caramboles:0,gemist:["Acquit"],goed:[]}]},
-{id:9,datum:"2026-05-01T20:00:00.000Z",sessieType:"Officieel",beurten:[{id:211,caramboles:3,gemist:[],goed:[]},{id:212,caramboles:2,gemist:[],goed:[]},{id:213,caramboles:0,gemist:[],goed:[]},{id:214,caramboles:1,gemist:[],goed:[]},{id:215,caramboles:2,gemist:[],goed:[]},{id:216,caramboles:0,gemist:[],goed:[]},{id:217,caramboles:2,gemist:[],goed:[]},{id:218,caramboles:0,gemist:[],goed:[]},{id:219,caramboles:1,gemist:[],goed:[]},{id:220,caramboles:0,gemist:[],goed:[]},{id:221,caramboles:2,gemist:[],goed:[]},{id:222,caramboles:0,gemist:[],goed:[]},{id:223,caramboles:0,gemist:[],goed:[]},{id:224,caramboles:1,gemist:[],goed:[]},{id:225,caramboles:1,gemist:[],goed:[]},{id:226,caramboles:7,gemist:[],goed:[]},{id:227,caramboles:3,gemist:[],goed:[]},{id:228,caramboles:8,gemist:[],goed:[]},{id:229,caramboles:2,gemist:[],goed:[]},{id:230,caramboles:0,gemist:[],goed:[]},{id:231,caramboles:7,gemist:[],goed:[]},{id:232,caramboles:2,gemist:[],goed:[]},{id:233,caramboles:1,gemist:[],goed:[]},{id:234,caramboles:2,gemist:[],goed:[]},{id:235,caramboles:3,gemist:[],goed:[]}]},
-{id:10,datum:"2026-05-08T20:00:00.000Z",sessieType:"Officieel",beurten:[{id:236,caramboles:5,gemist:[],goed:[]},{id:237,caramboles:4,gemist:[],goed:[]},{id:238,caramboles:4,gemist:[],goed:[]},{id:239,caramboles:0,gemist:[],goed:[]},{id:240,caramboles:1,gemist:[],goed:[]},{id:241,caramboles:0,gemist:[],goed:[]},{id:242,caramboles:1,gemist:[],goed:[]},{id:243,caramboles:3,gemist:[],goed:[]},{id:244,caramboles:0,gemist:[],goed:[]},{id:245,caramboles:1,gemist:[],goed:[]},{id:246,caramboles:0,gemist:[],goed:[]},{id:247,caramboles:1,gemist:[],goed:[]},{id:248,caramboles:2,gemist:[],goed:[]},{id:249,caramboles:3,gemist:[],goed:[]},{id:250,caramboles:1,gemist:[],goed:[]},{id:251,caramboles:0,gemist:[],goed:[]},{id:252,caramboles:6,gemist:[],goed:[]},{id:253,caramboles:1,gemist:[],goed:[]},{id:254,caramboles:0,gemist:[],goed:[]},{id:255,caramboles:4,gemist:[],goed:[]},{id:256,caramboles:4,gemist:[],goed:[]},{id:257,caramboles:2,gemist:[],goed:[]},{id:258,caramboles:4,gemist:[],goed:[]},{id:259,caramboles:0,gemist:[],goed:[]},{id:260,caramboles:0,gemist:["Acquit"],goed:[]}]},
-{id:11,datum:"2026-05-12T20:00:00.000Z",sessieType:"Training",beurten:[{id:261,caramboles:2,gemist:["Achterom","Driebanden"],goed:[]},{id:262,caramboles:2,gemist:["Driebanden"],goed:[]},{id:263,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:264,caramboles:0,gemist:["Doorstoot"],goed:[]},{id:265,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:266,caramboles:1,gemist:["Piqué"],goed:[]},{id:267,caramboles:0,gemist:["Trekstoot","Slechte keuze"],goed:[]},{id:268,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:269,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:270,caramboles:4,gemist:["Achterom","Trekstoot"],goed:[]},{id:271,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:272,caramboles:1,gemist:["Trekstoot","Moeilijk"],goed:[]},{id:273,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:274,caramboles:1,gemist:[],goed:[]},{id:275,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:276,caramboles:2,gemist:["Klos"],goed:[]},{id:277,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:278,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:279,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:280,caramboles:1,gemist:[],goed:[]},{id:281,caramboles:1,gemist:[],goed:[]},{id:282,caramboles:6,gemist:["Trekstoot","Direct"],goed:[]},{id:283,caramboles:0,gemist:[],goed:[]},{id:284,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:285,caramboles:2,gemist:["Trekstoot","Achterom"],goed:[]},{id:286,caramboles:2,gemist:[],goed:[]},{id:287,caramboles:0,gemist:[],goed:[]},{id:288,caramboles:1,gemist:[],goed:[]},{id:289,caramboles:3,gemist:[],goed:[]},{id:290,caramboles:0,gemist:[],goed:[]}]},
-{id:12,datum:"2026-05-12T20:30:00.000Z",sessieType:"Training",beurten:[{id:291,caramboles:7,gemist:[],goed:[]},{id:292,caramboles:7,gemist:["Moeilijk","Snijden"],goed:[]},{id:293,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:294,caramboles:4,gemist:["Moeilijk"],goed:[]},{id:295,caramboles:1,gemist:["Trekstoot","Direct"],goed:[]},{id:296,caramboles:0,gemist:["Moeilijk","Driebanden"],goed:[]},{id:297,caramboles:4,gemist:["Bandstoot"],goed:[]},{id:298,caramboles:0,gemist:["Doorstoot"],goed:[]},{id:299,caramboles:0,gemist:["Achterom","Driebanden","Trekstoot"],goed:[]},{id:300,caramboles:0,gemist:[],goed:[]},{id:301,caramboles:6,gemist:["Moeilijk"],goed:["Verzamelen","Trekstoot","Positioneren","Klein / Simpel"]},{id:302,caramboles:2,gemist:["Trekstoot","Direct"],goed:[]},{id:303,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:304,caramboles:0,gemist:["Moeilijk","Driebanden"],goed:[]},{id:305,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:306,caramboles:2,gemist:[],goed:[]},{id:307,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:308,caramboles:3,gemist:[],goed:[]},{id:309,caramboles:1,gemist:["Moeilijk","Trekstoot"],goed:[]},{id:310,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:311,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:312,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:313,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:314,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:315,caramboles:2,gemist:["Doorstoot"],goed:[]},{id:316,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:317,caramboles:3,gemist:["Moeilijk"],goed:[]},{id:318,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:319,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:320,caramboles:0,gemist:["Trekstoot"],goed:[]}]},
-{id:13,datum:"2026-05-19T20:00:00.000Z",sessieType:"Training",beurten:[{id:321,caramboles:2,gemist:[],goed:[]},{id:322,caramboles:3,gemist:[],goed:[]},{id:323,caramboles:0,gemist:[],goed:[]},{id:324,caramboles:2,gemist:[],goed:[]},{id:325,caramboles:3,gemist:["Verzamelen"],goed:[]},{id:326,caramboles:1,gemist:[],goed:[]},{id:327,caramboles:5,gemist:["Trekstoot"],goed:[]},{id:328,caramboles:3,gemist:[],goed:[]},{id:329,caramboles:1,gemist:[],goed:[]},{id:330,caramboles:4,gemist:[],goed:[]},{id:331,caramboles:2,gemist:[],goed:[]},{id:332,caramboles:5,gemist:[],goed:[]},{id:333,caramboles:0,gemist:[],goed:[]},{id:334,caramboles:2,gemist:[],goed:[]},{id:335,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:336,caramboles:0,gemist:[],goed:[]},{id:337,caramboles:4,gemist:[],goed:[]},{id:338,caramboles:0,gemist:[],goed:[]},{id:339,caramboles:1,gemist:[],goed:[]},{id:340,caramboles:0,gemist:[],goed:[]},{id:341,caramboles:0,gemist:[],goed:[]},{id:342,caramboles:0,gemist:[],goed:[]},{id:343,caramboles:2,gemist:[],goed:[]},{id:344,caramboles:0,gemist:[],goed:[]},{id:345,caramboles:2,gemist:[],goed:[]},{id:346,caramboles:0,gemist:[],goed:[]},{id:347,caramboles:1,gemist:[],goed:[]},{id:348,caramboles:2,gemist:[],goed:[]},{id:349,caramboles:4,gemist:[],goed:[]},{id:350,caramboles:0,gemist:[],goed:[]}]},
-{id:14,datum:"2026-05-19T20:30:00.000Z",sessieType:"Training",beurten:[{id:351,caramboles:0,gemist:[],goed:[]},{id:352,caramboles:1,gemist:["Achterom"],goed:[]},{id:353,caramboles:0,gemist:["Massé"],goed:[]},{id:354,caramboles:1,gemist:["Bandstoot"],goed:[]},{id:355,caramboles:5,gemist:["Bandstoot"],goed:[]},{id:356,caramboles:1,gemist:[],goed:[]},{id:357,caramboles:1,gemist:[],goed:[]},{id:358,caramboles:6,gemist:[],goed:[]},{id:359,caramboles:0,gemist:[],goed:[]},{id:360,caramboles:2,gemist:[],goed:[]},{id:361,caramboles:7,gemist:["Trekstoot"],goed:[]},{id:362,caramboles:1,gemist:[],goed:[]},{id:363,caramboles:0,gemist:[],goed:[]},{id:364,caramboles:1,gemist:[],goed:[]},{id:365,caramboles:4,gemist:[],goed:[]},{id:366,caramboles:1,gemist:[],goed:[]},{id:367,caramboles:2,gemist:[],goed:[]},{id:368,caramboles:3,gemist:[],goed:[]},{id:369,caramboles:4,gemist:[],goed:[]},{id:370,caramboles:5,gemist:[],goed:[]},{id:371,caramboles:4,gemist:[],goed:[]},{id:372,caramboles:0,gemist:[],goed:[]},{id:373,caramboles:2,gemist:[],goed:[]},{id:374,caramboles:2,gemist:[],goed:[]},{id:375,caramboles:0,gemist:[],goed:[]},{id:376,caramboles:1,gemist:[],goed:[]},{id:377,caramboles:1,gemist:[],goed:[]},{id:378,caramboles:7,gemist:[],goed:[]},{id:379,caramboles:1,gemist:["Verzamelen"],goed:["Positioneren"]},{id:380,caramboles:2,gemist:[],goed:[]}]},
-{id:15,datum:"2026-05-22T20:00:00.000Z",sessieType:"Officieel",beurten:[{id:381,caramboles:0,gemist:[],goed:[]},{id:382,caramboles:0,gemist:[],goed:[]},{id:383,caramboles:0,gemist:[],goed:[]},{id:384,caramboles:3,gemist:[],goed:[]},{id:385,caramboles:1,gemist:[],goed:[]},{id:386,caramboles:1,gemist:[],goed:[]},{id:387,caramboles:0,gemist:[],goed:[]},{id:388,caramboles:4,gemist:[],goed:[]},{id:389,caramboles:3,gemist:[],goed:[]},{id:390,caramboles:1,gemist:[],goed:[]},{id:391,caramboles:1,gemist:[],goed:[]},{id:392,caramboles:1,gemist:[],goed:[]},{id:393,caramboles:3,gemist:[],goed:[]},{id:394,caramboles:1,gemist:[],goed:[]},{id:395,caramboles:0,gemist:[],goed:[]},{id:396,caramboles:4,gemist:[],goed:[]},{id:397,caramboles:0,gemist:[],goed:[]},{id:398,caramboles:0,gemist:[],goed:[]},{id:399,caramboles:1,gemist:[],goed:[]},{id:400,caramboles:8,gemist:[],goed:[]},{id:401,caramboles:0,gemist:[],goed:[]},{id:402,caramboles:3,gemist:[],goed:[]},{id:403,caramboles:1,gemist:[],goed:[]},{id:404,caramboles:8,gemist:[],goed:[]},{id:405,caramboles:4,gemist:[],goed:[]}]},
-{id:16,datum:"2026-05-27T20:00:00.000Z",sessieType:"Training",beurten:[{id:406,caramboles:0,gemist:[],goed:[]},{id:407,caramboles:2,gemist:[],goed:[]},{id:408,caramboles:10,gemist:[],goed:[]},{id:409,caramboles:3,gemist:[],goed:[]},{id:410,caramboles:2,gemist:[],goed:[]},{id:411,caramboles:5,gemist:[],goed:[]},{id:412,caramboles:0,gemist:["Klos"],goed:[]},{id:413,caramboles:3,gemist:[],goed:[]},{id:414,caramboles:1,gemist:[],goed:[]},{id:415,caramboles:1,gemist:[],goed:[]},{id:416,caramboles:1,gemist:[],goed:[]},{id:417,caramboles:3,gemist:[],goed:[]},{id:418,caramboles:0,gemist:[],goed:[]},{id:419,caramboles:1,gemist:[],goed:[]},{id:420,caramboles:2,gemist:[],goed:[]},{id:421,caramboles:6,gemist:[],goed:[]},{id:422,caramboles:0,gemist:[],goed:[]},{id:423,caramboles:3,gemist:[],goed:[]},{id:424,caramboles:2,gemist:[],goed:[]},{id:425,caramboles:1,gemist:[],goed:[]},{id:426,caramboles:0,gemist:[],goed:[]},{id:427,caramboles:1,gemist:[],goed:[]},{id:428,caramboles:0,gemist:[],goed:[]},{id:429,caramboles:0,gemist:[],goed:[]},{id:430,caramboles:2,gemist:[],goed:[]},{id:431,caramboles:1,gemist:[],goed:[]},{id:432,caramboles:0,gemist:[],goed:[]},{id:433,caramboles:1,gemist:[],goed:[]},{id:434,caramboles:0,gemist:[],goed:[]},{id:435,caramboles:0,gemist:[],goed:[]}]},
-{id:17,datum:"2026-05-27T20:30:00.000Z",sessieType:"Training",beurten:[{id:436,caramboles:0,gemist:[],goed:[]},{id:437,caramboles:1,gemist:[],goed:[]},{id:438,caramboles:0,gemist:[],goed:[]},{id:439,caramboles:0,gemist:[],goed:[]},{id:440,caramboles:1,gemist:[],goed:[]},{id:441,caramboles:0,gemist:[],goed:[]},{id:442,caramboles:3,gemist:[],goed:[]},{id:443,caramboles:3,gemist:[],goed:[]},{id:444,caramboles:0,gemist:[],goed:[]},{id:445,caramboles:5,gemist:[],goed:[]},{id:446,caramboles:0,gemist:[],goed:[]},{id:447,caramboles:6,gemist:[],goed:[]},{id:448,caramboles:2,gemist:[],goed:[]},{id:449,caramboles:3,gemist:[],goed:[]},{id:450,caramboles:1,gemist:[],goed:[]},{id:451,caramboles:0,gemist:[],goed:[]},{id:452,caramboles:4,gemist:[],goed:[]},{id:453,caramboles:1,gemist:[],goed:[]},{id:454,caramboles:0,gemist:[],goed:[]},{id:455,caramboles:0,gemist:[],goed:[]},{id:456,caramboles:3,gemist:[],goed:[]},{id:457,caramboles:0,gemist:[],goed:[]},{id:458,caramboles:1,gemist:[],goed:[]},{id:459,caramboles:0,gemist:[],goed:[]},{id:460,caramboles:3,gemist:[],goed:[]},{id:461,caramboles:3,gemist:[],goed:[]},{id:462,caramboles:0,gemist:[],goed:[]},{id:463,caramboles:0,gemist:[],goed:[]},{id:464,caramboles:0,gemist:[],goed:[]},{id:465,caramboles:1,gemist:[],goed:[]}]},
-{id:18,datum:"2026-05-27T21:00:00.000Z",sessieType:"Training",beurten:[{id:466,caramboles:0,gemist:[],goed:[]},{id:467,caramboles:2,gemist:["Driebanden"],goed:[]},{id:468,caramboles:0,gemist:[],goed:[]},{id:469,caramboles:1,gemist:[],goed:[]},{id:470,caramboles:0,gemist:[],goed:[]},{id:471,caramboles:1,gemist:[],goed:[]},{id:472,caramboles:0,gemist:[],goed:[]},{id:473,caramboles:1,gemist:[],goed:[]},{id:474,caramboles:0,gemist:[],goed:[]},{id:475,caramboles:0,gemist:[],goed:[]},{id:476,caramboles:1,gemist:[],goed:[]},{id:477,caramboles:0,gemist:[],goed:[]},{id:478,caramboles:0,gemist:[],goed:[]},{id:479,caramboles:2,gemist:[],goed:[]},{id:480,caramboles:1,gemist:[],goed:[]},{id:481,caramboles:0,gemist:[],goed:[]},{id:482,caramboles:0,gemist:[],goed:[]},{id:483,caramboles:3,gemist:[],goed:[]},{id:484,caramboles:1,gemist:[],goed:[]},{id:485,caramboles:0,gemist:[],goed:[]},{id:486,caramboles:0,gemist:[],goed:[]},{id:487,caramboles:0,gemist:[],goed:[]},{id:488,caramboles:2,gemist:[],goed:[]},{id:489,caramboles:0,gemist:[],goed:[]},{id:490,caramboles:4,gemist:[],goed:[]},{id:491,caramboles:0,gemist:[],goed:[]},{id:492,caramboles:0,gemist:[],goed:[]},{id:493,caramboles:3,gemist:[],goed:[]},{id:494,caramboles:1,gemist:[],goed:[]},{id:495,caramboles:1,gemist:[],goed:[]}]},
-{id:19,datum:"2026-05-29T20:00:00.000Z",sessieType:"Officieel",beurten:[{id:496,caramboles:0,gemist:[],goed:[]},{id:497,caramboles:5,gemist:[],goed:[]},{id:498,caramboles:2,gemist:[],goed:[]},{id:499,caramboles:3,gemist:[],goed:[]},{id:500,caramboles:1,gemist:[],goed:[]},{id:501,caramboles:0,gemist:[],goed:[]},{id:502,caramboles:3,gemist:[],goed:[]},{id:503,caramboles:1,gemist:[],goed:[]},{id:504,caramboles:1,gemist:[],goed:[]},{id:505,caramboles:6,gemist:[],goed:[]},{id:506,caramboles:0,gemist:[],goed:[]},{id:507,caramboles:1,gemist:[],goed:[]},{id:508,caramboles:2,gemist:[],goed:[]},{id:509,caramboles:0,gemist:[],goed:[]},{id:510,caramboles:4,gemist:[],goed:[]},{id:511,caramboles:1,gemist:[],goed:[]},{id:512,caramboles:3,gemist:[],goed:[]},{id:513,caramboles:2,gemist:[],goed:[]},{id:514,caramboles:5,gemist:[],goed:[]},{id:515,caramboles:0,gemist:[],goed:[]},{id:516,caramboles:0,gemist:[],goed:[]},{id:517,caramboles:1,gemist:[],goed:[]},{id:518,caramboles:2,gemist:[],goed:[]},{id:519,caramboles:4,gemist:[],goed:[]},{id:520,caramboles:3,gemist:[],goed:[]}]},
-{id:20,datum:"2026-06-03T20:00:00.000Z",sessieType:"Losspelen",beurten:[{id:521,caramboles:0,gemist:[],goed:[]},{id:522,caramboles:0,gemist:[],goed:[]},{id:523,caramboles:2,gemist:["Achterom"],goed:[]},{id:524,caramboles:2,gemist:[],goed:[]},{id:525,caramboles:1,gemist:[],goed:[]},{id:526,caramboles:7,gemist:["Snijden"],goed:["Verzamelen","Positioneren"]},{id:527,caramboles:1,gemist:[],goed:[]},{id:528,caramboles:0,gemist:[],goed:[]},{id:529,caramboles:0,gemist:[],goed:[]},{id:530,caramboles:0,gemist:["Achterom","Driebanden"],goed:[]},{id:531,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:532,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:533,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:534,caramboles:4,gemist:["Moeilijk"],goed:["Verzamelen","Positioneren"]},{id:535,caramboles:0,gemist:["Trekstoot","Achterom"],goed:[]},{id:536,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:537,caramboles:0,gemist:[],goed:[]},{id:538,caramboles:2,gemist:["Trekstoot"],goed:[]},{id:539,caramboles:0,gemist:[],goed:[]},{id:540,caramboles:7,gemist:["Achterom"],goed:["Verzamelen","Positioneren"]},{id:541,caramboles:3,gemist:[],goed:[]},{id:542,caramboles:0,gemist:[],goed:[]},{id:543,caramboles:2,gemist:[],goed:[]},{id:544,caramboles:0,gemist:[],goed:[]},{id:545,caramboles:2,gemist:[],goed:[]},{id:546,caramboles:3,gemist:[],goed:[]},{id:547,caramboles:3,gemist:[],goed:[]},{id:548,caramboles:1,gemist:[],goed:[]},{id:549,caramboles:0,gemist:[],goed:[]},{id:550,caramboles:0,gemist:[],goed:[]}]},
-{id:21,datum:"2026-06-03T20:30:00.000Z",sessieType:"Losspelen",beurten:[{id:551,caramboles:0,gemist:[],goed:["Trekstoot","Positioneren","Verzamelen","Klein / Simpel"]},{id:552,caramboles:8,gemist:["Achterom"],goed:[]},{id:553,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:554,caramboles:1,gemist:["Makkelijk"],goed:[]},{id:555,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:556,caramboles:5,gemist:["Verzamelen"],goed:["Verzamelen","Positioneren","Bandstoot"]},{id:557,caramboles:1,gemist:["Doorstoot","Klos"],goed:[]},{id:558,caramboles:6,gemist:["Driebanden"],goed:["Verzamelen","Positioneren","Klein / Simpel"]},{id:559,caramboles:1,gemist:["Snijden"],goed:[]},{id:560,caramboles:2,gemist:[],goed:[]},{id:561,caramboles:2,gemist:["Makkelijk"],goed:[]},{id:562,caramboles:1,gemist:[],goed:[]},{id:563,caramboles:5,gemist:["Klos"],goed:["Doorstoot","Bandstoot"]},{id:564,caramboles:4,gemist:["Moeilijk"],goed:[]},{id:565,caramboles:0,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:566,caramboles:3,gemist:["Trekstoot"],goed:["Verzamelen","Positioneren"]},{id:567,caramboles:3,gemist:["Positioneren"],goed:[]},{id:568,caramboles:1,gemist:["Trekstoot","Direct"],goed:[]},{id:569,caramboles:1,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:570,caramboles:0,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:571,caramboles:0,gemist:["Driebanden"],goed:[]},{id:572,caramboles:3,gemist:["Verzamelen"],goed:["Verzamelen"]},{id:573,caramboles:0,gemist:[],goed:[]},{id:574,caramboles:5,gemist:["Moeilijk"],goed:["Positioneren","Verzamelen"]},{id:575,caramboles:2,gemist:["Te zacht"],goed:[]},{id:576,caramboles:2,gemist:["Te zacht"],goed:[]},{id:577,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:578,caramboles:2,gemist:["Verzamelen"],goed:[]},{id:579,caramboles:2,gemist:[],goed:[]},{id:580,caramboles:0,gemist:["Bandstoot"],goed:[]}]},
-{id:22,datum:"2026-06-09T20:00:00.000Z",sessieType:"Losspelen",beurten:[{id:581,caramboles:0,gemist:[],goed:[]},{id:582,caramboles:1,gemist:["Doorstoot"],goed:[]},{id:583,caramboles:3,gemist:["Bandstoot"],goed:["Driebanden","Positioneren"]},{id:584,caramboles:0,gemist:["Direct"],goed:[]},{id:585,caramboles:0,gemist:[],goed:[]},{id:586,caramboles:2,gemist:["Achterom"],goed:[]},{id:587,caramboles:1,gemist:["Slechte positie"],goed:[]},{id:588,caramboles:3,gemist:["Moeilijk"],goed:[]},{id:589,caramboles:0,gemist:["Te zacht"],goed:[]},{id:590,caramboles:0,gemist:[],goed:[]},{id:591,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:592,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:593,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:594,caramboles:3,gemist:["Bandstoot"],goed:[]},{id:595,caramboles:1,gemist:[],goed:[]},{id:596,caramboles:3,gemist:["Makkelijk"],goed:["Trekstoot"]},{id:597,caramboles:4,gemist:["Moeilijk"],goed:["Klein / Simpel","Positioneren"]},{id:598,caramboles:0,gemist:["Bandstoot","Trekstoot"],goed:[]},{id:599,caramboles:4,gemist:["Bandstoot"],goed:["Driebanden","Verzamelen"]},{id:600,caramboles:1,gemist:[],goed:[]},{id:601,caramboles:0,gemist:[],goed:[]},{id:602,caramboles:0,gemist:["Los"],goed:[]},{id:603,caramboles:5,gemist:["Bandstoot","Verzamelen"],goed:["Verzamelen","Positioneren"]},{id:604,caramboles:4,gemist:["Trekstoot"],goed:["Verzamelen"]},{id:605,caramboles:4,gemist:["Moeilijk"],goed:["Verzamelen","Positioneren"]},{id:606,caramboles:0,gemist:["Trekstoot","Direct","Moeilijk"],goed:[]},{id:607,caramboles:3,gemist:["Moeilijk","Achterom"],goed:["Trekstoot","Direct"]},{id:608,caramboles:2,gemist:["Driebanden"],goed:["Positioneren"]},{id:609,caramboles:2,gemist:["Bandstoot"],goed:["Doorstoot"]},{id:610,caramboles:1,gemist:["Moeilijk"],goed:[]}]},
-{id:23,datum:"2026-06-09T20:30:00.000Z",sessieType:"Losspelen",beurten:[{id:611,caramboles:0,gemist:[],goed:[]},{id:612,caramboles:0,gemist:["Moeilijk","Slechte positie","Achterom","Driebanden"],goed:[]},{id:613,caramboles:1,gemist:[],goed:[]},{id:614,caramboles:0,gemist:["Makkelijk"],goed:[]},{id:615,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:616,caramboles:0,gemist:[],goed:[]},{id:617,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:618,caramboles:1,gemist:["Moeilijk"],goed:["Doorstoot"]},{id:619,caramboles:3,gemist:["Bandstoot"],goed:["Verzamelen"]},{id:620,caramboles:4,gemist:["Trekstoot"],goed:["Positioneren"]},{id:621,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:622,caramboles:9,gemist:["Driebanden"],goed:["Verzamelen","Positioneren","Klein / Simpel"]},{id:623,caramboles:3,gemist:["Trekstoot"],goed:["Verzamelen"]},{id:624,caramboles:2,gemist:["Moeilijk"],goed:[]},{id:625,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:626,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:627,caramboles:3,gemist:["Trekstoot","Verzamelen"],goed:["Positioneren"]},{id:628,caramboles:8,gemist:["Trekstoot","Verzamelen"],goed:["Verzamelen","Positioneren"]},{id:629,caramboles:1,gemist:["Moeilijk"],goed:[]},{id:630,caramboles:3,gemist:["Trekstoot","Achterom"],goed:["Positioneren","Verzamelen"]},{id:631,caramboles:3,gemist:["Verzamelen"],goed:["Positioneren","Verzamelen"]},{id:632,caramboles:1,gemist:["Bandstoot"],goed:[]},{id:633,caramboles:1,gemist:["Bandstoot","Trekstoot"],goed:[]},{id:634,caramboles:1,gemist:[],goed:[]},{id:635,caramboles:4,gemist:["Trekstoot","Verkeerde kant effect"],goed:["Verzamelen"]},{id:636,caramboles:1,gemist:["Verzamelen"],goed:["Positioneren"]},{id:637,caramboles:1,gemist:["Bandstoot"],goed:[]},{id:638,caramboles:2,gemist:["Bandstoot"],goed:["Positioneren"]},{id:639,caramboles:1,gemist:["Achterom","Driebanden","Trekstoot"],goed:[]},{id:640,caramboles:2,gemist:["Trekstoot"],goed:[]}]},
-{id:24,datum:"2026-06-09T21:00:00.000Z",sessieType:"Losspelen",beurten:[{id:641,caramboles:0,gemist:[],goed:[]},{id:642,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:643,caramboles:3,gemist:[],goed:["Positioneren"]},{id:644,caramboles:1,gemist:[],goed:[]},{id:645,caramboles:4,gemist:["Doorstoot"],goed:["Positioneren"]},{id:646,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:647,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:648,caramboles:0,gemist:[],goed:[]},{id:649,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:650,caramboles:4,gemist:["Positioneren"],goed:[]},{id:651,caramboles:3,gemist:["Klos"],goed:["Positioneren"]},{id:652,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:653,caramboles:1,gemist:[],goed:[]},{id:654,caramboles:9,gemist:["Dun"],goed:["Verzamelen","Positioneren"]},{id:655,caramboles:1,gemist:["Trekstoot","Direct"],goed:[]},{id:656,caramboles:2,gemist:[],goed:[]},{id:657,caramboles:0,gemist:["Doorstoot"],goed:[]},{id:658,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:659,caramboles:4,gemist:[],goed:["Positioneren","Verzamelen"]},{id:660,caramboles:3,gemist:[],goed:[]},{id:661,caramboles:3,gemist:["Bandstoot","Trekstoot"],goed:[]}]},
-{id:25,datum:"2026-06-11T20:00:00.000Z",sessieType:"Officieel",beurten:[{id:662,caramboles:1,gemist:["Bandstoot"],goed:["Acquit"]},{id:663,caramboles:2,gemist:[],goed:[]},{id:664,caramboles:0,gemist:[],goed:[]},{id:665,caramboles:1,gemist:[],goed:[]},{id:666,caramboles:0,gemist:[],goed:[]},{id:667,caramboles:2,gemist:[],goed:[]},{id:668,caramboles:1,gemist:[],goed:[]},{id:669,caramboles:1,gemist:[],goed:[]},{id:670,caramboles:5,gemist:[],goed:["Verzamelen","Positioneren"]},{id:671,caramboles:6,gemist:[],goed:["Klein / Simpel","Positioneren","Verzamelen"]},{id:672,caramboles:2,gemist:[],goed:[]},{id:673,caramboles:3,gemist:[],goed:[]},{id:674,caramboles:0,gemist:[],goed:[]},{id:675,caramboles:3,gemist:[],goed:["Verzamelen","Positioneren"]},{id:676,caramboles:3,gemist:[],goed:[]},{id:677,caramboles:6,gemist:[],goed:["Klein / Simpel","Positioneren","Verzamelen"]},{id:678,caramboles:7,gemist:[],goed:["Verzamelen","Positioneren"]},{id:679,caramboles:0,gemist:[],goed:[]},{id:680,caramboles:12,gemist:[],goed:["Verzamelen","Positioneren","Klein / Simpel"]},{id:681,caramboles:3,gemist:[],goed:["Verzamelen","Positioneren"]},{id:682,caramboles:0,gemist:[],goed:[]},{id:683,caramboles:12,gemist:[],goed:["Verzamelen","Positioneren","Klein / Simpel"]},{id:684,caramboles:4,gemist:[],goed:["Positioneren","Verzamelen"]},{id:685,caramboles:4,gemist:[],goed:["Verzamelen","Positioneren"]},{id:686,caramboles:4,gemist:[],goed:["Verzamelen","Positioneren"]}]},
-{id:26,datum:"2026-06-16T20:00:00.000Z",sessieType:"Losspelen",beurten:[{id:687,caramboles:1,gemist:["Trekstoot"],goed:["Acquit"]},{id:688,caramboles:2,gemist:["Trekstoot"],goed:["Verzamelen"]},{id:689,caramboles:2,gemist:["Achterom","Bandstoot"],goed:[]},{id:690,caramboles:1,gemist:["Verzamelen"],goed:[]},{id:691,caramboles:0,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:692,caramboles:0,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:693,caramboles:1,gemist:[],goed:["Direct"]},{id:694,caramboles:2,gemist:["Doorstoot","Klos"],goed:[]},{id:695,caramboles:1,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:696,caramboles:0,gemist:[],goed:[]},{id:697,caramboles:3,gemist:["Doorstoot","Moeilijk"],goed:["Doorstoot"]},{id:698,caramboles:1,gemist:[],goed:[]},{id:699,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:700,caramboles:1,gemist:[],goed:[]},{id:701,caramboles:7,gemist:["Achterom"],goed:["Verzamelen","Positioneren"]},{id:702,caramboles:1,gemist:["Snijden"],goed:[]},{id:703,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:704,caramboles:1,gemist:[],goed:[]},{id:705,caramboles:8,gemist:["Slechte positie"],goed:["Verzamelen","Positioneren"]},{id:706,caramboles:3,gemist:[],goed:["Positioneren","Verzamelen"]},{id:707,caramboles:0,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:708,caramboles:3,gemist:[],goed:[]},{id:709,caramboles:1,gemist:["Doorstoot"],goed:[]},{id:710,caramboles:1,gemist:["Moeilijk","Slechte positie"],goed:["Trekstoot"]},{id:711,caramboles:10,gemist:["Verzamelen"],goed:["Verzamelen","Positioneren","Klein / Simpel"]},{id:712,caramboles:11,gemist:["Makkelijk"],goed:["Verzamelen","Positioneren","Klein / Simpel"]},{id:713,caramboles:1,gemist:["Bandstoot"],goed:[]},{id:714,caramboles:2,gemist:[],goed:[]},{id:715,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:716,caramboles:2,gemist:["Verzamelen"],goed:["Verzamelen"]}]},
-{id:27,datum:"2026-06-16T20:30:00.000Z",sessieType:"Losspelen",beurten:[{id:717,caramboles:0,gemist:["Acquit"],goed:[]},{id:718,caramboles:0,gemist:["Direct"],goed:[]},{id:719,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:720,caramboles:1,gemist:["Klos"],goed:["Driebanden"]},{id:721,caramboles:3,gemist:["Klos"],goed:["Verzamelen","Positioneren"]},{id:722,caramboles:1,gemist:["Trekstoot"],goed:[]},{id:723,caramboles:2,gemist:["Moeilijk","Slechte positie"],goed:["Verzamelen"]},{id:724,caramboles:4,gemist:["Trekstoot","Direct"],goed:["Verzamelen"]},{id:725,caramboles:1,gemist:["Verzamelen"],goed:[]},{id:726,caramboles:4,gemist:["Verzamelen"],goed:["Verzamelen"]},{id:727,caramboles:0,gemist:["Moeilijk","Slechte positie"],goed:[]},{id:728,caramboles:1,gemist:["Doorstoot"],goed:[]},{id:729,caramboles:4,gemist:[],goed:["Verzamelen"]},{id:730,caramboles:0,gemist:["Trekstoot","Direct"],goed:[]},{id:731,caramboles:1,gemist:["Doorstoot"],goed:[]},{id:732,caramboles:4,gemist:["Moeilijk","Slechte positie"],goed:["Verzamelen"]},{id:733,caramboles:4,gemist:["Driebanden","Achterom"],goed:["Verzamelen"]},{id:734,caramboles:1,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:735,caramboles:0,gemist:["Trekstoot","Bandstoot"],goed:[]},{id:736,caramboles:0,gemist:["Bandstoot"],goed:[]},{id:737,caramboles:1,gemist:["Verzamelen"],goed:[]},{id:738,caramboles:0,gemist:["Trekstoot"],goed:[]},{id:739,caramboles:1,gemist:[],goed:[]},{id:740,caramboles:1,gemist:[],goed:[]},{id:741,caramboles:0,gemist:["Moeilijk"],goed:[]},{id:742,caramboles:2,gemist:[],goed:["Trekstoot"]},{id:743,caramboles:2,gemist:[],goed:[]},{id:744,caramboles:0,gemist:["Moeilijk","Klos"],goed:[]},{id:745,caramboles:3,gemist:[],goed:[]},{id:746,caramboles:2,gemist:["Moeilijk"],goed:[]}]},
-{id:28,datum:"2026-06-19T20:00:00.000Z",sessieType:"Uitleg",beurten:[{id:747,caramboles:1,gemist:[],goed:[]},{id:748,caramboles:0,gemist:[],goed:[]},{id:749,caramboles:3,gemist:[],goed:[]},{id:750,caramboles:0,gemist:[],goed:[]},{id:751,caramboles:2,gemist:[],goed:[]},{id:752,caramboles:2,gemist:[],goed:[]},{id:753,caramboles:0,gemist:[],goed:[]},{id:754,caramboles:4,gemist:[],goed:[]},{id:755,caramboles:3,gemist:[],goed:[]},{id:756,caramboles:0,gemist:[],goed:[]},{id:757,caramboles:0,gemist:[],goed:[]},{id:758,caramboles:8,gemist:[],goed:[]},{id:759,caramboles:2,gemist:[],goed:[]},{id:760,caramboles:0,gemist:[],goed:[]},{id:761,caramboles:0,gemist:[],goed:[]},{id:762,caramboles:2,gemist:[],goed:[]},{id:763,caramboles:3,gemist:[],goed:[]},{id:764,caramboles:0,gemist:[],goed:[]},{id:765,caramboles:2,gemist:[],goed:[]},{id:766,caramboles:0,gemist:[],goed:[]},{id:767,caramboles:5,gemist:[],goed:[]},{id:768,caramboles:0,gemist:[],goed:[]},{id:769,caramboles:0,gemist:[],goed:[]},{id:770,caramboles:0,gemist:[],goed:[]},{id:771,caramboles:4,gemist:[],goed:[]},{id:772,caramboles:3,gemist:[],goed:[]},{id:773,caramboles:0,gemist:[],goed:[]},{id:774,caramboles:0,gemist:[],goed:[]},{id:775,caramboles:1,gemist:[],goed:[]},{id:776,caramboles:2,gemist:[],goed:[]},{id:777,caramboles:3,gemist:[],goed:[]},{id:778,caramboles:2,gemist:[],goed:[]},{id:779,caramboles:3,gemist:[],goed:[]},{id:780,caramboles:0,gemist:[],goed:[]},{id:781,caramboles:0,gemist:[],goed:[]},{id:782,caramboles:2,gemist:[],goed:[]},{id:783,caramboles:0,gemist:[],goed:[]},{id:784,caramboles:0,gemist:[],goed:[]},{id:785,caramboles:3,gemist:[],goed:[]},{id:786,caramboles:4,gemist:[],goed:[]}]}
-]};
-
 async function laadData(){
   try{
     const r=await window.storage.get(SK);
-    if(r){
-      const d=JSON.parse(r.value);
-      if(d.partijen&&d.partijen.length>0)return d;
-    }
+    if(r){const d=JSON.parse(r.value);if(d.partijen&&d.partijen.length>0)return d;}
   }catch(e){}
-  return HISTORISCHE_DATA;
+  return{huidigeId:900,partijen:mkPartijen()};
 }
-
-async function slaOp(data){
-  try{await window.storage.set(SK,JSON.stringify(data));}
-  catch(e){console.error(e);}
-}
+async function slaOp(d){try{await window.storage.set(SK,JSON.stringify(d));}catch(e){}}
 
 function Grafiek({beurten}){
   if(!beurten||beurten.length<2)return null;
   const vals=beurten.map(b=>b.caramboles);
   const maxV=Math.max(...vals,1);
-  const ppp=Math.max(8,Math.min(20,280/vals.length));
-  const lp=12,tp=18,H=60;
+  const ppp=Math.max(6,Math.min(18,300/vals.length));
+  const lp=8,tp=12,H=40;
   const W=lp+ppp*(vals.length-1);
-  const punten=vals.map((v,i)=>`${lp+i*ppp},${tp+H-(v/maxV)*H}`).join(" ");
-  const fs=vals.length>25?8:vals.length>15?9:10;
+  const ps=vals.map((v,i)=>`${lp+i*ppp},${tp+H-(v/maxV)*H}`).join(" ");
   return(
-    <div style={{overflowX:"auto",paddingBottom:4}}>
-      <svg width={W} height={H+tp+10} style={{overflow:"visible",display:"block"}}>
-        <polyline points={punten} fill="none" stroke={GOUD} strokeWidth="2" strokeLinejoin="round"/>
+    <div style={{overflowX:"auto"}}>
+      <svg width={Math.max(W,40)} height={H+tp+6} style={{overflow:"visible",display:"block"}}>
+        <polyline points={ps} fill="none" stroke={GOUD} strokeWidth="1.5" strokeLinejoin="round"/>
         {vals.map((v,i)=>{
           const cx=lp+i*ppp,cy=tp+H-(v/maxV)*H;
-          const kleur=v>=10?"#ff9f40":v>=8?"#e8c96a":v>=5?GRNT:GOUD;
-          return<g key={i}>
-            <circle cx={cx} cy={cy} r={v>=5?4:2.5} fill={kleur}/>
-            <text x={cx} y={cy-6} textAnchor="middle" fontSize={fs} fill={kleur} fontFamily="Georgia,serif" fontWeight={v>=5?"bold":"normal"}>{v}</text>
-          </g>;
+          const k=v>=10?"#ff9f40":v>=8?"#e8c96a":v>=5?GRNT:GOUD;
+          return<circle key={i} cx={cx} cy={cy} r={v>=5?3:2} fill={k}/>;
         })}
       </svg>
     </div>
   );
 }
 
-function OpbouwIndicator({beurten}){
-  if(!beurten||!beurten.length)return null;
-  const n=beurten.length;
-  const v57=beurten.filter(b=>b.caramboles>=5&&b.caramboles<=7).length;
-  const v89=beurten.filter(b=>b.caramboles>=8&&b.caramboles<=9).length;
-  const v10=beurten.filter(b=>b.caramboles>=10).length;
-  const totaal5=v57+v89+v10;
-  const pct=Math.round(totaal5/n*100);
+function OpmGrid({lijst,prefix,kleur,geselecteerd,toggle}){
   return(
-    <div style={{background:"#1a3019",border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-      <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>🎯 Opbouw (≥5 caramboles)</div>
-      <div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:8}}>
-        <span style={{fontSize:32,fontWeight:"bold",color:totaal5>0?GRNT:WITD}}>{totaal5}</span>
-        <span style={{fontSize:16,color:WITD}}>/ {n} beurten</span>
-        <span style={{fontSize:14,color:totaal5>0?GRNT:WITD,marginLeft:4}}>{pct}%</span>
-      </div>
-      <div style={{display:"flex",gap:8}}>
-        {[["5-7",v57,"#4caf50"],["8-9",v89,"#e8c96a"],["10+",v10,"#ff9f40"]].map(([l,v,kleur])=>(
-          <div key={l} style={{flex:1,background:v>0?"#2d4a1e":"#1c2e18",border:`1px solid ${v>0?kleur:KBDR}`,borderRadius:8,padding:"6px 4px",textAlign:"center"}}>
-            <div style={{fontSize:20,fontWeight:"bold",color:v>0?kleur:"#5a7a55"}}>{v}×</div>
-            <div style={{fontSize:10,color:WITD,letterSpacing:1}}>{l}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SerieVerdeling({beurten}){
-  const ranges=[{label:"3-4",min:3,max:4},{label:"5-7",min:5,max:7},{label:"8-9",min:8,max:9},{label:"10+",min:10,max:Infinity}];
-  return(
-    <div style={{display:"flex",gap:8,marginTop:10,flexWrap:"wrap"}}>
-      {ranges.map(r=>{
-        const n=beurten.filter(b=>b.caramboles>=r.min&&b.caramboles<=r.max).length;
+    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7,padding:"10px 12px"}}>
+      {lijst.map(o=>{
+        const key=`${prefix}${o.label}`;
+        const actief=geselecteerd.has(key);
         return(
-          <div key={r.label} style={{background:n>0?"#2d4a1e":"#1c2e18",border:`1px solid ${n>0?GOUD:KBDR}`,borderRadius:8,padding:"6px 10px",textAlign:"center",minWidth:52}}>
-            <div style={{fontSize:18,fontWeight:"bold",color:n>0?GOUD:"#5a7a55"}}>{n}×</div>
-            <div style={{fontSize:10,color:WITD,letterSpacing:1}}>{r.label}</div>
-          </div>
+          <button key={o.label} onClick={()=>toggle(key)}
+            style={{background:actief?(kleur===ROOD?"#3a1010":"#1a3a1a"):"#1c3019",border:`1px solid ${actief?kleur:KBDR}`,borderRadius:8,padding:"9px 4px",color:actief?kleur:WITD,cursor:"pointer",fontSize:11,display:"flex",flexDirection:"column",alignItems:"center",gap:3,fontFamily:"inherit"}}>
+            <span style={{fontSize:15}}>{o.emoji}</span>
+            <span>{o.label}</span>
+          </button>
         );
       })}
     </div>
   );
 }
 
-function OpmKnoppen({titel,lijst,geselecteerd,kleur,toggle}){
-  return(
-    <div style={{marginBottom:12}}>
-      <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:kleur,marginBottom:8}}>{titel}</div>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-        {lijst.map(o=>{
-          const prefix=kleur===ROOD?"GEMIST__":"GOED__";
-          const actief=geselecteerd.has(`${prefix}${o.label}`);
-          return(
-            <button key={o.label}
-              style={{background:actief?(kleur===ROOD?"#3a1010":"#1a3a1a"):"#1c3019",border:`1px solid ${actief?kleur:KBDR}`,borderRadius:8,padding:"8px 4px",color:actief?kleur:WITD,cursor:"pointer",fontSize:11,display:"flex",flexDirection:"column",alignItems:"center",gap:3,fontFamily:"inherit"}}
-              onClick={()=>toggle(`${prefix}${o.label}`)}>
-              <span style={{fontSize:14}}>{o.emoji}</span>
-              <span>{o.label}</span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function PartijRij({partij:p,nr}){
-  const [open,setOpen]=useState(false);
-  const st=berekenStats(p.beurten);
-  return(
-    <div style={{borderBottom:`1px solid ${KBDR}`}}>
-      <button style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}
-        onClick={()=>setOpen(v=>!v)}>
-        <div>
-          <div style={{fontSize:13,color:GOUD,marginBottom:2}}>
-            {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}
-            {p.sessieType&&<span style={{marginLeft:8,fontSize:11,background:"#2a2010",color:"#a08040",borderRadius:4,padding:"2px 6px"}}>{p.sessieType}</span>}
-            <span style={{color:WITD,fontSize:12}}> · partij {nr}</span>
-          </div>
-          <div style={{fontSize:12,color:WITD}}>
-            {st&&`${st.aantalBeurten} beurten · max ${st.max} · gem ${st.gemPerBeurt} · ${st.poedels} poedels · ${st.totPunten} pt`}
-            {st&&st.opbouw5>0&&<span style={{color:GRNT}}> · 🎯 {st.opbouw5}×5+</span>}
-          </div>
-        </div>
-        <span style={{color:GOUD,fontSize:16}}>{open?"▲":"▼"}</span>
-      </button>
-      {open&&<div style={{paddingBottom:12}}>
-        <Grafiek beurten={p.beurten}/>
-        <SerieVerdeling beurten={p.beurten}/>
-        {st&&<OpbouwIndicator beurten={p.beurten}/>}
-      </div>}
-    </div>
-  );
-}
-
 function LogRij({b,nr}){
   return(
-    <div style={{display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${KBDR}`,padding:"7px 0"}}>
-      <div style={{display:"flex",alignItems:"baseline",gap:5}}>
-        <span style={{fontSize:10,color:WITD,minWidth:18}}>{nr}</span>
-        <span style={{fontSize:20,fontWeight:"bold",color:b.caramboles>=5?GOUDL:WIT}}>{b.caramboles}</span>
-        <span style={{fontSize:11,color:WITD}}>car.</span>
+    <div style={{display:"flex",alignItems:"center",gap:6,borderBottom:`1px solid ${KBDR}`,padding:"5px 0"}}>
+      <span style={{fontSize:10,color:WITD,minWidth:16}}>{nr}</span>
+      <span style={{fontSize:18,fontWeight:"bold",color:b.caramboles>=5?GOUDL:WIT,minWidth:24}}>{b.caramboles}</span>
+      <div style={{flex:1,display:"flex",gap:3,flexWrap:"wrap"}}>
+        {(b.gemist||[]).map(o=><span key={o} style={{fontSize:10,background:"#3a1010",color:ROOD,borderRadius:3,padding:"1px 5px"}}>{o}</span>)}
+        {(b.goed||[]).map(o=><span key={o} style={{fontSize:10,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"1px 5px"}}>{o}</span>)}
       </div>
-      <div style={{flex:1,display:"flex",gap:4,flexWrap:"wrap"}}>
-        {(b.gemist||[]).map(o=><span key={o} style={{fontSize:11,background:"#3a1010",color:ROOD,borderRadius:4,padding:"2px 7px"}}>{o}</span>)}
-        {(b.goed||[]).map(o=><span key={o} style={{fontSize:11,background:"#0f2e14",color:GRNT,borderRadius:4,padding:"2px 7px"}}>{o}</span>)}
-        {b.caramboles===0&&!(b.gemist||[]).length&&<span style={{fontSize:11,background:"#2a2010",color:"#a08040",borderRadius:4,padding:"2px 7px"}}>poedel</span>}
-      </div>
-      <div style={{minWidth:36,textAlign:"right"}}>
-        {pts(b.caramboles)>0&&<span style={{fontSize:11,color:G,background:GOUD,borderRadius:4,padding:"2px 6px",fontWeight:"bold"}}>+{pts(b.caramboles)}pt</span>}
-      </div>
-    </div>
-  );
-}
-
-function DataExport({allePartijen,lopendePartij,statsAlles}){
-  const [gekopieerd,setGekopieerd]=useState("");
-  const [aiBezig,setAiBezig]=useState(false);
-  const [aiResultaat,setAiResultaat]=useState("");
-  const [aiType,setAiType]=useState("");
-
-  function bouwTekst(){
-    const r=[];
-    const nu=new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-    r.push(`BILJART DATA — ${nu}`);
-    r.push("=".repeat(40));
-    if(statsAlles){
-      r.push("\nTOTAAL OVERZICHT");
-      r.push(`Partijen: ${allePartijen.length} · Beurten: ${statsAlles.aantalBeurten} · Caramboles: ${statsAlles.totCar}`);
-      r.push(`Hoogste serie: ${statsAlles.max} · Gem/beurt: ${statsAlles.gemPerBeurt} · Poedels: ${statsAlles.poedels} (${Math.round(statsAlles.poedels/statsAlles.aantalBeurten*100)}%) · Punten: ${statsAlles.totPunten}`);
-    }
-    const lijst=lopendePartij.length>0?[{datum:new Date().toISOString(),beurten:lopendePartij,lopend:true},...allePartijen]:[...allePartijen];
-    [...lijst].reverse().forEach((p,i)=>{
-      r.push("\n"+"-".repeat(40));
-      const datum=new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"});
-      const st=berekenStats(p.beurten);
-      r.push(`${p.lopend?"LOPENDE PARTIJ":`PARTIJ ${i+1}`} · ${datum}`);
-      if(!p.lopend&&st){
-        r.push(`Beurten: ${st.aantalBeurten} · Max: ${st.max} · Gem: ${st.gemPerBeurt} · Poedels: ${st.poedels} · Punten: ${st.totPunten}`);
-        if(p.sessieType)r.push(`Type: ${p.sessieType}`);
-      }
-      r.push("");
-      p.beurten.forEach((b,j)=>{
-        const gemist=(b.gemist||[]).join(", ");
-        const goed=(b.goed||[]).join(", ");
-        const pt=pts(b.caramboles)>0?` (+${pts(b.caramboles)}pt)`:"";
-        const poel=b.caramboles===0?" [poedel]":"";
-        let regel=`  Beurt ${j+1}: ${b.caramboles} caramboles${pt}${poel}`;
-        if(gemist)regel+=` — Gemist: ${gemist}`;
-        if(goed)regel+=` — Goed: ${goed}`;
-        r.push(regel);
-      });
-    });
-    return r.join("\n");
-  }
-
-  async function vraagAI(type){
-    setAiBezig(true);setAiType(type);setAiResultaat("");
-    const data=bouwTekst();
-    let systemPrompt,userPrompt;
-    if(type==="partij"){
-      systemPrompt=`Je bent een biljartcoach voor carambole/libre. Analyseer de meest recente partij en geef korte concrete feedback in het Nederlands. Geef: ✅ Wat gaat goed ⚠️ Grootste rem 🔍 Foutpatronen (max 3) 🏋️ Trainingsadvies 🎯 Focus volgende sessie`;
-      userPrompt=`Analyseer mijn meest recente partij:\n\n${data}`;
-    }else{
-      systemPrompt=`Je bent een biljartcoach voor carambole/libre. Analyseer trends over meerdere partijen. Geef: 📈 Trend samenvatting ✅ Vooruitgang 🔁 Terugkerende remmers 📌 Belangrijkste trend 🏋️ Trainingsfocus komende week`;
-      userPrompt=`Analyseer mijn biljartdata:\n\n${data}`;
-    }
-    try{
-      const resp=await fetch("https://api.anthropic.com/v1/messages",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:systemPrompt,messages:[{role:"user",content:userPrompt}]})
-      });
-      const json=await resp.json();
-      const tekst=json.content?.map(c=>c.text||"").join("")||"Geen resultaat.";
-      setAiResultaat(tekst);
-    }catch(e){setAiResultaat("Fout: "+e.message);}
-    finally{setAiBezig(false);}
-  }
-
-  function kopieer(tekst,sleutel){
-    navigator.clipboard.writeText(tekst).then(()=>{setGekopieerd(sleutel);setTimeout(()=>setGekopieerd(""),2500);});
-  }
-
-  if(!allePartijen.length&&!lopendePartij.length)
-    return<div style={{textAlign:"center",color:WITD,padding:"40px 20px",fontSize:16}}>Nog geen data.</div>;
-
-  return(
-    <div>
-      <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-        <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>🤖 AI Analyse</div>
-        <div style={{display:"flex",gap:10,marginBottom:aiResultaat?14:0}}>
-          <button style={{flex:1,padding:12,background:"none",border:`1px solid ${GOUD}`,borderRadius:8,color:GOUD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={()=>vraagAI("partij")} disabled={aiBezig}>
-            {aiBezig&&aiType==="partij"?"⏳ Laden…":"🎯 Partijanalyse"}
-          </button>
-          <button style={{flex:1,padding:12,background:"none",border:`1px solid ${GOUD}`,borderRadius:8,color:GOUD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={()=>vraagAI("trend")} disabled={aiBezig}>
-            {aiBezig&&aiType==="trend"?"⏳ Laden…":"📈 Trendanalyse"}
-          </button>
-        </div>
-        {aiResultaat&&(
-          <div style={{marginTop:12,background:"#1a2e1a",border:`1px solid ${KBDR}`,borderRadius:8,padding:14,fontSize:13,color:WITD,lineHeight:1.7,whiteSpace:"pre-wrap"}}>
-            {aiResultaat}
-            <button style={{display:"block",marginTop:10,background:"none",border:`1px solid ${KBDR}`,borderRadius:6,color:WITD,padding:"5px 12px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}
-              onClick={()=>kopieer(aiResultaat,"ai")}>
-              {gekopieerd==="ai"?"✓ Gekopieerd!":"📋 Kopieer analyse"}
-            </button>
-          </div>
-        )}
-      </div>
-      <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-        <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>📋 Ruwe data</div>
-        <button style={{width:"100%",padding:14,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:10,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
-          onClick={()=>kopieer(bouwTekst(),"data")}>
-          {gekopieerd==="data"?"✓ Gekopieerd!":"📋 Kopieer ruwe data"}
-        </button>
-      </div>
+      {pts(b.caramboles)>0&&<span style={{fontSize:10,color:G,background:GOUD,borderRadius:3,padding:"1px 5px",fontWeight:"bold"}}>+{pts(b.caramboles)}pt</span>}
     </div>
   );
 }
@@ -370,379 +166,367 @@ function DataExport({allePartijen,lopendePartij,statsAlles}){
 function BiljartTracker(){
   const [data,setData]=useState(null);
   const [tab,setTab]=useState("spelen");
-  const [bevestigReset,setBevestigReset]=useState(false);
-  const [bevestigPartij,setBevestigPartij]=useState(false);
-  const [caramboles,setCaramboles]=useState(0);
-  const [inputWaarde,setInputWaarde]=useState("0");
-  const [beurtNummer,setBeurtNummer]=useState(1);
-  const [geselecteerd,setGeselecteerd]=useState(new Set());
-  const [fase,setFase]=useState("setup"); // "setup" | "invoer" | "gemist" | "goed"
-  const [feedback,setFeedback]=useState("");
-  const [lopendePartij,setLopendePartij]=useState([]);
-  const [sessieType,setSessieType]=useState("Officieel");
+  const [car,setCar]=useState(0);
+  const [inp,setInp]=useState("0");
+  const [beurtNr,setBeurtNr]=useState(1);
+  const [sel,setSel]=useState(new Set());
+  const [fase,setFase]=useState("setup");
+  const [fb,setFb]=useState("");
+  const [lp,setLp]=useState([]);
   const [doelType,setDoelType]=useState("beurten");
-  const [doelAantal,setDoelAantal]=useState(25);
+  const [doel,setDoel]=useState(25);
+  const [confPartij,setConfPartij]=useState(false);
+  const [confReset,setConfReset]=useState(false);
+  const [aiBezig,setAiBezig]=useState(false);
+  const [aiRes,setAiRes]=useState("");
+  const [aiType,setAiType]=useState("");
+  const [gekopieerd,setGekopieerd]=useState("");
   const inputRef=useRef(null);
 
   useEffect(()=>{laadData().then(setData);},[]);
-
   if(!data)return<div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden…</div>;
 
-  const allePartijen=data.partijen;
-  const alleBeurten=allePartijen.flatMap(p=>p.beurten);
-  const statsAlles=berekenStats(alleBeurten);
-  const statsLopend=berekenStats(lopendePartij);
-  const puntenNu=pts(caramboles);
+  const alleP=data.partijen;
+  const stL=stat(lp);
+  const ptsNu=pts(car);
+  const totCarLp=lp.reduce((a,b)=>a+b.caramboles,0);
+  const voortgang=doelType==="beurten"?lp.length:totCarLp;
+  const progPct=Math.min(100,Math.round(voortgang/doel*100));
 
-  function toggleOpmerking(key){
-    setGeselecteerd(prev=>{const n=new Set(prev);n.has(key)?n.delete(key):n.add(key);return n;});
-  }
+  function toggle(key){setSel(prev=>{const n=new Set(prev);n.has(key)?n.delete(key):n.add(key);return n;});}
 
-  function verwerkInput(val){
-    if(val===""||val==="-"){setInputWaarde(val);return;}
-    const n=parseInt(val);
-    if(!isNaN(n)&&n>=0){setCaramboles(n);setInputWaarde(String(n));}
-  }
-
-  function startPartij(){
-    setFase("invoer");
-  }
-
-  function gaVooruit(){
-    if(fase==="invoer"){setFase("gemist");return;}
-    if(fase==="gemist"){setFase("goed");return;}
-    noteerBeurt();
-  }
-
-  function knopTekst(){
-    if(fase==="invoer") return{groot:"Vastleggen & volgende",klein:"Druk om door te gaan naar opmerkingen"};
-    if(fase==="gemist") return{groot:"✓ Vastleggen",klein:"Selecteer wat misging, dan doorgaan"};
-    if(fase==="goed") return{groot:"✓ Beurt noteren",klein:"Selecteer wat goed ging, dan opslaan"};
-    return{groot:"",klein:""};
-  }
-
-  function doelBereikt(){
-    if(!lopendePartij.length) return false;
-    if(doelType==="beurten") return lopendePartij.length>=doelAantal;
-    if(doelType==="caramboles"){
-      const tot=lopendePartij.reduce((a,b)=>a+b.caramboles,0);
-      return tot>=doelAantal;
-    }
-    return false;
-  }
-
-  function noteerBeurt(){
-    const gemist=[...geselecteerd].filter(k=>k.startsWith("GEMIST__")).map(k=>k.replace("GEMIST__",""));
-    const goed=[...geselecteerd].filter(k=>k.startsWith("GOED__")).map(k=>k.replace("GOED__",""));
-    const b={id:data.huidigeId,caramboles,punten:puntenNu,gemist,goed,tijd:new Date().toISOString()};
+  function noteer(){
+    const gemist=[...sel].filter(k=>k.startsWith("G__")).map(k=>k.replace("G__",""));
+    const goed=[...sel].filter(k=>k.startsWith("P__")).map(k=>k.replace("P__",""));
+    const b={id:data.huidigeId,caramboles:car,punten:ptsNu,gemist,goed,tijd:new Date().toISOString()};
     const nd={...data,huidigeId:data.huidigeId+1};
     setData(nd);slaOp(nd);
-    setLopendePartij(p=>[...p,b]);
-    setCaramboles(0);setInputWaarde("0");
-    setBeurtNummer(n=>n+1);
-    setGeselecteerd(new Set());
-    setFase(doelBereikt()?"invoer":"invoer");
-    setFeedback(`Beurt ${beurtNummer} · ${caramboles} car · ${puntenNu>0?`+${puntenNu}pt`:caramboles===0?"poedel":""}`);
-    setTimeout(()=>setFeedback(""),2000);
+    setLp(p=>[...p,b]);
+    setCar(0);setInp("0");setBeurtNr(n=>n+1);setSel(new Set());setFase("invoer");
+    const f=`Beurt ${beurtNr} · ${car} car${ptsNu>0?` · +${ptsNu}pt`:car===0?" · poedel":""}`;
+    setFb(f);setTimeout(()=>setFb(""),1800);
   }
 
-  function sluitPartijAf(){
-    if(!lopendePartij.length){setBevestigPartij(false);return;}
-    const st=berekenStats(lopendePartij);
-    const p={id:data.huidigeId,datum:new Date().toISOString(),beurten:lopendePartij,sessieType,...st};
+  function sluit(){
+    if(!lp.length){setConfPartij(false);return;}
+    const st=stat(lp);
+    const p={id:data.huidigeId,datum:new Date().toISOString(),beurten:lp,...st};
     const nd={partijen:[...data.partijen,p],huidigeId:data.huidigeId+1};
     setData(nd);slaOp(nd);
-    setLopendePartij([]);setBeurtNummer(1);setCaramboles(0);setInputWaarde("0");
-    setBevestigPartij(false);setFase("setup");
-    setFeedback(`✓ Partij afgesloten · ${st.aantalBeurten} beurten · ${st.totCar} car · 🎯 ${st.opbouw5}×5+`);
-    setTimeout(()=>setFeedback(""),3000);
-  }
-
-  function verwijderLaatste(){
-    if(!lopendePartij.length)return;
-    setLopendePartij(p=>p.slice(0,-1));
-    setBeurtNummer(n=>Math.max(1,n-1));
+    setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
+    setConfPartij(false);setFase("setup");
+    setFb(`✓ Partij opgeslagen · ${st.aantalBeurten}b · ${st.totCar}car · gem ${st.gemPerBeurt}`);
+    setTimeout(()=>setFb(""),3000);
   }
 
   function resetAlles(){
     const leeg={partijen:[],huidigeId:1};
-    setData(leeg);slaOp(leeg);
-    setLopendePartij([]);setBeurtNummer(1);setCaramboles(0);setInputWaarde("0");
-    setGeselecteerd(new Set());setBevestigReset(false);setFase("invoer");
+    setData(leeg);slaOp(leeg);setLp([]);setBeurtNr(1);setCar(0);setInp("0");
+    setSel(new Set());setConfReset(false);setFase("setup");
+  }
+
+  function bouwTekst(){
+    const stA=stat(alleP.flatMap(p=>p.beurten));
+    const r=[`BILJART DATA — ${new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}`,"=".repeat(40)];
+    if(stA)r.push(`TOTAAL: ${alleP.length} partijen · ${stA.totCar}car · gem ${stA.gemPerBeurt} · max ${stA.max} · ${stA.poedels} poedels · ${stA.totPunten}pt`);
+    [...alleP].reverse().forEach((p,i)=>{
+      const st=stat(p.beurten);
+      r.push(`\nPartij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}`);
+      if(st)r.push(`${st.aantalBeurten}b · max ${st.max} · gem ${st.gemPerBeurt} · ${st.poedels}x poedel · ${st.totPunten}pt · 🎯${st.opbouw5}x5+`);
+      p.beurten.forEach((b,j)=>{
+        const g=(b.gemist||[]).join(", "),gd=(b.goed||[]).join(", ");
+        let rule=`  B${j+1}: ${b.caramboles}car${pts(b.caramboles)>0?` +${pts(b.caramboles)}pt`:""}${b.caramboles===0?" [poedel]":""}`;
+        if(g)rule+=` — Gemist: ${g}`;if(gd)rule+=` — Goed: ${gd}`;r.push(rule);
+      });
+    });
+    return r.join("\n");
+  }
+
+  async function vraagAI(type){
+    setAiBezig(true);setAiType(type);setAiRes("");
+    const sys=type==="partij"
+      ?"Je bent een biljartcoach voor carambole/libre. Analyseer de meest recente partij. Geef: ✅ Wat goed ⚠️ Grootste rem 🔍 Foutpatronen 🏋️ Trainingsadvies 🎯 Focus. Antwoord in het Nederlands, beknopt."
+      :"Je bent een biljartcoach voor carambole/libre. Analyseer trends. Geef: 📈 Trend ✅ Vooruitgang 🔁 Remmers 📌 Inzicht 🏋️ Trainingsfocus. Antwoord in het Nederlands, beknopt.";
+    try{
+      const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:sys,messages:[{role:"user",content:`Analyseer:\n${bouwTekst()}`}]})});
+      const json=await resp.json();
+      setAiRes(json.content?.map(c=>c.text||"").join("")||"Geen resultaat.");
+    }catch(e){setAiRes("Fout: "+e.message);}
+    setAiBezig(false);
+  }
+
+  function kopieer(tekst,key){navigator.clipboard.writeText(tekst).then(()=>{setGekopieerd(key);setTimeout(()=>setGekopieerd(""),2500);});}
+
+  // ── SPELEN ──
+  function Spelen(){
+    if(fase==="setup")return(
+      <div style={{flex:1,display:"flex",flexDirection:"column",padding:"12px 14px",gap:10,overflowY:"auto"}}>
+        <div style={{textAlign:"center",color:GOUD,fontSize:15,fontWeight:"bold"}}>🎱 Nieuwe partij</div>
+        <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px 14px"}}>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Partij doel</div>
+          <div style={{display:"flex",gap:8,marginBottom:12}}>
+            <button style={{flex:1,padding:"10px 8px",background:doelType==="beurten"?"#2d4a1e":"none",border:`1px solid ${doelType==="beurten"?GOUD:KBDR}`,borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}} onClick={()=>setDoelType("beurten")}>🎯 Beurten</button>
+            <button style={{flex:1,padding:"10px 8px",background:doelType==="caramboles"?"#2d4a1e":"none",border:`1px solid ${doelType==="caramboles"?GOUD:KBDR}`,borderRadius:8,color:doelType==="caramboles"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}} onClick={()=>setDoelType("caramboles")}>⚪ Caramboles</button>
+          </div>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,marginBottom:12}}>
+            <button style={{width:44,height:44,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer"}} onClick={()=>setDoel(n=>Math.max(5,n-5))}>−</button>
+            <div style={{textAlign:"center"}}>
+              <div style={{fontSize:44,fontWeight:"bold",color:WIT,lineHeight:1}}>{doel}</div>
+              <div style={{fontSize:11,color:WITD,marginTop:2}}>{doelType==="beurten"?"beurten":"caramboles"}</div>
+            </div>
+            <button style={{width:44,height:44,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer"}} onClick={()=>setDoel(n=>n+5)}>+</button>
+          </div>
+          <div style={{display:"flex",gap:6}}>
+            {(doelType==="beurten"?[15,20,25,30]:[50,75,100,150]).map(n=>(
+              <button key={n} style={{flex:1,padding:"7px 0",background:doel===n?"#2d4a1e":"none",border:`1px solid ${doel===n?GOUD:KBDR}`,borderRadius:6,color:doel===n?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12}} onClick={()=>setDoel(n)}>{n}</button>
+            ))}
+          </div>
+        </div>
+        {lp.length>0&&(
+          <div style={{background:"#1a2e10",border:`1px solid ${GOUD}`,borderRadius:10,padding:"10px 14px",fontSize:12,color:WITD}}>
+            ⚠️ Lopende partij: {lp.length} beurten · {totCarLp} car
+            <div style={{display:"flex",gap:8,marginTop:8}}>
+              <button style={{flex:1,padding:8,background:"none",border:`1px solid ${GOUD}`,borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:12}} onClick={()=>setFase("invoer")}>Doorgaan</button>
+              <button style={{flex:1,padding:8,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:12}} onClick={()=>setConfPartij(true)}>Afsluiten</button>
+            </div>
+          </div>
+        )}
+        <button style={{padding:18,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 6px 20px rgba(201,168,76,0.35)"}}
+          onClick={()=>{setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");}}>
+          🎱 Start partij
+        </button>
+        {fb&&<div style={{textAlign:"center",fontSize:12,color:GOUDL}}>{fb}</div>}
+      </div>
+    );
+
+    if(fase==="invoer")return(
+      <div style={{flex:1,display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"7px 14px",borderBottom:`1px solid ${KBDR}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+          <div style={{fontSize:12,color:WITD}}>
+            Beurt <b style={{color:WIT}}>{beurtNr}</b>
+            {stL&&<span> · <b style={{color:GOUD}}>{stL.totCar}</b>car · gem <b style={{color:GOUD}}>{stL.gemPerBeurt}</b></span>}
+            {stL&&stL.opbouw5>0&&<span style={{color:GRNT}}> · 🎯{stL.opbouw5}×</span>}
+          </div>
+          <div style={{fontSize:11,color:WITD}}>{progPct}%</div>
+        </div>
+        <div style={{height:3,background:KBDR,flexShrink:0}}>
+          <div style={{height:3,background:GOUD,width:`${progPct}%`,transition:"width 0.3s"}}/>
+        </div>
+        <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"0 20px"}}>
+          <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:14}}>Beurt {beurtNr}</div>
+          <div style={{display:"flex",alignItems:"center",gap:20,marginBottom:10}}>
+            <button style={{width:54,height:54,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
+              onClick={()=>{const n=Math.max(0,car-1);setCar(n);setInp(String(n));}}>−</button>
+            <input ref={inputRef} type="number" inputMode="numeric" pattern="[0-9]*" value={inp}
+              onChange={e=>{const v=e.target.value;if(v===""||v==="-"){setInp(v);return;}const n=parseInt(v);if(!isNaN(n)&&n>=0){setCar(n);setInp(String(n));}}}
+              onFocus={e=>e.target.select()}
+              onKeyDown={e=>{if(e.key==="Enter")setFase("gemist");}}
+              style={{width:100,fontSize:58,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:`3px solid ${GOUD}`,textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:4}}
+            />
+            <button style={{width:54,height:54,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
+              onClick={()=>{const n=car+1;setCar(n);setInp(String(n));}}>+</button>
+          </div>
+          <div style={{fontSize:13,color:car>=5?GRNT:GOUD,minHeight:20,textAlign:"center"}}>
+            {car===0?"Poedel":car<3?`Nog ${3-car} voor een punt`:`${ptsNu} punt${ptsNu!==1?"en":""}${car>=5?" 🎯":""}`}
+          </div>
+          {fb&&<div style={{marginTop:8,fontSize:12,color:GOUDL,textAlign:"center"}}>{fb}</div>}
+        </div>
+        <div style={{padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
+          <button style={{flex:1,padding:16,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+            onClick={()=>setFase("gemist")}>Volgende →</button>
+          <button style={{padding:"16px 14px",background:"none",border:`1px solid ${KBDR}`,borderRadius:12,color:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
+            onClick={()=>{if(lp.length){setLp(p=>p.slice(0,-1));setBeurtNr(n=>Math.max(1,n-1));}}}>↩</button>
+        </div>
+      </div>
+    );
+
+    if(fase==="gemist"){
+      const gs=[...sel].filter(k=>k.startsWith("G__"));
+      return(
+        <div style={{flex:1,display:"flex",flexDirection:"column"}}>
+          <div style={{padding:"7px 14px",borderBottom:`1px solid ${KBDR}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+            <div style={{fontSize:12,color:ROOD,fontWeight:"bold"}}>❌ Gemist door — {car} caramboles</div>
+            {gs.length>0&&<span style={{fontSize:11,color:ROOD}}>{gs.length}×</span>}
+          </div>
+          <div style={{flex:1,overflowY:"auto"}}>
+            <OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={toggle}/>
+          </div>
+          <div style={{padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
+            <button style={{flex:1,padding:15,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:12,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+              onClick={()=>setFase("goed")}>Wat ging goed? →</button>
+            <button style={{padding:"15px 12px",background:"none",border:`1px solid ${KBDR}`,borderRadius:12,color:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}
+              onClick={()=>setFase("invoer")}>←</button>
+          </div>
+        </div>
+      );
+    }
+
+    if(fase==="goed"){
+      const gs=[...sel].filter(k=>k.startsWith("P__"));
+      return(
+        <div style={{flex:1,display:"flex",flexDirection:"column"}}>
+          <div style={{padding:"7px 14px",borderBottom:`1px solid ${KBDR}`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+            <div style={{fontSize:12,color:GRNT,fontWeight:"bold"}}>✅ Wat ging goed?</div>
+            {gs.length>0&&<span style={{fontSize:11,color:GRNT}}>{gs.length}×</span>}
+          </div>
+          <div style={{flex:1,overflowY:"auto"}}>
+            <OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={toggle}/>
+          </div>
+          <div style={{padding:"10px 14px",display:"flex",gap:8,flexShrink:0}}>
+            <button style={{flex:1,padding:15,background:`linear-gradient(135deg,${GRNT},${"#66bb6a"})`,border:"none",borderRadius:12,color:WIT,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+              onClick={noteer}>✓ Beurt opslaan</button>
+            <button style={{padding:"15px 12px",background:"none",border:`1px solid ${KBDR}`,borderRadius:12,color:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}
+              onClick={()=>setFase("gemist")}>←</button>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  // ── STATS ──
+  function Stats(){
+    const allB=alleP.flatMap(p=>p.beurten);
+    const stA=stat(allB);
+    const stLopend=stat(lp);
+    return(
+      <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+        {stLopend&&(
+          <div style={{background:KBG,border:`2px solid ${GOUD}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>⏳ Lopende partij</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
+              {[["Car.",stLopend.totCar],["Max",stLopend.max],["Gem",stLopend.gemPerBeurt],["Beurten",stLopend.aantalBeurten],["Poedels",stLopend.poedels],["Punten",stLopend.totPunten]].map(([l,v])=>(
+                <div key={l} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
+                  <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{v}</div>
+                  <div style={{fontSize:10,color:WITD}}>{l}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{fontSize:11,color:GRNT,marginBottom:8}}>🎯 {stLopend.opbouw5}/{stLopend.aantalBeurten} ≥5 · {stLopend.opbouw57}× 5-7 · {stLopend.opbouw89}× 8-9 · {stLopend.opbouw10}× 10+</div>
+            <Grafiek beurten={lp}/>
+          </div>
+        )}
+        {stA&&(
+          <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
+              {[["Car.",stA.totCar],["Max",stA.max],["Gem",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Punten",stA.totPunten]].map(([l,v])=>(
+                <div key={l} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
+                  <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{v}</div>
+                  <div style={{fontSize:10,color:WITD}}>{l}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{fontSize:11,color:GRNT}}>🎯 Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten ≥5</div>
+          </div>
+        )}
+        <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
+          {[...alleP].reverse().map((p,i)=>{
+            const st=stat(p.beurten);
+            return st?(
+              <div key={p.id} style={{borderBottom:`1px solid ${KBDR}`,padding:"7px 0",fontSize:12}}>
+                <div style={{color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{alleP.length-i}</div>
+                <div style={{color:WITD,marginTop:1}}>{st.aantalBeurten}b · max {st.max} · gem {st.gemPerBeurt} · {st.poedels}x 🥚 · {st.totPunten}pt · <span style={{color:GRNT}}>🎯{st.opbouw5}×</span></div>
+              </div>
+            ):null;
+          })}
+        </div>
+        {!confReset
+          ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:12,fontFamily:"inherit"}} onClick={()=>setConfReset(true)}>🗑 Alle data wissen</button>
+          :<div style={{background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"12px 14px"}}>
+            <div style={{fontSize:12,color:"#e06060",marginBottom:10}}>Weet je het zeker?</div>
+            <div style={{display:"flex",gap:8}}>
+              <button style={{flex:1,padding:10,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:12}} onClick={resetAlles}>Ja, wis alles</button>
+              <button style={{flex:1,padding:10,background:"none",border:`1px solid ${KBDR}`,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12}} onClick={()=>setConfReset(false)}>Annuleer</button>
+            </div>
+          </div>}
+      </div>
+    );
+  }
+
+  // ── DATA ──
+  function Data(){
+    return(
+      <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+        <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:10}}>🤖 AI Analyse</div>
+          <div style={{display:"flex",gap:8,marginBottom:aiRes?12:0}}>
+            <button style={{flex:1,padding:12,background:"none",border:`1px solid ${GOUD}`,borderRadius:8,color:GOUD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}} onClick={()=>vraagAI("partij")} disabled={aiBezig}>{aiBezig&&aiType==="partij"?"⏳":"🎯"} Partij</button>
+            <button style={{flex:1,padding:12,background:"none",border:`1px solid ${GOUD}`,borderRadius:8,color:GOUD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}} onClick={()=>vraagAI("trend")} disabled={aiBezig}>{aiBezig&&aiType==="trend"?"⏳":"📈"} Trend</button>
+          </div>
+          {aiRes&&(<div style={{background:"#1a2e1a",border:`1px solid ${KBDR}`,borderRadius:8,padding:12,fontSize:12,color:WITD,lineHeight:1.7,whiteSpace:"pre-wrap"}}>
+            {aiRes}
+            <button style={{display:"block",marginTop:8,background:"none",border:`1px solid ${KBDR}`,borderRadius:5,color:WITD,padding:"4px 10px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}} onClick={()=>kopieer(aiRes,"ai")}>{gekopieerd==="ai"?"✓":"📋"} Kopieer</button>
+          </div>)}
+        </div>
+        <button style={{width:"100%",padding:14,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:10,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}} onClick={()=>kopieer(bouwTekst(),"data")}>{gekopieerd==="data"?"✓ Gekopieerd!":"📋 Kopieer ruwe data"}</button>
+      </div>
+    );
+  }
+
+  // ── LOG ──
+  function Log(){
+    return(
+      <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+        {lp.length>0&&(
+          <div style={{background:KBG,border:`2px solid ${GOUD}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>⏳ Lopende partij</div>
+            {[...lp].reverse().map((b,i)=><LogRij key={b.id} b={b} nr={lp.length-i}/>)}
+          </div>
+        )}
+        {[...alleP].reverse().map((p,pi)=>(
+          <div key={p.id} style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>
+              p{alleP.length-pi} · {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}
+            </div>
+            {[...p.beurten].reverse().map((b,i)=><LogRij key={b.id} b={b} nr={p.beurten.length-i}/>)}
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return(
-    <div style={{background:G,minHeight:"100vh",fontFamily:"Georgia,serif",color:WIT,maxWidth:480,margin:"0 auto",paddingBottom:40}}>
-
-      {/* Header */}
-      <div style={{background:"linear-gradient(135deg,#0d1f0d,#1a2e1a)",borderBottom:`2px solid ${GOUD}`,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <div style={{display:"flex",alignItems:"center",gap:12}}>
-          <span style={{fontSize:36,color:GOUD,lineHeight:1}}>◎</span>
+    <div className="app">
+      <div style={{background:"linear-gradient(135deg,#0d1f0d,#1a2e1a)",borderBottom:`2px solid ${GOUD}`,padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <span style={{fontSize:26,color:GOUD}}>◎</span>
           <div>
-            <div style={{fontSize:20,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Tracker</div>
-            <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole · Serie registratie</div>
+            <div style={{fontSize:16,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Tracker</div>
+            <div style={{fontSize:9,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole · Serie registratie</div>
           </div>
         </div>
-        {statsAlles&&<div style={{fontSize:11,color:GOUD,border:`1px solid ${GOUD}`,borderRadius:20,padding:"4px 10px",textAlign:"right"}}>{allePartijen.length} partijen · {statsAlles.totPunten} pt</div>}
+        {fase!=="setup"&&lp.length>0&&(
+          <button style={{background:"none",border:`1px solid ${KBDR}`,borderRadius:8,color:WITD,padding:"5px 10px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}} onClick={()=>setConfPartij(true)}>🏁 Afsluiten</button>
+        )}
       </div>
 
-      {/* Tabs */}
-      <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"#152015"}}>
+      {confPartij&&(
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,padding:20}}>
+          <div style={{background:"#1a2e1a",border:`2px solid ${GOUD}`,borderRadius:14,padding:24,maxWidth:320,width:"100%"}}>
+            <div style={{fontSize:15,color:WIT,marginBottom:6,textAlign:"center"}}>Partij opslaan?</div>
+            <div style={{fontSize:12,color:WITD,marginBottom:18,textAlign:"center"}}>{lp.length} beurten · {totCarLp} car{stL?` · gem ${stL.gemPerBeurt}`:""}</div>
+            <div style={{display:"flex",gap:10}}>
+              <button style={{flex:1,padding:14,background:GRNT,border:"none",borderRadius:8,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={sluit}>✓ Opslaan</button>
+              <button style={{flex:1,padding:14,background:"none",border:`1px solid ${KBDR}`,borderRadius:8,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={()=>setConfPartij(false)}>Annuleer</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"#152015",flexShrink:0}}>
         {[["spelen","⚪ Spelen"],["stats","📊 Stats"],["data","🗂 Data"],["log","📋 Log"]].map(([k,l])=>(
-          <button key={k} style={{flex:1,padding:"12px 0",background:tab===k?"#1c2c1c":"none",border:"none",color:tab===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===k?`2px solid ${GOUD}`:"2px solid transparent"}}
-            onClick={()=>setTab(k)}>{l}</button>
+          <button key={k} style={{flex:1,padding:"11px 0",background:tab===k?"#1c2c1c":"none",border:"none",color:tab===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===k?`2px solid ${GOUD}`:"2px solid transparent"}} onClick={()=>setTab(k)}>{l}</button>
         ))}
       </div>
 
-      <div style={{padding:"16px 14px"}}>
-
-        {/* ══ SPELEN ══ */}
-        {tab==="spelen"&&(
-          <div>
-            {/* FASE: Setup */}
-            {fase==="setup"&&(
-              <div style={{background:KBG,border:`1px solid ${GOUD}`,borderRadius:12,padding:"20px 16px",marginBottom:14}}>
-                <div style={{fontSize:16,fontWeight:"bold",color:GOUD,marginBottom:16,textAlign:"center"}}>🎱 Nieuwe partij instellen</div>
-                
-                <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:10}}>Sessie type</div>
-                <div style={{display:"flex",gap:6,marginBottom:20}}>
-                  {SESSIE_TYPES.map(t=>(
-                    <button key={t.label} style={{flex:1,padding:"8px 4px",background:sessieType===t.label?"#2d4a1e":"none",border:`1px solid ${sessieType===t.label?GOUD:KBDR}`,borderRadius:8,color:sessieType===t.label?GOUD:WITD,fontSize:10,cursor:"pointer",fontFamily:"inherit",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}
-                      onClick={()=>setSessieType(t.label)}>
-                      <span>{t.emoji}</span><span>{t.label}</span>
-                    </button>
-                  ))}
-                </div>
-
-                <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:10}}>Partij doel</div>
-                <div style={{display:"flex",gap:8,marginBottom:14}}>
-                  <button style={{flex:1,padding:"10px 8px",background:doelType==="beurten"?"#2d4a1e":"none",border:`1px solid ${doelType==="beurten"?GOUD:KBDR}`,borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                    onClick={()=>setDoelType("beurten")}>🎯 Beurten</button>
-                  <button style={{flex:1,padding:"10px 8px",background:doelType==="caramboles"?"#2d4a1e":"none",border:`1px solid ${doelType==="caramboles"?GOUD:KBDR}`,borderRadius:8,color:doelType==="caramboles"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                    onClick={()=>setDoelType("caramboles")}>⚪ Caramboles</button>
-                </div>
-
-                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:16,marginBottom:20}}>
-                  <button style={{width:44,height:44,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer"}}
-                    onClick={()=>setDoelAantal(n=>Math.max(1,n-5))}>−</button>
-                  <div style={{textAlign:"center"}}>
-                    <div style={{fontSize:48,fontWeight:"bold",color:WIT,lineHeight:1}}>{doelAantal}</div>
-                    <div style={{fontSize:12,color:WITD,marginTop:4}}>{doelType==="beurten"?"beurten":"caramboles"}</div>
-                  </div>
-                  <button style={{width:44,height:44,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer"}}
-                    onClick={()=>setDoelAantal(n=>n+5)}>+</button>
-                </div>
-
-                <div style={{display:"flex",gap:8,marginBottom:8}}>
-                  {(doelType==="beurten"?[15,20,25,30]:[50,75,100,150]).map(n=>(
-                    <button key={n} style={{flex:1,padding:"6px 0",background:doelAantal===n?"#2d4a1e":"none",border:`1px solid ${doelAantal===n?GOUD:KBDR}`,borderRadius:6,color:doelAantal===n?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12}}
-                      onClick={()=>setDoelAantal(n)}>{n}</button>
-                  ))}
-                </div>
-
-                <button style={{width:"100%",marginTop:16,padding:16,background:`linear-gradient(135deg,${GOUD},${GOUDL})`,border:"none",borderRadius:10,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
-                  onClick={startPartij}>🎱 Partij starten</button>
-              </div>
-            )}
-
-            {/* Sessie type (alleen zichtbaar als partij bezig) */}
-            {fase!=="setup"&&(<div style={{display:"flex",gap:6,marginBottom:14}}>
-              {SESSIE_TYPES.map(t=>(
-                <button key={t.label} style={{flex:1,padding:"6px 4px",background:sessieType===t.label?"#2d4a1e":"none",border:`1px solid ${sessieType===t.label?GOUD:KBDR}`,borderRadius:8,color:sessieType===t.label?GOUD:WITD,fontSize:10,cursor:"pointer",fontFamily:"inherit",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}
-                  onClick={()=>setSessieType(t.label)}>
-                  <span>{t.emoji}</span><span>{t.label}</span>
-                </button>
-              ))}
-            </div>)}
-
-            {/* Top rij - alleen tonen als partij bezig */}
-            {fase!=="setup"&&(<div style={{display:"flex",gap:10,marginBottom:14,alignItems:"stretch"}}>
-              <div style={{flex:1,background:KBG,border:`1px solid ${KBDR}`,borderRadius:12,padding:14}}>
-                <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:4}}>Deze partij</div>
-                <div style={{display:"flex",alignItems:"baseline",gap:5}}>
-                  <span style={{fontSize:28,fontWeight:"bold",color:WIT}}>{statsLopend?statsLopend.totCar:0}</span>
-                  <span style={{fontSize:11,color:WITD}}>car.</span>
-                </div>
-                <div style={{fontSize:13,color:GOUD,fontWeight:"bold",marginTop:4}}>
-                  {statsLopend?statsLopend.totPunten:0} pt
-                  {statsLopend&&<span style={{fontSize:12,color:GOUDL,fontWeight:"normal"}}> · gem {statsLopend.gemPerBeurt}</span>}
-                </div>
-                {statsLopend&&statsLopend.opbouw5>0&&(
-                  <div style={{fontSize:12,color:GRNT,marginTop:2}}>🎯 {statsLopend.opbouw5}/{statsLopend.aantalBeurten} opbouw</div>
-                )}
-              </div>
-              <button style={{flex:1,padding:"14px 12px",background:`linear-gradient(155deg,${GOUD},${GOUDL})`,border:"none",borderRadius:12,color:G,cursor:"pointer",fontFamily:"inherit",boxShadow:"0 6px 24px rgba(201,168,76,0.4)",textAlign:"center",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,minHeight:100}}
-                onClick={gaVooruit}>
-                <div style={{fontSize:11,fontWeight:"bold",opacity:0.65,letterSpacing:2,textTransform:"uppercase"}}>Beurt {beurtNummer}</div>
-                <div style={{fontSize:17,fontWeight:"bold",textAlign:"center",lineHeight:1.3}}>{fase==="invoer"?"Vastleggen & volgende":fase==="gemist"?"✓ Vastleggen":"✓ Beurt noteren"}</div>
-                <div style={{fontSize:11,opacity:0.7,marginTop:2,color:G}}>{fase==="invoer"?"Ga naar opmerkingen →":fase==="gemist"?"Dan naar wat goed ging →":"Opslaan en volgende beurt"}</div>
-                <div style={{fontSize:12,opacity:0.7,marginTop:2}}>{caramboles} car{puntenNu>0?` · +${puntenNu}pt`:caramboles===0?" · poedel":""}</div>
-              </button>
-            </div>)}
-
-            {fase!=="setup"&&<div style={{textAlign:"center",color:GOUD,fontSize:14,marginBottom:14,minHeight:20}}>{feedback||"\u00A0"}</div>}
-
-            {/* FASE: Invoer */}
-            {fase!=="setup"&&fase==="invoer"&&(
-              <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>Caramboles beurt {beurtNummer}</div>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:16,marginBottom:8}}>
-                  <button style={{width:52,height:52,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:28,cursor:"pointer"}}
-                    onClick={()=>{const n=Math.max(0,caramboles-1);setCaramboles(n);setInputWaarde(String(n));}}>−</button>
-                  <input
-                    ref={inputRef}
-                    type="number"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    value={inputWaarde}
-                    onChange={e=>verwerkInput(e.target.value)}
-                    onFocus={e=>e.target.select()}
-                    onKeyDown={e=>{if(e.key==="Enter")gaVooruit();}}
-                    style={{width:90,fontSize:52,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:`2px solid ${GOUD}`,textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:4}}
-                  />
-                  <button style={{width:52,height:52,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:28,cursor:"pointer"}}
-                    onClick={()=>{const n=caramboles+1;setCaramboles(n);setInputWaarde(String(n));}}>+</button>
-                </div>
-                <div style={{textAlign:"center",fontSize:13,color:GOUD,minHeight:20}}>
-                  {caramboles===0?"Typ of tik + voor elke carambole":caramboles<3?`Nog ${3-caramboles} voor een punt`:`${puntenNu} punt${puntenNu!==1?"en":""} ✓${caramboles>=5?" 🎯":""}`}
-                </div>
-              </div>
-            )}
-
-            {/* FASE: Gemist */}
-            {fase==="gemist"&&(
-              <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                <OpmKnoppen titel="Gemist door:" lijst={GEMIST} geselecteerd={geselecteerd} kleur={ROOD} toggle={toggleOpmerking}/>
-                {geselecteerd.size>0&&<button style={{background:"none",border:"none",color:WITD,fontSize:11,cursor:"pointer",fontFamily:"inherit",padding:"5px 0"}}
-                  onClick={()=>setGeselecteerd(new Set())}>✕ Wis selectie</button>}
-              </div>
-            )}
-
-            {/* FASE: Goed */}
-            {fase==="goed"&&(
-              <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                <OpmKnoppen titel="Wat ging goed:" lijst={GOED} geselecteerd={geselecteerd} kleur={GRNT} toggle={toggleOpmerking}/>
-                {[...geselecteerd].filter(k=>k.startsWith("GOED__")).length>0&&
-                  <button style={{background:"none",border:"none",color:WITD,fontSize:11,cursor:"pointer",fontFamily:"inherit",padding:"5px 0"}}
-                    onClick={()=>{const n=new Set([...geselecteerd].filter(k=>k.startsWith("GEMIST__")));setGeselecteerd(n);}}>✕ Wis goed-selectie</button>}
-              </div>
-            )}
-
-            {/* Stap indicator */}
-            {fase!=="setup"&&(<div style={{display:"flex",gap:8,marginBottom:14,justifyContent:"center"}}>
-              {["invoer","gemist","goed"].map((f,i)=>(
-                <div key={f} style={{width:8,height:8,borderRadius:"50%",background:fase===f?GOUD:KBDR}}/>
-              ))}
-            </div>)}
-
-            {/* Lopende partij */}
-            {lopendePartij.length>0&&(
-              <div style={{background:KBG,border:`1px solid ${GOUD}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-                  <span style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD}}>Lopende partij · {lopendePartij.length} beurten</span>
-                  <button style={{background:"none",border:`1px solid ${KBDR}`,color:WITD,padding:"4px 10px",borderRadius:6,cursor:"pointer",fontSize:11,fontFamily:"inherit"}}
-                    onClick={verwijderLaatste}>↩ Ongedaan</button>
-                </div>
-                {statsLopend&&<div style={{display:"flex",gap:14,flexWrap:"wrap",fontSize:12,color:WITD,marginBottom:10}}>
-                  <span>Max <b>{statsLopend.max}</b></span>
-                  <span>Gem <b>{statsLopend.gemPerBeurt}</b></span>
-                  <span>Poedels <b>{statsLopend.poedels}</b></span>
-                  <span style={{color:GRNT}}>🎯 <b>{statsLopend.opbouw5}</b>×5+</span>
-                </div>}
-                <Grafiek beurten={lopendePartij}/>
-                {!bevestigPartij
-                  ?<button style={{width:"100%",marginTop:12,padding:12,background:"none",border:`1px solid ${GOUD}`,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-                    onClick={()=>setBevestigPartij(true)}>🏁 Partij afsluiten ({lopendePartij.length} beurten)</button>
-                  :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"14px 16px"}}>
-                    <div style={{fontSize:13,color:"#e06060",marginBottom:12}}>Partij afsluiten met {lopendePartij.length} beurten?</div>
-                    <div style={{display:"flex",gap:10}}>
-                      <button style={{flex:1,padding:10,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:13}} onClick={sluitPartijAf}>Ja, afsluiten</button>
-                      <button style={{flex:1,padding:10,background:"none",border:`1px solid ${KBDR}`,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}} onClick={()=>setBevestigPartij(false)}>Annuleer</button>
-                    </div>
-                  </div>}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ══ STATS ══ */}
-        {tab==="stats"&&(
-          <div>
-            {!statsAlles&&!statsLopend
-              ?<div style={{textAlign:"center",color:WITD,padding:"40px 20px",fontSize:16,lineHeight:1.8}}>Nog geen beurten.<br/>Ga spelen! ⚪🔴🟡</div>
-              :<>
-                {statsLopend&&(
-                  <div style={{background:KBG,border:`2px solid ${GOUD}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                    <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>⏳ Lopende partij · {statsLopend.aantalBeurten} beurten</div>
-                    <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:14}}>
-                      {[["Caramboles",statsLopend.totCar],["Hoogste serie",statsLopend.max],["Beurten",statsLopend.aantalBeurten],["Gem. / beurt",statsLopend.gemPerBeurt],["Poedels",statsLopend.poedels],["Punten",statsLopend.totPunten]].map(([l,v])=>(
-                        <div key={l} style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 12px",textAlign:"center"}}>
-                          <div style={{fontSize:28,fontWeight:"bold",color:GOUD}}>{v}</div>
-                          <div style={{fontSize:11,color:WITD,marginTop:4,textTransform:"uppercase",letterSpacing:1}}>{l}</div>
-                        </div>
-                      ))}
-                    </div>
-                    <OpbouwIndicator beurten={lopendePartij}/>
-                    <Grafiek beurten={lopendePartij}/>
-                  </div>
-                )}
-                {statsAlles&&<>
-                  <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                    <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>Alle partijen</div>
-                    <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:14}}>
-                      {[["Totaal beurten",statsAlles.aantalBeurten],["Hoogste serie",statsAlles.max],["Totaal caramboles",statsAlles.totCar],["Gem. / beurt",statsAlles.gemPerBeurt],["Totaal punten",statsAlles.totPunten],["Totaal poedels",statsAlles.poedels]].map(([l,v])=>(
-                        <div key={l} style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 12px",textAlign:"center"}}>
-                          <div style={{fontSize:28,fontWeight:"bold",color:GOUD}}>{v}</div>
-                          <div style={{fontSize:11,color:WITD,marginTop:4,textTransform:"uppercase",letterSpacing:1}}>{l}</div>
-                        </div>
-                      ))}
-                    </div>
-                    <OpbouwIndicator beurten={alleBeurten}/>
-                  </div>
-                  <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                    <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>Per partij</div>
-                    {[...allePartijen].reverse().map((p,i)=><PartijRij key={p.id} partij={p} nr={allePartijen.length-i}/>)}
-                  </div>
-                </>}
-                {!bevestigReset
-                  ?<button style={{width:"100%",padding:12,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit",marginTop:8}}
-                    onClick={()=>setBevestigReset(true)}>🗑 Alle data wissen</button>
-                  :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"14px 16px"}}>
-                    <div style={{fontSize:13,color:"#e06060",marginBottom:12}}>Weet je het zeker? Dit kan niet ongedaan worden.</div>
-                    <div style={{display:"flex",gap:10}}>
-                      <button style={{flex:1,padding:10,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:13}} onClick={resetAlles}>Ja, wis alles</button>
-                      <button style={{flex:1,padding:10,background:"none",border:`1px solid ${KBDR}`,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}} onClick={()=>setBevestigReset(false)}>Annuleer</button>
-                    </div>
-                  </div>}
-          </>}
-          </div>
-        )}
-
-        {/* ══ DATA ══ */}
-        {tab==="data"&&<DataExport allePartijen={allePartijen} lopendePartij={lopendePartij} statsAlles={statsAlles}/>}
-
-        {/* ══ LOG ══ */}
-        {tab==="log"&&(
-          <div>
-            {lopendePartij.length>0&&(
-              <div style={{background:KBG,border:`2px solid ${GOUD}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>⏳ Lopende partij</div>
-                {[...lopendePartij].reverse().map((b,i)=><LogRij key={b.id} b={b} nr={lopendePartij.length-i}/>)}
-              </div>
-            )}
-            {!allePartijen.length&&!lopendePartij.length
-              ?<div style={{textAlign:"center",color:WITD,padding:"40px 20px"}}>Nog geen beurten.</div>
-              :[...allePartijen].reverse().map((p,pi)=>(
-                <div key={p.id} style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px 16px",marginBottom:14}}>
-                  <div style={{fontSize:11,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:12}}>
-                    Partij {allePartijen.length-pi} · {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}
-                    {p.sessieType&&<span style={{marginLeft:8,background:"#2a2010",color:"#a08040",borderRadius:4,padding:"2px 6px",fontWeight:"normal"}}>{p.sessieType}</span>}
-                  </div>
-                  {[...p.beurten].reverse().map((b,i)=><LogRij key={b.id} b={b} nr={p.beurten.length-i}/>)}
-                </div>
-              ))}
-          </div>
-        )}
+      <div style={{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}}>
+        {tab==="spelen"&&<div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}><Spelen/></div>}
+        {tab==="stats"&&<Stats/>}
+        {tab==="data"&&<Data/>}
+        {tab==="log"&&<Log/>}
       </div>
     </div>
   );

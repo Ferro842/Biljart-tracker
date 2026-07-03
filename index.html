@@ -133,14 +133,14 @@ function Grafiek({beurten}){
 
 function OpmGrid({lijst,prefix,kleur,geselecteerd,toggle}){
   return(
-    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:7,padding:"10px 12px"}}>
+    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:5,padding:"8px 12px"}}>
       {lijst.map(o=>{
         const key=`${prefix}${o.label}`;
         const actief=geselecteerd.has(key);
         return(
           <button key={o.label} onClick={()=>toggle(key)}
-            style={{background:actief?(kleur===ROOD?"#3a1010":"#1a3a1a"):"#1c3019",border:`1px solid ${actief?kleur:KBDR}`,borderRadius:8,padding:"9px 4px",color:actief?kleur:WITD,cursor:"pointer",fontSize:11,display:"flex",flexDirection:"column",alignItems:"center",gap:3,fontFamily:"inherit"}}>
-            <span style={{fontSize:15}}>{o.emoji}</span>
+            style={{background:actief?(kleur===ROOD?"#3a1010":"#1a3a1a"):"#1c3019",border:`1px solid ${actief?kleur:KBDR}`,borderRadius:8,padding:"7px 4px",color:actief?kleur:WITD,cursor:"pointer",fontSize:11,display:"flex",flexDirection:"column",alignItems:"center",gap:2,fontFamily:"inherit"}}>
+            <span style={{fontSize:14}}>{o.emoji}</span>
             <span>{o.label}</span>
           </button>
         );

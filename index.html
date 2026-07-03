@@ -114,9 +114,10 @@ function Grafiek({beurten}){
   const vals=beurten.map(b=>b.caramboles);
   const maxV=Math.max(...vals,1);
   const ppp=Math.max(6,Math.min(18,300/vals.length));
-  const lp=8,tp=12,H=40;
+  const lp=8,tp=16,H=36;
   const W=lp+ppp*(vals.length-1);
   const ps=vals.map((v,i)=>`${lp+i*ppp},${tp+H-(v/maxV)*H}`).join(" ");
+  const fs=vals.length>20?7:vals.length>12?8:9;
   return(
     <div style={{overflowX:"auto"}}>
       <svg width={Math.max(W,40)} height={H+tp+6} style={{overflow:"visible",display:"block"}}>
@@ -124,7 +125,10 @@ function Grafiek({beurten}){
         {vals.map((v,i)=>{
           const cx=lp+i*ppp,cy=tp+H-(v/maxV)*H;
           const k=v>=10?"#ff9f40":v>=8?"#e8c96a":v>=5?GRNT:GOUD;
-          return<circle key={i} cx={cx} cy={cy} r={v>=5?3:2} fill={k}/>;
+          return<g key={i}>
+            <circle cx={cx} cy={cy} r={v>=5?3:2} fill={k}/>
+            <text x={cx} y={cy-5} textAnchor="middle" fontSize={fs} fill={k} fontFamily="Georgia,serif" fontWeight={v>=5?"bold":"normal"}>{v}</text>
+          </g>;
         })}
       </svg>
     </div>
@@ -203,8 +207,7 @@ function BiljartTracker(){
     setData(nd);slaOp(nd);
     setLp(p=>[...p,b]);
     setCar(0);setInp("0");setBeurtNr(n=>n+1);setSel(new Set());setFase("invoer");
-    const f=`Beurt ${beurtNr} · ${car} car${ptsNu>0?` · +${ptsNu}pt`:car===0?" · poedel":""}`;
-    setFb(f);setTimeout(()=>setFb(""),1800);
+
   }
 
   function sluit(){
@@ -387,7 +390,7 @@ function BiljartTracker(){
                 <div style={{fontSize:11,color:car>=5?GRNT:GOUD,marginTop:4}}>
                   {car===0?"Poedel":car<3?`Nog ${3-car} voor een punt`:`${ptsNu} punt${ptsNu!==1?"en":""}${car>=5?" 🎯":""}`}
                 </div>
-                {fb&&<div style={{fontSize:10,color:GOUDL,marginTop:2}}>{fb}</div>}
+
               </div>
               <button style={{width:46,height:46,borderRadius:"50%",background:"none",border:`2px solid ${GOUD}`,color:GOUD,fontSize:24,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
                 onClick={()=>{const n=car+1;setCar(n);setInp(String(n));}}>+</button>

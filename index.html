@@ -288,8 +288,7 @@ Partij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{week
         if(g)rule+=` — Gemist: ${g}`;if(gd)rule+=` — Goed: ${gd}`;r.push(rule);
       });
     });
-    return r.join("
-");
+    return r.join("\n");
   }
 
   async function vraagAI(type){
@@ -301,7 +300,7 @@ Partij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{week
       const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:sys,messages:[{role:"user",content:`Analyseer:\n${bouwTekst()}`}]})});
       const json=await resp.json();
-      setAiRes(json.content?.map(c=>c.text||"").join("")||"Geen resultaat.");
+      setAiRes((json.content||[]).map(c=>c.text||"").join("")||"Geen resultaat.");
     }catch(e){setAiRes("Fout: "+e.message);}
     setAiBezig(false);
   }

@@ -466,6 +466,37 @@ Partij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{week
     return null;
   }
 
+  // ── Partij rij component ──
+  function PartijRij({p,nr}){
+    const [open,setOpen]=useState(false);
+    const st=stat(p.beurten);
+    if(!st)return null;
+    return(
+      <div style={{borderBottom:`1px solid ${KBDR}`}}>
+        <button onClick={()=>setOpen(v=>!v)} style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
+          <div>
+            <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}</div>
+            <div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}🥚 · {st.totPunten}pt · <span style={{color:GRNT}}>🎯{st.opbouw5}×</span></div>
+          </div>
+          <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
+        </button>
+        {open&&(
+          <div style={{paddingBottom:10}}>
+            <Grafiek beurten={p.beurten}/>
+            <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
+              {[["5-7",st.opbouw57,"#4caf50"],["8-9",st.opbouw89,"#e8c96a"],["10+",st.opbouw10,"#ff9f40"]].map(([l,n,k])=>(
+                <div key={l} style={{background:n>0?"#2d4a1e":"#1c2e18",border:`1px solid ${n>0?k:KBDR}`,borderRadius:6,padding:"4px 10px",textAlign:"center",minWidth:48}}>
+                  <div style={{fontSize:16,fontWeight:"bold",color:n>0?k:"#5a7a55"}}>{n}×</div>
+                  <div style={{fontSize:9,color:WITD}}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // ── STATS ──
   function Stats(){
     const allB=alleP.flatMap(p=>p.beurten);
@@ -504,35 +535,7 @@ Partij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{week
         )}
         <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
-          {[...alleP].reverse().map((p,i)=>{
-            const st=stat(p.beurten);
-            const nr=alleP.length-i;
-            const [open,setOpen]=React.useState(false);
-            return st?(
-              <div key={p.id} style={{borderBottom:`1px solid ${KBDR}`}}>
-                <button onClick={()=>setOpen(v=>!v)} style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
-                  <div>
-                    <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}</div>
-                    <div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}🥚 · {st.totPunten}pt · <span style={{color:GRNT}}>🎯{st.opbouw5}×</span></div>
-                  </div>
-                  <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
-                </button>
-                {open&&(
-                  <div style={{paddingBottom:10}}>
-                    <Grafiek beurten={p.beurten}/>
-                    <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
-                      {[["5-7",stat(p.beurten).opbouw57,"#4caf50"],["8-9",stat(p.beurten).opbouw89,"#e8c96a"],["10+",stat(p.beurten).opbouw10,"#ff9f40"]].map(([l,n,k])=>(
-                        <div key={l} style={{background:n>0?"#2d4a1e":"#1c2e18",border:`1px solid ${n>0?k:KBDR}`,borderRadius:6,padding:"4px 10px",textAlign:"center",minWidth:48}}>
-                          <div style={{fontSize:16,fontWeight:"bold",color:n>0?k:"#5a7a55"}}>{n}×</div>
-                          <div style={{fontSize:9,color:WITD}}>{l}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            ):null;
-          })}
+          {[...alleP].reverse().map((p,i)=><PartijRij key={p.id} p={p} nr={alleP.length-i}/>)}
         </div>
         {!confReset
           ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:12,fontFamily:"inherit"}} onClick={()=>setConfReset(true)}>🗑 Alle data wissen</button>

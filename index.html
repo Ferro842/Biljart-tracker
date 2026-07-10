@@ -279,8 +279,7 @@ function BiljartTracker(){
     if(stA)r.push(`TOTAAL: ${alleP.length} partijen · ${stA.totCar}car · gem ${stA.gemPerBeurt} · max ${stA.max} · ${stA.poedels} poedels · ${stA.totPunten}pt`);
     [...alleP].reverse().forEach((p,i)=>{
       const st=stat(p.beurten);
-      r.push(`
-Partij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}`);
+      r.push(`\nPartij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}`);
       if(st)r.push(`${st.aantalBeurten}b · max ${st.max} · gem ${st.gemPerBeurt} · ${st.poedels}x poedel · ${st.totPunten}pt · 🎯${st.opbouw5}x5+`);
       p.beurten.forEach((b,j)=>{
         const g=(b.gemist||[]).join(", "),gd=(b.goed||[]).join(", ");

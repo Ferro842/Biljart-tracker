@@ -89,7 +89,8 @@ const HD=[["2026-04-16T20:00:00Z",[1, 3, 2, 1, 2, 4, 6, 2, 0, 9]],
 ["2026-06-11T20:00:00Z",[1, 2, 0, 1, 0, 2, 1, 1, 5, 6, 2, 3, 0, 3, 3, 6, 7, 0, 12, 3, 0, 12, 4, 4, 4]],
 ["2026-06-16T20:00:00Z",[1, 2, 2, 1, 0, 0, 1, 2, 1, 0, 3, 1, 0, 1, 7, 1, 0, 1, 8, 3, 0, 3, 1, 1, 10, 11, 1, 2, 0, 2]],
 ["2026-06-16T20:30:00Z",[0, 0, 0, 1, 3, 1, 2, 4, 1, 4, 0, 1, 4, 0, 1, 4, 4, 1, 0, 0, 1, 0, 1, 1, 0, 2, 2, 0, 3, 2]],
-["2026-06-19T20:00:00Z",[1, 0, 3, 0, 2, 2, 0, 4, 3, 0, 0, 8, 2, 0, 0, 2, 3, 0, 2, 0, 5, 0, 0, 0, 4, 3, 0, 0, 1, 2, 3, 2, 3, 0, 0, 2, 0, 0, 3, 4]]];
+["2026-06-19T20:00:00Z",[1, 0, 3, 0, 2, 2, 0, 4, 3, 0, 0, 8, 2, 0, 0, 2, 3, 0, 2, 0, 5, 0, 0, 0, 4, 3, 0, 0, 1, 2, 3, 2, 3, 0, 0, 2, 0, 0, 3, 4]],
+["2026-07-10T20:00:00Z",[0,0,5,3,11,2,0,4,5,1,8,3,7,0,2,0,0,2,2,3,1,2,0,3,1]]];
 
 function mkPartijen(){
   return HD.map((p,i)=>({
@@ -247,7 +248,8 @@ function BiljartTracker(){
     if(stA)r.push(`TOTAAL: ${alleP.length} partijen · ${stA.totCar}car · gem ${stA.gemPerBeurt} · max ${stA.max} · ${stA.poedels} poedels · ${stA.totPunten}pt`);
     [...alleP].reverse().forEach((p,i)=>{
       const st=stat(p.beurten);
-      r.push(`\nPartij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}`);
+      r.push(`
+Partij ${alleP.length-i} · ${new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}`);
       if(st)r.push(`${st.aantalBeurten}b · max ${st.max} · gem ${st.gemPerBeurt} · ${st.poedels}x poedel · ${st.totPunten}pt · 🎯${st.opbouw5}x5+`);
       p.beurten.forEach((b,j)=>{
         const g=(b.gemist||[]).join(", "),gd=(b.goed||[]).join(", ");
@@ -255,7 +257,8 @@ function BiljartTracker(){
         if(g)rule+=` — Gemist: ${g}`;if(gd)rule+=` — Goed: ${gd}`;r.push(rule);
       });
     });
-    return r.join("\n");
+    return r.join("
+");
   }
 
   async function vraagAI(type){
@@ -503,10 +506,30 @@ function BiljartTracker(){
           <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
           {[...alleP].reverse().map((p,i)=>{
             const st=stat(p.beurten);
+            const nr=alleP.length-i;
+            const [open,setOpen]=React.useState(false);
             return st?(
-              <div key={p.id} style={{borderBottom:`1px solid ${KBDR}`,padding:"7px 0",fontSize:12}}>
-                <div style={{color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{alleP.length-i}</div>
-                <div style={{color:WITD,marginTop:1}}>{st.aantalBeurten}b · max {st.max} · gem {st.gemPerBeurt} · {st.poedels}x 🥚 · {st.totPunten}pt · <span style={{color:GRNT}}>🎯{st.opbouw5}×</span></div>
+              <div key={p.id} style={{borderBottom:`1px solid ${KBDR}`}}>
+                <button onClick={()=>setOpen(v=>!v)} style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
+                  <div>
+                    <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}</div>
+                    <div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}🥚 · {st.totPunten}pt · <span style={{color:GRNT}}>🎯{st.opbouw5}×</span></div>
+                  </div>
+                  <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
+                </button>
+                {open&&(
+                  <div style={{paddingBottom:10}}>
+                    <Grafiek beurten={p.beurten}/>
+                    <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
+                      {[["5-7",stat(p.beurten).opbouw57,"#4caf50"],["8-9",stat(p.beurten).opbouw89,"#e8c96a"],["10+",stat(p.beurten).opbouw10,"#ff9f40"]].map(([l,n,k])=>(
+                        <div key={l} style={{background:n>0?"#2d4a1e":"#1c2e18",border:`1px solid ${n>0?k:KBDR}`,borderRadius:6,padding:"4px 10px",textAlign:"center",minWidth:48}}>
+                          <div style={{fontSize:16,fontWeight:"bold",color:n>0?k:"#5a7a55"}}>{n}×</div>
+                          <div style={{fontSize:9,color:WITD}}>{l}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ):null;
           })}

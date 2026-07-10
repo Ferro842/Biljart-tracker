@@ -634,35 +634,32 @@ function BiljartTracker(){
     );
   }
 
-  const LOGO_SVG = '<svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <radialGradient id="logobg" cx="50%" cy="50%"><stop offset="0%" stop-color="#1e3a1e"/><stop offset="100%" stop-color="#0d1f0d"/></radialGradient>
-    <radialGradient id="logowit" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#c0b890"/></radialGradient>
-    <radialGradient id="logorood" cx="35%" cy="30%"><stop offset="0%" stop-color="#f07070"/><stop offset="100%" stop-color="#901010"/></radialGradient>
-    <radialGradient id="logogeel" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5e060"/><stop offset="100%" stop-color="#a07010"/></radialGradient>
-    <linearGradient id="keu1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="40%" stop-color="#3d1f00"/><stop offset="100%" stop-color="#6b3a10"/></linearGradient>
-    <linearGradient id="keu2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#1a1a1a"/><stop offset="40%" stop-color="#3d1f00"/><stop offset="100%" stop-color="#6b3a10"/></linearGradient>
-  </defs>
-  <circle cx="50" cy="50" r="49" fill="url(#logobg)"/>
-  <circle cx="50" cy="50" r="49" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
-  <!-- Keu links-boven naar rechts-onder: dun boven, dik onder -->
-  <line x1="15" y1="10" x2="85" y2="90" stroke="url(#keu1)" stroke-width="2" stroke-linecap="round"/>
-  <line x1="20" y1="20" x2="85" y2="90" stroke="url(#keu1)" stroke-width="4" stroke-linecap="round"/>
-  <line x1="30" y1="35" x2="85" y2="90" stroke="url(#keu1)" stroke-width="6" stroke-linecap="round"/>
-  <!-- Keu rechts-boven naar links-onder: dun boven, dik onder -->
-  <line x1="85" y1="10" x2="15" y2="90" stroke="url(#keu2)" stroke-width="2" stroke-linecap="round"/>
-  <line x1="80" y1="20" x2="15" y2="90" stroke="url(#keu2)" stroke-width="4" stroke-linecap="round"/>
-  <line x1="70" y1="35" x2="15" y2="90" stroke="url(#keu2)" stroke-width="6" stroke-linecap="round"/>
-  <!-- Rode bal boven midden -->
-  <circle cx="50" cy="26" r="14" fill="url(#logorood)"/>
-  <circle cx="44" cy="20" r="4" fill="white" opacity="0.28"/>
-  <!-- Witte bal links midden -->
-  <circle cx="24" cy="63" r="14" fill="url(#logowit)"/>
-  <circle cx="18" cy="57" r="4" fill="white" opacity="0.45"/>
-  <!-- Gele bal rechts midden -->
-  <circle cx="76" cy="63" r="14" fill="url(#logogeel)"/>
-  <circle cx="70" cy="57" r="4" fill="white" opacity="0.4"/>
-</svg>';
+  const LOGO_SVG = [
+  '<svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">',
+  '<defs>',
+  '<radialGradient id="logobg" cx="50%" cy="50%"><stop offset="0%" stop-color="#1e3a1e"/><stop offset="100%" stop-color="#0d1f0d"/></radialGradient>',
+  '<radialGradient id="logowit" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#c0b890"/></radialGradient>',
+  '<radialGradient id="logorood" cx="35%" cy="30%"><stop offset="0%" stop-color="#f07070"/><stop offset="100%" stop-color="#901010"/></radialGradient>',
+  '<radialGradient id="logogeel" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5e060"/><stop offset="100%" stop-color="#a07010"/></radialGradient>',
+  '<linearGradient id="keu1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#111"/><stop offset="50%" stop-color="#3d1f00"/><stop offset="100%" stop-color="#6b3a10"/></linearGradient>',
+  '<linearGradient id="keu2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#111"/><stop offset="50%" stop-color="#3d1f00"/><stop offset="100%" stop-color="#6b3a10"/></linearGradient>',
+  '</defs>',
+  '<circle cx="50" cy="50" r="49" fill="url(#logobg)"/>',
+  '<circle cx="50" cy="50" r="49" fill="none" stroke="#c9a84c" stroke-width="1.5"/>',
+  '<line x1="15" y1="8" x2="82" y2="88" stroke="url(#keu1)" stroke-width="2" stroke-linecap="round"/>',
+  '<line x1="20" y1="20" x2="82" y2="88" stroke="url(#keu1)" stroke-width="4" stroke-linecap="round"/>',
+  '<line x1="32" y1="38" x2="82" y2="88" stroke="url(#keu1)" stroke-width="7" stroke-linecap="round"/>',
+  '<line x1="85" y1="8" x2="18" y2="88" stroke="url(#keu2)" stroke-width="2" stroke-linecap="round"/>',
+  '<line x1="80" y1="20" x2="18" y2="88" stroke="url(#keu2)" stroke-width="4" stroke-linecap="round"/>',
+  '<line x1="68" y1="38" x2="18" y2="88" stroke="url(#keu2)" stroke-width="7" stroke-linecap="round"/>',
+  '<circle cx="50" cy="26" r="14" fill="url(#logorood)"/>',
+  '<circle cx="44" cy="20" r="4" fill="white" opacity="0.28"/>',
+  '<circle cx="24" cy="63" r="14" fill="url(#logowit)"/>',
+  '<circle cx="18" cy="57" r="4" fill="white" opacity="0.45"/>',
+  '<circle cx="76" cy="63" r="14" fill="url(#logogeel)"/>',
+  '<circle cx="70" cy="57" r="4" fill="white" opacity="0.4"/>',
+  '</svg>'
+].join('');
 
   return(
     <div className="app">

@@ -107,13 +107,26 @@ function stat(beurten){
 }
 
 async function laadData(){
+  // Probeer window.storage (Claude app)
   try{
-    const r=await window.storage.get(SK);
-    if(r){const d=JSON.parse(r.value);if(d.partijen&&d.partijen.length>0)return d;}
+    if(window.storage){
+      const r=await window.storage.get(SK);
+      if(r){const d=JSON.parse(r.value);if(d.partijen&&d.partijen.length>0)return d;}
+    }
+  }catch(e){}
+  // Fallback naar localStorage (GitHub Pages)
+  try{
+    const s=localStorage.getItem(SK);
+    if(s){const d=JSON.parse(s);if(d.partijen&&d.partijen.length>0)return d;}
   }catch(e){}
   return{huidigeId:900,partijen:mkPartijen()};
 }
-async function slaOp(d){try{await window.storage.set(SK,JSON.stringify(d));}catch(e){}}
+async function slaOp(d){
+  // Probeer window.storage (Claude app)
+  try{if(window.storage)await window.storage.set(SK,JSON.stringify(d));}catch(e){}
+  // Fallback naar localStorage (GitHub Pages)
+  try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){}
+}
 
 function Grafiek({beurten}){
   if(!beurten||beurten.length<2)return null;

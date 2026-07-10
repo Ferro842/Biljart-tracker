@@ -585,15 +585,16 @@ function BiljartTracker(){
         </button>
         <button style={{width:"100%",padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontSize:11,fontFamily:"inherit",marginBottom:8}}
           onClick={function(){
-            var keys=["biljart-tracker-v2","biljart-tracker-v1","biljart-tracker"];
-            var out="LocalStorage inhoud:\n";
-            keys.forEach(function(k){
-              var v=localStorage.getItem(k);
-              if(v){out+=k+": "+v.length+" chars, "+JSON.parse(v).partijen.length+" partijen\n";}
-              else{out+=k+": leeg\n";}
-            });
-            alert(out);
-          }}>Debug: check localStorage</button>
+            var s=localStorage.getItem("biljart-tracker-v2");
+            if(!s){alert("Geen data gevonden!");return;}
+            var d=JSON.parse(s);
+            var p=d.partijen[d.partijen.length-1];
+            var b=p.beurten[0];
+            alert("Laatste partij: "+new Date(p.datum).toLocaleDateString("nl-NL")+
+              "\nAantal beurten: "+p.beurten.length+
+              "\nEerste beurt: "+JSON.stringify(b)+
+              "\nHuidigeId: "+d.huidigeId);
+          }}>Debug: bekijk data</button>
         {toonData&&(
           <div>
             <div style={{fontSize:10,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>

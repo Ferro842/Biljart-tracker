@@ -570,6 +570,45 @@ function BiljartTracker(){
     );
   }
 
+  // ── DATA ──
+  function Data(){
+    const dataTekst=bouwTekst();
+    return(
+      <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:10}}>AI Analyse</div>
+          <div style={{display:"flex",gap:8,marginBottom:aiRes?12:0}}>
+            <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
+              onClick={function(){vraagAI("partij");}} disabled={aiBezig}>{aiBezig&&aiType==="partij"?"Laden...":"Partij analyse"}</button>
+            <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
+              onClick={function(){vraagAI("trend");}} disabled={aiBezig}>{aiBezig&&aiType==="trend"?"Laden...":"Trend analyse"}</button>
+          </div>
+          {aiRes&&(
+            <div style={{background:"#1a2e1a",border:"1px solid "+KBDR,borderRadius:8,padding:12,fontSize:12,color:WITD,lineHeight:1.7,whiteSpace:"pre-wrap",marginTop:12}}>
+              {aiRes}
+              <button style={{display:"block",marginTop:8,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,padding:"4px 10px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}
+                onClick={function(){kopieer(aiRes,"ai");}}>
+                {gekopieerd==="ai"?"Gekopieerd!":"Kopieer analyse"}
+              </button>
+            </div>
+          )}
+        </div>
+        <button style={{width:"100%",padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:10,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",marginBottom:12}}
+          onClick={function(){kopieer(dataTekst,"data");setToonData(function(v){return !v;});}}>
+          {gekopieerd==="data"?"Gekopieerd!":"Kopieer data"}
+        </button>
+        {toonData&&(
+          <div>
+            <div style={{fontSize:10,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>
+            <textarea readOnly value={dataTekst}
+              onClick={function(e){e.target.select();}}
+              style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:10,padding:8,fontFamily:"monospace",resize:"none"}}/>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // ── LOG ──
   function LogPartijRij({p,nr}){
     const [open,setOpen]=useState(false);

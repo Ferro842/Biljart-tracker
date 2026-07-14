@@ -626,6 +626,15 @@ function BiljartTracker(){
             var raw=s.slice(0,300);
             alert("Eerste 300 chars:\n"+raw);
           }}>Debug: toon ruwe data</button>
+        <button style={{width:"100%",padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontSize:11,fontFamily:"inherit",marginBottom:8,marginTop:8}}
+          onClick={function(){
+            var out="Exacte keys:\n";
+            for(var i=0;i<localStorage.length;i++){
+              var k=localStorage.key(i);
+              out+=i+": ["+k+"] ("+localStorage.getItem(k).length+" chars)\n";
+            }
+            alert(out);
+          }}>Debug: exacte keys</button>
         {toonData&&(
           <div>
             <div style={{fontSize:10,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>

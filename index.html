@@ -240,6 +240,28 @@ function PartijRij({p,nr}){
   );
 }
 
+function LogPartijRij({p,nr}){
+  const [open,setOpen]=useState(false);
+  const st=stat(p.beurten);
+  return(
+    <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,marginBottom:10}}>
+      <button onClick={function(){setOpen(function(v){return !v;});}}
+        style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
+        <div>
+          <div style={{fontSize:13,color:GOUD}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}</div>
+          {st&&<div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
+        </div>
+        <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
+      </button>
+      {open&&(
+        <div style={{padding:"0 14px 12px"}}>
+          {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i}/>;}) }
+        </div>
+      )}
+    </div>
+  );
+}
+
 function BiljartTracker(){
   const [data,setData]=useState(null);
   const [tab,setTab]=useState("spelen");
@@ -610,28 +632,6 @@ function BiljartTracker(){
   }
 
   // ── LOG ──
-  function LogPartijRij({p,nr}){
-    const [open,setOpen]=useState(false);
-    const st=stat(p.beurten);
-    return(
-      <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,marginBottom:10}}>
-        <button onClick={function(){setOpen(function(v){return !v;});}}
-          style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
-          <div>
-            <div style={{fontSize:13,color:GOUD}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}</div>
-            {st&&<div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
-          </div>
-          <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
-        </button>
-        {open&&(
-          <div style={{padding:"0 14px 12px"}}>
-            {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i}/>;}) }
-          </div>
-        )}
-      </div>
-    );
-  }
-
   function Log(){
     return(
       <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
@@ -651,27 +651,29 @@ function BiljartTracker(){
   const LOGO_SVG = [
   '<svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">',
   '<defs>',
-  '<radialGradient id="logobg" cx="50%" cy="50%"><stop offset="0%" stop-color="#1e3a1e"/><stop offset="100%" stop-color="#0d1f0d"/></radialGradient>',
-  '<radialGradient id="logowit" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#c0b890"/></radialGradient>',
-  '<radialGradient id="logorood" cx="35%" cy="30%"><stop offset="0%" stop-color="#f07070"/><stop offset="100%" stop-color="#901010"/></radialGradient>',
-  '<radialGradient id="logogeel" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5e060"/><stop offset="100%" stop-color="#a07010"/></radialGradient>',
-  '<linearGradient id="keu1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#111"/><stop offset="50%" stop-color="#3d1f00"/><stop offset="100%" stop-color="#6b3a10"/></linearGradient>',
-  '<linearGradient id="keu2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#111"/><stop offset="50%" stop-color="#3d1f00"/><stop offset="100%" stop-color="#6b3a10"/></linearGradient>',
+  '<radialGradient id="lbg" cx="50%" cy="50%"><stop offset="0%" stop-color="#1e3a1e"/><stop offset="100%" stop-color="#0d1f0d"/></radialGradient>',
+  '<radialGradient id="lw" cx="35%" cy="30%"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#c0b890"/></radialGradient>',
+  '<radialGradient id="lr" cx="35%" cy="30%"><stop offset="0%" stop-color="#f07070"/><stop offset="100%" stop-color="#901010"/></radialGradient>',
+  '<radialGradient id="ly" cx="35%" cy="30%"><stop offset="0%" stop-color="#f5e060"/><stop offset="100%" stop-color="#a07010"/></radialGradient>',
   '</defs>',
-  '<circle cx="50" cy="50" r="49" fill="url(#logobg)"/>',
+  '<circle cx="50" cy="50" r="49" fill="url(#lbg)"/>',
   '<circle cx="50" cy="50" r="49" fill="none" stroke="#c9a84c" stroke-width="1.5"/>',
-  '<line x1="15" y1="8" x2="82" y2="88" stroke="url(#keu1)" stroke-width="2" stroke-linecap="round"/>',
-  '<line x1="20" y1="20" x2="82" y2="88" stroke="url(#keu1)" stroke-width="4" stroke-linecap="round"/>',
-  '<line x1="32" y1="38" x2="82" y2="88" stroke="url(#keu1)" stroke-width="7" stroke-linecap="round"/>',
-  '<line x1="85" y1="8" x2="18" y2="88" stroke="url(#keu2)" stroke-width="2" stroke-linecap="round"/>',
-  '<line x1="80" y1="20" x2="18" y2="88" stroke="url(#keu2)" stroke-width="4" stroke-linecap="round"/>',
-  '<line x1="68" y1="38" x2="18" y2="88" stroke="url(#keu2)" stroke-width="7" stroke-linecap="round"/>',
-  '<circle cx="50" cy="26" r="14" fill="url(#logorood)"/>',
-  '<circle cx="44" cy="20" r="4" fill="white" opacity="0.28"/>',
-  '<circle cx="24" cy="63" r="14" fill="url(#logowit)"/>',
-  '<circle cx="18" cy="57" r="4" fill="white" opacity="0.45"/>',
-  '<circle cx="76" cy="63" r="14" fill="url(#logogeel)"/>',
-  '<circle cx="70" cy="57" r="4" fill="white" opacity="0.4"/>',
+  '<polygon points="12,8 16,8 92,88 86,88" fill="#7a4010" stroke="#3d1500" stroke-width="0.5"/>',
+  '<line x1="17" y1="22" x2="23" y2="16" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>',
+  '<polygon points="12,8 16,8 14,5" fill="#111"/>',
+  '<line x1="24" y1="74" x2="32" y2="74" stroke="#c9a84c" stroke-width="2"/>',
+  '<line x1="26" y1="80" x2="34" y2="80" stroke="#c9a84c" stroke-width="1.5"/>',
+  '<polygon points="88,8 84,8 8,88 14,88" fill="#7a4010" stroke="#3d1500" stroke-width="0.5"/>',
+  '<line x1="83" y1="22" x2="77" y2="16" stroke="#111" stroke-width="2.5" stroke-linecap="round"/>',
+  '<polygon points="88,8 84,8 86,5" fill="#111"/>',
+  '<line x1="76" y1="74" x2="68" y2="74" stroke="#c9a84c" stroke-width="2"/>',
+  '<line x1="74" y1="80" x2="66" y2="80" stroke="#c9a84c" stroke-width="1.5"/>',
+  '<circle cx="50" cy="32" r="14" fill="url(#lr)"/>',
+  '<circle cx="44" cy="26" r="4.5" fill="white" opacity="0.28"/>',
+  '<circle cx="22" cy="68" r="13" fill="url(#lw)"/>',
+  '<circle cx="16" cy="62" r="4" fill="white" opacity="0.45"/>',
+  '<circle cx="78" cy="68" r="13" fill="url(#ly)"/>',
+  '<circle cx="72" cy="62" r="4" fill="white" opacity="0.4"/>',
   '</svg>'
 ].join('');
 

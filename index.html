@@ -176,6 +176,7 @@ function LogRij({b,nr}){
   const isPoedel=b.caramboles===0;
   const heeftGemist=(b.gemist||[]).length>0;
   const heeftGoed=(b.goed||[]).length>0;
+  const oudeOpm=b.opmerking&&b.opmerking!==""?b.opmerking:null;
   return(
     <div style={{borderBottom:"1px solid "+KBDR,padding:"5px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:6}}>
@@ -185,6 +186,7 @@ function LogRij({b,nr}){
           {isPoedel&&<span style={{fontSize:10,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>poedel</span>}
           {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:10,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
           {!isPoedel&&heeftGoed&&(b.goed||[]).map(function(o){return <span key={o} style={{fontSize:10,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
+          {oudeOpm&&<span style={{fontSize:10,background:"#2a3d20",color:GOUD,borderRadius:3,padding:"2px 6px"}}>{oudeOpm}</span>}
         </div>
         {pts(b.caramboles)>0&&<span style={{fontSize:10,color:G,background:GOUD,borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>+{pts(b.caramboles)}pt</span>}
       </div>
@@ -585,15 +587,38 @@ function BiljartTracker(){
         </button>
         <button style={{width:"100%",padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontSize:11,fontFamily:"inherit",marginBottom:8}}
           onClick={function(){
-            var out="Alle localStorage keys:\n";
+            var out="localStorage keys:\n";
             for(var i=0;i<localStorage.length;i++){
               var k=localStorage.key(i);
               var v=localStorage.getItem(k);
-              out+=k+" ("+v.length+" chars)\n";
+              try{
+                var d=JSON.parse(v);
+                var b0=d.partijen&&d.partijen[0]&&d.partijen[0].beurten&&d.partijen[0].beurten[0];
+                out+=k+" ("+d.partijen.length+"p, eerste beurt: "+JSON.stringify(b0)+")\n";
+              }catch(e){out+=k+" ("+v.length+" chars)\n";}
             }
-            if(localStorage.length===0)out="localStorage is leeg!";
+            if(localStorage.length===0)out+="leeg\n";
+            if(window.storage){
+              window.storage.get("biljart-tracker-v2").then(function(r){
+                if(r){
+                  var d=JSON.parse(r.value);
+                  var b0=d.partijen&&d.partijen[0]&&d.partijen[0].beurten&&d.partijen[0].beurten[0];
+                  alert(out+"\nwindow.storage: "+d.partijen.length+"p, eerste beurt: "+JSON.stringify(b0));
+                }else{alert(out+"\nwindow.storage: leeg");}
+              }).catch(function(){alert(out+"\nwindow.storage: fout");});
+            }else{alert(out+"\nwindow.storage: niet beschikbaar");}
+          }}>Debug: check alle opslag</button>
+        <button style={{width:"100%",padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontSize:11,fontFamily:"inherit",marginBottom:8,marginTop:8}}
+          onClick={function(){
+            var s=localStorage.getItem("biljart-tracker-v2");
+            if(!s){alert("Geen data!");return;}
+            var d=JSON.parse(s);
+            var out="Datums eerste 5 partijen:\n";
+            d.partijen.slice(0,5).forEach(function(p,i){
+              out+="P"+(i+1)+": "+new Date(p.datum).toLocaleString("nl-NL")+" ("+p.beurten.length+" beurten)\n";
+            });
             alert(out);
-          }}>Debug: alle keys</button>
+          }}>Debug: bekijk datums</button>
         {toonData&&(
           <div>
             <div style={{fontSize:10,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>

@@ -356,23 +356,30 @@ function Dashboard(){
     return sel.filter(p=>ids.has(p.id));
   },[sel,trimLClamped,trimHClamped]);
 
-  const gems=filt.map(p=>p.gem);
-  const gemGem=gems.length>0?(gems.reduce((a,b)=>a+b,0)/gems.length).toFixed(2):"—";
+  const filtTot=filt.reduce((a,p)=>a+p.tot,0);
+  const filtN=filt.reduce((a,p)=>a+p.n,0);
+  const gemGem=filtN>0?(filtTot/filtN).toFixed(2):"—";
   const b15=Math.round(filt.filter(p=>p.gem>=1.5).length/Math.max(filt.length,1)*100);
   const b20=Math.round(filt.filter(p=>p.gem>=2.0).length/Math.max(filt.length,1)*100);
   const b25=Math.round(filt.filter(p=>p.gem>=2.5).length/Math.max(filt.length,1)*100);
   const b30=Math.round(filt.filter(p=>p.gem>=3.0).length/Math.max(filt.length,1)*100);
 
-  // rolGems: behoudt originele volgorde van sel, null voor weggefilterde partijen
+  // rolGems: behoudt originele volgorde van sel, null voor weggefilterde partijen (voor de puntjes-grafiek, per partij)
   const filtIds=useMemo(()=>new Set(filt.map(p=>p.id)),[filt]);
   const rolGems=sel.map(p=>filtIds.has(p.id)?p.gem:null);
-  const r3=rolGems.map((_,i)=>{
-    const slice=rolGems.slice(Math.max(0,i-2),i+1).filter(v=>v!==null);
-    return slice.length<3?null:parseFloat((slice.reduce((a,b)=>a+b,0)/slice.length).toFixed(2));
+  // rolData: tot/n per partij, voor beurt-gewogen rolling gemiddeldes
+  const rolData=sel.map(p=>filtIds.has(p.id)?{tot:p.tot,n:p.n}:null);
+  const r3=rolData.map((_,i)=>{
+    const slice=rolData.slice(Math.max(0,i-2),i+1).filter(v=>v!==null);
+    if(slice.length<3)return null;
+    const sTot=slice.reduce((a,v)=>a+v.tot,0),sN=slice.reduce((a,v)=>a+v.n,0);
+    return parseFloat((sTot/sN).toFixed(2));
   });
-  const r5=rolGems.map((_,i)=>{
-    const slice=rolGems.slice(Math.max(0,i-4),i+1).filter(v=>v!==null);
-    return slice.length<5?null:parseFloat((slice.reduce((a,b)=>a+b,0)/slice.length).toFixed(2));
+  const r5=rolData.map((_,i)=>{
+    const slice=rolData.slice(Math.max(0,i-4),i+1).filter(v=>v!==null);
+    if(slice.length<5)return null;
+    const sTot=slice.reduce((a,v)=>a+v.tot,0),sN=slice.reduce((a,v)=>a+v.n,0);
+    return parseFloat((sTot/sN).toFixed(2));
   });
 
   // Sessietrend

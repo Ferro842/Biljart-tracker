@@ -400,8 +400,8 @@ function Dashboard({partijen}){
   // Vergelijking eerste vs tweede helft
   const h=Math.floor(sel.length/2);
   const h1=sel.slice(0,h), h2=sel.slice(h);
-  const g1=h1.length?(h1.reduce((a,p)=>a+p.gem,0)/h1.length).toFixed(2):"—";
-  const g2=h2.length?(h2.reduce((a,p)=>a+p.gem,0)/h2.length).toFixed(2):"—";
+  const g1=h1.length?((h1.reduce((a,p)=>a+p.tot,0))/(h1.reduce((a,p)=>a+p.n,0))).toFixed(2):"—";
+  const g2=h2.length?((h2.reduce((a,p)=>a+p.tot,0))/(h2.reduce((a,p)=>a+p.n,0))).toFixed(2):"—";
 
   // Per maand
   const maandGroepen=useMemo(()=>{
@@ -713,7 +713,7 @@ function Dashboard({partijen}){
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
             <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Per maand</div>
             {maandGroepen.map(([naam,ps])=>{
-              const gem=(ps.reduce((a,p)=>a+p.gem,0)/ps.length).toFixed(2);
+              const gem=(ps.reduce((a,p)=>a+p.tot,0)/ps.reduce((a,p)=>a+p.n,0)).toFixed(2);
               const k=parseFloat(gem)>=2.5?GRNT:parseFloat(gem)>=2?GOUD:WITD;
               return(
                 <div key={naam} style={{marginBottom:10}}>

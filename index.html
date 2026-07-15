@@ -86,7 +86,7 @@ const HD=[["2026-04-16T20:00:00Z",[1, 3, 2, 1, 2, 4, 6, 2, 0, 9]],
 
 function mkPartijen(){
   return HD.map((p,i)=>({
-    id:i+1,datum:p[0],
+    id:i+1,datum:p[0],tafel:p[1].length===25?"210":"230",
     beurten:p[1].map((c,j)=>({id:i*1000+j,caramboles:c,gemist:[],goed:[]}))
   }));
 }
@@ -106,6 +106,19 @@ function stat(beurten){
   return{totCar,max:mx,totPunten,aantalBeurten:beurten.length,poedels,gemPerBeurt,opbouw5,opbouw57,opbouw89,opbouw10};
 }
 
+// Vult tafelmaat aan voor partijen die dit veld nog niet hebben (oude data van vóór deze functie).
+// Regel: 25 beurten -> 2,10-tafel, alle overige -> 2,30-tafel.
+function migreerTafels(d){
+  let changed=false;
+  (d.partijen||[]).forEach(function(p){
+    if(!p.tafel){
+      p.tafel=(p.beurten&&p.beurten.length===25)?"210":"230";
+      changed=true;
+    }
+  });
+  return changed;
+}
+
 async function laadData(){
   // Eerst localStorage - nooit overschrijven met HD fallback als data bestaat
   try{
@@ -114,6 +127,7 @@ async function laadData(){
       const d=JSON.parse(s);
       if(d&&d.partijen&&d.partijen.length>0){
         console.log("Geladen uit localStorage: "+d.partijen.length+" partijen");
+        if(migreerTafels(d))await slaOp(d);
         return d;
       }
     }
@@ -126,6 +140,7 @@ async function laadData(){
         const d=JSON.parse(r.value);
         if(d&&d.partijen&&d.partijen.length>0){
           console.log("Geladen uit window.storage: "+d.partijen.length+" partijen");
+          if(migreerTafels(d))await slaOp(d);
           return d;
         }
       }
@@ -215,7 +230,7 @@ function PartijRij({p,nr}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}</div>
+          <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}</div>
           <div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · {st.totPunten}pt · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -307,7 +322,7 @@ function Dashboard({partijen}){
     return (partijen||[]).map(function(p){
       const st=stat(p.beurten);
       if(!st)return null;
-      return{id:p.id,datum:p.datum,tot:st.totCar,n:st.aantalBeurten,max:st.max,poedels:st.poedels,opbouw:st.opbouw5,gem:parseFloat(st.gemPerBeurt),beurten:p.beurten};
+      return{id:p.id,datum:p.datum,tafel:p.tafel||"230",tot:st.totCar,n:st.aantalBeurten,max:st.max,poedels:st.poedels,opbouw:st.opbouw5,gem:parseFloat(st.gemPerBeurt),beurten:p.beurten};
     }).filter(Boolean);
   },[partijen]);
 
@@ -318,8 +333,10 @@ function Dashboard({partijen}){
   const [trimL,setTrimL]=useState(0);
   const [trimH,setTrimH]=useState(0);
   const [tab,setTab]=useState("trend");
+  const [tafelFilter,setTafelFilter]=useState("alle");
 
-  const sel=useMemo(()=>ST.slice(va,tot+1),[ST,va,tot]);
+  const selRange=useMemo(()=>ST.slice(va,tot+1),[ST,va,tot]);
+  const sel=useMemo(()=>tafelFilter==="alle"?selRange:selRange.filter(p=>p.tafel===tafelFilter),[selRange,tafelFilter]);
 
   const maxTrim=Math.max(0,Math.floor((sel.length-1)/2));
   const trimLClamped=Math.min(trimL,maxTrim);
@@ -446,7 +463,7 @@ function Dashboard({partijen}){
   );
 
   return(
-    <div style={{height:"100vh",display:"flex",flexDirection:"column",background:G,fontFamily:"Georgia,serif",color:WIT}}>
+    <div style={{height:"100%",display:"flex",flexDirection:"column",background:G,fontFamily:"Georgia,serif",color:WIT}}>
 
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#0d1f0d,#182e14)",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0}}>
@@ -482,6 +499,15 @@ function Dashboard({partijen}){
             <button key={l} onClick={()=>{setVa(v);setTot(t);}}
               style={{flex:"0 0 auto",padding:"4px 10px",background:"none",border:`1px solid ${KBDR}`,
                 borderRadius:5,color:WITD,fontSize:9,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+              {l}
+            </button>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:5,marginTop:6}}>
+          {[["alle","Alle tafels"],["210","2,10"],["230","2,30"]].map(([k,l])=>(
+            <button key={k} onClick={()=>setTafelFilter(k)}
+              style={{flex:1,padding:"4px 0",background:tafelFilter===k?"#2d4a1e":"none",border:`1px solid ${tafelFilter===k?GOUD:KBDR}`,
+                borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:9,cursor:"pointer",fontFamily:"inherit"}}>
               {l}
             </button>
           ))}
@@ -646,7 +672,7 @@ function Dashboard({partijen}){
                 <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:10}}>
                   {kaart("Opnieuw poedel",Math.round(poedelHerstel.tilt/poedelHerstel.basis*100)+"%",poedelHerstel.tilt+"x",ROOD)}
                   {kaart("Klein herstel",Math.round(poedelHerstel.klein/poedelHerstel.basis*100)+"%",poedelHerstel.klein+"x",GOUD)}
-                  {kaart("Sterk herstel 5+",Math.round(poedelHerstel.sterk/poedelHerstel.basis*100)+"%",poedelHerstel.sterk+"x",GRNT)}
+                  {kaart("Sterk herstel",Math.round(poedelHerstel.sterk/poedelHerstel.basis*100)+"%",poedelHerstel.sterk+"x (5+)",GRNT)}
                 </div>
                 <div style={{fontSize:9,color:WITD}}>Gebaseerd op {poedelHerstel.basis} poedels ({poedelHerstel.totaalPoedels} totaal in selectie)</div>
               </>
@@ -708,7 +734,7 @@ function LogPartijRij({p,nr}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:13,color:GOUD}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}</div>
+          <div style={{fontSize:13,color:GOUD}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}</div>
           {st&&<div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -733,6 +759,7 @@ function BiljartTracker(){
   const [lp,setLp]=useState([]);
   const [doel,setDoel]=useState(25);
   const [doelType,setDoelType]=useState("beurten");
+  const [tafel,setTafel]=useState("230");
   const [confPartij,setConfPartij]=useState(false);
   const [confReset,setConfReset]=useState(false);
   const [aiBezig,setAiBezig]=useState(false);
@@ -767,7 +794,7 @@ function BiljartTracker(){
   function sluit(){
     if(!lp.length){setConfPartij(false);return;}
     const st=stat(lp);
-    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),beurten:lp},st);
+    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,beurten:lp},st);
     const nd={partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1};
     setData(nd);slaOp(nd);
     setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
@@ -788,7 +815,7 @@ function BiljartTracker(){
     alleOmgekeerd.forEach(function(p,i){
       const st=stat(p.beurten);
       r.push("");
-      r.push("Partij "+(alleP.length-i)+" · "+new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"}));
+      r.push("Partij "+(alleP.length-i)+" · "+new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})+(p.tafel?" · Tafel "+(p.tafel==="210"?"2,10x1,05":"2,30x1,15"):""));
       if(st)r.push(st.aantalBeurten+"b · max "+st.max+" · gem "+st.gemPerBeurt+" · "+st.poedels+"x poedel · "+st.totPunten+"pt · "+st.opbouw5+"x5+");
       p.beurten.forEach(function(b,j){
         const g=(b.gemist||[]).join(", ");
@@ -838,6 +865,15 @@ function BiljartTracker(){
       <div style={{flex:1,display:"flex",flexDirection:"column",padding:"12px 14px",gap:10,overflowY:"auto"}}>
         <div style={{textAlign:"center",color:GOUD,fontSize:15,fontWeight:"bold"}}>Nieuwe partij</div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Tafelmaat</div>
+          <div style={{display:"flex",gap:8}}>
+            <button style={{flex:1,padding:"10px 8px",background:tafel==="210"?"#2d4a1e":"none",border:"1px solid "+(tafel==="210"?GOUD:KBDR),borderRadius:8,color:tafel==="210"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+              onClick={function(){setTafel("210");}}>2,10 x 1,05</button>
+            <button style={{flex:1,padding:"10px 8px",background:tafel==="230"?"#2d4a1e":"none",border:"1px solid "+(tafel==="230"?GOUD:KBDR),borderRadius:8,color:tafel==="230"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+              onClick={function(){setTafel("230");}}>2,30 x 1,15</button>
+          </div>
+        </div>
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
           <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Partij doel</div>
           <div style={{display:"flex",gap:8,marginBottom:12}}>
             <button style={{flex:1,padding:"10px 8px",background:doelType==="beurten"?"#2d4a1e":"none",border:"1px solid "+(doelType==="beurten"?GOUD:KBDR),borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
@@ -864,7 +900,7 @@ function BiljartTracker(){
         </div>
         {lp.length>0&&(
           <div style={{background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 14px",fontSize:12,color:WITD}}>
-            Lopende partij: {lp.length} beurten - {totCarLp} car
+            Lopende partij: {lp.length} beurten - {totCarLp} car - tafel {tafel==="210"?"2,10":"2,30"}
             <div style={{display:"flex",gap:8,marginTop:8}}>
               <button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:12}}
                 onClick={function(){setFase("invoer");}}>Doorgaan</button>

@@ -86,7 +86,7 @@ const HD=[["2026-04-16T20:00:00Z",[1, 3, 2, 1, 2, 4, 6, 2, 0, 9]],
 
 function mkPartijen(){
   return HD.map((p,i)=>({
-    id:i+1,datum:p[0],tafel:p[1].length===25?"210":"230",
+    id:i+1,datum:p[0],tafel:(p[1].length===25||p[1].length===40)?"210":"230",
     beurten:p[1].map((c,j)=>({id:i*1000+j,caramboles:c,gemist:[],goed:[]}))
   }));
 }
@@ -108,11 +108,16 @@ function stat(beurten){
 
 // Vult tafelmaat aan voor partijen die dit veld nog niet hebben (oude data van vóór deze functie).
 // Regel: 25 beurten -> 2,10-tafel, alle overige -> 2,30-tafel.
+// Correctie: de partij met 40 beurten was ook op de 2,10-tafel.
 function migreerTafels(d){
   let changed=false;
   (d.partijen||[]).forEach(function(p){
     if(!p.tafel){
       p.tafel=(p.beurten&&p.beurten.length===25)?"210":"230";
+      changed=true;
+    }
+    if(p.beurten&&p.beurten.length===40&&p.tafel!=="210"){
+      p.tafel="210";
       changed=true;
     }
   });

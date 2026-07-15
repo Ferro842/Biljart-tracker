@@ -242,53 +242,10 @@ function PartijRij({p,nr}){
 
 // ── DASHBOARD ──
 
-const PARTIJEN=[
-  {id:1,datum:"16 apr",b:[1,3,2,1,2,4,6,2,0,9]},
-  {id:2,datum:"16 apr",b:[2,2,7,4,0,1,9,2,0,1,1,0,1,0,1,1,1,0,0,4,5,4,0,1,0,1,1,3,1,2]},
-  {id:3,datum:"16 apr",b:[7,2,0,2,1,0,2,0,3,0,0,3,3,0,1,1,2,1,6,1,1,0,7,2,0,1,1,6,0,0]},
-  {id:4,datum:"17 apr",b:[6,8,0,2,1,0,2,9,4,5,2,0,0,0,2,3,0,3,0,0,3,0,17,2,3]},
-  {id:5,datum:"21 apr",b:[3,2,1,2,6,2,5,0,0,1,0,2,1,5,0,0,0,1,1,1,0,1,6,4,0,1,0,1,1,2]},
-  {id:6,datum:"21 apr",b:[1,1,0,0,0,0,6,0,0,0,1,1,9,1,0,0,0,0,0,1,1,5,0,0,0,0,4,2,0,0]},
-  {id:7,datum:"21 apr",b:[2,7,0,4,0,0,0,1,0,1,6,2,1,0,0,1,0,1,0,4,1,0,1,0,2,8,1,3,0,2]},
-  {id:8,datum:"24 apr",b:[17,2,2,1,2,3,0,1,2,0,3,6,0,0,1,1,4,2,1,0,1,2,2,1,0]},
-  {id:9,datum:"1 mei",b:[3,2,0,1,2,0,2,0,1,0,2,0,0,1,1,7,3,8,2,0,7,2,1,2,3]},
-  {id:10,datum:"8 mei",b:[5,4,4,0,1,0,1,3,0,1,0,1,2,3,1,0,6,1,0,4,4,2,4,0,0]},
-  {id:11,datum:"12 mei",b:[2,2,0,0,0,1,0,0,0,4,0,1,0,1,0,2,1,1,1,1,1,6,0,0,2,2,0,1,3,0]},
-  {id:12,datum:"12 mei",b:[7,7,1,4,1,0,4,0,0,0,6,2,1,0,0,2,1,3,1,1,0,0,1,0,2,1,3,0,0,0]},
-  {id:13,datum:"19 mei",b:[2,3,0,2,3,1,5,3,1,4,2,5,0,2,0,0,4,0,1,0,0,0,2,0,2,0,1,2,4,0]},
-  {id:14,datum:"19 mei",b:[0,1,0,1,5,1,1,6,0,2,7,1,0,1,4,1,2,3,4,5,4,0,2,2,0,1,1,7,1,2]},
-  {id:15,datum:"22 mei",b:[0,0,0,3,1,1,0,4,3,1,1,1,3,1,0,4,0,0,1,8,0,3,1,8,4]},
-  {id:16,datum:"27 mei",b:[0,2,10,3,2,5,0,3,1,1,1,3,0,1,2,6,0,3,2,1,0,1,0,0,2,1,0,1,0,0]},
-  {id:17,datum:"27 mei",b:[0,1,0,0,1,0,3,3,0,5,0,6,2,3,1,0,4,1,0,0,3,0,1,0,3,3,0,0,0,1]},
-  {id:18,datum:"27 mei",b:[0,2,0,1,0,1,0,1,0,0,1,0,0,2,1,0,0,3,1,0,0,0,2,0,4,0,0,3,1,1]},
-  {id:19,datum:"29 mei",b:[0,5,2,3,1,0,3,1,1,6,0,1,2,0,4,1,3,2,5,0,0,1,2,4,3]},
-  {id:20,datum:"3 jun",b:[0,0,2,2,1,7,1,0,0,0,0,0,0,4,0,0,0,2,0,7,3,0,2,0,2,3,3,1,0,0]},
-  {id:21,datum:"3 jun",b:[0,8,1,1,1,5,1,6,1,2,2,1,5,4,0,3,3,1,1,0,0,3,0,5,2,2,0,2,2,0]},
-  {id:22,datum:"9 jun",b:[0,1,3,0,0,2,1,3,0,0,0,0,0,3,1,3,4,0,4,1,0,0,5,4,4,0,3,2,2,1]},
-  {id:23,datum:"9 jun",b:[0,0,1,0,0,0,0,1,3,4,0,9,3,2,1,0,3,8,1,3,3,1,1,1,4,1,1,2,1,2]},
-  {id:24,datum:"9 jun",b:[0,1,3,1,4,0,0,0,0,4,3,0,1,9,1,2,0,0,4,3,3]},
-  {id:25,datum:"11 jun",b:[1,2,0,1,0,2,1,1,5,6,2,3,0,3,3,6,7,0,12,3,0,12,4,4,4]},
-  {id:26,datum:"16 jun",b:[1,2,2,1,0,0,1,2,1,0,3,1,0,1,7,1,0,1,8,3,0,3,1,1,10,11,1,2,0,2]},
-  {id:27,datum:"16 jun",b:[0,0,0,1,3,1,2,4,1,4,0,1,4,0,1,4,4,1,0,0,1,0,1,1,0,2,2,0,3,2]},
-  {id:28,datum:"19 jun",b:[1,0,3,0,2,2,0,4,3,0,0,8,2,0,0,2,3,0,2,0,5,0,0,0,4,3,0,0,1,2,3,2,3,0,0,2,0,0,3,4]},
-  {id:29,datum:"10 jul",b:[0,0,5,3,11,2,0,4,5,1,8,3,7,0,2,0,0,2,2,3,1,2,0,3,1]},
-];
-
-function calc(b){
-  const tot=b.reduce((a,v)=>a+v,0);
-  const gem=parseFloat((tot/b.length).toFixed(2));
-  const max=Math.max(...b);
-  const poedels=b.filter(v=>v===0).length;
-  const opbouw=b.filter(v=>v>=5).length;
-  return{tot,gem,max,poedels,opbouw,n:b.length};
-}
-
-const ST=PARTIJEN.map(p=>({...p,...calc(p.b)}));
-
 function DashBalk({pct,kleur,hoogte=8}){
   return(
     <div style={{height:hoogte,background:"#1a3019",borderRadius:4,overflow:"hidden"}}>
-      <div style={{height:hoogte,width:pct+"%",background:kleur,borderRadius:4,transition:"width 0.4s"}}/>
+      <div style={{height:hoogte,width:Math.max(0,Math.min(100,pct))+"%",background:kleur,borderRadius:4,transition:"width 0.4s"}}/>
     </div>
   );
 }
@@ -335,16 +292,34 @@ function DashGrafiek({data,h=70}){
   );
 }
 
-function Dashboard(){
+function maandKey(iso){
+  const MND=["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+  const d=new Date(iso);
+  return MND[d.getMonth()]+" "+d.getFullYear();
+}
+function fmtDatum(iso){
+  return new Date(iso).toLocaleDateString("nl-NL",{day:"numeric",month:"short"});
+}
+
+function Dashboard({partijen}){
+  // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
+  const ST=useMemo(()=>{
+    return (partijen||[]).map(function(p){
+      const st=stat(p.beurten);
+      if(!st)return null;
+      return{id:p.id,datum:p.datum,tot:st.totCar,n:st.aantalBeurten,max:st.max,poedels:st.poedels,opbouw:st.opbouw5,gem:parseFloat(st.gemPerBeurt),beurten:p.beurten};
+    }).filter(Boolean);
+  },[partijen]);
+
   const [va,setVa]=useState(0);
-  const [tot,setTot]=useState(ST.length-1);
+  const [tot,setTot]=useState(Math.max(ST.length-1,0));
   const [w3,setW3]=useState(true);
   const [w5,setW5]=useState(true);
   const [trimL,setTrimL]=useState(0);
   const [trimH,setTrimH]=useState(0);
   const [tab,setTab]=useState("trend");
 
-  const sel=useMemo(()=>ST.slice(va,tot+1),[va,tot]);
+  const sel=useMemo(()=>ST.slice(va,tot+1),[ST,va,tot]);
 
   const maxTrim=Math.max(0,Math.floor((sel.length-1)/2));
   const trimLClamped=Math.min(trimL,maxTrim);
@@ -382,22 +357,77 @@ function Dashboard(){
     return parseFloat((sTot/sN).toFixed(2));
   });
 
-  // Sessietrend
-  const dagen=useMemo(()=>{
-    const m={};
-    sel.forEach(p=>{if(!m[p.datum])m[p.datum]=[];m[p.datum].push(p);});
-    return Object.entries(m).filter(([,ps])=>ps.length>1).map(([dag,ps])=>({
-      dag,ps,
-      trend:ps[ps.length-1].gem>ps[0].gem?"↑":ps[ps.length-1].gem<ps[0].gem?"↓":"=",
-      kleur:ps[ps.length-1].gem>ps[0].gem?GRNT:ps[ps.length-1].gem<ps[0].gem?ROOD:GOUD
-    }));
-  },[sel]);
+  // Maand-blokken voor de snelfilters, dynamisch afgeleid van de echte data
+  const maandBlokken=useMemo(()=>{
+    const blocks=[];
+    ST.forEach((p,i)=>{
+      const key=maandKey(p.datum);
+      const last=blocks[blocks.length-1];
+      if(last&&last.key===key){last.eind=i;}
+      else blocks.push({key,begin:i,eind:i});
+    });
+    return blocks;
+  },[ST]);
+  const quickButtons=useMemo(()=>{
+    const btns=[["Alles",0,Math.max(ST.length-1,0)]];
+    maandBlokken.forEach(b=>btns.push([b.key,b.begin,b.eind]));
+    if(ST.length>10)btns.push(["Laatste 10",ST.length-10,ST.length-1]);
+    return btns;
+  },[ST.length,maandBlokken]);
 
-  // Vergelijking
+  // Vergelijking eerste vs tweede helft
   const h=Math.floor(sel.length/2);
   const h1=sel.slice(0,h), h2=sel.slice(h);
   const g1=h1.length?(h1.reduce((a,p)=>a+p.gem,0)/h1.length).toFixed(2):"—";
   const g2=h2.length?(h2.reduce((a,p)=>a+p.gem,0)/h2.length).toFixed(2):"—";
+
+  // Per maand
+  const maandGroepen=useMemo(()=>{
+    const groups={};
+    sel.forEach(p=>{
+      const k=maandKey(p.datum);
+      if(!groups[k])groups[k]=[];
+      groups[k].push(p);
+    });
+    return Object.entries(groups);
+  },[sel]);
+
+  // ── PATRONEN: tag-analyse, verdeling per beurt, poedel-herstel ──
+  const gemistCounts=useMemo(()=>{
+    const c={};
+    sel.forEach(p=>p.beurten.forEach(b=>(b.gemist||[]).forEach(t=>{c[t]=(c[t]||0)+1;})));
+    return Object.entries(c).sort((a,b)=>b[1]-a[1]);
+  },[sel]);
+  const goedCounts=useMemo(()=>{
+    const c={};
+    sel.forEach(p=>p.beurten.forEach(b=>(b.goed||[]).forEach(t=>{c[t]=(c[t]||0)+1;})));
+    return Object.entries(c).sort((a,b)=>b[1]-a[1]);
+  },[sel]);
+
+  const histData=useMemo(()=>{
+    const buckets=[["0 (poedel)",0,0],["1-2",1,2],["3-4",3,4],["5-7",5,7],["8-9",8,9],["10+",10,Infinity]];
+    const allCar=sel.flatMap(p=>p.beurten.map(b=>b.caramboles));
+    const counts=buckets.map(([label,lo,hi])=>({label,n:allCar.filter(c=>c>=lo&&c<=hi).length}));
+    return{counts,totBeurt:allCar.length};
+  },[sel]);
+
+  const poedelHerstel=useMemo(()=>{
+    let tilt=0,klein=0,sterk=0,totaalPoedels=0,geenVolgende=0;
+    sel.forEach(p=>{
+      const bs=p.beurten;
+      bs.forEach((b,i)=>{
+        if(b.caramboles===0){
+          totaalPoedels++;
+          const next=bs[i+1];
+          if(!next){geenVolgende++;return;}
+          if(next.caramboles===0)tilt++;
+          else if(next.caramboles>=5)sterk++;
+          else klein++;
+        }
+      });
+    });
+    return{tilt,klein,sterk,totaalPoedels,basis:totaalPoedels-geenVolgende};
+  },[sel]);
 
   const kaart=(label,waarde,sub,kleur=GOUD)=>(
     <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
@@ -428,7 +458,7 @@ function Dashboard(){
       <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"#152015",flexShrink:0}}>
         {btn("trend","Trend")}
         {btn("consist","Consistentie")}
-        {btn("sessie","Sessie")}
+        {btn("patronen","Patronen")}
         {btn("vergelijk","Vergelijk")}
       </div>
 
@@ -439,19 +469,19 @@ function Dashboard(){
         </div>
         <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6}}>
           <span style={{fontSize:9,color:WITD,minWidth:14}}>{va+1}</span>
-          <input type="range" min={0} max={ST.length-1} value={va}
+          <input type="range" min={0} max={Math.max(ST.length-1,0)} value={va}
             onChange={e=>setVa(Math.min(+e.target.value,tot-1))}
             style={{flex:1,accentColor:GOUD}}/>
-          <input type="range" min={0} max={ST.length-1} value={tot}
+          <input type="range" min={0} max={Math.max(ST.length-1,0)} value={tot}
             onChange={e=>setTot(Math.max(+e.target.value,va+1))}
             style={{flex:1,accentColor:GOUD}}/>
           <span style={{fontSize:9,color:WITD,minWidth:14}}>{tot+1}</span>
         </div>
-        <div style={{display:"flex",gap:5}}>
-          {[["Alles",0,28],["Apr",0,7],["Mei",8,18],["Jun",19,27],["Laatste 10",19,28]].map(([l,v,t])=>(
+        <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:2}}>
+          {quickButtons.map(([l,v,t])=>(
             <button key={l} onClick={()=>{setVa(v);setTot(t);}}
-              style={{flex:1,padding:"4px 0",background:"none",border:`1px solid ${KBDR}`,
-                borderRadius:5,color:WITD,fontSize:9,cursor:"pointer",fontFamily:"inherit"}}>
+              style={{flex:"0 0 auto",padding:"4px 10px",background:"none",border:`1px solid ${KBDR}`,
+                borderRadius:5,color:WITD,fontSize:9,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
               {l}
             </button>
           ))}
@@ -534,7 +564,7 @@ function Dashboard(){
               <div style={{fontSize:10,color:GRNT,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Beste 5</div>
               {[...filt].sort((a,b)=>b.gem-a.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
-                  <span style={{fontSize:10,color:WITD}}>p{p.id} {p.datum}</span>
+                  <span style={{fontSize:10,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
                   <span style={{fontSize:12,fontWeight:"bold",color:GRNT}}>{p.gem}</span>
                 </div>
               ))}
@@ -543,7 +573,7 @@ function Dashboard(){
               <div style={{fontSize:10,color:ROOD,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Slechtste 5</div>
               {[...filt].sort((a,b)=>a.gem-b.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
-                  <span style={{fontSize:10,color:WITD}}>p{p.id} {p.datum}</span>
+                  <span style={{fontSize:10,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
                   <span style={{fontSize:12,fontWeight:"bold",color:ROOD}}>{p.gem}</span>
                 </div>
               ))}
@@ -551,38 +581,78 @@ function Dashboard(){
           </div>
         </div>}
 
-        {/* SESSIE */}
-        {tab==="sessie"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
+        {/* PATRONEN */}
+        {tab==="patronen"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
+
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
-            <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Trend binnen avond</div>
-            {dagen.length===0
-              ?<div style={{fontSize:12,color:WITD}}>Geen avonden met meerdere partijen in selectie.</div>
-              :dagen.map(({dag,ps,trend,kleur})=>(
-                <div key={dag} style={{marginBottom:14,paddingBottom:14,borderBottom:`1px solid ${KBDR}`}}>
-                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
-                    <span style={{fontSize:12,color:WITD}}>{dag}</span>
-                    <span style={{fontSize:20,color:kleur}}>{trend}</span>
-                  </div>
-                  <div style={{display:"flex",gap:10,alignItems:"center"}}>
-                    {ps.map(p=>(
-                      <div key={p.id} style={{textAlign:"center"}}>
-                        <div style={{fontSize:16,fontWeight:"bold",color:p.gem>=2.5?GRNT:p.gem>=2?GOUD:WITD}}>{p.gem}</div>
-                        <div style={{fontSize:9,color:WITD}}>p{p.id}</div>
+            <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Meest genoteerde redenen</div>
+            {gemistCounts.length===0&&goedCounts.length===0
+              ?<div style={{fontSize:12,color:WITD}}>Nog geen opmerkingen genoteerd in deze selectie.</div>
+              :<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
+                <div>
+                  <div style={{fontSize:10,color:ROOD,marginBottom:6}}>Gemist door</div>
+                  {gemistCounts.length===0?<div style={{fontSize:11,color:WITD}}>—</div>:gemistCounts.slice(0,8).map(([label,n])=>(
+                    <div key={label} style={{marginBottom:6}}>
+                      <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:WITD,marginBottom:2}}>
+                        <span>{label}</span><span>{n}x</span>
                       </div>
-                    ))}
-                  </div>
+                      <DashBalk pct={Math.round(n/gemistCounts[0][1]*100)} kleur={ROOD} hoogte={5}/>
+                    </div>
+                  ))}
                 </div>
-              ))
+                <div>
+                  <div style={{fontSize:10,color:GRNT,marginBottom:6}}>Ging goed door</div>
+                  {goedCounts.length===0?<div style={{fontSize:11,color:WITD}}>—</div>:goedCounts.slice(0,8).map(([label,n])=>(
+                    <div key={label} style={{marginBottom:6}}>
+                      <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:WITD,marginBottom:2}}>
+                        <span>{label}</span><span>{n}x</span>
+                      </div>
+                      <DashBalk pct={Math.round(n/goedCounts[0][1]*100)} kleur={GRNT} hoogte={5}/>
+                    </div>
+                  ))}
+                </div>
+              </div>
             }
           </div>
+
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
-            <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Patroon</div>
-            <div style={{fontSize:12,color:WITD,lineHeight:1.8}}>
-              <div>Avonden met daling: <span style={{color:ROOD,fontWeight:"bold"}}>{dagen.filter(d=>d.trend==="↓").length}</span></div>
-              <div>Avonden met stijging: <span style={{color:GRNT,fontWeight:"bold"}}>{dagen.filter(d=>d.trend==="↑").length}</span></div>
-              <div>Gelijk: <span style={{color:GOUD,fontWeight:"bold"}}>{dagen.filter(d=>d.trend==="=").length}</span></div>
-            </div>
+            <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Verdeling caramboles per beurt</div>
+            {histData.totBeurt===0
+              ?<div style={{fontSize:12,color:WITD}}>Geen beurten in selectie.</div>
+              :<>
+                {histData.counts.map(({label,n})=>{
+                  const pct=Math.round(n/histData.totBeurt*100);
+                  const kleur=label==="0 (poedel)"?"#e08055":label==="10+"?"#ff9f40":label==="8-9"?GOUDL:label==="5-7"?GRNT:GOUD;
+                  return(
+                    <div key={label} style={{marginBottom:10}}>
+                      <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                        <span style={{fontSize:12,color:WITD}}>{label}</span>
+                        <span style={{fontSize:12,fontWeight:"bold",color:kleur}}>{n}x · {pct}%</span>
+                      </div>
+                      <DashBalk pct={pct} kleur={kleur}/>
+                    </div>
+                  );
+                })}
+                <div style={{fontSize:9,color:WITD,marginTop:2}}>{histData.totBeurt} beurten totaal</div>
+              </>
+            }
           </div>
+
+          <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
+            <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Na een poedel</div>
+            {poedelHerstel.basis===0
+              ?<div style={{fontSize:12,color:WITD}}>Geen poedels met vervolgbeurt in selectie.</div>
+              :<>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:10}}>
+                  {kaart("Opnieuw poedel",Math.round(poedelHerstel.tilt/poedelHerstel.basis*100)+"%",poedelHerstel.tilt+"x",ROOD)}
+                  {kaart("Klein herstel",Math.round(poedelHerstel.klein/poedelHerstel.basis*100)+"%",poedelHerstel.klein+"x",GOUD)}
+                  {kaart("Sterk herstel 5+",Math.round(poedelHerstel.sterk/poedelHerstel.basis*100)+"%",poedelHerstel.sterk+"x",GRNT)}
+                </div>
+                <div style={{fontSize:9,color:WITD}}>Gebaseerd op {poedelHerstel.basis} poedels ({poedelHerstel.totaalPoedels} totaal in selectie)</div>
+              </>
+            }
+          </div>
+
         </div>}
 
         {/* VERGELIJK */}
@@ -608,11 +678,7 @@ function Dashboard(){
           </div>
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
             <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Per maand</div>
-            {[["April",sel.filter(p=>p.datum.includes("apr"))],
-              ["Mei",sel.filter(p=>p.datum.includes("mei"))],
-              ["Juni",sel.filter(p=>p.datum.includes("jun"))],
-              ["Juli",sel.filter(p=>p.datum.includes("jul"))]
-            ].filter(([,ps])=>ps.length>0).map(([naam,ps])=>{
+            {maandGroepen.map(([naam,ps])=>{
               const gem=(ps.reduce((a,p)=>a+p.gem,0)/ps.length).toFixed(2);
               const k=parseFloat(gem)>=2.5?GRNT:parseFloat(gem)>=2?GOUD:WITD;
               return(
@@ -1113,7 +1179,7 @@ function BiljartTracker(){
         {tab==="stats"&&<Stats/>}
         {tab==="data"&&<Data/>}
         {tab==="log"&&<Log/>}
-        {tab==="dash"&&<Dashboard/>}
+        {tab==="dash"&&<Dashboard partijen={alleP}/>}
       </div>
     </div>
   );

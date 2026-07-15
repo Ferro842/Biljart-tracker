@@ -500,13 +500,16 @@ function Dashboard({partijen}){
           <span style={{fontSize:9,color:WITD,minWidth:14}}>{tot+1}</span>
         </div>
         <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:2}}>
-          {quickButtons.map(([l,v,t])=>(
-            <button key={l} onClick={()=>{setVa(v);setTot(t);}}
-              style={{flex:"0 0 auto",padding:"4px 10px",background:"none",border:`1px solid ${KBDR}`,
-                borderRadius:5,color:WITD,fontSize:9,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
-              {l}
-            </button>
-          ))}
+          {quickButtons.map(([l,v,t])=>{
+            const actief=va===v&&tot===t;
+            return(
+              <button key={l} onClick={()=>{setVa(v);setTot(t);}}
+                style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
+                  borderRadius:5,color:actief?GOUD:WITD,fontSize:9,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+                {l}
+              </button>
+            );
+          })}
         </div>
         <div style={{display:"flex",gap:5,marginTop:6}}>
           {[["alle","Alle tafels"],["210","2,10"],["230","2,30"]].map(([k,l])=>(

@@ -346,13 +346,15 @@ function Dashboard(){
 
   const sel=useMemo(()=>ST.slice(va,tot+1),[va,tot]);
 
+  const maxTrim=Math.max(0,Math.floor((sel.length-1)/2));
+  const trimLClamped=Math.min(trimL,maxTrim);
+  const trimHClamped=Math.min(trimH,maxTrim);
+
   const filt=useMemo(()=>{
     const s=[...sel].sort((a,b)=>a.gem-b.gem);
-    const kL=Math.floor(s.length*trimL/100);
-    const kH=Math.floor(s.length*trimH/100);
-    const ids=new Set(s.slice(kL,s.length-(kH||0)).map(p=>p.id));
+    const ids=new Set(s.slice(trimLClamped,s.length-trimHClamped).map(p=>p.id));
     return sel.filter(p=>ids.has(p.id));
-  },[sel,trimL,trimH]);
+  },[sel,trimLClamped,trimHClamped]);
 
   const gems=filt.map(p=>p.gem);
   const gemGem=gems.length>0?(gems.reduce((a,b)=>a+b,0)/gems.length).toFixed(2):"—";
@@ -486,13 +488,13 @@ function Dashboard(){
             <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Uitschieters weggooien</div>
             <div style={{display:"flex",gap:10,marginBottom:8}}>
               <div style={{flex:1}}>
-                <div style={{fontSize:9,color:ROOD,marginBottom:4}}>Slechtste {trimL}% weg</div>
-                <input type="range" min={0} max={30} step={5} value={trimL}
+                <div style={{fontSize:9,color:ROOD,marginBottom:4}}>Slechtste {trimLClamped} weg</div>
+                <input type="range" min={0} max={maxTrim} step={1} value={trimLClamped}
                   onChange={e=>setTrimL(+e.target.value)} style={{width:"100%",accentColor:ROOD}}/>
               </div>
               <div style={{flex:1}}>
-                <div style={{fontSize:9,color:GRNT,marginBottom:4}}>Beste {trimH}% weg</div>
-                <input type="range" min={0} max={30} step={5} value={trimH}
+                <div style={{fontSize:9,color:GRNT,marginBottom:4}}>Beste {trimHClamped} weg</div>
+                <input type="range" min={0} max={maxTrim} step={1} value={trimHClamped}
                   onChange={e=>setTrimH(+e.target.value)} style={{width:"100%",accentColor:GRNT}}/>
               </div>
             </div>

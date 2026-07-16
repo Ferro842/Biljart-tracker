@@ -17,6 +17,10 @@
 html,body,#root{height:100%;width:100%;overflow:hidden}
 body{background:#1a2e1a;font-family:Georgia,serif;color:#f5f0e8}
 .app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto}
+@media (min-width:700px){
+  body{display:flex;justify-content:center}
+  .app{max-width:720px;border-left:1px solid #3a5c35;border-right:1px solid #3a5c35}
+}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 input[type=number]{-moz-appearance:textfield}
 </style>

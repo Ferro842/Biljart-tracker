@@ -127,12 +127,21 @@ function berekenPrestaties(partijen){
     const gem=parseFloat(st.gemPerBeurt);
     const badges=[];
 
-    if(st.opbouw57>0)badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10,categorie:"Beurt-pieken"});
-    if(st.opbouw89>0)badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20,categorie:"Beurt-pieken"});
-    if(st.opbouw10>0)badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35,categorie:"Beurt-pieken"});
+    if(st.opbouw57>0){
+      const waarden=p.beurten.filter(function(b){return b.caramboles>=5&&b.caramboles<=7;}).map(function(b){return b.caramboles;});
+      badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: 5-7 car per beurt)"});
+    }
+    if(st.opbouw89>0){
+      const waarden=p.beurten.filter(function(b){return b.caramboles>=8&&b.caramboles<=9;}).map(function(b){return b.caramboles;});
+      badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: 8-9 car per beurt)"});
+    }
+    if(st.opbouw10>0){
+      const waarden=p.beurten.filter(function(b){return b.caramboles>=10;}).map(function(b){return b.caramboles;});
+      badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: 10+ car per beurt)"});
+    }
 
     if(st.max>allTimeMaxBeurt&&allTimeMaxBeurt>0){
-      badges.push({label:"Nieuw record beurt",emoji:"🏆",aantal:1,punten:50,categorie:"Beurt-pieken"});
+      badges.push({label:"Nieuw record beurt",emoji:"🏆",aantal:1,punten:50,categorie:"Beurt-pieken",detail:"Nieuwe hoogste beurt: "+st.max+" car (vorig record: "+allTimeMaxBeurt+" car)"});
     }
 
     let langsteReeks=0,huidigeReeks=0;
@@ -141,62 +150,64 @@ function berekenPrestaties(partijen){
       else huidigeReeks=0;
     });
     if(st.poedels===0){
-      badges.push({label:"Geen poedel hele partij",emoji:"🛡️",aantal:1,punten:30,categorie:"Consistentie"});
+      badges.push({label:"Geen poedel hele partij",emoji:"🛡️",aantal:1,punten:30,categorie:"Consistentie",detail:"0 van de "+st.aantalBeurten+" beurten was een poedel"});
     }else if(langsteReeks>=8){
-      badges.push({label:"Lange reeks zonder poedel",emoji:"⛓️",aantal:1,punten:25,categorie:"Consistentie"});
+      badges.push({label:"Lange reeks zonder poedel",emoji:"⛓️",aantal:1,punten:25,categorie:"Consistentie",detail:"Langste reeks: "+langsteReeks+" beurten op rij zonder poedel (drempel: 8+)"});
     }else if(langsteReeks>=5){
-      badges.push({label:"Reeks zonder poedel",emoji:"⛓️",aantal:1,punten:15,categorie:"Consistentie"});
+      badges.push({label:"Reeks zonder poedel",emoji:"⛓️",aantal:1,punten:15,categorie:"Consistentie",detail:"Langste reeks: "+langsteReeks+" beurten op rij zonder poedel (drempel: 5+)"});
     }
     const poedelPct=st.poedels/st.aantalBeurten*100;
     if(poedelPct<20&&st.poedels>0){
-      badges.push({label:"Weinig poedels",emoji:"✅",aantal:1,punten:15,categorie:"Consistentie"});
+      badges.push({label:"Weinig poedels",emoji:"✅",aantal:1,punten:15,categorie:"Consistentie",detail:st.poedels+" van de "+st.aantalBeurten+" beurten poedel ("+Math.round(poedelPct)+"%, drempel: <20%)"});
     }
 
-    let herstelCount=0;
+    const herstelDetails=[];
     p.beurten.forEach(function(b,i){
       if(b.caramboles===0){
         const next=p.beurten[i+1];
-        if(next&&next.caramboles>=5)herstelCount++;
+        if(next&&next.caramboles>=5)herstelDetails.push("na poedel volgde "+next.caramboles+" car");
       }
     });
-    if(herstelCount>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelCount,punten:herstelCount*15,categorie:"Mentaliteit"});
+    if(herstelDetails.length>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelDetails.length,punten:herstelDetails.length*15,categorie:"Mentaliteit",detail:herstelDetails.join(" · ")+" (drempel: 5+ car direct na een poedel)"});
 
     const helft=Math.floor(p.beurten.length/2);
     if(helft>=3){
       const eerste=p.beurten.slice(0,helft),tweede=p.beurten.slice(helft);
       const gemE=eerste.reduce(function(a,b){return a+b.caramboles;},0)/eerste.length;
       const gemT=tweede.reduce(function(a,b){return a+b.caramboles;},0)/tweede.length;
-      if(gemT>gemE)badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit"});
+      if(gemT>gemE)badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit",detail:"1e helft: "+gemE.toFixed(2)+" gem · 2e helft: "+gemT.toFixed(2)+" gem"});
     }
 
     if(p.doel&&p.doelType){
-      const bereikt=p.doelType==="beurten"?p.beurten.length>=p.doel:st.totCar>=p.doel;
-      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20,categorie:"Doel & totaal"});
+      const behaaldeWaarde=p.doelType==="beurten"?p.beurten.length:st.totCar;
+      const bereikt=behaaldeWaarde>=p.doel;
+      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20,categorie:"Doel & totaal",detail:"Doel: "+p.doel+" "+(p.doelType==="beurten"?"beurten":"caramboles")+" · behaald: "+behaaldeWaarde});
     }
 
     if(gem>=2.5){
-      badges.push({label:"Gemiddelde boven 2,5",emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal"});
+      badges.push({label:"Gemiddelde boven 2,5",emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (drempel: 2,5)"});
     }else if(gem>=2.0){
-      badges.push({label:"Gemiddelde boven 2,0",emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal"});
+      badges.push({label:"Gemiddelde boven 2,0",emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (drempel: 2,0)"});
     }
 
     if(gem>allTimeBestGem&&allTimeBestGem>0){
-      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal"});
+      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:"Nieuw record: "+gem.toFixed(2)+" (vorig record: "+allTimeBestGem.toFixed(2)+")"});
     }
 
     const tafelKey=p.tafel||"230";
     if(gem>(tafelBest[tafelKey]||0)&&tafelBest[tafelKey]){
-      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek"});
+      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+(tafelKey==="210"?"2,10":"2,30")+"-tafel: "+gem.toFixed(2)+" (vorig: "+tafelBest[tafelKey].toFixed(2)+")"});
     }
 
     if(cumBeurt>0){
       const totaalGemTotDan=cumCar/cumBeurt;
-      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking"});
+      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking",detail:"Deze partij: "+gem.toFixed(2)+" vs totaalgemiddelde tot dan: "+totaalGemTotDan.toFixed(2)});
     }
     if(rollingHistory.length>=5){
       const laatste5=rollingHistory.slice(-5);
       const rC=laatste5.reduce(function(a,r){return a+r.tot;},0),rN=laatste5.reduce(function(a,r){return a+r.n;},0);
-      if(gem>rC/rN)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking"});
+      const rollingGem=rC/rN;
+      if(gem>rollingGem)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking",detail:"Deze partij: "+gem.toFixed(2)+" vs 5-partij rolling: "+rollingGem.toFixed(2)});
     }
 
     const totaalPunten=badges.reduce(function(a,b){return a+b.punten;},0);
@@ -357,33 +368,41 @@ function PrestatieOverzicht({prestatie}){
         <span style={{fontSize:9,color:WITD}}>{perCategorie?"lijst ▸":"per categorie ▾"}</span>
       </button>
       {!perCategorie&&(
-        <div style={{display:"flex",flexDirection:"column",gap:4}}>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {prestatie.badges.map(function(b,i){
             return(
-              <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
-                <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
-                <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
+              <div key={i}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
+                  <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                  <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
+                </div>
+                {b.detail&&<div style={{fontSize:9,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
               </div>
             );
           })}
         </div>
       )}
       {perCategorie&&(
-        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
           {groepen.map(function(g){
             return(
               <div key={g.naam}>
-                <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:GOUDL,marginBottom:3,fontWeight:"bold"}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:GOUDL,marginBottom:4,fontWeight:"bold"}}>
                   <span>{g.naam}</span><span>{g.subtotaal}pt</span>
                 </div>
-                {g.lijst.map(function(b,i){
-                  return(
-                    <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD,paddingLeft:8}}>
-                      <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
-                      <span style={{color:GOUD}}>+{b.punten}</span>
-                    </div>
-                  );
-                })}
+                <div style={{display:"flex",flexDirection:"column",gap:6}}>
+                  {g.lijst.map(function(b,i){
+                    return(
+                      <div key={i} style={{paddingLeft:8}}>
+                        <div style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
+                          <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                          <span style={{color:GOUD}}>+{b.punten}</span>
+                        </div>
+                        {b.detail&&<div style={{fontSize:9,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}

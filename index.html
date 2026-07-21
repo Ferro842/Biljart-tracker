@@ -973,16 +973,17 @@ function BiljartTracker(){
   const [toonData,setToonData]=useState(false);
   const inputRef=useRef(null);
 
+  const prestatiesMap=useMemo(function(){
+    const arr=berekenPrestaties(data?data.partijen:[]);
+    const m={};
+    arr.forEach(function(r){m[r.id]=r;});
+    return m;
+  },[data]);
+
   useEffect(function(){laadData().then(setData);},[]);
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
 
   const alleP=data.partijen;
-  const prestatiesMap=useMemo(function(){
-    const arr=berekenPrestaties(alleP);
-    const m={};
-    arr.forEach(function(r){m[r.id]=r;});
-    return m;
-  },[alleP]);
   const stL=stat(lp);
   const ptsNu=pts(car);
   const totCarLp=lp.reduce(function(a,b){return a+b.caramboles;},0);

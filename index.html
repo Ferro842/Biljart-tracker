@@ -110,6 +110,108 @@ function stat(beurten){
   return{totCar,max:mx,totPunten,aantalBeurten:beurten.length,poedels,gemPerBeurt,opbouw5,opbouw57,opbouw89,opbouw10};
 }
 
+// Berekent chronologisch (oud->nieuw) welke prestatie-badges elke partij heeft verdiend.
+// "Record"-achtige badges vergelijken tegen de staat VOOR die partij, niet achteraf.
+// Retourneert een array in dezelfde volgorde als partijen: [{id,badges:[{label,emoji,aantal,punten}],punten}]
+function berekenPrestaties(partijen){
+  let allTimeMaxBeurt=0;
+  let allTimeBestGem=0;
+  const tafelBest={};
+  let cumCar=0,cumBeurt=0;
+  const rollingHistory=[];
+  const resultaten=[];
+
+  (partijen||[]).forEach(function(p){
+    const st=stat(p.beurten);
+    if(!st){resultaten.push({id:p.id,badges:[],punten:0});return;}
+    const gem=parseFloat(st.gemPerBeurt);
+    const badges=[];
+
+    if(st.opbouw57>0)badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10});
+    if(st.opbouw89>0)badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20});
+    if(st.opbouw10>0)badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35});
+
+    if(st.max>allTimeMaxBeurt&&allTimeMaxBeurt>0){
+      badges.push({label:"Nieuw record beurt",emoji:"🏆",aantal:1,punten:50});
+    }
+
+    let langsteReeks=0,huidigeReeks=0;
+    p.beurten.forEach(function(b){
+      if(b.caramboles>0){huidigeReeks++;langsteReeks=Math.max(langsteReeks,huidigeReeks);}
+      else huidigeReeks=0;
+    });
+    if(st.poedels===0){
+      badges.push({label:"Geen poedel hele partij",emoji:"🛡️",aantal:1,punten:30});
+    }else if(langsteReeks>=8){
+      badges.push({label:"Lange reeks zonder poedel",emoji:"⛓️",aantal:1,punten:25});
+    }else if(langsteReeks>=5){
+      badges.push({label:"Reeks zonder poedel",emoji:"⛓️",aantal:1,punten:15});
+    }
+    const poedelPct=st.poedels/st.aantalBeurten*100;
+    if(poedelPct<20&&st.poedels>0){
+      badges.push({label:"Weinig poedels",emoji:"✅",aantal:1,punten:15});
+    }
+
+    let herstelCount=0;
+    p.beurten.forEach(function(b,i){
+      if(b.caramboles===0){
+        const next=p.beurten[i+1];
+        if(next&&next.caramboles>=5)herstelCount++;
+      }
+    });
+    if(herstelCount>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelCount,punten:herstelCount*15});
+
+    const helft=Math.floor(p.beurten.length/2);
+    if(helft>=3){
+      const eerste=p.beurten.slice(0,helft),tweede=p.beurten.slice(helft);
+      const gemE=eerste.reduce(function(a,b){return a+b.caramboles;},0)/eerste.length;
+      const gemT=tweede.reduce(function(a,b){return a+b.caramboles;},0)/tweede.length;
+      if(gemT>gemE)badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15});
+    }
+
+    if(p.doel&&p.doelType){
+      const bereikt=p.doelType==="beurten"?p.beurten.length>=p.doel:st.totCar>=p.doel;
+      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20});
+    }
+
+    if(gem>=2.5){
+      badges.push({label:"Gemiddelde boven 2,5",emoji:"⭐",aantal:1,punten:30});
+    }else if(gem>=2.0){
+      badges.push({label:"Gemiddelde boven 2,0",emoji:"⭐",aantal:1,punten:15});
+    }
+
+    if(gem>allTimeBestGem&&allTimeBestGem>0){
+      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60});
+    }
+
+    const tafelKey=p.tafel||"230";
+    if(gem>(tafelBest[tafelKey]||0)&&tafelBest[tafelKey]){
+      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40});
+    }
+
+    if(cumBeurt>0){
+      const totaalGemTotDan=cumCar/cumBeurt;
+      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10});
+    }
+    if(rollingHistory.length>=5){
+      const laatste5=rollingHistory.slice(-5);
+      const rC=laatste5.reduce(function(a,r){return a+r.tot;},0),rN=laatste5.reduce(function(a,r){return a+r.n;},0);
+      if(gem>rC/rN)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15});
+    }
+
+    const totaalPunten=badges.reduce(function(a,b){return a+b.punten;},0);
+    resultaten.push({id:p.id,badges:badges,punten:totaalPunten});
+
+    allTimeMaxBeurt=Math.max(allTimeMaxBeurt,st.max);
+    allTimeBestGem=Math.max(allTimeBestGem,gem);
+    tafelBest[tafelKey]=Math.max(tafelBest[tafelKey]||0,gem);
+    cumCar+=st.totCar;cumBeurt+=st.aantalBeurten;
+    rollingHistory.push({tot:st.totCar,n:st.aantalBeurten});
+  });
+
+  return resultaten;
+}
+
 // Vult tafelmaat aan voor partijen die dit veld nog niet hebben (oude data van vóór deze functie).
 // Regel: 25 beurten -> 2,10-tafel, alle overige -> 2,30-tafel.
 // Correctie: de partij met 40 beurten was ook op de 2,10-tafel.
@@ -230,16 +332,17 @@ function LogRij({b,nr}){
   );
 }
 
-function PartijRij({p,nr}){
+function PartijRij({p,nr,prestatie}){
   const [open,setOpen]=useState(false);
   const st=stat(p.beurten);
   if(!st)return null;
+  const punten=prestatie?prestatie.punten:0;
   return(
     <div style={{borderBottom:"1px solid "+KBDR}}>
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}</div>
+          <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:10,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}</div>
           <div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · {st.totPunten}pt · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -258,6 +361,21 @@ function PartijRij({p,nr}){
               );
             })}
           </div>
+          {prestatie&&prestatie.badges.length>0&&(
+            <div style={{marginTop:10,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
+              <div style={{fontSize:10,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Prestaties · {punten}pt totaal</div>
+              <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                {prestatie.badges.map(function(b,i){
+                  return(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
+                      <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                      <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -418,6 +536,28 @@ function Dashboard({partijen}){
     return Object.entries(groups);
   },[sel]);
 
+  // ── PUNTEN: prestatie-badges, chronologisch berekend over de volledige geschiedenis ──
+  const prestatiesMap=useMemo(()=>{
+    const m={};
+    berekenPrestaties(partijen).forEach(r=>{m[r.id]=r;});
+    return m;
+  },[partijen]);
+  const puntenSel=useMemo(()=>sel.map(p=>Object.assign({},p,prestatiesMap[p.id]||{badges:[],punten:0})),[sel,prestatiesMap]);
+  const totaalPuntenSel=puntenSel.reduce((a,p)=>a+p.punten,0);
+  const gemPuntenSel=puntenSel.length?Math.round(totaalPuntenSel/puntenSel.length):0;
+  const top5Punten=useMemo(()=>[...puntenSel].sort((a,b)=>b.punten-a.punten).slice(0,5),[puntenSel]);
+  const badgeFrequentie=useMemo(()=>{
+    const freq={};
+    puntenSel.forEach(p=>{
+      (p.badges||[]).forEach(b=>{
+        if(!freq[b.label])freq[b.label]={emoji:b.emoji,aantal:0,punten:0};
+        freq[b.label].aantal+=b.aantal;
+        freq[b.label].punten+=b.punten;
+      });
+    });
+    return Object.entries(freq).sort((a,b)=>b[1].punten-a[1].punten);
+  },[puntenSel]);
+
   // ── PATRONEN: tag-analyse, verdeling per beurt, poedel-herstel ──
   const gemistCounts=useMemo(()=>{
     const c={};
@@ -486,6 +626,7 @@ function Dashboard({partijen}){
         {btn("consist","Consistentie")}
         {btn("patronen","Patronen")}
         {btn("vergelijk","Vergelijk")}
+        {btn("punten","Punten")}
       </div>
 
       {/* Partijselectie */}
@@ -732,27 +873,78 @@ function Dashboard({partijen}){
           </div>
         </div>}
 
+        {/* PUNTEN */}
+        {tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+            {kaart("Totaal",totaalPuntenSel,"punten",GOUD)}
+            {kaart("Gem.",gemPuntenSel,"per partij",GOUDL)}
+            {kaart("Beste partij",top5Punten.length?top5Punten[0].punten:0,top5Punten.length?"p"+top5Punten[0].id:"—",GRNT)}
+          </div>
+
+          <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
+            <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Beste partijen op punten</div>
+            {top5Punten.length===0||top5Punten[0].punten===0
+              ?<div style={{fontSize:12,color:WITD}}>Nog geen prestaties behaald in deze selectie.</div>
+              :top5Punten.filter(p=>p.punten>0).map(p=>(
+                <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`1px solid ${KBDR}`}}>
+                  <span style={{fontSize:11,color:WITD}}>p{p.id} · {fmtDatum(p.datum)} <span style={{color:WITD,opacity:0.7}}>({p.badges.length} badges)</span></span>
+                  <span style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{p.punten}pt</span>
+                </div>
+              ))
+            }
+          </div>
+
+          <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
+            <div style={{fontSize:11,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Meest behaalde prestaties</div>
+            {badgeFrequentie.length===0
+              ?<div style={{fontSize:12,color:WITD}}>Nog geen prestaties behaald in deze selectie.</div>
+              :badgeFrequentie.map(([label,d])=>(
+                <div key={label} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`1px solid ${KBDR}`}}>
+                  <span style={{fontSize:11,color:WITD}}>{d.emoji} {label} <span style={{color:WITD,opacity:0.7}}>×{d.aantal}</span></span>
+                  <span style={{fontSize:12,fontWeight:"bold",color:GOUD}}>{d.punten}pt</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>}
+
       </div>
     </div>
   );
 }
 
 
-function LogPartijRij({p,nr}){
+function LogPartijRij({p,nr,prestatie}){
   const [open,setOpen]=useState(false);
   const st=stat(p.beurten);
+  const punten=prestatie?prestatie.punten:0;
   return(
     <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,marginBottom:10}}>
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:13,color:GOUD}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}</div>
+          <div style={{fontSize:13,color:GOUD}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:10,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}</div>
           {st&&<div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
       </button>
       {open&&(
         <div style={{padding:"0 14px 12px"}}>
+          {prestatie&&prestatie.badges.length>0&&(
+            <div style={{marginBottom:10,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
+              <div style={{fontSize:10,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Prestaties · {punten}pt totaal</div>
+              <div style={{display:"flex",flexDirection:"column",gap:4}}>
+                {prestatie.badges.map(function(b,i){
+                  return(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
+                      <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                      <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i}/>;}) }
         </div>
       )}
@@ -785,6 +977,12 @@ function BiljartTracker(){
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
 
   const alleP=data.partijen;
+  const prestatiesMap=useMemo(function(){
+    const arr=berekenPrestaties(alleP);
+    const m={};
+    arr.forEach(function(r){m[r.id]=r;});
+    return m;
+  },[alleP]);
   const stL=stat(lp);
   const ptsNu=pts(car);
   const totCarLp=lp.reduce(function(a,b){return a+b.caramboles;},0);
@@ -806,7 +1004,7 @@ function BiljartTracker(){
   function sluit(){
     if(!lp.length){setConfPartij(false);return;}
     const st=stat(lp);
-    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,beurten:lp},st);
+    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,beurten:lp},st);
     const nd={partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1};
     setData(nd);slaOp(nd);
     setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
@@ -1084,7 +1282,7 @@ function BiljartTracker(){
         )}
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
-          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i}/>;}) }
+          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]}/>;}) }
         </div>
                 {!confReset
           ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:12,fontFamily:"inherit"}}
@@ -1150,7 +1348,7 @@ function BiljartTracker(){
           </div>
         )}
         {[].concat(alleP).reverse().map(function(p,pi){
-          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi}/>;
+          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi} prestatie={prestatiesMap[p.id]}/>;
         })}
       </div>
     );

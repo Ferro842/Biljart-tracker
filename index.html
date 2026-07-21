@@ -127,12 +127,12 @@ function berekenPrestaties(partijen){
     const gem=parseFloat(st.gemPerBeurt);
     const badges=[];
 
-    if(st.opbouw57>0)badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10});
-    if(st.opbouw89>0)badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20});
-    if(st.opbouw10>0)badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35});
+    if(st.opbouw57>0)badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10,categorie:"Beurt-pieken"});
+    if(st.opbouw89>0)badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20,categorie:"Beurt-pieken"});
+    if(st.opbouw10>0)badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35,categorie:"Beurt-pieken"});
 
     if(st.max>allTimeMaxBeurt&&allTimeMaxBeurt>0){
-      badges.push({label:"Nieuw record beurt",emoji:"🏆",aantal:1,punten:50});
+      badges.push({label:"Nieuw record beurt",emoji:"🏆",aantal:1,punten:50,categorie:"Beurt-pieken"});
     }
 
     let langsteReeks=0,huidigeReeks=0;
@@ -141,15 +141,15 @@ function berekenPrestaties(partijen){
       else huidigeReeks=0;
     });
     if(st.poedels===0){
-      badges.push({label:"Geen poedel hele partij",emoji:"🛡️",aantal:1,punten:30});
+      badges.push({label:"Geen poedel hele partij",emoji:"🛡️",aantal:1,punten:30,categorie:"Consistentie"});
     }else if(langsteReeks>=8){
-      badges.push({label:"Lange reeks zonder poedel",emoji:"⛓️",aantal:1,punten:25});
+      badges.push({label:"Lange reeks zonder poedel",emoji:"⛓️",aantal:1,punten:25,categorie:"Consistentie"});
     }else if(langsteReeks>=5){
-      badges.push({label:"Reeks zonder poedel",emoji:"⛓️",aantal:1,punten:15});
+      badges.push({label:"Reeks zonder poedel",emoji:"⛓️",aantal:1,punten:15,categorie:"Consistentie"});
     }
     const poedelPct=st.poedels/st.aantalBeurten*100;
     if(poedelPct<20&&st.poedels>0){
-      badges.push({label:"Weinig poedels",emoji:"✅",aantal:1,punten:15});
+      badges.push({label:"Weinig poedels",emoji:"✅",aantal:1,punten:15,categorie:"Consistentie"});
     }
 
     let herstelCount=0;
@@ -159,44 +159,44 @@ function berekenPrestaties(partijen){
         if(next&&next.caramboles>=5)herstelCount++;
       }
     });
-    if(herstelCount>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelCount,punten:herstelCount*15});
+    if(herstelCount>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelCount,punten:herstelCount*15,categorie:"Mentaliteit"});
 
     const helft=Math.floor(p.beurten.length/2);
     if(helft>=3){
       const eerste=p.beurten.slice(0,helft),tweede=p.beurten.slice(helft);
       const gemE=eerste.reduce(function(a,b){return a+b.caramboles;},0)/eerste.length;
       const gemT=tweede.reduce(function(a,b){return a+b.caramboles;},0)/tweede.length;
-      if(gemT>gemE)badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15});
+      if(gemT>gemE)badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit"});
     }
 
     if(p.doel&&p.doelType){
       const bereikt=p.doelType==="beurten"?p.beurten.length>=p.doel:st.totCar>=p.doel;
-      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20});
+      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20,categorie:"Doel & totaal"});
     }
 
     if(gem>=2.5){
-      badges.push({label:"Gemiddelde boven 2,5",emoji:"⭐",aantal:1,punten:30});
+      badges.push({label:"Gemiddelde boven 2,5",emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal"});
     }else if(gem>=2.0){
-      badges.push({label:"Gemiddelde boven 2,0",emoji:"⭐",aantal:1,punten:15});
+      badges.push({label:"Gemiddelde boven 2,0",emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal"});
     }
 
     if(gem>allTimeBestGem&&allTimeBestGem>0){
-      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60});
+      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal"});
     }
 
     const tafelKey=p.tafel||"230";
     if(gem>(tafelBest[tafelKey]||0)&&tafelBest[tafelKey]){
-      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40});
+      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek"});
     }
 
     if(cumBeurt>0){
       const totaalGemTotDan=cumCar/cumBeurt;
-      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10});
+      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking"});
     }
     if(rollingHistory.length>=5){
       const laatste5=rollingHistory.slice(-5);
       const rC=laatste5.reduce(function(a,r){return a+r.tot;},0),rN=laatste5.reduce(function(a,r){return a+r.n;},0);
-      if(gem>rC/rN)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15});
+      if(gem>rC/rN)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking"});
     }
 
     const totaalPunten=badges.reduce(function(a,b){return a+b.punten;},0);
@@ -332,6 +332,67 @@ function LogRij({b,nr}){
   );
 }
 
+function PrestatieOverzicht({prestatie}){
+  const [perCategorie,setPerCategorie]=useState(false);
+  const badges=prestatie&&prestatie.badges?prestatie.badges:[];
+  const groepen=useMemo(function(){
+    const g={};
+    badges.forEach(function(b){
+      const k=b.categorie||"Overig";
+      if(!g[k])g[k]=[];
+      g[k].push(b);
+    });
+    return Object.entries(g).map(function(entry){
+      const naam=entry[0],lijst=entry[1];
+      return{naam:naam,lijst:lijst,subtotaal:lijst.reduce(function(a,b){return a+b.punten;},0)};
+    });
+  },[badges]);
+  if(!prestatie||badges.length===0)return null;
+  const punten=prestatie.punten;
+  return(
+    <div style={{marginTop:10,marginBottom:10,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
+      <button onClick={function(){setPerCategorie(function(v){return !v;});}}
+        style={{width:"100%",background:"none",border:"none",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",fontFamily:"inherit",padding:0,marginBottom:6}}>
+        <span style={{fontSize:10,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Prestaties · {punten}pt totaal</span>
+        <span style={{fontSize:9,color:WITD}}>{perCategorie?"lijst ▸":"per categorie ▾"}</span>
+      </button>
+      {!perCategorie&&(
+        <div style={{display:"flex",flexDirection:"column",gap:4}}>
+          {prestatie.badges.map(function(b,i){
+            return(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
+                <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {perCategorie&&(
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {groepen.map(function(g){
+            return(
+              <div key={g.naam}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:GOUDL,marginBottom:3,fontWeight:"bold"}}>
+                  <span>{g.naam}</span><span>{g.subtotaal}pt</span>
+                </div>
+                {g.lijst.map(function(b,i){
+                  return(
+                    <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD,paddingLeft:8}}>
+                      <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                      <span style={{color:GOUD}}>+{b.punten}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function PartijRij({p,nr,prestatie}){
   const [open,setOpen]=useState(false);
   const st=stat(p.beurten);
@@ -361,21 +422,7 @@ function PartijRij({p,nr,prestatie}){
               );
             })}
           </div>
-          {prestatie&&prestatie.badges.length>0&&(
-            <div style={{marginTop:10,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
-              <div style={{fontSize:10,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Prestaties · {punten}pt totaal</div>
-              <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                {prestatie.badges.map(function(b,i){
-                  return(
-                    <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
-                      <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
-                      <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <PrestatieOverzicht prestatie={prestatie}/>
         </div>
       )}
     </div>
@@ -930,21 +977,7 @@ function LogPartijRij({p,nr,prestatie}){
       </button>
       {open&&(
         <div style={{padding:"0 14px 12px"}}>
-          {prestatie&&prestatie.badges.length>0&&(
-            <div style={{marginBottom:10,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
-              <div style={{fontSize:10,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>Prestaties · {punten}pt totaal</div>
-              <div style={{display:"flex",flexDirection:"column",gap:4}}>
-                {prestatie.badges.map(function(b,i){
-                  return(
-                    <div key={i} style={{display:"flex",justifyContent:"space-between",fontSize:11,color:WITD}}>
-                      <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
-                      <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <PrestatieOverzicht prestatie={prestatie}/>
           {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i}/>;}) }
         </div>
       )}

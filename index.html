@@ -641,8 +641,14 @@ function berekenNiveauInfo(partijen){
   gedropt.forEach(function(x){effCar-=x.st.totCar;effBeurt-=x.st.aantalBeurten;});
   const effectiefGemiddelde=effBeurt>0?effCar/effBeurt:totaalGemiddelde;
 
+  const volgendeKandidaat=gesorteerd[aantalDrops]||null;
+  const puntenTotVolgendeDrop=PUNTEN_PER_DROP-(badgePunten%PUNTEN_PER_DROP);
+
   return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,
-    aantalDrops:aantalDrops,gedropteIds:gedropteIds};
+    aantalDrops:aantalDrops,gedropteIds:gedropteIds,
+    volgendeKandidaatId:volgendeKandidaat?volgendeKandidaat.p.id:null,
+    volgendeKandidaatGem:volgendeKandidaat?parseFloat(volgendeKandidaat.st.gemPerBeurt):null,
+    puntenTotVolgendeDrop:puntenTotVolgendeDrop};
 }
 function bepaalNiveau(effectiefGemiddelde){
   let idx=0;
@@ -1119,17 +1125,22 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
               <div style={{fontSize:10,color:WITD}}>🎖️ Badge-punten</div>
               <div style={{fontSize:14,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten}pt</div>
             </div>
-            {niveau.aantalDrops>0
-              ?<div style={{marginTop:6,display:"flex",alignItems:"center",gap:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"7px 10px"}}>
+            {niveau.aantalDrops>0&&(
+              <div style={{marginTop:6,display:"flex",alignItems:"center",gap:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"7px 10px"}}>
                 <span style={{fontSize:16}}>🏅</span>
                 <div style={{flex:1,fontSize:10,color:WITD}}>
-                  {niveau.aantalDrops}x slechtste partij geschrapt uit je gemiddelde (ontgrendeld per {PUNTEN_PER_DROP}pt) — ruw gemiddelde was {niveau.totaalGemiddelde.toFixed(2)}, telt nu als {niveau.effectiefGemiddelde.toFixed(2)}
+                  {niveau.aantalDrops}x slechtste partij geschrapt uit je gemiddelde — ruw gemiddelde was {niveau.totaalGemiddelde.toFixed(2)}, telt nu als {niveau.effectiefGemiddelde.toFixed(2)}
                 </div>
               </div>
-              :<div style={{marginTop:6,fontSize:9,color:WITD,opacity:0.7,textAlign:"center"}}>
-                Bij elke {PUNTEN_PER_DROP} badge-punten mag je je slechtste partij schrappen uit je gemiddelde — nog {PUNTEN_PER_DROP-(niveau.badgePunten%PUNTEN_PER_DROP)}pt te gaan
+            )}
+            <div style={{marginTop:6,fontSize:9,color:WITD,opacity:0.8,textAlign:"center"}}>
+              Nog {niveau.puntenTotVolgendeDrop}pt tot je {niveau.aantalDrops>0?"volgende":"eerste"} slechtste-partij-drop (elke {PUNTEN_PER_DROP}pt)
+            </div>
+            {niveau.volgendeKandidaatId&&(
+              <div style={{marginTop:6,textAlign:"center",fontSize:9,color:"#ff9f80"}}>
+                🎯 Schrap-kandidaat: p{niveau.volgendeKandidaatId} (gem {niveau.volgendeKandidaatGem.toFixed(2)}) — verdwijnt uit je gemiddelde bij de volgende drop
               </div>
-            }
+            )}
           </div>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
@@ -1234,6 +1245,7 @@ function BiljartTracker(){
   const [toastGroep,setToastGroep]=useState(null);
   const [niveauOpen,setNiveauOpen]=useState(false);
   const [partijSamenvatting,setPartijSamenvatting]=useState(null);
+  const [niveauUpInfo,setNiveauUpInfo]=useState(null);
 
   const tijdsvenster=(data&&data.tijdsvenster)||"12";
   const tijdsvensterMaanden=tijdsvenster==="alles"?null:parseInt(tijdsvenster,10);
@@ -1261,9 +1273,26 @@ function BiljartTracker(){
       badgePunten:info.badgePunten,
       aantalDrops:info.aantalDrops,
       gedropteIds:info.gedropteIds,
+      volgendeKandidaatId:info.volgendeKandidaatId,
+      volgendeKandidaatGem:info.volgendeKandidaatGem,
+      puntenTotVolgendeDrop:info.puntenTotVolgendeDrop,
       aantalPartijen:aantalPartijen
     });
   },[data]);
+
+  useEffect(function(){
+    if(!data)return;
+    if(data.laatstGezienNiveauIndex===undefined){
+      const nd=Object.assign({},data,{laatstGezienNiveauIndex:niveau.index});
+      setData(nd);slaOp(nd);
+      return;
+    }
+    if(niveau.index>data.laatstGezienNiveauIndex){
+      setNiveauUpInfo({van:NIVEAUS[data.laatstGezienNiveauIndex],naar:niveau.huidig});
+      const nd=Object.assign({},data,{laatstGezienNiveauIndex:niveau.index});
+      setData(nd);slaOp(nd);
+    }
+  },[niveau.index]);
 
   useEffect(function(){laadData().then(setData);},[]);
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
@@ -1819,6 +1848,30 @@ function BiljartTracker(){
       </div>
 
       {niveauOpen&&<NiveauOverzicht niveau={niveau} onClose={function(){setNiveauOpen(false);}}/>}
+
+      {niveauUpInfo&&(
+        <div onClick={function(){setNiveauUpInfo(null);}}
+          style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:210,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+          <div style={{background:"linear-gradient(160deg,#2a4a1e,#0d1f0d)",border:"3px solid "+niveauUpInfo.naar.kleur,borderRadius:22,padding:"28px 22px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 0 60px "+niveauUpInfo.naar.kleur+"66, 0 10px 44px rgba(0,0,0,0.7)",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)"}}>
+            <div style={{fontSize:13,color:WITD,textTransform:"uppercase",letterSpacing:3,marginBottom:10}}>Niveau omhoog!</div>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:14,marginBottom:14}}>
+              <div style={{textAlign:"center",opacity:0.5}}>
+                <div style={{fontSize:30}}>{niveauUpInfo.van.emoji}</div>
+                <div style={{fontSize:10,color:WITD}}>{niveauUpInfo.van.naam}</div>
+              </div>
+              <div style={{fontSize:22,color:niveauUpInfo.naar.kleur}}>→</div>
+              <div style={{textAlign:"center"}}>
+                <div style={{width:64,height:64,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+niveauUpInfo.naar.kleur+"ee,"+niveauUpInfo.naar.kleur+"55)",border:"3px solid "+niveauUpInfo.naar.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:34,boxShadow:"0 0 22px "+niveauUpInfo.naar.kleur+"aa",margin:"0 auto 6px"}}>
+                  {niveauUpInfo.naar.emoji}
+                </div>
+                <div style={{fontSize:14,fontWeight:"bold",color:niveauUpInfo.naar.kleur}}>{niveauUpInfo.naar.naam}</div>
+              </div>
+            </div>
+            <div style={{fontSize:11,color:WITD,opacity:0.85}}>Je gemiddelde heeft de {niveauUpInfo.naar.gemDrempel.toFixed(1)}-drempel gehaald</div>
+            <div style={{fontSize:10,color:WITD,marginTop:16,opacity:0.7}}>Tik om te sluiten</div>
+          </div>
+        </div>
+      )}
 
       {toastGroep&&(
         <div onClick={function(){setToastGroep(null);}}

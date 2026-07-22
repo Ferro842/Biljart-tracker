@@ -371,13 +371,13 @@ function LogRij({b,nr}){
   return(
     <div style={{borderBottom:"1px solid "+KBDR,padding:"5px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:6}}>
-        <span style={{fontSize:12,color:WITD,minWidth:18,textAlign:"right"}}>{nr}</span>
+        <span style={{fontSize:13,color:WITD,minWidth:18,textAlign:"right"}}>{nr}</span>
         <span style={{fontSize:20,fontWeight:"bold",color:b.caramboles>=5?GOUDL:isPoedel?"#e08055":WIT,minWidth:26}}>{b.caramboles}</span>
         <div style={{flex:1,display:"flex",gap:3,flexWrap:"wrap",alignItems:"center"}}>
-          {isPoedel&&<span style={{fontSize:12,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>poedel</span>}
-          {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:12,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
-          {!isPoedel&&heeftGoed&&(b.goed||[]).map(function(o){return <span key={o} style={{fontSize:12,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
-          {oudeOpm&&<span style={{fontSize:12,background:"#2a3d20",color:GOUD,borderRadius:3,padding:"2px 6px"}}>{oudeOpm}</span>}
+          {isPoedel&&<span style={{fontSize:13,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>poedel</span>}
+          {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
+          {!isPoedel&&heeftGoed&&(b.goed||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
+          {oudeOpm&&<span style={{fontSize:13,background:"#2a3d20",color:GOUD,borderRadius:3,padding:"2px 6px"}}>{oudeOpm}</span>}
         </div>
       </div>
     </div>
@@ -405,8 +405,8 @@ function PrestatieOverzicht({prestatie}){
     <div style={{marginTop:10,marginBottom:10,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
       <button onClick={function(){setPerCategorie(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",fontFamily:"inherit",padding:0,marginBottom:6}}>
-        <span style={{fontSize:12,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Prestaties · {punten}pt totaal</span>
-        <span style={{fontSize:11,color:WITD}}>{perCategorie?"lijst ▸":"per categorie ▾"}</span>
+        <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Prestaties · {punten}pt totaal</span>
+        <span style={{fontSize:12,color:WITD}}>{perCategorie?"lijst ▸":"per categorie ▾"}</span>
       </button>
       {!perCategorie&&(
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -417,7 +417,7 @@ function PrestatieOverzicht({prestatie}){
                   <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
                   <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
                 </div>
-                {b.detail&&<div style={{fontSize:11,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
+                {b.detail&&<div style={{fontSize:12,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
               </div>
             );
           })}
@@ -428,7 +428,7 @@ function PrestatieOverzicht({prestatie}){
           {groepen.map(function(g){
             return(
               <div key={g.naam}>
-                <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:GOUDL,marginBottom:4,fontWeight:"bold"}}>
+                <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:GOUDL,marginBottom:4,fontWeight:"bold"}}>
                   <span>{g.naam}</span><span>{g.subtotaal}pt</span>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:6}}>
@@ -439,7 +439,7 @@ function PrestatieOverzicht({prestatie}){
                           <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
                           <span style={{color:GOUD}}>+{b.punten}</span>
                         </div>
-                        {b.detail&&<div style={{fontSize:11,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
+                        {b.detail&&<div style={{fontSize:12,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
                       </div>
                     );
                   })}
@@ -466,12 +466,12 @@ function NiveauKaart({niveau,compact,onClick}){
               <span style={{fontSize:14,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(2)}</span>
             </div>
-            <div style={{fontSize:11,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
+            <div style={{fontSize:12,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
           </div>
         </div>
         {niveau.volgende&&<div style={{marginTop:6}}>
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={6}/>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:3,fontSize:10,color:WITD}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:3,fontSize:11,color:WITD}}>
             <span>{niveau.progressPct}%</span>
             <span>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(1)}</span>
           </div>
@@ -486,14 +486,14 @@ function NiveauKaart({niveau,compact,onClick}){
           {niveau.huidig.emoji}
         </div>
         <div>
-          {onClick&&<div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:1}}>Jouw niveau · tik voor overzicht</div>}
+          {onClick&&<div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1}}>Jouw niveau · tik voor overzicht</div>}
           <div style={{fontSize:20,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</div>
           <div style={{fontSize:13,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
         </div>
         <div style={{marginLeft:"auto",textAlign:"right"}}>
-          <div style={{fontSize:11,color:WITD}}>gemiddelde</div>
+          <div style={{fontSize:12,color:WITD}}>gemiddelde</div>
           <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(2)}</div>
-          {niveau.aantalDrops>0&&<div style={{fontSize:11,color:WITD}}>(ruw: {niveau.totaalGemiddelde.toFixed(2)})</div>}
+          {niveau.aantalDrops>0&&<div style={{fontSize:12,color:WITD}}>(ruw: {niveau.totaalGemiddelde.toFixed(2)})</div>}
         </div>
       </div>
       {niveau.volgende
@@ -501,7 +501,7 @@ function NiveauKaart({niveau,compact,onClick}){
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:5,fontSize:13}}>
             <span style={{fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.effectiefGemiddelde.toFixed(2)}</span>
-            <span style={{fontSize:11,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(1)}</span>
+            <span style={{fontSize:12,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(1)}</span>
           </div>
         </>
         :<div style={{textAlign:"center",fontSize:13,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
@@ -509,7 +509,7 @@ function NiveauKaart({niveau,compact,onClick}){
 
       <div style={{marginTop:12,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-          <span style={{fontSize:12,color:WITD}}>🎖️ Badge-punten</span>
+          <span style={{fontSize:13,color:WITD}}>🎖️ Badge-punten</span>
           <span style={{fontSize:14,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten} / {niveau.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
         </div>
         <DashBalk pct={(niveau.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
@@ -521,24 +521,24 @@ function NiveauKaart({niveau,compact,onClick}){
                 <div key={i} style={{background:"rgba(201,168,76,0.15)",border:"1px solid "+GOUD,borderRadius:10,padding:"5px 9px",textAlign:"center"}}>
                   <div style={{display:"flex",alignItems:"center",gap:4,justifyContent:"center"}}>
                     <span style={{fontSize:13}}>🥇</span>
-                    <span style={{fontSize:11,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
+                    <span style={{fontSize:12,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
                   </div>
-                  <div style={{fontSize:10,color:WITD,marginTop:2,textDecoration:"line-through",opacity:0.8}}>
+                  <div style={{fontSize:11,color:WITD,marginTop:2,textDecoration:"line-through",opacity:0.8}}>
                     p{p.id} · gem {p.gem.toFixed(2)}
                   </div>
-                  <div style={{fontSize:9,color:"#ff9f80",marginTop:1}}>telt niet mee</div>
+                  <div style={{fontSize:10,color:"#ff9f80",marginTop:1}}>telt niet mee</div>
                 </div>
               );
             })}
           </div>
-          :<div style={{marginTop:8,fontSize:11,color:WITD,opacity:0.75,textAlign:"center"}}>
+          :<div style={{marginTop:8,fontSize:12,color:WITD,opacity:0.75,textAlign:"center"}}>
             Bij {PUNTEN_PER_DROP}pt: je slechtste partij schrappen uit je gemiddelde
           </div>
         }
       </div>
 
       {niveau.volgendeKandidaatId&&(
-        <div style={{marginTop:8,textAlign:"center",fontSize:11,color:"#ff9f80"}}>
+        <div style={{marginTop:8,textAlign:"center",fontSize:12,color:"#ff9f80"}}>
           🎯 Volgende schrap-kandidaat: p{niveau.volgendeKandidaatId} (gem {niveau.volgendeKandidaatGem.toFixed(2)})
         </div>
       )}
@@ -563,15 +563,15 @@ function NiveauOverzicht({niveau,onClose}){
                   {n.emoji}
                 </div>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:14,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:11,color:WITD,fontWeight:"normal"}}> — jouw niveau</span>}</div>
-                  <div style={{fontSize:11,color:WITD}}>vanaf gemiddelde {n.gemDrempel.toFixed(1)}</div>
+                  <div style={{fontSize:14,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:12,color:WITD,fontWeight:"normal"}}> — jouw niveau</span>}</div>
+                  <div style={{fontSize:12,color:WITD}}>vanaf gemiddelde {n.gemDrempel.toFixed(1)}</div>
                 </div>
                 <div style={{fontSize:14}}>{bereikt?"✅":toekomstig?"🔒":""}</div>
               </div>
             );
           })}
         </div>
-        <div style={{textAlign:"center",marginTop:14,fontSize:12,color:WITD,opacity:0.7}}>Tik om te sluiten</div>
+        <div style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7}}>Tik om te sluiten</div>
       </div>
     </div>
   );
@@ -588,7 +588,7 @@ function PartijRij({p,nr,prestatie,gedropt,onVerwijder}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:12,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:12,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:12,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
           <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -602,7 +602,7 @@ function PartijRij({p,nr,prestatie,gedropt,onVerwijder}){
               return(
                 <div key={l} style={{background:n>0?"#2d4a1e":"#1c2e18",border:"1px solid "+(n>0?k:KBDR),borderRadius:6,padding:"4px 10px",textAlign:"center",minWidth:48}}>
                   <div style={{fontSize:16,fontWeight:"bold",color:n>0?k:"#5a7a55"}}>{n}x</div>
-                  <div style={{fontSize:11,color:WITD}}>{l}</div>
+                  <div style={{fontSize:12,color:WITD}}>{l}</div>
                 </div>
               );
             })}
@@ -632,8 +632,8 @@ function PartijRij({p,nr,prestatie,gedropt,onVerwijder}){
 
 function DashBalk({pct,kleur,hoogte=8}){
   return(
-    <div style={{height:hoogte,background:"rgba(255,255,255,0.14)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:4,overflow:"hidden"}}>
-      <div style={{height:hoogte,width:Math.max(0,Math.min(100,pct))+"%",background:kleur,borderRadius:4,transition:"width 0.4s"}}/>
+    <div style={{height:hoogte,background:"rgba(255,255,255,0.14)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:4,overflow:"hidden",boxSizing:"border-box"}}>
+      <div style={{height:"100%",width:Math.max(0,Math.min(100,pct))+"%",background:kleur,borderRadius:4,transition:"width 0.4s"}}/>
     </div>
   );
 }
@@ -914,9 +914,9 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
 
   const kaart=(label,waarde,sub,kleur=GOUD)=>(
     <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
-      <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>{label}</div>
+      <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>{label}</div>
       <div style={{fontSize:26,fontWeight:"bold",color:kleur,lineHeight:1}}>{waarde}</div>
-      {sub&&<div style={{fontSize:11,color:WITD,marginTop:3}}>{sub}</div>}
+      {sub&&<div style={{fontSize:12,color:WITD,marginTop:3}}>{sub}</div>}
     </div>
   );
 
@@ -934,7 +934,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#0d1f0d,#182e14)",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0}}>
         <div style={{fontSize:15,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Dashboard</div>
-        <div style={{fontSize:11,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Ferro · Analyse & trends · {ST.length} partijen</div>
+        <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Ferro · Analyse & trends · {ST.length} partijen</div>
       </div>
 
       {/* Tabs */}
@@ -948,18 +948,18 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
 
       {/* Partijselectie */}
       <div style={{background:"#152015",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`,flexShrink:0}}>
-        <div style={{fontSize:11,color:WITD,marginBottom:5}}>
+        <div style={{fontSize:12,color:WITD,marginBottom:5}}>
           Selectie: p{va+1}–p{tot+1} · <span style={{color:GOUD}}>{filt.length} partijen</span>
         </div>
         <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6}}>
-          <span style={{fontSize:11,color:WITD,minWidth:14}}>{va+1}</span>
+          <span style={{fontSize:12,color:WITD,minWidth:14}}>{va+1}</span>
           <input type="range" min={0} max={Math.max(ST.length-1,0)} value={va}
             onChange={e=>setVa(Math.min(+e.target.value,tot-1))}
             style={{flex:1,accentColor:GOUD}}/>
           <input type="range" min={0} max={Math.max(ST.length-1,0)} value={tot}
             onChange={e=>setTot(Math.max(+e.target.value,va+1))}
             style={{flex:1,accentColor:GOUD}}/>
-          <span style={{fontSize:11,color:WITD,minWidth:14}}>{tot+1}</span>
+          <span style={{fontSize:12,color:WITD,minWidth:14}}>{tot+1}</span>
         </div>
         <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:2}}>
           {quickButtons.map(([l,v,t])=>{
@@ -967,7 +967,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
             return(
               <button key={l} onClick={()=>{setVa(v);setTot(t);}}
                 style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
-                  borderRadius:5,color:actief?GOUD:WITD,fontSize:11,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+                  borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
                 {l}
               </button>
             );
@@ -977,7 +977,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
           {[["alle","Alle tafels"],["210","2,10"],["230","2,30"]].map(([k,l])=>(
             <button key={k} onClick={()=>setTafelFilter(k)}
               style={{flex:1,padding:"4px 0",background:tafelFilter===k?"#2d4a1e":"none",border:`1px solid ${tafelFilter===k?GOUD:KBDR}`,
-                borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>
+                borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
               {l}
             </button>
           ))}
@@ -1000,18 +1000,18 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
               <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Rolling gemiddelde</span>
               <div style={{display:"flex",gap:6}}>
                 <button onClick={()=>setW3(!w3)} style={{background:"none",border:`1px solid ${w3?GOUD:KBDR}`,
-                  borderRadius:4,color:w3?GOUD:WITD,fontSize:11,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>3p</button>
+                  borderRadius:4,color:w3?GOUD:WITD,fontSize:12,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>3p</button>
                 <button onClick={()=>setW5(!w5)} style={{background:"none",border:`1px solid ${w5?WIT:KBDR}`,
-                  borderRadius:4,color:w5?WIT:WITD,fontSize:11,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>5p</button>
+                  borderRadius:4,color:w5?WIT:WITD,fontSize:12,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>5p</button>
               </div>
             </div>
-            <div style={{fontSize:11,color:WITD,marginBottom:6,display:"flex",gap:12}}>
+            <div style={{fontSize:12,color:WITD,marginBottom:6,display:"flex",gap:12}}>
               <span style={{color:"#3a5c35"}}>● Ruw</span>
               {w3&&<span style={{color:GOUD}}>── 3-partij</span>}
               {w5&&<span style={{color:WIT}}>╌╌ 5-partij</span>}
             </div>
             <DashGrafiek data={rolGems}/>
-            {(w3||w5)&&<div style={{marginTop:6,display:"flex",gap:12,fontSize:12}}>
+            {(w3||w5)&&<div style={{marginTop:6,display:"flex",gap:12,fontSize:13}}>
               {w3&&<span style={{color:GOUD}}>3p nu: <strong>{r3.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
               {w5&&<span style={{color:WIT}}>5p nu: <strong>{r5.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
             </div>}
@@ -1021,12 +1021,12 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
             <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Uitschieters weggooien</div>
             <div style={{display:"flex",gap:10,marginBottom:8}}>
               <div style={{flex:1}}>
-                <div style={{fontSize:11,color:ROOD,marginBottom:4}}>Slechtste {trimLClamped} weg</div>
+                <div style={{fontSize:12,color:ROOD,marginBottom:4}}>Slechtste {trimLClamped} weg</div>
                 <input type="range" min={0} max={maxTrim} step={1} value={trimLClamped}
                   onChange={e=>setTrimL(+e.target.value)} style={{width:"100%",accentColor:ROOD}}/>
               </div>
               <div style={{flex:1}}>
-                <div style={{fontSize:11,color:GRNT,marginBottom:4}}>Beste {trimHClamped} weg</div>
+                <div style={{fontSize:12,color:GRNT,marginBottom:4}}>Beste {trimHClamped} weg</div>
                 <input type="range" min={0} max={maxTrim} step={1} value={trimHClamped}
                   onChange={e=>setTrimH(+e.target.value)} style={{width:"100%",accentColor:GRNT}}/>
               </div>
@@ -1049,7 +1049,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                   <span style={{fontSize:18,fontWeight:"bold",color:k}}>{pct}%</span>
                 </div>
                 <DashBalk pct={pct} kleur={k}/>
-                <div style={{fontSize:11,color:WITD,marginTop:2}}>
+                <div style={{fontSize:12,color:WITD,marginTop:2}}>
                   {filt.filter(p=>p.gem>=d).length} van {filt.length} partijen
                 </div>
               </div>
@@ -1057,19 +1057,19 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
-              <div style={{fontSize:12,color:GRNT,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Beste 5</div>
+              <div style={{fontSize:13,color:GRNT,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Beste 5</div>
               {[...filt].sort((a,b)=>b.gem-a.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
-                  <span style={{fontSize:12,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
+                  <span style={{fontSize:13,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
                   <span style={{fontSize:14,fontWeight:"bold",color:GRNT}}>{p.gem}</span>
                 </div>
               ))}
             </div>
             <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
-              <div style={{fontSize:12,color:ROOD,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Slechtste 5</div>
+              <div style={{fontSize:13,color:ROOD,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Slechtste 5</div>
               {[...filt].sort((a,b)=>a.gem-b.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
-                  <span style={{fontSize:12,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
+                  <span style={{fontSize:13,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
                   <span style={{fontSize:14,fontWeight:"bold",color:ROOD}}>{p.gem}</span>
                 </div>
               ))}
@@ -1086,10 +1086,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
               ?<div style={{fontSize:14,color:WITD}}>Nog geen opmerkingen genoteerd in deze selectie.</div>
               :<div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                 <div>
-                  <div style={{fontSize:12,color:ROOD,marginBottom:6}}>Gemist door</div>
+                  <div style={{fontSize:13,color:ROOD,marginBottom:6}}>Gemist door</div>
                   {gemistCounts.length===0?<div style={{fontSize:13,color:WITD}}>—</div>:gemistCounts.slice(0,8).map(([label,n])=>(
                     <div key={label} style={{marginBottom:6}}>
-                      <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:WITD,marginBottom:2}}>
+                      <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:WITD,marginBottom:2}}>
                         <span>{label}</span><span>{n}x</span>
                       </div>
                       <DashBalk pct={Math.round(n/gemistCounts[0][1]*100)} kleur={ROOD} hoogte={5}/>
@@ -1097,10 +1097,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                   ))}
                 </div>
                 <div>
-                  <div style={{fontSize:12,color:GRNT,marginBottom:6}}>Ging goed door</div>
+                  <div style={{fontSize:13,color:GRNT,marginBottom:6}}>Ging goed door</div>
                   {goedCounts.length===0?<div style={{fontSize:13,color:WITD}}>—</div>:goedCounts.slice(0,8).map(([label,n])=>(
                     <div key={label} style={{marginBottom:6}}>
-                      <div style={{display:"flex",justifyContent:"space-between",fontSize:12,color:WITD,marginBottom:2}}>
+                      <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:WITD,marginBottom:2}}>
                         <span>{label}</span><span>{n}x</span>
                       </div>
                       <DashBalk pct={Math.round(n/goedCounts[0][1]*100)} kleur={GRNT} hoogte={5}/>
@@ -1129,7 +1129,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                     </div>
                   );
                 })}
-                <div style={{fontSize:11,color:WITD,marginTop:2}}>{histData.totBeurt} beurten totaal</div>
+                <div style={{fontSize:12,color:WITD,marginTop:2}}>{histData.totBeurt} beurten totaal</div>
               </>
             }
           </div>
@@ -1144,7 +1144,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                   {kaart("Klein herstel",Math.round(poedelHerstel.klein/poedelHerstel.basis*100)+"%",poedelHerstel.klein+"x",GOUD)}
                   {kaart("Sterk herstel",Math.round(poedelHerstel.sterk/poedelHerstel.basis*100)+"%",poedelHerstel.sterk+"x (5+)",GRNT)}
                 </div>
-                <div style={{fontSize:11,color:WITD}}>Gebaseerd op {poedelHerstel.basis} poedels ({poedelHerstel.totaalPoedels} totaal in selectie)</div>
+                <div style={{fontSize:12,color:WITD}}>Gebaseerd op {poedelHerstel.basis} poedels ({poedelHerstel.totaalPoedels} totaal in selectie)</div>
               </>
             }
           </div>
@@ -1158,10 +1158,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
               {[[`p1–p${h}`,g1,h1],[`p${h+1}–p${sel.length}`,g2,h2]].map(([label,gem,ps])=>(
                 <div key={label} style={{background:"#1a3019",borderRadius:8,padding:"12px",textAlign:"center"}}>
-                  <div style={{fontSize:12,color:WITD,marginBottom:4}}>{label}</div>
+                  <div style={{fontSize:13,color:WITD,marginBottom:4}}>{label}</div>
                   <div style={{fontSize:28,fontWeight:"bold",color:parseFloat(gem)>=2.5?GRNT:parseFloat(gem)>=2?GOUD:ROOD}}>{gem}</div>
-                  <div style={{fontSize:11,color:WITD,marginTop:4}}>{ps.length} partijen</div>
-                  <div style={{fontSize:11,color:GRNT}}>{Math.round(ps.filter(p=>p.gem>=2).length/Math.max(ps.length,1)*100)}% boven 2.0</div>
+                  <div style={{fontSize:12,color:WITD,marginTop:4}}>{ps.length} partijen</div>
+                  <div style={{fontSize:12,color:GRNT}}>{Math.round(ps.filter(p=>p.gem>=2).length/Math.max(ps.length,1)*100)}% boven 2.0</div>
                 </div>
               ))}
             </div>
@@ -1180,7 +1180,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
               return(
                 <div key={naam} style={{marginBottom:10}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
-                    <span style={{fontSize:14,color:WITD}}>{naam} <span style={{fontSize:11,color:WITD}}>({ps.length}p)</span></span>
+                    <span style={{fontSize:14,color:WITD}}>{naam} <span style={{fontSize:12,color:WITD}}>({ps.length}p)</span></span>
                     <span style={{fontSize:14,fontWeight:"bold",color:k}}>{gem}</span>
                   </div>
                   <DashBalk pct={parseFloat(gem)/4*100} kleur={k}/>
@@ -1244,7 +1244,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:12,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:12,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:12,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
           {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -1490,7 +1490,7 @@ function BiljartTracker(){
         <div style={{textAlign:"center",color:GOUD,fontSize:15,fontWeight:"bold"}}>Nieuwe partij</div>
         <NiveauKaart niveau={niveau} compact={true} onClick={function(){setNiveauOpen(true);}}/>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
-          <div style={{fontSize:12,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Tafelmaat</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Tafelmaat</div>
           <div style={{display:"flex",gap:8}}>
             <button style={{flex:1,padding:"10px 8px",background:tafel==="210"?"#2d4a1e":"none",border:"1px solid "+(tafel==="210"?GOUD:KBDR),borderRadius:8,color:tafel==="210"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
               onClick={function(){setTafel("210");}}>2,10 x 1,05</button>
@@ -1499,7 +1499,7 @@ function BiljartTracker(){
           </div>
         </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"10px 14px"}}>
-          <div style={{fontSize:12,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:6}}>Partij doel</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:6}}>Partij doel</div>
           <div style={{display:"flex",gap:8,marginBottom:10}}>
             <button style={{flex:1,padding:"8px 8px",background:doelType==="beurten"?"#2d4a1e":"none",border:"1px solid "+(doelType==="beurten"?GOUD:KBDR),borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
               onClick={function(){setDoelType("beurten");}}>Beurten</button>
@@ -1561,7 +1561,7 @@ function BiljartTracker(){
               return(
                 <div key={arr[0]} style={{textAlign:"center",background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 2px"}}>
                   <div style={{fontSize:20,fontWeight:"bold",color:arr[2],lineHeight:1}}>{arr[1]}</div>
-                  <div style={{fontSize:10,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{arr[0]}</div>
+                  <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{arr[0]}</div>
                 </div>
               );
             })}
@@ -1569,22 +1569,22 @@ function BiljartTracker(){
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 2fr",gap:6,marginBottom:6}}>
             <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
               <div style={{fontSize:18,fontWeight:"bold",color:GRNT,lineHeight:1}}>{stL?stL.opbouw5:0}x</div>
-              <div style={{fontSize:10,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw 5+</div>
-              <div style={{fontSize:12,color:GRNT,marginTop:1}}>{opbouwPct}%</div>
+              <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw 5+</div>
+              <div style={{fontSize:13,color:GRNT,marginTop:1}}>{opbouwPct}%</div>
             </div>
             <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
               <div style={{fontSize:18,fontWeight:"bold",color:poedels>0?"#e08055":WITD,lineHeight:1}}>{poedels}x</div>
-              <div style={{fontSize:10,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Poedels</div>
-              <div style={{fontSize:12,color:poedels>0?"#e08055":WITD,marginTop:1}}>{poedelPct}%</div>
+              <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Poedels</div>
+              <div style={{fontSize:13,color:poedels>0?"#e08055":WITD,marginTop:1}}>{poedelPct}%</div>
             </div>
             <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 8px"}}>
-              <div style={{fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Series</div>
+              <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Series</div>
               <div style={{display:"flex",gap:4,justifyContent:"space-around"}}>
                 {[["5-7",s57,"#4caf50"],["8-9",s89,"#e8c96a"],["10+",s10,"#ff9f40"]].map(function(arr){
                   return(
                     <div key={arr[0]} style={{textAlign:"center"}}>
                       <div style={{fontSize:16,fontWeight:"bold",color:arr[1]>0?arr[2]:KBDR}}>{arr[1]}</div>
-                      <div style={{fontSize:10,color:WITD}}>{arr[0]}</div>
+                      <div style={{fontSize:11,color:WITD}}>{arr[0]}</div>
                     </div>
                   );
                 })}
@@ -1662,7 +1662,7 @@ function BiljartTracker(){
             if(hints.length===0)return null;
             return(
               <div style={{background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginTop:6}}>
-                {hints.map(function(h,i){return <div key={i} style={{fontSize:12,color:WITD,padding:"2px 0"}}>{h}</div>;})}
+                {hints.map(function(h,i){return <div key={i} style={{fontSize:13,color:WITD,padding:"2px 0"}}>{h}</div>;})}
               </div>
             );
           })()}
@@ -1756,13 +1756,13 @@ function BiljartTracker(){
       <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
         {stA&&(
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-            <div style={{fontSize:12,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
+            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
               {[["Car.",stA.totCar],["Max",stA.max],["Gem",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
                 return(
                   <div key={arr[0]} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
                     <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>
-                    <div style={{fontSize:12,color:WITD}}>{arr[0]}</div>
+                    <div style={{fontSize:13,color:WITD}}>{arr[0]}</div>
                   </div>
                 );
               })}
@@ -1771,12 +1771,12 @@ function BiljartTracker(){
           </div>
         )}
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-          <div style={{fontSize:12,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
           {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij}/>;}) }
         </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-          <div style={{fontSize:12,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
-          <div style={{fontSize:12,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels en 👑🏓-records berekend worden. Je niveau (Beginner-Legende) blijft altijd all-time.</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels en 👑🏓-records berekend worden. Je niveau (Beginner-Legende) blijft altijd all-time.</div>
           <div style={{display:"flex",gap:6}}>
             {[["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
               const v=arr[0],l=arr[1];
@@ -1805,7 +1805,7 @@ function BiljartTracker(){
     return(
       <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-          <div style={{fontSize:12,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:10}}>AI Analyse</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:10}}>AI Analyse</div>
           <div style={{display:"flex",gap:8,marginBottom:aiRes?12:0}}>
             <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}
               onClick={function(){vraagAI("partij");}} disabled={aiBezig}>{aiBezig&&aiType==="partij"?"Laden...":"Partij analyse"}</button>
@@ -1828,10 +1828,10 @@ function BiljartTracker(){
         </button>
         {toonData&&(
           <div>
-            <div style={{fontSize:12,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>
+            <div style={{fontSize:13,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>
             <textarea readOnly value={dataTekst}
               onClick={function(e){e.target.select();}}
-              style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:12,padding:8,fontFamily:"monospace",resize:"none"}}/>
+              style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
           </div>
         )}
       </div>
@@ -1844,7 +1844,7 @@ function BiljartTracker(){
       <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
         {lp.length>0&&(
           <div style={{background:KBG,border:"2px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:10}}>
-            <div style={{fontSize:12,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Lopende partij</div>
+            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Lopende partij</div>
             {[].concat(lp).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={lp.length-i}/>;}) }
           </div>
         )}
@@ -1885,13 +1885,13 @@ function BiljartTracker(){
           <div dangerouslySetInnerHTML={{__html:LOGO_SVG}}/>
           <div>
             <div style={{fontSize:16,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Tracker</div>
-            <div style={{fontSize:11,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole - Serie registratie</div>
+            <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole - Serie registratie</div>
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <button onClick={function(){setNiveauOpen(true);}} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,0.25)",border:"1px solid "+niveau.huidig.kleur,borderRadius:20,padding:"4px 10px 4px 6px",cursor:"pointer",fontFamily:"inherit"}}>
             <span style={{fontSize:14}}>{niveau.huidig.emoji}</span>
-            <span style={{fontSize:12,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
+            <span style={{fontSize:13,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
           </button>
           {fase!=="setup"&&lp.length>0&&(
             <button style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,padding:"5px 10px",fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
@@ -1910,7 +1910,7 @@ function BiljartTracker(){
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:14,marginBottom:14}}>
               <div style={{textAlign:"center",opacity:0.5}}>
                 <div style={{fontSize:30}}>{niveauUpInfo.van.emoji}</div>
-                <div style={{fontSize:12,color:WITD}}>{niveauUpInfo.van.naam}</div>
+                <div style={{fontSize:13,color:WITD}}>{niveauUpInfo.van.naam}</div>
               </div>
               <div style={{fontSize:22,color:niveauUpInfo.naar.kleur}}>→</div>
               <div style={{textAlign:"center"}}>
@@ -1921,7 +1921,7 @@ function BiljartTracker(){
               </div>
             </div>
             <div style={{fontSize:13,color:WITD,opacity:0.85}}>Je gemiddelde heeft de {niveauUpInfo.naar.gemDrempel.toFixed(1)}-drempel gehaald</div>
-            <div style={{fontSize:12,color:WITD,marginTop:16,opacity:0.7}}>Tik om te sluiten</div>
+            <div style={{fontSize:13,color:WITD,marginTop:16,opacity:0.7}}>Tik om te sluiten</div>
           </div>
         </div>
       )}
@@ -1940,13 +1940,13 @@ function BiljartTracker(){
                     <div style={{width:66,height:66,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+kleur+"dd,"+kleur+"44)",border:"3px solid "+kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,boxShadow:"0 0 18px "+kleur+"99",marginBottom:6}}>
                       {b.emoji}
                     </div>
-                    <div style={{fontSize:12,color:WIT,fontWeight:"bold",lineHeight:1.25}}>{b.label}</div>
+                    <div style={{fontSize:13,color:WIT,fontWeight:"bold",lineHeight:1.25}}>{b.label}</div>
                     <div style={{fontSize:14,color:kleur,fontWeight:"bold"}}>+{b.punten}</div>
                   </div>
                 );
               })}
             </div>
-            <div style={{fontSize:12,color:WITD,marginTop:20,opacity:0.7}}>Tik om te sluiten</div>
+            <div style={{fontSize:13,color:WITD,marginTop:20,opacity:0.7}}>Tik om te sluiten</div>
           </div>
         </div>
       )}

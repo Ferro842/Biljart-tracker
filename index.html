@@ -471,7 +471,7 @@ function NiveauOverzicht({niveau,onClose}){
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:12,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:9,color:WITD,fontWeight:"normal"}}> — jouw niveau</span>}</div>
-                  <div style={{fontSize:9,color:WITD}}>vanaf {n.drempel} badge-punten</div>
+                  <div style={{fontSize:9,color:WITD}}>vanaf {n.drempel} badge-punten · typisch gem {n.gemDrempel.toFixed(1)}+</div>
                 </div>
                 <div style={{fontSize:14}}>{bereikt?"✅":toekomstig?"🔒":""}</div>
               </div>
@@ -484,8 +484,9 @@ function NiveauOverzicht({niveau,onClose}){
   );
 }
 
-function PartijRij({p,nr,prestatie}){
+function PartijRij({p,nr,prestatie,gedropt,onVerwijder}){
   const [open,setOpen]=useState(false);
+  const [confVerwijder,setConfVerwijder]=useState(false);
   const st=stat(p.beurten);
   if(!st)return null;
   const punten=prestatie?prestatie.punten:0;
@@ -494,8 +495,8 @@ function PartijRij({p,nr,prestatie}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:13,color:GOUD}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:10,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}</div>
-          <div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
+          <div style={{fontSize:13,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:10,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:10,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
+          <div style={{fontSize:11,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
       </button>
@@ -514,6 +515,20 @@ function PartijRij({p,nr,prestatie}){
             })}
           </div>
           <PrestatieOverzicht prestatie={prestatie}/>
+          {onVerwijder&&(
+            !confVerwijder
+              ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:11,fontFamily:"inherit"}}
+                onClick={function(){setConfVerwijder(true);}}>Partij verwijderen</button>
+              :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:6,padding:"8px 10px"}}>
+                <div style={{fontSize:11,color:"#e06060",marginBottom:6}}>Deze partij definitief verwijderen?</div>
+                <div style={{display:"flex",gap:6}}>
+                  <button style={{flex:1,padding:6,background:"#7a3030",border:"none",borderRadius:5,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:11}}
+                    onClick={function(){onVerwijder(p.id);}}>Ja, verwijderen</button>
+                  <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:11}}
+                    onClick={function(){setConfVerwijder(false);}}>Annuleer</button>
+                </div>
+              </div>
+          )}
         </div>
       )}
     </div>
@@ -593,29 +608,81 @@ function categorieKleur(cat){
 }
 
 const NIVEAUS=[
-  {naam:"Beginner",drempel:0,emoji:"🔰",kleur:"#9aa89a"},
-  {naam:"Amateur",drempel:500,emoji:"🥉",kleur:"#c9915a"},
-  {naam:"Clubspeler",drempel:1500,emoji:"🥈",kleur:"#c4c4cf"},
-  {naam:"Gevorderde",drempel:3000,emoji:"🥇",kleur:"#e8c96a"},
-  {naam:"Kampioen",drempel:5500,emoji:"🏆",kleur:"#7fd8e0"},
-  {naam:"Meester",drempel:9000,emoji:"👑",kleur:"#b18cf0"},
-  {naam:"Legende",drempel:14000,emoji:"💎",kleur:"#ff9fd1"}
+  {naam:"Beginner",drempel:0,gemDrempel:0,emoji:"🔰",kleur:"#9aa89a"},
+  {naam:"Amateur",drempel:1000,gemDrempel:1.0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Clubspeler",drempel:1500,gemDrempel:1.5,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Gevorderde",drempel:2200,gemDrempel:2.0,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Kampioen",drempel:3000,gemDrempel:2.5,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Meester",drempel:4000,gemDrempel:3.0,emoji:"👑",kleur:"#b18cf0"},
+  {naam:"Legende",drempel:5200,gemDrempel:3.5,emoji:"💎",kleur:"#ff9fd1"}
 ];
-// Niveau is gebaseerd op je totale badge-punten (dezelfde punten als bij de Prestaties/Punten-tab).
-// Omdat badges zelf al zwaarder wegen naarmate je gemiddelde hoger is (grotere/vaker Opbouw, Sterke
-// serie, Topserie, plus de adaptieve ⭐-drempel en records), groeit dit vanzelf mee met echte
-// verbetering — een uitzonderlijke eerste partij geeft al een flinke hap punten, maar voor een
-// volgend niveau is meer nodig dan één goede avond.
-function bepaalNiveau(totaalPunten){
+const PUNTEN_PER_DROP=3000; // elke 3000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
+
+// Niveau-score = je gemiddelde is de basis (gemiddelde x 1000). Badge-punten geven daarbovenop een
+// bonus-percentage (max. 40%). Elke 3000 badge-punten ontgrendelt bovendien het schrappen van je
+// eerstvolgende slechtste partij uit de gemiddelde-berekening (net als bij golf-handicaps) — zo geven
+// badges ook direct invloed op je gemiddelde zelf, niet alleen een bonuspercentage.
+function berekenNiveauScore(partijen){
+  const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten)};}).filter(function(x){return x.st;});
+  let car=0,beurt=0;
+  geldige.forEach(function(x){car+=x.st.totCar;beurt+=x.st.aantalBeurten;});
+  const totaalGemiddelde=beurt>0?car/beurt:0;
+  const badgePunten=berekenPrestaties(partijen,null).reduce(function(a,r){return a+r.punten;},0);
+
+  const aantalDrops=Math.floor(badgePunten/PUNTEN_PER_DROP);
+  const gesorteerd=geldige.slice().sort(function(a,b){return parseFloat(a.st.gemPerBeurt)-parseFloat(b.st.gemPerBeurt);});
+  const gedropt=gesorteerd.slice(0,aantalDrops);
+  const gedropteIds=new Set(gedropt.map(function(x){return x.p.id;}));
+  let effCar=car,effBeurt=beurt;
+  gedropt.forEach(function(x){effCar-=x.st.totCar;effBeurt-=x.st.aantalBeurten;});
+  const effectiefGemiddelde=effBeurt>0?effCar/effBeurt:totaalGemiddelde;
+
+  const basisScore=effectiefGemiddelde*1000;
+  const bonusPct=Math.min(0.4,badgePunten/15000);
+  const score=Math.round(basisScore*(1+bonusPct));
+  return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,
+    basisScore:basisScore,bonusPct:bonusPct,score:score,aantalDrops:aantalDrops,gedropteIds:gedropteIds};
+}
+function bepaalNiveau(score){
   let idx=0;
   for(let i=0;i<NIVEAUS.length;i++){
-    if(totaalPunten>=NIVEAUS[i].drempel)idx=i;
+    if(score>=NIVEAUS[i].drempel)idx=i;
   }
   const huidig=NIVEAUS[idx];
   const volgende=NIVEAUS[idx+1]||null;
-  const progressPct=volgende?Math.min(100,Math.max(0,Math.round((totaalPunten-huidig.drempel)/(volgende.drempel-huidig.drempel)*100))):100;
+  const progressPct=volgende?Math.min(100,Math.max(0,Math.round((score-huidig.drempel)/(volgende.drempel-huidig.drempel)*100))):100;
   const sterren=Math.max(1,Math.min(5,Math.ceil(progressPct/20)));
-  return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:idx,totaal:totaalPunten};
+  return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:idx,totaal:score};
+}
+// Los, informatief tweede meetpunt: welk niveau je gemiddelde (na eventuele drops) ALLEEN zou
+// rechtvaardigen, als referentie naast je echte niveau.
+function bepaalGemNiveau(gemiddelde){
+  let idx=0;
+  for(let i=0;i<NIVEAUS.length;i++){
+    if(gemiddelde>=NIVEAUS[i].gemDrempel)idx=i;
+  }
+  return NIVEAUS[idx];
+}
+// Harde gate: je uiteindelijke niveau is het LAAGSTE van je score-niveau en je gemiddelde-niveau.
+// Geen hoeveelheid badge-punten kan je voorbij het niveau tillen dat je gemiddelde toestaat.
+function bepaalUiteindelijkNiveau(info){
+  const scoreNiveau=bepaalNiveau(info.score);
+  const gemNiveauObj=bepaalGemNiveau(info.effectiefGemiddelde);
+  const gemIdx=NIVEAUS.indexOf(gemNiveauObj);
+  const finalIdx=Math.min(scoreNiveau.index,gemIdx);
+  const huidig=NIVEAUS[finalIdx];
+  const volgende=NIVEAUS[finalIdx+1]||null;
+  const bottleneck=gemIdx<scoreNiveau.index?"gemiddelde":(scoreNiveau.index<gemIdx?"score":"gelijk");
+  let progressPct=100,sterren=5;
+  if(volgende){
+    if(bottleneck==="gemiddelde"){
+      progressPct=Math.min(100,Math.max(0,Math.round((info.effectiefGemiddelde-huidig.gemDrempel)/(volgende.gemDrempel-huidig.gemDrempel)*100)));
+    }else{
+      progressPct=Math.min(100,Math.max(0,Math.round((info.score-huidig.drempel)/(volgende.drempel-huidig.drempel)*100)));
+    }
+    sterren=Math.max(1,Math.min(5,Math.ceil(progressPct/20)));
+  }
+  return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:finalIdx,totaal:info.score,bottleneck:bottleneck};
 }
 
 function Dashboard({partijen,niveau,tijdsvensterMaanden}){
@@ -1063,7 +1130,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
               </div>
               <div style={{marginLeft:"auto",textAlign:"right"}}>
                 <div style={{fontSize:9,color:WITD}}>badge-punten ooit</div>
-                <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.totaal}pt</div>
+                <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten}pt</div>
               </div>
             </div>
             {niveau.volgende
@@ -1071,13 +1138,26 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                 <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>
                 <div style={{display:"flex",justifyContent:"space-between",marginTop:5,fontSize:9,color:WITD}}>
                   <span>{niveau.progressPct}%</span>
-                  <span>Nog {niveau.volgende.drempel-niveau.totaal}pt naar {niveau.volgende.emoji} {niveau.volgende.naam}</span>
+                  <span>naar {niveau.volgende.emoji} {niveau.volgende.naam}</span>
                 </div>
-                <div style={{textAlign:"center",marginTop:8,fontSize:9,color:WITD,opacity:0.8}}>
-                  Gemiddelde {niveau.totaalGemiddelde.toFixed(2)} over {niveau.aantalPartijen} partijen — hoe hoger je gemiddelde, hoe meer badge-punten elke partij oplevert
+                <div style={{textAlign:"center",marginTop:8,fontSize:10,color:niveau.bottleneck==="gemiddelde"?"#ff9f80":WITD,opacity:niveau.bottleneck==="gemiddelde"?1:0.8,fontWeight:niveau.bottleneck==="gemiddelde"?"bold":"normal"}}>
+                  {niveau.bottleneck==="gemiddelde"
+                    ?"⏳ Je gemiddelde ("+niveau.effectiefGemiddelde.toFixed(2)+") houdt je tegen — nodig: "+niveau.volgende.gemDrempel.toFixed(1)+" voor "+niveau.volgende.naam
+                    :"Je badge-punten bepalen nu je tempo naar "+niveau.volgende.naam}
                 </div>
               </>
               :<div style={{textAlign:"center",fontSize:11,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
+            }
+            {niveau.aantalDrops>0
+              ?<div style={{marginTop:10,display:"flex",alignItems:"center",gap:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"7px 10px"}}>
+                <span style={{fontSize:16}}>🏅</span>
+                <div style={{flex:1,fontSize:10,color:WITD}}>
+                  {niveau.aantalDrops}x slechtste partij geschrapt uit je gemiddelde (ontgrendeld per {PUNTEN_PER_DROP}pt) — ruw gemiddelde was {niveau.totaalGemiddelde.toFixed(2)}, telt nu als {niveau.effectiefGemiddelde.toFixed(2)}
+                </div>
+              </div>
+              :<div style={{marginTop:10,fontSize:9,color:WITD,opacity:0.7,textAlign:"center"}}>
+                Bij elke {PUNTEN_PER_DROP} badge-punten mag je je slechtste partij schrappen uit je gemiddelde — nog {PUNTEN_PER_DROP-(niveau.badgePunten%PUNTEN_PER_DROP)}pt te gaan
+              </div>
             }
           </div>
 
@@ -1121,8 +1201,9 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
 }
 
 
-function LogPartijRij({p,nr,prestatie}){
+function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder}){
   const [open,setOpen]=useState(false);
+  const [confVerwijder,setConfVerwijder]=useState(false);
   const st=stat(p.beurten);
   const punten=prestatie?prestatie.punten:0;
   return(
@@ -1130,8 +1211,8 @@ function LogPartijRij({p,nr,prestatie}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:13,color:GOUD}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:10,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}</div>
-          {st&&<div style={{fontSize:11,color:WITD,marginTop:2}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
+          <div style={{fontSize:13,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:10,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:10,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:10,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
+          {st&&<div style={{fontSize:11,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
       </button>
@@ -1139,6 +1220,20 @@ function LogPartijRij({p,nr,prestatie}){
         <div style={{padding:"0 14px 12px"}}>
           <PrestatieOverzicht prestatie={prestatie}/>
           {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i}/>;}) }
+          {onVerwijder&&(
+            !confVerwijder
+              ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:11,fontFamily:"inherit"}}
+                onClick={function(){setConfVerwijder(true);}}>Partij verwijderen</button>
+              :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:6,padding:"8px 10px"}}>
+                <div style={{fontSize:11,color:"#e06060",marginBottom:6}}>Deze partij definitief verwijderen?</div>
+                <div style={{display:"flex",gap:6}}>
+                  <button style={{flex:1,padding:6,background:"#7a3030",border:"none",borderRadius:5,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:11}}
+                    onClick={function(){onVerwijder(p.id);}}>Ja, verwijderen</button>
+                  <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:11}}
+                    onClick={function(){setConfVerwijder(false);}}>Annuleer</button>
+                </div>
+              </div>
+          )}
         </div>
       )}
     </div>
@@ -1167,6 +1262,7 @@ function BiljartTracker(){
   const inputRef=useRef(null);
   const [toastGroep,setToastGroep]=useState(null);
   const [niveauOpen,setNiveauOpen]=useState(false);
+  const [partijSamenvatting,setPartijSamenvatting]=useState(null);
 
   const tijdsvenster=(data&&data.tijdsvenster)||"12";
   const tijdsvensterMaanden=tijdsvenster==="alles"?null:parseInt(tijdsvenster,10);
@@ -1181,16 +1277,24 @@ function BiljartTracker(){
     return berekenLopendeRecords(data?data.partijen:[],tijdsvensterMaanden);
   },[data,tijdsvensterMaanden]);
   const niveau=useMemo(function(){
-    // Niveau gebruikt altijd all-time badge-punten (los van de tijdsvenster-instelling hierboven,
-    // die alleen de ⭐-drempels en 👑🏓-records beïnvloedt).
-    const totaalPunten=berekenPrestaties(data?data.partijen:[],null).reduce(function(a,r){return a+r.punten;},0);
-    let car=0,beurt=0,aantalPartijen=0;
+    // Niveau gebruikt altijd all-time data (los van de tijdsvenster-instelling hierboven, die
+    // alleen de ⭐-drempels en 👑🏓-records beïnvloedt).
+    const info=berekenNiveauScore(data?data.partijen:[]);
+    let aantalPartijen=0;
     (data?data.partijen:[]).forEach(function(p){
-      const st=stat(p.beurten);
-      if(st){car+=st.totCar;beurt+=st.aantalBeurten;aantalPartijen++;}
+      if(stat(p.beurten))aantalPartijen++;
     });
-    const totaalGemiddelde=beurt>0?car/beurt:0;
-    return Object.assign({},bepaalNiveau(totaalPunten),{totaalGemiddelde:totaalGemiddelde,aantalPartijen:aantalPartijen});
+    const gemNiveau=bepaalGemNiveau(info.effectiefGemiddelde);
+    return Object.assign({},bepaalUiteindelijkNiveau(info),{
+      totaalGemiddelde:info.totaalGemiddelde,
+      effectiefGemiddelde:info.effectiefGemiddelde,
+      badgePunten:info.badgePunten,
+      bonusPct:info.bonusPct,
+      aantalDrops:info.aantalDrops,
+      gedropteIds:info.gedropteIds,
+      aantalPartijen:aantalPartijen,
+      gemNiveau:gemNiveau
+    });
   },[data]);
 
   useEffect(function(){laadData().then(setData);},[]);
@@ -1266,6 +1370,11 @@ function BiljartTracker(){
     const leeg={partijen:[],huidigeId:1};
     setData(leeg);slaOp(leeg);setLp([]);setBeurtNr(1);setCar(0);setInp("0");
     setSel(new Set());setConfReset(false);setFase("setup");
+  }
+
+  function verwijderPartij(id){
+    const nd=Object.assign({},data,{partijen:data.partijen.filter(function(p){return p.id!==id;})});
+    setData(nd);slaOp(nd);
   }
 
   function setTijdsvenster(v){
@@ -1613,7 +1722,7 @@ function BiljartTracker(){
         )}
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
-          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]}/>;}) }
+          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij}/>;}) }
         </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
@@ -1690,7 +1799,7 @@ function BiljartTracker(){
           </div>
         )}
         {[].concat(alleP).reverse().map(function(p,pi){
-          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi} prestatie={prestatiesMap[p.id]}/>;
+          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij}/>;
         })}
       </div>
     );

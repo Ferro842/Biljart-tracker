@@ -458,7 +458,7 @@ function NiveauOverzicht({niveau,onClose}){
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"80vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
         <div style={{fontSize:14,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Niveau-overzicht</div>
-        <div style={{fontSize:9,color:WITD,textAlign:"center",marginBottom:14}}>Gebaseerd op je totale badge-punten — hoe hoger je gemiddelde, hoe meer elke partij oplevert</div>
+        <div style={{fontSize:9,color:WITD,textAlign:"center",marginBottom:14}}>Bepaald door je gemiddelde — badge-punten ontgrendelen slechtste-partij-drops die je gemiddelde kunnen verbeteren</div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {NIVEAUS.map(function(n,i){
             const bereikt=i<niveau.index;
@@ -471,7 +471,7 @@ function NiveauOverzicht({niveau,onClose}){
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:12,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:9,color:WITD,fontWeight:"normal"}}> — jouw niveau</span>}</div>
-                  <div style={{fontSize:9,color:WITD}}>vanaf {n.drempel} badge-punten · typisch gem {n.gemDrempel.toFixed(1)}+</div>
+                  <div style={{fontSize:9,color:WITD}}>vanaf gemiddelde {n.gemDrempel.toFixed(1)}</div>
                 </div>
                 <div style={{fontSize:14}}>{bereikt?"✅":toekomstig?"🔒":""}</div>
               </div>
@@ -608,52 +608,30 @@ function categorieKleur(cat){
 }
 
 const NIVEAUS=[
-  {naam:"Beginner",drempel:0,gemDrempel:0,emoji:"🔰",kleur:"#9aa89a"},
-  {naam:"Amateur",drempel:1000,gemDrempel:1.0,emoji:"🥉",kleur:"#c9915a"},
-  {naam:"Clubspeler",drempel:1500,gemDrempel:1.5,emoji:"🥈",kleur:"#c4c4cf"},
-  {naam:"Gevorderde",drempel:2200,gemDrempel:2.0,emoji:"🥇",kleur:"#e8c96a"},
-  {naam:"Kampioen",drempel:3000,gemDrempel:2.5,emoji:"🏆",kleur:"#7fd8e0"},
-  {naam:"Meester",drempel:4000,gemDrempel:3.0,emoji:"👑",kleur:"#b18cf0"},
-  {naam:"Legende",drempel:5200,gemDrempel:3.5,emoji:"💎",kleur:"#ff9fd1"}
+  {naam:"Beginner",gemDrempel:0,emoji:"🔰",kleur:"#9aa89a"},
+  {naam:"Amateur",gemDrempel:1.0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Clubspeler",gemDrempel:1.5,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Gevorderde",gemDrempel:2.0,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Kampioen",gemDrempel:2.5,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Meester",gemDrempel:3.0,emoji:"👑",kleur:"#b18cf0"},
+  {naam:"Legende",gemDrempel:3.5,emoji:"💎",kleur:"#ff9fd1"}
 ];
-const PUNTEN_PER_DROP=3000; // elke 3000 (vorm-gecorrigeerde) badge-punten ontgrendelt het schrappen van 1 extra slechte partij
+const PUNTEN_PER_DROP=1000; // elke 1000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
 
-// Vorm-correctie: badge-punten van een partij tellen voor NIVEAU-doeleinden mee naar rato van hoe je
-// gemiddelde in die partij zich verhoudt tot de gemiddelde-drempel van je volgende niveau (doelGem).
-// r = gem/doelGem. Bij r>=1 (op of boven doel): volle punten. Bij r=0,5: 0 punten. Onder r=0,5: de
-// punten van die partij tellen zelfs NEGATIEF mee (aftrek), tot maximaal het eigen bedrag van die
-// partij (nooit meer dan die partij zelf opleverde). Dit raakt alleen wat voor NIVEAU telt — de
-// badge-punten die je per partij ziet in Stats/Log/Punten-tab blijven het eerlijke, ruwe verslag.
-function berekenBadgePuntenVoorNiveau(partijen){
-  const resultaten=berekenPrestaties(partijen,null);
-  const map={};
-  resultaten.forEach(function(r){map[r.id]=r;});
-  let totaal=0;
-  (partijen||[]).forEach(function(p){
-    const st=stat(p.beurten);
-    if(!st)return;
-    const gem=parseFloat(st.gemPerBeurt);
-    const huidigNiveau=bepaalNiveau(Math.max(0,totaal));
-    const doelGem=huidigNiveau.volgende?huidigNiveau.volgende.gemDrempel:huidigNiveau.huidig.gemDrempel;
-    const puntenPartij=(map[p.id]?map[p.id].punten:0);
-    const r=doelGem>0?gem/doelGem:1;
-    const factor=Math.max(-1,Math.min(1,2*r-1));
-    totaal+=Math.round(puntenPartij*factor);
-  });
-  return totaal;
-}
-
-// Niveau-score = je gemiddelde is de basis (gemiddelde x 1000). Vorm-gecorrigeerde badge-punten geven
-// daarbovenop een bonus-percentage (max. 40%). Elke 3000 van die punten ontgrendelt bovendien het
-// schrappen van je eerstvolgende slechtste partij uit de gemiddelde-berekening (net als bij
-// golf-handicaps) — zo geven badges ook direct invloed op je gemiddelde zelf, niet alleen een bonus.
-function berekenNiveauScore(partijen){
+// Twee losse, simpele assen:
+// 1. Gemiddelde (na eventuele drops) bepaalt rechtstreeks je niveau — geen formules, geen bonus,
+//    gewoon: zit je over de grens, dan zit je in het volgende niveau.
+// 2. Badge-punten zijn gewoon de rechte som van je badges (Opbouw, Sterke serie, records, etc.) —
+//    geen straf, geen correctie voor een laag gemiddelde. Hoe beter je speelt, hoe meer je verdient.
+//    Hun enige functie: elke 1000 punten ontgrendelt het schrappen van je eerstvolgende slechtste
+//    partij uit de gemiddelde-berekening (net als bij golf-handicaps) — zo krijgt goed spelen ook
+//    direct invloed op je gemiddelde, zonder dat een mindere partij ooit "aftrekt".
+function berekenNiveauInfo(partijen){
   const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten)};}).filter(function(x){return x.st;});
   let car=0,beurt=0;
   geldige.forEach(function(x){car+=x.st.totCar;beurt+=x.st.aantalBeurten;});
   const totaalGemiddelde=beurt>0?car/beurt:0;
-  const badgePuntenRuw=berekenPrestaties(partijen,null).reduce(function(a,r){return a+r.punten;},0);
-  const badgePunten=Math.max(0,berekenBadgePuntenVoorNiveau(partijen));
+  const badgePunten=berekenPrestaties(partijen,null).reduce(function(a,r){return a+r.punten;},0);
 
   const aantalDrops=Math.floor(badgePunten/PUNTEN_PER_DROP);
   const gesorteerd=geldige.slice().sort(function(a,b){return parseFloat(a.st.gemPerBeurt)-parseFloat(b.st.gemPerBeurt);});
@@ -663,52 +641,19 @@ function berekenNiveauScore(partijen){
   gedropt.forEach(function(x){effCar-=x.st.totCar;effBeurt-=x.st.aantalBeurten;});
   const effectiefGemiddelde=effBeurt>0?effCar/effBeurt:totaalGemiddelde;
 
-  const basisScore=effectiefGemiddelde*1000;
-  const bonusPct=Math.min(0.4,badgePunten/15000);
-  const score=Math.round(basisScore*(1+bonusPct));
-  return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,badgePuntenRuw:badgePuntenRuw,
-    basisScore:basisScore,bonusPct:bonusPct,score:score,aantalDrops:aantalDrops,gedropteIds:gedropteIds};
+  return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,
+    aantalDrops:aantalDrops,gedropteIds:gedropteIds};
 }
-function bepaalNiveau(score){
+function bepaalNiveau(effectiefGemiddelde){
   let idx=0;
   for(let i=0;i<NIVEAUS.length;i++){
-    if(score>=NIVEAUS[i].drempel)idx=i;
+    if(effectiefGemiddelde>=NIVEAUS[i].gemDrempel)idx=i;
   }
   const huidig=NIVEAUS[idx];
   const volgende=NIVEAUS[idx+1]||null;
-  const progressPct=volgende?Math.min(100,Math.max(0,Math.round((score-huidig.drempel)/(volgende.drempel-huidig.drempel)*100))):100;
+  const progressPct=volgende?Math.min(100,Math.max(0,Math.round((effectiefGemiddelde-huidig.gemDrempel)/(volgende.gemDrempel-huidig.gemDrempel)*100))):100;
   const sterren=Math.max(1,Math.min(5,Math.ceil(progressPct/20)));
-  return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:idx,totaal:score};
-}
-// Los, informatief tweede meetpunt: welk niveau je gemiddelde (na eventuele drops) ALLEEN zou
-// rechtvaardigen, als referentie naast je echte niveau.
-function bepaalGemNiveau(gemiddelde){
-  let idx=0;
-  for(let i=0;i<NIVEAUS.length;i++){
-    if(gemiddelde>=NIVEAUS[i].gemDrempel)idx=i;
-  }
-  return NIVEAUS[idx];
-}
-// Harde gate: je uiteindelijke niveau is het LAAGSTE van je score-niveau en je gemiddelde-niveau.
-// Geen hoeveelheid badge-punten kan je voorbij het niveau tillen dat je gemiddelde toestaat.
-function bepaalUiteindelijkNiveau(info){
-  const scoreNiveau=bepaalNiveau(info.score);
-  const gemNiveauObj=bepaalGemNiveau(info.effectiefGemiddelde);
-  const gemIdx=NIVEAUS.indexOf(gemNiveauObj);
-  const finalIdx=Math.min(scoreNiveau.index,gemIdx);
-  const huidig=NIVEAUS[finalIdx];
-  const volgende=NIVEAUS[finalIdx+1]||null;
-  const bottleneck=gemIdx<scoreNiveau.index?"gemiddelde":(scoreNiveau.index<gemIdx?"score":"gelijk");
-  let progressPct=100,sterren=5;
-  if(volgende){
-    if(bottleneck==="gemiddelde"){
-      progressPct=Math.min(100,Math.max(0,Math.round((info.effectiefGemiddelde-huidig.gemDrempel)/(volgende.gemDrempel-huidig.gemDrempel)*100)));
-    }else{
-      progressPct=Math.min(100,Math.max(0,Math.round((info.score-huidig.drempel)/(volgende.drempel-huidig.drempel)*100)));
-    }
-    sterren=Math.max(1,Math.min(5,Math.ceil(progressPct/20)));
-  }
-  return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:finalIdx,totaal:info.score,bottleneck:bottleneck};
+  return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:idx};
 }
 
 function Dashboard({partijen,niveau,tijdsvensterMaanden}){
@@ -1155,38 +1100,33 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                 <div style={{fontSize:11,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
               </div>
               <div style={{marginLeft:"auto",textAlign:"right"}}>
-                <div style={{fontSize:9,color:WITD}}>voor niveau · ruw ooit</div>
-                <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten}pt <span style={{fontSize:11,color:WITD,fontWeight:"normal"}}>· {niveau.badgePuntenRuw}pt</span></div>
+                <div style={{fontSize:9,color:WITD}}>gemiddelde</div>
+                <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(2)}</div>
+                {niveau.aantalDrops>0&&<div style={{fontSize:9,color:WITD}}>(ruw: {niveau.totaalGemiddelde.toFixed(2)})</div>}
               </div>
             </div>
-            {niveau.badgePunten<niveau.badgePuntenRuw&&(
-              <div style={{textAlign:"center",marginBottom:8,fontSize:9,color:"#ff9f80"}}>
-                Vorm-correctie actief: van je {niveau.badgePuntenRuw} ruwe punten telt {niveau.badgePunten} mee voor je niveau (partijen ver onder je doel-gemiddelde tellen minder of zelfs negatief)
-              </div>
-            )}
             {niveau.volgende
               ?<>
                 <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>
                 <div style={{display:"flex",justifyContent:"space-between",marginTop:5,fontSize:9,color:WITD}}>
                   <span>{niveau.progressPct}%</span>
-                  <span>naar {niveau.volgende.emoji} {niveau.volgende.naam}</span>
-                </div>
-                <div style={{textAlign:"center",marginTop:8,fontSize:10,color:niveau.bottleneck==="gemiddelde"?"#ff9f80":WITD,opacity:niveau.bottleneck==="gemiddelde"?1:0.8,fontWeight:niveau.bottleneck==="gemiddelde"?"bold":"normal"}}>
-                  {niveau.bottleneck==="gemiddelde"
-                    ?"⏳ Je gemiddelde ("+niveau.effectiefGemiddelde.toFixed(2)+") houdt je tegen — nodig: "+niveau.volgende.gemDrempel.toFixed(1)+" voor "+niveau.volgende.naam
-                    :"Je badge-punten bepalen nu je tempo naar "+niveau.volgende.naam}
+                  <span>naar {niveau.volgende.emoji} {niveau.volgende.naam} (gem {niveau.volgende.gemDrempel.toFixed(1)})</span>
                 </div>
               </>
               :<div style={{textAlign:"center",fontSize:11,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
             }
+            <div style={{marginTop:10,display:"flex",alignItems:"center",justifyContent:"space-between",background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"7px 10px"}}>
+              <div style={{fontSize:10,color:WITD}}>🎖️ Badge-punten</div>
+              <div style={{fontSize:14,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten}pt</div>
+            </div>
             {niveau.aantalDrops>0
-              ?<div style={{marginTop:10,display:"flex",alignItems:"center",gap:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"7px 10px"}}>
+              ?<div style={{marginTop:6,display:"flex",alignItems:"center",gap:8,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"7px 10px"}}>
                 <span style={{fontSize:16}}>🏅</span>
                 <div style={{flex:1,fontSize:10,color:WITD}}>
                   {niveau.aantalDrops}x slechtste partij geschrapt uit je gemiddelde (ontgrendeld per {PUNTEN_PER_DROP}pt) — ruw gemiddelde was {niveau.totaalGemiddelde.toFixed(2)}, telt nu als {niveau.effectiefGemiddelde.toFixed(2)}
                 </div>
               </div>
-              :<div style={{marginTop:10,fontSize:9,color:WITD,opacity:0.7,textAlign:"center"}}>
+              :<div style={{marginTop:6,fontSize:9,color:WITD,opacity:0.7,textAlign:"center"}}>
                 Bij elke {PUNTEN_PER_DROP} badge-punten mag je je slechtste partij schrappen uit je gemiddelde — nog {PUNTEN_PER_DROP-(niveau.badgePunten%PUNTEN_PER_DROP)}pt te gaan
               </div>
             }
@@ -1310,22 +1250,18 @@ function BiljartTracker(){
   const niveau=useMemo(function(){
     // Niveau gebruikt altijd all-time data (los van de tijdsvenster-instelling hierboven, die
     // alleen de ⭐-drempels en 👑🏓-records beïnvloedt).
-    const info=berekenNiveauScore(data?data.partijen:[]);
+    const info=berekenNiveauInfo(data?data.partijen:[]);
     let aantalPartijen=0;
     (data?data.partijen:[]).forEach(function(p){
       if(stat(p.beurten))aantalPartijen++;
     });
-    const gemNiveau=bepaalGemNiveau(info.effectiefGemiddelde);
-    return Object.assign({},bepaalUiteindelijkNiveau(info),{
+    return Object.assign({},bepaalNiveau(info.effectiefGemiddelde),{
       totaalGemiddelde:info.totaalGemiddelde,
       effectiefGemiddelde:info.effectiefGemiddelde,
       badgePunten:info.badgePunten,
-      badgePuntenRuw:info.badgePuntenRuw,
-      bonusPct:info.bonusPct,
       aantalDrops:info.aantalDrops,
       gedropteIds:info.gedropteIds,
-      aantalPartijen:aantalPartijen,
-      gemNiveau:gemNiveau
+      aantalPartijen:aantalPartijen
     });
   },[data]);
 

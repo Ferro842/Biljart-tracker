@@ -456,6 +456,37 @@ function PrestatieOverzicht({prestatie}){
   );
 }
 
+function NiveauOverzicht({niveau,onClose}){
+  return(
+    <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+      <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"80vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+        <div style={{fontSize:14,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Niveau-overzicht</div>
+        <div style={{fontSize:9,color:WITD,textAlign:"center",marginBottom:14}}>Elk niveau vereist zowel genoeg punten als het gemiddelde</div>
+        <div style={{display:"flex",flexDirection:"column",gap:8}}>
+          {NIVEAUS.map(function(n,i){
+            const bereikt=i<niveau.index;
+            const isHuidig=i===niveau.index;
+            const toekomstig=i>niveau.index;
+            return(
+              <div key={n.naam} style={{display:"flex",alignItems:"center",gap:10,background:isHuidig?"rgba(201,168,76,0.12)":"transparent",border:"1px solid "+(isHuidig?GOUD:KBDR),borderRadius:10,padding:"8px 10px",opacity:toekomstig?0.6:1}}>
+                <div style={{width:38,height:38,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+n.kleur+"cc,"+n.kleur+"33)",border:"2px solid "+n.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,flexShrink:0}}>
+                  {n.emoji}
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:12,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:9,color:WITD,fontWeight:"normal"}}> — jouw niveau</span>}</div>
+                  <div style={{fontSize:9,color:WITD}}>vanaf {n.drempel}pt · gem {n.minGemiddelde.toFixed(1)}</div>
+                </div>
+                <div style={{fontSize:14}}>{bereikt?"✅":toekomstig?"🔒":""}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{textAlign:"center",marginTop:14,fontSize:10,color:WITD,opacity:0.7}}>Tik om te sluiten</div>
+      </div>
+    </div>
+  );
+}
+
 function PartijRij({p,nr,prestatie}){
   const [open,setOpen]=useState(false);
   const st=stat(p.beurten);
@@ -586,7 +617,8 @@ function bepaalNiveau(totaalPunten,totaalGemiddelde){
     gemProgress=Math.min(100,Math.max(0,Math.round((totaalGemiddelde-huidig.minGemiddelde)/(volgende.minGemiddelde-huidig.minGemiddelde)*100)));
     progressPct=Math.min(puntenProgress,gemProgress);
   }
-  return{huidig:huidig,volgende:volgende,progressPct:progressPct,puntenProgress:puntenProgress,gemProgress:gemProgress,index:idx,totaal:totaalPunten,gemiddelde:totaalGemiddelde};
+  const sterren=Math.max(1,Math.min(5,Math.ceil(puntenProgress/20)));
+  return{huidig:huidig,volgende:volgende,progressPct:progressPct,puntenProgress:puntenProgress,gemProgress:gemProgress,sterren:sterren,index:idx,totaal:totaalPunten,gemiddelde:totaalGemiddelde};
 }
 
 function Dashboard({partijen,niveau,tijdsvensterMaanden}){
@@ -607,6 +639,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
   const [trimH,setTrimH]=useState(0);
   const [tab,setTab]=useState("trend");
   const [tafelFilter,setTafelFilter]=useState("alle");
+  const [niveauOpen,setNiveauOpen]=useState(false);
 
   const selRange=useMemo(()=>ST.slice(va,tot+1),[ST,va,tot]);
   const sel=useMemo(()=>tafelFilter==="alle"?selRange:selRange.filter(p=>p.tafel===tafelFilter),[selRange,tafelFilter]);
@@ -1021,14 +1054,15 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
 
         {/* PUNTEN */}
         {tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
-          <div style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+niveau.huidig.kleur,borderRadius:14,padding:"16px"}}>
+          <div onClick={function(){setNiveauOpen(true);}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+niveau.huidig.kleur,borderRadius:14,padding:"16px",cursor:"pointer"}}>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
               <div style={{width:52,height:52,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+niveau.huidig.kleur+"dd,"+niveau.huidig.kleur+"44)",border:"3px solid "+niveau.huidig.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,boxShadow:"0 0 16px "+niveau.huidig.kleur+"88"}}>
                 {niveau.huidig.emoji}
               </div>
               <div>
-                <div style={{fontSize:9,color:WITD,textTransform:"uppercase",letterSpacing:1}}>Jouw niveau</div>
+                <div style={{fontSize:9,color:WITD,textTransform:"uppercase",letterSpacing:1}}>Jouw niveau · tik voor overzicht</div>
                 <div style={{fontSize:20,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</div>
+                <div style={{fontSize:11,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
               </div>
               <div style={{marginLeft:"auto",textAlign:"right"}}>
                 <div style={{fontSize:9,color:WITD}}>totaal ooit</div>
@@ -1089,6 +1123,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
         </div>}
 
       </div>
+      {niveauOpen&&<NiveauOverzicht niveau={niveau} onClose={function(){setNiveauOpen(false);}}/>}
     </div>
   );
 }
@@ -1139,6 +1174,7 @@ function BiljartTracker(){
   const [toonData,setToonData]=useState(false);
   const inputRef=useRef(null);
   const [toastGroep,setToastGroep]=useState(null);
+  const [niveauOpen,setNiveauOpen]=useState(false);
 
   const tijdsvenster=(data&&data.tijdsvenster)||"12";
   const tijdsvensterMaanden=tijdsvenster==="alles"?null:parseInt(tijdsvenster,10);
@@ -1701,16 +1737,18 @@ function BiljartTracker(){
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <div style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,0.25)",border:"1px solid "+niveau.huidig.kleur,borderRadius:20,padding:"4px 10px 4px 6px"}}>
+          <button onClick={function(){setNiveauOpen(true);}} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,0.25)",border:"1px solid "+niveau.huidig.kleur,borderRadius:20,padding:"4px 10px 4px 6px",cursor:"pointer",fontFamily:"inherit"}}>
             <span style={{fontSize:14}}>{niveau.huidig.emoji}</span>
             <span style={{fontSize:10,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
-          </div>
+          </button>
           {fase!=="setup"&&lp.length>0&&(
             <button style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,padding:"5px 10px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}
               onClick={function(){setConfPartij(true);}}>Afsluiten</button>
           )}
         </div>
       </div>
+
+      {niveauOpen&&<NiveauOverzicht niveau={niveau} onClose={function(){setNiveauOpen(false);}}/>}
 
       {toastGroep&&(
         <div onClick={function(){setToastGroep(null);}}

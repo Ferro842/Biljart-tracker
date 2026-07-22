@@ -183,10 +183,9 @@ function berekenPrestaties(partijen){
       }
     }
 
-    if(p.doel&&p.doelType){
-      const behaaldeWaarde=p.doelType==="beurten"?p.beurten.length:st.totCar;
-      const bereikt=behaaldeWaarde>=p.doel;
-      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20,categorie:"Doel & totaal",detail:"Doel: "+p.doel+" "+(p.doelType==="beurten"?"beurten":"caramboles")+" · behaald: "+behaaldeWaarde});
+    if(p.doel&&p.doelType==="caramboles"){
+      const bereikt=st.totCar>=p.doel;
+      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20,categorie:"Doel & totaal",detail:"Doel: "+p.doel+" caramboles · behaald: "+st.totCar});
     }
 
     if(gem>=2.5){
@@ -1118,9 +1117,9 @@ function BiljartTracker(){
     if(nieuweStreak===5)items.push({emoji:"⛓️",label:"Reeks zonder poedel",punten:15});
     if(nieuweStreak===8)items.push({emoji:"⛓️",label:"Lange reeks zonder poedel",punten:25});
 
-    if(doel){
-      const voortgangVoor=doelType==="beurten"?lpVoor.length:lpVoor.reduce(function(a,x){return a+x.caramboles;},0);
-      const voortgangNa=doelType==="beurten"?lpVoor.length+1:voortgangVoor+car;
+    if(doel&&doelType==="caramboles"){
+      const voortgangVoor=lpVoor.reduce(function(a,x){return a+x.caramboles;},0);
+      const voortgangNa=voortgangVoor+car;
       if(voortgangVoor<doel&&voortgangNa>=doel)items.push({emoji:"🎯",label:"Partijdoel gehaald!",punten:20});
     }
 
@@ -1324,6 +1323,9 @@ function BiljartTracker(){
               if(huidigeStreak<5)hints.push("⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(5-huidigeStreak)+" tot 15pt)");
               else hints.push("⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(8-huidigeStreak)+" tot 25pt)");
             }
+            if(lp.length>0&&lp[lp.length-1].caramboles===0){
+              hints.push("💪 Volgende beurt 5+ car = sterk herstel (+15pt)");
+            }
             if(stL){
               const gemNu=parseFloat(stL.gemPerBeurt);
               if(gemNu<2.5){
@@ -1340,10 +1342,40 @@ function BiljartTracker(){
                 const afstandTafel=tafelRecord-gemNu;
                 if(afstandTafel>0&&afstandTafel<0.3)hints.push("🏓 Nog "+afstandTafel.toFixed(2)+" tot je tafelrecord ("+tafelRecord.toFixed(2)+")");
               }
+              if(huidigeRecords.totaalGem!==null){
+                const afstandTotaal=huidigeRecords.totaalGem-gemNu;
+                if(afstandTotaal>0&&afstandTotaal<0.3)hints.push("📊 Nog "+afstandTotaal.toFixed(2)+" tot je totaalgemiddelde ("+huidigeRecords.totaalGem.toFixed(2)+")");
+              }
+              if(huidigeRecords.rolling5p!==null){
+                const afstandRolling=huidigeRecords.rolling5p-gemNu;
+                if(afstandRolling>0&&afstandRolling<0.3)hints.push("📉 Nog "+afstandRolling.toFixed(2)+" tot je 5-partij rolling gemiddelde ("+huidigeRecords.rolling5p.toFixed(2)+")");
+              }
             }
-            if(doel){
-              const voortgangNu=doelType==="beurten"?lp.length:totCarLp;
-              if(voortgangNu<doel)hints.push("🎯 Nog "+(doel-voortgangNu)+" "+(doelType==="beurten"?"beurten":"caramboles")+" tot je doel");
+            if(lp.length>=3){
+              const poedelsNu=lp.filter(function(x){return x.caramboles===0;}).length;
+              if(poedelsNu===0){
+                hints.push("🛡️ Nog 0 poedels in "+lp.length+" beurten, blijf dit volhouden voor +30pt");
+              }else{
+                const poedelPctNu=poedelsNu/lp.length*100;
+                if(poedelPctNu<20)hints.push("✅ "+Math.round(poedelPctNu)+"% poedels tot nu toe (drempel: <20%)");
+              }
+            }
+            if(lp.length>0&&huidigeRecords.allTimeMaxBeurt>0){
+              const maxInPartij=Math.max.apply(null,lp.map(function(x){return x.caramboles;}));
+              const afstandMax=huidigeRecords.allTimeMaxBeurt-maxInPartij;
+              if(afstandMax>0&&afstandMax<=3)hints.push("🏆 Hoogste beurt nu: "+maxInPartij+" car (record: "+huidigeRecords.allTimeMaxBeurt+" car)");
+            }
+            const helftNu=Math.floor(lp.length/2);
+            if(helftNu>=3&&huidigeRecords.totaalGem!==null){
+              const eersteNu=lp.slice(0,helftNu),tweedeNu=lp.slice(helftNu);
+              const gemENu=eersteNu.reduce(function(a,b){return a+b.caramboles;},0)/eersteNu.length;
+              const gemTNu=tweedeNu.reduce(function(a,b){return a+b.caramboles;},0)/tweedeNu.length;
+              if(gemTNu>gemENu&&stL&&parseFloat(stL.gemPerBeurt)>huidigeRecords.totaalGem){
+                hints.push("📈 Tot nu toe op koers voor sterke afsluiting: 1e helft "+gemENu.toFixed(2)+" · 2e helft "+gemTNu.toFixed(2)+" (schatting, kan nog veranderen)");
+              }
+            }
+            if(doel&&doelType==="caramboles"){
+              if(totCarLp<doel)hints.push("🎯 Nog "+(doel-totCarLp)+" caramboles tot je doel");
             }
             if(hints.length===0)return null;
             return(

@@ -114,13 +114,17 @@ function stat(beurten){
 // Berekent chronologisch (oud->nieuw) welke prestatie-badges elke partij heeft verdiend.
 // "Record"-achtige badges vergelijken tegen de staat VOOR die partij, niet achteraf.
 // Retourneert een array in dezelfde volgorde als partijen: [{id,badges:[{label,emoji,aantal,punten}],punten}]
-function berekenPrestaties(partijen){
+function berekenPrestaties(partijen,tijdsvensterMaanden){
   let allTimeMaxBeurt=0;
-  let allTimeBestGem=0;
-  const tafelBest={};
-  let cumCar=0,cumBeurt=0;
-  const rollingHistory=[];
+  const verwerkt=[];
   const resultaten=[];
+
+  function vensterSlice(datum){
+    if(!tijdsvensterMaanden)return verwerkt;
+    const cutoff=new Date(datum);
+    cutoff.setMonth(cutoff.getMonth()-tijdsvensterMaanden);
+    return verwerkt.filter(function(w){return new Date(w.datum)>=cutoff;});
+  }
 
   (partijen||[]).forEach(function(p){
     const st=stat(p.beurten);
@@ -171,7 +175,11 @@ function berekenPrestaties(partijen){
     });
     if(herstelDetails.length>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelDetails.length,punten:herstelDetails.length*15,categorie:"Mentaliteit",detail:herstelDetails.join(" · ")+" (drempel: 5+ car direct na een poedel)"});
 
-    const totaalGemTotDan=cumBeurt>0?cumCar/cumBeurt:null;
+    const venster=vensterSlice(p.datum);
+    const vensterCar=venster.reduce(function(a,w){return a+w.tot;},0);
+    const vensterBeurt=venster.reduce(function(a,w){return a+w.n;},0);
+    const totaalGemTotDan=vensterBeurt>0?vensterCar/vensterBeurt:null;
+    const vensterLabel=tijdsvensterMaanden?" (laatste "+tijdsvensterMaanden+" mnd)":" ooit";
 
     const helft=Math.floor(p.beurten.length/2);
     if(helft>=3){
@@ -179,7 +187,7 @@ function berekenPrestaties(partijen){
       const gemE=eerste.reduce(function(a,b){return a+b.caramboles;},0)/eerste.length;
       const gemT=tweede.reduce(function(a,b){return a+b.caramboles;},0)/tweede.length;
       if(gemT>gemE&&totaalGemTotDan!==null&&gem>totaalGemTotDan){
-        badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit",detail:"1e helft: "+gemE.toFixed(2)+" · 2e helft: "+gemT.toFixed(2)+" · partijgemiddelde "+gem.toFixed(2)+" boven totaalgemiddelde "+totaalGemTotDan.toFixed(2)});
+        badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit",detail:"1e helft: "+gemE.toFixed(2)+" · 2e helft: "+gemT.toFixed(2)+" · partijgemiddelde "+gem.toFixed(2)+" boven totaalgemiddelde"+vensterLabel+" "+totaalGemTotDan.toFixed(2)});
       }
     }
 
@@ -188,26 +196,32 @@ function berekenPrestaties(partijen){
       if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20,categorie:"Doel & totaal",detail:"Doel: "+p.doel+" caramboles · behaald: "+st.totCar});
     }
 
-    if(gem>=2.5){
-      badges.push({label:"Gemiddelde boven 2,5",emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (drempel: 2,5)"});
-    }else if(gem>=2.0){
-      badges.push({label:"Gemiddelde boven 2,0",emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (drempel: 2,0)"});
+    const basis=totaalGemTotDan!==null?totaalGemTotDan:0;
+    const drempel1=Math.floor(basis/0.5)*0.5+0.5;
+    const drempel2=drempel1+0.5;
+    if(gem>=drempel2){
+      badges.push({label:"Gemiddelde boven "+drempel2.toFixed(1).replace(".",","),emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel2.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
+    }else if(gem>=drempel1){
+      badges.push({label:"Gemiddelde boven "+drempel1.toFixed(1).replace(".",","),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel1.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
     }
 
-    if(gem>allTimeBestGem&&allTimeBestGem>0){
-      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:"Nieuw record: "+gem.toFixed(2)+" (vorig record: "+allTimeBestGem.toFixed(2)+")"});
+    const vensterBestGem=venster.length?Math.max.apply(null,venster.map(function(w){return w.gem;})):0;
+    if(gem>vensterBestGem&&vensterBestGem>0){
+      badges.push({label:"Nieuw beste gemiddelde"+vensterLabel,emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:"Nieuw record: "+gem.toFixed(2)+" (vorig record"+vensterLabel+": "+vensterBestGem.toFixed(2)+")"});
     }
 
     const tafelKey=p.tafel||"230";
-    if(gem>(tafelBest[tafelKey]||0)&&tafelBest[tafelKey]){
-      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+(tafelKey==="210"?"2,10":"2,30")+"-tafel: "+gem.toFixed(2)+" (vorig: "+tafelBest[tafelKey].toFixed(2)+")"});
+    const vensterTafel=venster.filter(function(w){return w.tafel===tafelKey;});
+    const vensterTafelBest=vensterTafel.length?Math.max.apply(null,vensterTafel.map(function(w){return w.gem;})):0;
+    if(gem>vensterTafelBest&&vensterTafelBest>0){
+      badges.push({label:"Beste partij"+vensterLabel+" op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+(tafelKey==="210"?"2,10":"2,30")+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
     }
 
     if(totaalGemTotDan!==null){
-      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking",detail:"Deze partij: "+gem.toFixed(2)+" vs totaalgemiddelde tot dan: "+totaalGemTotDan.toFixed(2)});
+      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking",detail:"Deze partij: "+gem.toFixed(2)+" vs totaalgemiddelde"+vensterLabel+" "+totaalGemTotDan.toFixed(2)});
     }
-    if(rollingHistory.length>=5){
-      const laatste5=rollingHistory.slice(-5);
+    const laatste5=verwerkt.slice(-5);
+    if(laatste5.length>=5){
       const rC=laatste5.reduce(function(a,r){return a+r.tot;},0),rN=laatste5.reduce(function(a,r){return a+r.n;},0);
       const rollingGem=rC/rN;
       if(gem>rollingGem)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking",detail:"Deze partij: "+gem.toFixed(2)+" vs 5-partij rolling: "+rollingGem.toFixed(2)});
@@ -217,10 +231,7 @@ function berekenPrestaties(partijen){
     resultaten.push({id:p.id,badges:badges,punten:totaalPunten});
 
     allTimeMaxBeurt=Math.max(allTimeMaxBeurt,st.max);
-    allTimeBestGem=Math.max(allTimeBestGem,gem);
-    tafelBest[tafelKey]=Math.max(tafelBest[tafelKey]||0,gem);
-    cumCar+=st.totCar;cumBeurt+=st.aantalBeurten;
-    rollingHistory.push({tot:st.totCar,n:st.aantalBeurten});
+    verwerkt.push({datum:p.datum,tot:st.totCar,n:st.aantalBeurten,gem:gem,tafel:tafelKey});
   });
 
   return resultaten;
@@ -228,25 +239,31 @@ function berekenPrestaties(partijen){
 
 // Geeft de "records om te verslaan" op basis van alle AFGESLOTEN partijen — gebruikt tijdens het
 // live spelen om te checken of een nieuwe beurt/partij een record aan het breken is.
-function berekenLopendeRecords(partijen){
-  let allTimeMaxBeurt=0,allTimeBestGem=0;
-  const tafelBest={};
-  let cumCar=0,cumBeurt=0;
-  const rollingHistory=[];
+function berekenLopendeRecords(partijen,tijdsvensterMaanden){
+  let allTimeMaxBeurt=0;
+  const verwerkt=[];
   (partijen||[]).forEach(function(p){
     const st=stat(p.beurten);
     if(!st)return;
     const gem=parseFloat(st.gemPerBeurt);
     const tafelKey=p.tafel||"230";
     allTimeMaxBeurt=Math.max(allTimeMaxBeurt,st.max);
-    allTimeBestGem=Math.max(allTimeBestGem,gem);
-    tafelBest[tafelKey]=Math.max(tafelBest[tafelKey]||0,gem);
-    cumCar+=st.totCar;cumBeurt+=st.aantalBeurten;
-    rollingHistory.push({tot:st.totCar,n:st.aantalBeurten});
+    verwerkt.push({datum:p.datum,tot:st.totCar,n:st.aantalBeurten,gem:gem,tafel:tafelKey});
   });
-  const laatste5=rollingHistory.slice(-5);
+  let venster=verwerkt;
+  if(tijdsvensterMaanden){
+    const cutoff=new Date();
+    cutoff.setMonth(cutoff.getMonth()-tijdsvensterMaanden);
+    venster=verwerkt.filter(function(w){return new Date(w.datum)>=cutoff;});
+  }
+  const allTimeBestGem=venster.length?Math.max.apply(null,venster.map(function(w){return w.gem;})):0;
+  const tafelBest={};
+  venster.forEach(function(w){tafelBest[w.tafel]=Math.max(tafelBest[w.tafel]||0,w.gem);});
+  const laatste5=verwerkt.slice(-5);
   const rolling5p=laatste5.length>=5?(laatste5.reduce(function(a,r){return a+r.tot;},0)/laatste5.reduce(function(a,r){return a+r.n;},0)):null;
-  const totaalGem=cumBeurt>0?cumCar/cumBeurt:null;
+  const vensterCar=venster.reduce(function(a,w){return a+w.tot;},0);
+  const vensterBeurt=venster.reduce(function(a,w){return a+w.n;},0);
+  const totaalGem=vensterBeurt>0?vensterCar/vensterBeurt:null;
   return{allTimeMaxBeurt:allTimeMaxBeurt,allTimeBestGem:allTimeBestGem,tafelBest:tafelBest,totaalGem:totaalGem,rolling5p:rolling5p};
 }
 
@@ -547,7 +564,32 @@ function categorieKleur(cat){
   return map[cat]||"#c9a84c";
 }
 
-function Dashboard({partijen}){
+const NIVEAUS=[
+  {naam:"Beginner",drempel:0,minGemiddelde:0,emoji:"🔰",kleur:"#9aa89a"},
+  {naam:"Amateur",drempel:150,minGemiddelde:1.0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Clubspeler",drempel:400,minGemiddelde:1.5,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Gevorderde",drempel:800,minGemiddelde:2.0,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Kampioen",drempel:1500,minGemiddelde:2.5,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Meester",drempel:2500,minGemiddelde:3.0,emoji:"👑",kleur:"#b18cf0"},
+  {naam:"Legende",drempel:4000,minGemiddelde:3.5,emoji:"💎",kleur:"#ff9fd1"}
+];
+function bepaalNiveau(totaalPunten,totaalGemiddelde){
+  let idx=0;
+  for(let i=0;i<NIVEAUS.length;i++){
+    if(totaalPunten>=NIVEAUS[i].drempel&&totaalGemiddelde>=NIVEAUS[i].minGemiddelde)idx=i;
+  }
+  const huidig=NIVEAUS[idx];
+  const volgende=NIVEAUS[idx+1]||null;
+  let progressPct=100,puntenProgress=100,gemProgress=100;
+  if(volgende){
+    puntenProgress=Math.min(100,Math.max(0,Math.round((totaalPunten-huidig.drempel)/(volgende.drempel-huidig.drempel)*100)));
+    gemProgress=Math.min(100,Math.max(0,Math.round((totaalGemiddelde-huidig.minGemiddelde)/(volgende.minGemiddelde-huidig.minGemiddelde)*100)));
+    progressPct=Math.min(puntenProgress,gemProgress);
+  }
+  return{huidig:huidig,volgende:volgende,progressPct:progressPct,puntenProgress:puntenProgress,gemProgress:gemProgress,index:idx,totaal:totaalPunten,gemiddelde:totaalGemiddelde};
+}
+
+function Dashboard({partijen,niveau,tijdsvensterMaanden}){
   // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
   const ST=useMemo(()=>{
     return (partijen||[]).map(function(p){
@@ -643,9 +685,9 @@ function Dashboard({partijen}){
   // ── PUNTEN: prestatie-badges, chronologisch berekend over de volledige geschiedenis ──
   const prestatiesMap=useMemo(()=>{
     const m={};
-    berekenPrestaties(partijen).forEach(r=>{m[r.id]=r;});
+    berekenPrestaties(partijen,tijdsvensterMaanden).forEach(r=>{m[r.id]=r;});
     return m;
-  },[partijen]);
+  },[partijen,tijdsvensterMaanden]);
   const puntenSel=useMemo(()=>sel.map(p=>Object.assign({},p,prestatiesMap[p.id]||{badges:[],punten:0})),[sel,prestatiesMap]);
   const totaalPuntenSel=puntenSel.reduce((a,p)=>a+p.punten,0);
   const gemPuntenSel=puntenSel.length?Math.round(totaalPuntenSel/puntenSel.length):0;
@@ -979,6 +1021,40 @@ function Dashboard({partijen}){
 
         {/* PUNTEN */}
         {tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
+          <div style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+niveau.huidig.kleur,borderRadius:14,padding:"16px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
+              <div style={{width:52,height:52,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+niveau.huidig.kleur+"dd,"+niveau.huidig.kleur+"44)",border:"3px solid "+niveau.huidig.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,boxShadow:"0 0 16px "+niveau.huidig.kleur+"88"}}>
+                {niveau.huidig.emoji}
+              </div>
+              <div>
+                <div style={{fontSize:9,color:WITD,textTransform:"uppercase",letterSpacing:1}}>Jouw niveau</div>
+                <div style={{fontSize:20,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</div>
+              </div>
+              <div style={{marginLeft:"auto",textAlign:"right"}}>
+                <div style={{fontSize:9,color:WITD}}>totaal ooit</div>
+                <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.totaal}pt</div>
+              </div>
+            </div>
+            {niveau.volgende
+              ?<>
+                <div style={{marginBottom:10}}>
+                  <div style={{display:"flex",justifyContent:"space-between",fontSize:10,color:WIT,marginBottom:4,fontWeight:"bold"}}>
+                    <span>Gemiddelde</span><span>{niveau.gemiddelde.toFixed(2)} / {niveau.volgende.minGemiddelde.toFixed(2)}</span>
+                  </div>
+                  <DashBalk pct={niveau.gemProgress} kleur={niveau.huidig.kleur} hoogte={10}/>
+                </div>
+                <div style={{display:"flex",alignItems:"center",gap:6,fontSize:9,color:WITD,opacity:0.8}}>
+                  <span>{niveau.puntenProgress>=100?"✅":"⏳"}</span>
+                  <span>{niveau.puntenProgress>=100?"Genoeg partijen gespeeld":"Nog "+(niveau.volgende.drempel-niveau.totaal)+"pt aan speelactiviteit"}</span>
+                </div>
+                <div style={{textAlign:"center",marginTop:8,fontSize:9,color:WITD}}>
+                  Je gemiddelde bepaalt vooral je tempo naar {niveau.volgende.emoji} {niveau.volgende.naam}
+                </div>
+              </>
+              :<div style={{textAlign:"center",fontSize:11,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
+            }
+          </div>
+
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
             {kaart("Totaal",totaalPuntenSel,"punten",GOUD)}
             {kaart("Gem.",gemPuntenSel,"per partij",GOUDL)}
@@ -1064,15 +1140,28 @@ function BiljartTracker(){
   const inputRef=useRef(null);
   const [toastGroep,setToastGroep]=useState(null);
 
+  const tijdsvenster=(data&&data.tijdsvenster)||"12";
+  const tijdsvensterMaanden=tijdsvenster==="alles"?null:parseInt(tijdsvenster,10);
+
   const prestatiesMap=useMemo(function(){
-    const arr=berekenPrestaties(data?data.partijen:[]);
+    const arr=berekenPrestaties(data?data.partijen:[],tijdsvensterMaanden);
     const m={};
     arr.forEach(function(r){m[r.id]=r;});
     return m;
-  },[data]);
+  },[data,tijdsvensterMaanden]);
   const huidigeRecords=useMemo(function(){
-    return berekenLopendeRecords(data?data.partijen:[]);
-  },[data]);
+    return berekenLopendeRecords(data?data.partijen:[],tijdsvensterMaanden);
+  },[data,tijdsvensterMaanden]);
+  const niveau=useMemo(function(){
+    const totaal=Object.values(prestatiesMap).reduce(function(a,r){return a+r.punten;},0);
+    let car=0,beurt=0;
+    (data?data.partijen:[]).forEach(function(p){
+      const st=stat(p.beurten);
+      if(st){car+=st.totCar;beurt+=st.aantalBeurten;}
+    });
+    const totaalGemiddelde=beurt>0?car/beurt:0;
+    return bepaalNiveau(totaal,totaalGemiddelde);
+  },[prestatiesMap,data]);
 
   useEffect(function(){laadData().then(setData);},[]);
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
@@ -1148,6 +1237,11 @@ function BiljartTracker(){
     const leeg={partijen:[],huidigeId:1};
     setData(leeg);slaOp(leeg);setLp([]);setBeurtNr(1);setCar(0);setInp("0");
     setSel(new Set());setConfReset(false);setFase("setup");
+  }
+
+  function setTijdsvenster(v){
+    const nd=Object.assign({},data,{tijdsvenster:v});
+    setData(nd);slaOp(nd);
   }
 
   function bouwTekst(){
@@ -1325,10 +1419,13 @@ function BiljartTracker(){
             }
             if(stL){
               const gemNu=parseFloat(stL.gemPerBeurt);
-              if(gemNu<2.5){
-                const drempel=gemNu<2.0?2.0:2.5;
+              const basisNu=huidigeRecords.totaalGem!==null?huidigeRecords.totaalGem:0;
+              const drempel1Nu=Math.floor(basisNu/0.5)*0.5+0.5;
+              const drempel2Nu=drempel1Nu+0.5;
+              if(gemNu<drempel2Nu){
+                const drempel=gemNu<drempel1Nu?drempel1Nu:drempel2Nu;
                 const afstand=drempel-gemNu;
-                if(afstand<0.5)hints.push("⭐ Nog "+afstand.toFixed(2)+" tot gemiddelde "+(drempel===2.0?"2,0":"2,5"));
+                if(afstand<0.5)hints.push("⭐ Nog "+afstand.toFixed(2)+" tot gemiddelde "+drempel.toFixed(1).replace(".",","));
               }
               if(huidigeRecords.allTimeBestGem>0){
                 const afstandRecord=huidigeRecords.allTimeBestGem-gemNu;
@@ -1489,6 +1586,17 @@ function BiljartTracker(){
           <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
           {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]}/>;}) }
         </div>
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+          <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
+          <div style={{fontSize:10,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels en 👑🏓-records berekend worden. Je niveau (Beginner-Legende) blijft altijd all-time.</div>
+          <div style={{display:"flex",gap:6}}>
+            {[["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
+              const v=arr[0],l=arr[1];
+              return <button key={v} style={{flex:1,padding:"7px 0",background:tijdsvenster===v?"#2d4a1e":"none",border:"1px solid "+(tijdsvenster===v?GOUD:KBDR),borderRadius:6,color:tijdsvenster===v?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12}}
+                onClick={function(){setTijdsvenster(v);}}>{l}</button>;
+            })}
+          </div>
+        </div>
                 {!confReset
           ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:12,fontFamily:"inherit"}}
             onClick={function(){setConfReset(true);}}>Alle data wissen</button>
@@ -1592,10 +1700,16 @@ function BiljartTracker(){
             <div style={{fontSize:9,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole - Serie registratie</div>
           </div>
         </div>
-        {fase!=="setup"&&lp.length>0&&(
-          <button style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,padding:"5px 10px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={function(){setConfPartij(true);}}>Afsluiten</button>
-        )}
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <div style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,0.25)",border:"1px solid "+niveau.huidig.kleur,borderRadius:20,padding:"4px 10px 4px 6px"}}>
+            <span style={{fontSize:14}}>{niveau.huidig.emoji}</span>
+            <span style={{fontSize:10,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
+          </div>
+          {fase!=="setup"&&lp.length>0&&(
+            <button style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,padding:"5px 10px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}
+              onClick={function(){setConfPartij(true);}}>Afsluiten</button>
+          )}
+        </div>
       </div>
 
       {toastGroep&&(
@@ -1655,7 +1769,7 @@ function BiljartTracker(){
         {tab==="stats"&&<Stats/>}
         {tab==="data"&&<Data/>}
         {tab==="log"&&<Log/>}
-        {tab==="dash"&&<Dashboard partijen={alleP}/>}
+        {tab==="dash"&&<Dashboard partijen={alleP} niveau={niveau} tijdsvensterMaanden={tijdsvensterMaanden}/>}
       </div>
     </div>
   );

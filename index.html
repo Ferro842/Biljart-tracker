@@ -538,11 +538,8 @@ function NiveauKaart({niveau,compact,onClick}){
       </div>
 
       {niveau.volgendeKandidaatId&&(
-        <div style={{marginTop:8,display:"flex",alignItems:"center",gap:8,background:"rgba(255,159,128,0.1)",border:"1px solid rgba(255,159,128,0.35)",borderRadius:8,padding:"8px 10px"}}>
-          <span style={{fontSize:16,flexShrink:0}}>🎯</span>
-          <div style={{fontSize:11,color:"#ff9f80",lineHeight:1.3}}>
-            Eerstvolgende partij die vervalt: <span style={{fontWeight:"bold"}}>p{niveau.volgendeKandidaatId}</span> · gem {niveau.volgendeKandidaatGem.toFixed(2)}
-          </div>
+        <div style={{marginTop:8,textAlign:"center",fontSize:11,color:"#ff9f80"}}>
+          🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatId} (gem {niveau.volgendeKandidaatGem.toFixed(2)})
         </div>
       )}
     </div>

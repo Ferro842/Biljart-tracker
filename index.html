@@ -616,18 +616,44 @@ const NIVEAUS=[
   {naam:"Meester",drempel:4000,gemDrempel:3.0,emoji:"👑",kleur:"#b18cf0"},
   {naam:"Legende",drempel:5200,gemDrempel:3.5,emoji:"💎",kleur:"#ff9fd1"}
 ];
-const PUNTEN_PER_DROP=3000; // elke 3000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
+const PUNTEN_PER_DROP=3000; // elke 3000 (vorm-gecorrigeerde) badge-punten ontgrendelt het schrappen van 1 extra slechte partij
 
-// Niveau-score = je gemiddelde is de basis (gemiddelde x 1000). Badge-punten geven daarbovenop een
-// bonus-percentage (max. 40%). Elke 3000 badge-punten ontgrendelt bovendien het schrappen van je
-// eerstvolgende slechtste partij uit de gemiddelde-berekening (net als bij golf-handicaps) — zo geven
-// badges ook direct invloed op je gemiddelde zelf, niet alleen een bonuspercentage.
+// Vorm-correctie: badge-punten van een partij tellen voor NIVEAU-doeleinden mee naar rato van hoe je
+// gemiddelde in die partij zich verhoudt tot de gemiddelde-drempel van je volgende niveau (doelGem).
+// r = gem/doelGem. Bij r>=1 (op of boven doel): volle punten. Bij r=0,5: 0 punten. Onder r=0,5: de
+// punten van die partij tellen zelfs NEGATIEF mee (aftrek), tot maximaal het eigen bedrag van die
+// partij (nooit meer dan die partij zelf opleverde). Dit raakt alleen wat voor NIVEAU telt — de
+// badge-punten die je per partij ziet in Stats/Log/Punten-tab blijven het eerlijke, ruwe verslag.
+function berekenBadgePuntenVoorNiveau(partijen){
+  const resultaten=berekenPrestaties(partijen,null);
+  const map={};
+  resultaten.forEach(function(r){map[r.id]=r;});
+  let totaal=0;
+  (partijen||[]).forEach(function(p){
+    const st=stat(p.beurten);
+    if(!st)return;
+    const gem=parseFloat(st.gemPerBeurt);
+    const huidigNiveau=bepaalNiveau(Math.max(0,totaal));
+    const doelGem=huidigNiveau.volgende?huidigNiveau.volgende.gemDrempel:huidigNiveau.huidig.gemDrempel;
+    const puntenPartij=(map[p.id]?map[p.id].punten:0);
+    const r=doelGem>0?gem/doelGem:1;
+    const factor=Math.max(-1,Math.min(1,2*r-1));
+    totaal+=Math.round(puntenPartij*factor);
+  });
+  return totaal;
+}
+
+// Niveau-score = je gemiddelde is de basis (gemiddelde x 1000). Vorm-gecorrigeerde badge-punten geven
+// daarbovenop een bonus-percentage (max. 40%). Elke 3000 van die punten ontgrendelt bovendien het
+// schrappen van je eerstvolgende slechtste partij uit de gemiddelde-berekening (net als bij
+// golf-handicaps) — zo geven badges ook direct invloed op je gemiddelde zelf, niet alleen een bonus.
 function berekenNiveauScore(partijen){
   const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten)};}).filter(function(x){return x.st;});
   let car=0,beurt=0;
   geldige.forEach(function(x){car+=x.st.totCar;beurt+=x.st.aantalBeurten;});
   const totaalGemiddelde=beurt>0?car/beurt:0;
-  const badgePunten=berekenPrestaties(partijen,null).reduce(function(a,r){return a+r.punten;},0);
+  const badgePuntenRuw=berekenPrestaties(partijen,null).reduce(function(a,r){return a+r.punten;},0);
+  const badgePunten=Math.max(0,berekenBadgePuntenVoorNiveau(partijen));
 
   const aantalDrops=Math.floor(badgePunten/PUNTEN_PER_DROP);
   const gesorteerd=geldige.slice().sort(function(a,b){return parseFloat(a.st.gemPerBeurt)-parseFloat(b.st.gemPerBeurt);});
@@ -640,7 +666,7 @@ function berekenNiveauScore(partijen){
   const basisScore=effectiefGemiddelde*1000;
   const bonusPct=Math.min(0.4,badgePunten/15000);
   const score=Math.round(basisScore*(1+bonusPct));
-  return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,
+  return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,badgePuntenRuw:badgePuntenRuw,
     basisScore:basisScore,bonusPct:bonusPct,score:score,aantalDrops:aantalDrops,gedropteIds:gedropteIds};
 }
 function bepaalNiveau(score){
@@ -1129,10 +1155,15 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                 <div style={{fontSize:11,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
               </div>
               <div style={{marginLeft:"auto",textAlign:"right"}}>
-                <div style={{fontSize:9,color:WITD}}>badge-punten ooit</div>
-                <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten}pt</div>
+                <div style={{fontSize:9,color:WITD}}>voor niveau · ruw ooit</div>
+                <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten}pt <span style={{fontSize:11,color:WITD,fontWeight:"normal"}}>· {niveau.badgePuntenRuw}pt</span></div>
               </div>
             </div>
+            {niveau.badgePunten<niveau.badgePuntenRuw&&(
+              <div style={{textAlign:"center",marginBottom:8,fontSize:9,color:"#ff9f80"}}>
+                Vorm-correctie actief: van je {niveau.badgePuntenRuw} ruwe punten telt {niveau.badgePunten} mee voor je niveau (partijen ver onder je doel-gemiddelde tellen minder of zelfs negatief)
+              </div>
+            )}
             {niveau.volgende
               ?<>
                 <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>
@@ -1289,6 +1320,7 @@ function BiljartTracker(){
       totaalGemiddelde:info.totaalGemiddelde,
       effectiefGemiddelde:info.effectiefGemiddelde,
       badgePunten:info.badgePunten,
+      badgePuntenRuw:info.badgePuntenRuw,
       bonusPct:info.bonusPct,
       aantalDrops:info.aantalDrops,
       gedropteIds:info.gedropteIds,

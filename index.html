@@ -486,7 +486,6 @@ function NiveauKaart({niveau,compact,onClick}){
           {niveau.huidig.emoji}
         </div>
         <div>
-          {onClick&&<div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1}}>Jouw niveau · tik voor overzicht</div>}
           <div style={{fontSize:20,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</div>
           <div style={{fontSize:13,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
         </div>
@@ -571,7 +570,7 @@ function NiveauOverzicht({niveau,onClose}){
             );
           })}
         </div>
-        <div style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7}}>Tik om te sluiten</div>
+        <div onClick={onClose} style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
       </div>
     </div>
   );

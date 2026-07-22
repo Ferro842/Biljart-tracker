@@ -641,11 +641,15 @@ function berekenNiveauInfo(partijen){
   gedropt.forEach(function(x){effCar-=x.st.totCar;effBeurt-=x.st.aantalBeurten;});
   const effectiefGemiddelde=effBeurt>0?effCar/effBeurt:totaalGemiddelde;
 
+  const gedroptePartijen=gedropt.map(function(x){
+    return{id:x.p.id,datum:x.p.datum,gem:parseFloat(x.st.gemPerBeurt)};
+  });
+
   const volgendeKandidaat=gesorteerd[aantalDrops]||null;
   const puntenTotVolgendeDrop=PUNTEN_PER_DROP-(badgePunten%PUNTEN_PER_DROP);
 
   return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,
-    aantalDrops:aantalDrops,gedropteIds:gedropteIds,
+    aantalDrops:aantalDrops,gedropteIds:gedropteIds,gedroptePartijen:gedroptePartijen,
     volgendeKandidaatId:volgendeKandidaat?volgendeKandidaat.p.id:null,
     volgendeKandidaatGem:volgendeKandidaat?parseFloat(volgendeKandidaat.st.gemPerBeurt):null,
     puntenTotVolgendeDrop:puntenTotVolgendeDrop};
@@ -1128,18 +1132,28 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
                 <span style={{fontSize:12,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten} / {niveau.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
               </div>
               <DashBalk pct={(niveau.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
-              {niveau.aantalDrops>0&&(
-                <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
+              {niveau.aantalDrops>0
+                ?<div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
                   {Array.from({length:niveau.aantalDrops}).map(function(_,i){
+                    const p=niveau.gedroptePartijen[i];
                     return(
-                      <div key={i} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(201,168,76,0.15)",border:"1px solid "+GOUD,borderRadius:20,padding:"3px 9px"}}>
-                        <span style={{fontSize:11}}>🥇</span>
-                        <span style={{fontSize:9,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
+                      <div key={i} style={{background:"rgba(201,168,76,0.15)",border:"1px solid "+GOUD,borderRadius:10,padding:"5px 9px",textAlign:"center"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:4,justifyContent:"center"}}>
+                          <span style={{fontSize:11}}>🥇</span>
+                          <span style={{fontSize:9,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
+                        </div>
+                        <div style={{fontSize:8,color:WITD,marginTop:2,textDecoration:"line-through",opacity:0.8}}>
+                          p{p.id} · gem {p.gem.toFixed(2)}
+                        </div>
+                        <div style={{fontSize:7,color:"#ff9f80",marginTop:1}}>telt niet mee</div>
                       </div>
                     );
                   })}
                 </div>
-              )}
+                :<div style={{marginTop:8,fontSize:9,color:WITD,opacity:0.75,textAlign:"center"}}>
+                  Bij {PUNTEN_PER_DROP}pt: je slechtste partij schrappen uit je gemiddelde
+                </div>
+              }
             </div>
 
             {niveau.volgendeKandidaatId&&(
@@ -1279,6 +1293,7 @@ function BiljartTracker(){
       badgePunten:info.badgePunten,
       aantalDrops:info.aantalDrops,
       gedropteIds:info.gedropteIds,
+      gedroptePartijen:info.gedroptePartijen,
       volgendeKandidaatId:info.volgendeKandidaatId,
       volgendeKandidaatGem:info.volgendeKandidaatGem,
       puntenTotVolgendeDrop:info.puntenTotVolgendeDrop,

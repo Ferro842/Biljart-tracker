@@ -23,7 +23,7 @@ body{background:#1a2e1a;font-family:Georgia,serif;color:#f5f0e8}
 }
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 input[type=number]{-moz-appearance:textfield}
-@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(-16px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+@keyframes badgePopIn{0%{opacity:0;transform:scale(0.7) translateY(10px);}60%{opacity:1;transform:scale(1.04) translateY(0);}100%{opacity:1;transform:scale(1) translateY(0);}}
 </style>
 </head>
 <body>
@@ -534,6 +534,17 @@ function maandKey(iso){
 }
 function fmtDatum(iso){
   return new Date(iso).toLocaleDateString("nl-NL",{day:"numeric",month:"short"});
+}
+function categorieKleur(cat){
+  const map={
+    "Beurt-pieken":"#f5c542",
+    "Consistentie":"#4caf50",
+    "Mentaliteit":"#ff8a4c",
+    "Doel & totaal":"#b18cf0",
+    "Tafel-specifiek":"#4cc3e8",
+    "Vergelijking":"#ff6b81"
+  };
+  return map[cat]||"#c9a84c";
 }
 
 function Dashboard({partijen}){
@@ -1051,8 +1062,7 @@ function BiljartTracker(){
   const [gekopieerd,setGekopieerd]=useState("");
   const [toonData,setToonData]=useState(false);
   const inputRef=useRef(null);
-  const [toastQueue,setToastQueue]=useState([]);
-  const [toastHuidig,setToastHuidig]=useState(null);
+  const [toastGroep,setToastGroep]=useState(null);
 
   const prestatiesMap=useMemo(function(){
     const arr=berekenPrestaties(data?data.partijen:[]);
@@ -1063,19 +1073,6 @@ function BiljartTracker(){
   const huidigeRecords=useMemo(function(){
     return berekenLopendeRecords(data?data.partijen:[]);
   },[data]);
-
-  useEffect(function(){
-    if(!toastHuidig&&toastQueue.length>0){
-      setToastHuidig(toastQueue[0]);
-      setToastQueue(function(q){return q.slice(1);});
-    }
-  },[toastQueue,toastHuidig]);
-  useEffect(function(){
-    if(toastHuidig){
-      const t=setTimeout(function(){setToastHuidig(null);},2600);
-      return function(){clearTimeout(t);};
-    }
-  },[toastHuidig]);
 
   useEffect(function(){laadData().then(setData);},[]);
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
@@ -1090,22 +1087,22 @@ function BiljartTracker(){
   function toggle(key){setSel(function(prev){const n=new Set(prev);n.has(key)?n.delete(key):n.add(key);return n;});}
 
   function toonToast(items){
-    if(items&&items.length)setToastQueue(function(q){return q.concat(items);});
+    if(items&&items.length)setToastGroep(items);
   }
 
   function checkLiveBadges(lpVoor,car){
     const items=[];
-    if(car>=5&&car<=7)items.push({emoji:"🎯",label:"Opbouw",punten:10});
-    else if(car>=8&&car<=9)items.push({emoji:"🔥",label:"Sterke serie",punten:20});
-    else if(car>=10)items.push({emoji:"💫",label:"Topserie",punten:35});
+    if(car>=5&&car<=7)items.push({emoji:"🎯",label:"Opbouw",punten:10,categorie:"Beurt-pieken"});
+    else if(car>=8&&car<=9)items.push({emoji:"🔥",label:"Sterke serie",punten:20,categorie:"Beurt-pieken"});
+    else if(car>=10)items.push({emoji:"💫",label:"Topserie",punten:35,categorie:"Beurt-pieken"});
 
     const maxInPartijVoor=lpVoor.length?Math.max.apply(null,lpVoor.map(function(x){return x.caramboles;})):0;
     if(car>huidigeRecords.allTimeMaxBeurt&&huidigeRecords.allTimeMaxBeurt>0&&car>maxInPartijVoor){
-      items.push({emoji:"🏆",label:"Nieuw record beurt!",punten:50});
+      items.push({emoji:"🏆",label:"Nieuw record beurt!",punten:50,categorie:"Beurt-pieken"});
     }
 
     if(lpVoor.length>0&&lpVoor[lpVoor.length-1].caramboles===0&&car>=5){
-      items.push({emoji:"💪",label:"Sterk herstel na poedel",punten:15});
+      items.push({emoji:"💪",label:"Sterk herstel na poedel",punten:15,categorie:"Mentaliteit"});
     }
 
     let vorigeStreak=0;
@@ -1114,13 +1111,13 @@ function BiljartTracker(){
       else break;
     }
     const nieuweStreak=car>0?vorigeStreak+1:0;
-    if(nieuweStreak===5)items.push({emoji:"⛓️",label:"Reeks zonder poedel",punten:15});
-    if(nieuweStreak===8)items.push({emoji:"⛓️",label:"Lange reeks zonder poedel",punten:25});
+    if(nieuweStreak===5)items.push({emoji:"⛓️",label:"Reeks zonder poedel",punten:15,categorie:"Consistentie"});
+    if(nieuweStreak===8)items.push({emoji:"⛓️",label:"Lange reeks zonder poedel",punten:25,categorie:"Consistentie"});
 
     if(doel&&doelType==="caramboles"){
       const voortgangVoor=lpVoor.reduce(function(a,x){return a+x.caramboles;},0);
       const voortgangNa=voortgangVoor+car;
-      if(voortgangVoor<doel&&voortgangNa>=doel)items.push({emoji:"🎯",label:"Partijdoel gehaald!",punten:20});
+      if(voortgangVoor<doel&&voortgangNa>=doel)items.push({emoji:"🎯",label:"Partijdoel gehaald!",punten:20,categorie:"Doel & totaal"});
     }
 
     return items;
@@ -1601,12 +1598,27 @@ function BiljartTracker(){
         )}
       </div>
 
-      {toastHuidig&&(
-        <div style={{position:"fixed",top:16,left:"50%",transform:"translateX(-50%)",zIndex:200,background:"linear-gradient(135deg,#1a2e1a,#22341f)",border:"2px solid "+GOUD,borderRadius:14,padding:"12px 20px",boxShadow:"0 6px 20px rgba(0,0,0,0.5)",display:"flex",alignItems:"center",gap:10,animation:"toastIn 0.3s ease-out"}}>
-          <span style={{fontSize:26}}>{toastHuidig.emoji}</span>
-          <div>
-            <div style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{toastHuidig.label}</div>
-            <div style={{fontSize:11,color:WITD}}>+{toastHuidig.punten} punten</div>
+      {toastGroep&&(
+        <div onClick={function(){setToastGroep(null);}}
+          style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+          <div style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:20,padding:"24px 20px 18px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 10px 44px rgba(0,0,0,0.6)",animation:"badgePopIn 0.4s cubic-bezier(0.34,1.56,0.64,1)"}}>
+            <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:2,marginBottom:4}}>Prestatie behaald!</div>
+            <div style={{fontSize:36,fontWeight:"bold",color:GOUD,marginBottom:18,textShadow:"0 0 20px rgba(201,168,76,0.5)"}}>+{toastGroep.reduce(function(a,b){return a+b.punten;},0)}pt</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:14,justifyContent:"center"}}>
+              {toastGroep.map(function(b,i){
+                const kleur=categorieKleur(b.categorie);
+                return(
+                  <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",width:88}}>
+                    <div style={{width:66,height:66,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+kleur+"dd,"+kleur+"44)",border:"3px solid "+kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:30,boxShadow:"0 0 18px "+kleur+"99",marginBottom:6}}>
+                      {b.emoji}
+                    </div>
+                    <div style={{fontSize:10,color:WIT,fontWeight:"bold",lineHeight:1.25}}>{b.label}</div>
+                    <div style={{fontSize:12,color:kleur,fontWeight:"bold"}}>+{b.punten}</div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{fontSize:10,color:WITD,marginTop:20,opacity:0.7}}>Tik om te sluiten</div>
           </div>
         </div>
       )}

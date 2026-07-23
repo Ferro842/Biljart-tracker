@@ -189,11 +189,6 @@ function berekenPrestaties(partijen,tijdsvensterMaanden){
       }
     }
 
-    if(p.doel&&p.doelType==="caramboles"){
-      const bereikt=st.totCar>=p.doel;
-      if(bereikt)badges.push({label:"Partijdoel gehaald",emoji:"🎯",aantal:1,punten:20,categorie:"Doel & totaal",detail:"Doel: "+p.doel+" caramboles · behaald: "+st.totCar});
-    }
-
     const basis=totaalGemTotDan!==null?totaalGemTotDan:0;
     const drempel1=Math.floor(basis/0.5)*0.5+0.5;
     const drempel2=drempel1+0.5;
@@ -600,7 +595,6 @@ const BADGE_CATALOGUS=[
   {label:"Weinig poedels",emoji:"✅",punten:"15pt",categorie:"Consistentie",uitleg:"Minder dan 20% van je beurten was een poedel"},
   {label:"Sterk herstel na poedel",emoji:"💪",punten:"15pt per keer",categorie:"Mentaliteit",uitleg:"5 of meer caramboles direct na een poedel"},
   {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:"Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde"},
-  {label:"Partijdoel gehaald",emoji:"🎯",punten:"20pt",categorie:"Doel & totaal",uitleg:"Je vooraf ingestelde caramboles-doel gehaald"},
   {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:"Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)"},
   {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:"Je hoogste partijgemiddelde ooit verbreken"},
   {label:"Beste partij op deze tafel",emoji:"🏓",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat (2,10 of 2,30)"},
@@ -1656,12 +1650,6 @@ function BiljartTracker(){
     const nieuweStreak=car>0?vorigeStreak+1:0;
     if(nieuweStreak===5)items.push({emoji:"⛓️",label:"Reeks zonder poedel",punten:15,categorie:"Consistentie"});
     if(nieuweStreak===8)items.push({emoji:"⛓️",label:"Lange reeks zonder poedel",punten:25,categorie:"Consistentie"});
-
-    if(doel&&doelType==="caramboles"){
-      const voortgangVoor=lpVoor.reduce(function(a,x){return a+x.caramboles;},0);
-      const voortgangNa=voortgangVoor+car;
-      if(voortgangVoor<doel&&voortgangNa>=doel)items.push({emoji:"🎯",label:"Partijdoel gehaald!",punten:20,categorie:"Doel & totaal"});
-    }
 
     return items;
   }

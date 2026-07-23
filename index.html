@@ -589,6 +589,59 @@ function SeizoenArchief({seizoenen,alleP,onClose}){
   );
 }
 
+const BADGE_CATALOGUS=[
+  {label:"Opbouw",emoji:"🎯",punten:"10pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van 5-7 caramboles"},
+  {label:"Sterke serie",emoji:"🔥",punten:"20pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van 8-9 caramboles"},
+  {label:"Topserie",emoji:"💫",punten:"35pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van 10+ caramboles"},
+  {label:"Nieuw record beurt",emoji:"🏆",punten:"50pt",categorie:"Beurt-pieken",uitleg:"Je hoogste beurt ooit verbreken"},
+  {label:"Geen poedel hele partij",emoji:"🛡️",punten:"30pt",categorie:"Consistentie",uitleg:"Geen enkele poedel in de hele partij"},
+  {label:"Lange reeks zonder poedel",emoji:"⛓️",punten:"25pt",categorie:"Consistentie",uitleg:"8 of meer beurten op rij zonder poedel"},
+  {label:"Reeks zonder poedel",emoji:"⛓️",punten:"15pt",categorie:"Consistentie",uitleg:"5 of meer beurten op rij zonder poedel"},
+  {label:"Weinig poedels",emoji:"✅",punten:"15pt",categorie:"Consistentie",uitleg:"Minder dan 20% van je beurten was een poedel"},
+  {label:"Sterk herstel na poedel",emoji:"💪",punten:"15pt per keer",categorie:"Mentaliteit",uitleg:"5 of meer caramboles direct na een poedel"},
+  {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:"Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde"},
+  {label:"Partijdoel gehaald",emoji:"🎯",punten:"20pt",categorie:"Doel & totaal",uitleg:"Je vooraf ingestelde caramboles-doel gehaald"},
+  {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:"Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)"},
+  {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:"Je hoogste partijgemiddelde ooit verbreken"},
+  {label:"Beste partij op deze tafel",emoji:"🏓",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat (2,10 of 2,30)"},
+  {label:"Beter dan je totaalgemiddelde",emoji:"📊",punten:"10pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven je totaalgemiddelde tot dan toe"},
+  {label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",punten:"15pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven het gemiddelde van je laatste 5 partijen"}
+];
+function BadgeCatalogus({onClose}){
+  const categorieen=[];
+  BADGE_CATALOGUS.forEach(function(b){if(categorieen.indexOf(b.categorie)===-1)categorieen.push(b.categorie);});
+  return(
+    <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+      <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:400,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Alle badges</div>
+        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke badge die je kunt verdienen, en wat ervoor nodig is</div>
+        {categorieen.map(function(cat){
+          return(
+            <div key={cat} style={{marginBottom:14}}>
+              <div style={{fontSize:12,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6,borderBottom:"1px solid "+KBDR,paddingBottom:4}}>{cat}</div>
+              {BADGE_CATALOGUS.filter(function(b){return b.categorie===cat;}).map(function(b){
+                return(
+                  <div key={b.label} style={{display:"flex",alignItems:"flex-start",gap:8,padding:"6px 0"}}>
+                    <span style={{fontSize:18,flexShrink:0}}>{b.emoji}</span>
+                    <div style={{flex:1}}>
+                      <div style={{display:"flex",justifyContent:"space-between",gap:8}}>
+                        <span style={{fontSize:13,fontWeight:"bold",color:WIT}}>{b.label}</span>
+                        <span style={{fontSize:12,color:GOUD,flexShrink:0}}>{b.punten}</span>
+                      </div>
+                      <div style={{fontSize:12,color:WITD,marginTop:1}}>{b.uitleg}</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+        <div onClick={onClose} style={{textAlign:"center",marginTop:6,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+      </div>
+    </div>
+  );
+}
+
 function NiveauOverzicht({niveau,onClose}){
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
@@ -956,6 +1009,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
   const [tab,setTab]=useState("trend");
   const [tafelFilter,setTafelFilter]=useState("alle");
   const [niveauOpen,setNiveauOpen]=useState(false);
+  const [badgeCatalogusOpen,setBadgeCatalogusOpen]=useState(false);
 
   const selRange=useMemo(()=>ST.slice(va,tot+1),[ST,va,tot]);
   const sel=useMemo(()=>tafelFilter==="alle"?selRange:selRange.filter(p=>p.tafel===tafelFilter),[selRange,tafelFilter]);
@@ -1419,10 +1473,13 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
               })}
             </div>
           </div>
+
+          <button onClick={function(){setBadgeCatalogusOpen(true);}} style={{width:"100%",padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:10,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>🎖️ Alle badges bekijken</button>
         </div>}
 
       </div>
       {niveauOpen&&<NiveauOverzicht niveau={niveau} onClose={function(){setNiveauOpen(false);}}/>}
+      {badgeCatalogusOpen&&<BadgeCatalogus onClose={function(){setBadgeCatalogusOpen(false);}}/>}
     </div>
   );
 }

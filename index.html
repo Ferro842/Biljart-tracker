@@ -1495,6 +1495,7 @@ function BiljartTracker(){
   const [confPartij,setConfPartij]=useState(false);
   const [confReset,setConfReset]=useState(false);
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
+  const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [importTekst,setImportTekst]=useState("");
   const [importMatches,setImportMatches]=useState(null);
@@ -1677,6 +1678,17 @@ function BiljartTracker(){
     });
     const nieuwId=Math.max.apply(null,huidigeSeizoenen.map(function(s){return s.id;}))+1;
     bijgewerkt.push({id:nieuwId,naam:"Seizoen "+nieuwId,startDatum:nu,eindDatum:null});
+    const nd=Object.assign({},data,{seizoenen:bijgewerkt});
+    setData(nd);slaOp(nd);
+  }
+
+  function seizoensplitsingOngedaanMaken(){
+    const huidigeSeizoenen=data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}];
+    if(huidigeSeizoenen.length<2)return;
+    const zonderLaatste=huidigeSeizoenen.slice(0,-1);
+    const bijgewerkt=zonderLaatste.map(function(s,i){
+      return i===zonderLaatste.length-1?Object.assign({},s,{eindDatum:null}):s;
+    });
     const nd=Object.assign({},data,{seizoenen:bijgewerkt});
     setData(nd);slaOp(nd);
   }
@@ -2054,6 +2066,20 @@ function BiljartTracker(){
                       onClick={function(){setSeizoenArchiefOpen(true);}}>Archief ({afgesloten.length})</button>
                   )}
                 </div>
+                {afgesloten.length>0&&!confSeizoenAfsluiten&&(
+                  !confSeizoenOngedaan
+                    ?<button style={{marginTop:8,padding:0,background:"none",border:"none",color:WITD,cursor:"pointer",fontSize:12,fontFamily:"inherit",textDecoration:"underline",opacity:0.7}}
+                      onClick={function(){setConfSeizoenOngedaan(true);}}>Laatste seizoensgrens ongedaan maken</button>
+                    :<div style={{marginTop:8,background:"#1a2e10",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 8px"}}>
+                      <div style={{fontSize:13,color:WITD,marginBottom:6}}>{huidig.naam} en {afgesloten[afgesloten.length-1].naam} weer samenvoegen tot één lopend seizoen?</div>
+                      <div style={{display:"flex",gap:6}}>
+                        <button style={{flex:1,padding:6,background:"#2d4a1e",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                          onClick={function(){seizoensplitsingOngedaanMaken();setConfSeizoenOngedaan(false);}}>Ja, samenvoegen</button>
+                        <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                          onClick={function(){setConfSeizoenOngedaan(false);}}>Annuleer</button>
+                      </div>
+                    </div>
+                )}
               </div>
             );
           })()}

@@ -448,7 +448,8 @@ function PrestatieOverzicht({prestatie}){
   );
 }
 
-function NiveauKaart({niveau,compact,onClick}){
+function NiveauKaart({niveau,compact,discipline,onClick}){
+  const dec=discipline==="driebanden"?3:2;
   if(compact){
     return(
       <div onClick={onClick} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+niveau.huidig.kleur,borderRadius:12,padding:"10px 12px",cursor:onClick?"pointer":"default"}}>
@@ -459,7 +460,7 @@ function NiveauKaart({niveau,compact,onClick}){
           <div style={{flex:1,minWidth:0}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
               <span style={{fontSize:14,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
-              <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(2)}</span>
+              <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</span>
             </div>
             <div style={{fontSize:12,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
           </div>
@@ -468,7 +469,7 @@ function NiveauKaart({niveau,compact,onClick}){
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={6}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:3,fontSize:11,color:WITD}}>
             <span>{niveau.progressPct}%</span>
-            <span>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(1)}</span>
+            <span>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(dec)}</span>
           </div>
         </div>}
       </div>
@@ -486,16 +487,16 @@ function NiveauKaart({niveau,compact,onClick}){
         </div>
         <div style={{marginLeft:"auto",textAlign:"right"}}>
           <div style={{fontSize:12,color:WITD}}>gemiddelde</div>
-          <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(2)}</div>
-          {niveau.aantalDrops>0&&<div style={{fontSize:12,color:WITD}}>(ruw: {niveau.totaalGemiddelde.toFixed(2)})</div>}
+          <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
+          {niveau.aantalDrops>0&&<div style={{fontSize:12,color:WITD}}>(ruw: {niveau.totaalGemiddelde.toFixed(dec)})</div>}
         </div>
       </div>
       {niveau.volgende
         ?<>
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:5,fontSize:13}}>
-            <span style={{fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.effectiefGemiddelde.toFixed(2)}</span>
-            <span style={{fontSize:12,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(1)}</span>
+            <span style={{fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.effectiefGemiddelde.toFixed(dec)}</span>
+            <span style={{fontSize:12,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(dec)}</span>
           </div>
         </>
         :<div style={{textAlign:"center",fontSize:13,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
@@ -518,7 +519,7 @@ function NiveauKaart({niveau,compact,onClick}){
                     <span style={{fontSize:12,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
                   </div>
                   <div style={{fontSize:11,color:WITD,marginTop:2,textDecoration:"line-through",opacity:0.8}}>
-                    p{p.id} · gem {p.gem.toFixed(2)}
+                    p{p.id} · gem {p.gem.toFixed(dec)}
                   </div>
                   <div style={{fontSize:10,color:"#ff9f80",marginTop:1}}>telt niet mee</div>
                 </div>
@@ -533,7 +534,7 @@ function NiveauKaart({niveau,compact,onClick}){
 
       {niveau.volgendeKandidaatId&&(
         <div style={{marginTop:8,textAlign:"center",fontSize:11,color:"#ff9f80"}}>
-          🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatId} (gem {niveau.volgendeKandidaatGem.toFixed(2)})
+          🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatId} (gem {niveau.volgendeKandidaatGem.toFixed(dec)})
         </div>
       )}
       {niveau.voorspelling&&niveau.volgende&&(
@@ -541,15 +542,15 @@ function NiveauKaart({niveau,compact,onClick}){
           {niveau.voorspelling.recenteVorm===null
             ?"📈 Nog te weinig recente partijen voor een voorspelling"
             :niveau.voorspelling.mogelijk===false
-              ?"📈 Je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(2)+") ligt onder de "+niveau.volgende.gemDrempel.toFixed(1)+" die nodig is voor "+niveau.volgende.naam
-              :"📈 Bij je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(2)+") bereik je "+niveau.volgende.naam+" over ongeveer "+niveau.voorspelling.aantalPartijen+" partijen"}
+              ?"📈 Je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(dec)+") ligt onder de "+niveau.volgende.gemDrempel.toFixed(dec)+" die nodig is voor "+niveau.volgende.naam
+              :"📈 Bij je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(dec)+") bereik je "+niveau.volgende.naam+" over ongeveer "+niveau.voorspelling.aantalPartijen+" partijen"}
         </div>
       )}
     </div>
   );
 }
 
-function SeizoenArchief({seizoenen,alleP,onClose}){
+function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
@@ -557,7 +558,7 @@ function SeizoenArchief({seizoenen,alleP,onClose}){
         <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke afgesloten periode, met de eindstand van dat seizoen</div>
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
           {seizoenen.filter(function(s){return s.eindDatum!==null;}).slice().reverse().map(function(s){
-            const stats=berekenSeizoenStats(alleP,s);
+            const stats=berekenSeizoenStats(alleP,s,discipline);
             return(
               <div key={s.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid "+KBDR,borderRadius:10,padding:"10px 12px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
@@ -572,7 +573,7 @@ function SeizoenArchief({seizoenen,alleP,onClose}){
                   </div>
                 </div>
                 <div style={{fontSize:13,color:WITD}}>
-                  {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(2)} · {stats.badgePunten}pt · <span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
+                  {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)} · {stats.badgePunten}pt · <span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
                 </div>
               </div>
             );
@@ -636,14 +637,16 @@ function BadgeCatalogus({onClose}){
   );
 }
 
-function NiveauOverzicht({niveau,onClose}){
+function NiveauOverzicht({niveau,discipline,onClose}){
+  const niveaus=(DISCIPLINES[discipline]||DISCIPLINES.libre).niveaus;
+  const decimalen=discipline==="driebanden"?3:2;
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
-        <NiveauKaart niveau={niveau}/>
-        <div style={{fontSize:13,fontWeight:"bold",color:GOUD,marginTop:16,marginBottom:8,textAlign:"center",textTransform:"uppercase",letterSpacing:1}}>Alle niveaus</div>
+        <NiveauKaart niveau={niveau} discipline={discipline}/>
+        <div style={{fontSize:13,fontWeight:"bold",color:GOUD,marginTop:16,marginBottom:8,textAlign:"center",textTransform:"uppercase",letterSpacing:1}}>Alle niveaus — {(DISCIPLINES[discipline]||DISCIPLINES.libre).naam}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
-          {NIVEAUS.map(function(n,i){
+          {niveaus.map(function(n,i){
             const bereikt=i<niveau.index;
             const isHuidig=i===niveau.index;
             const toekomstig=i>niveau.index;
@@ -654,7 +657,7 @@ function NiveauOverzicht({niveau,onClose}){
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:14,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:12,color:WITD,fontWeight:"normal"}}> — jouw niveau</span>}</div>
-                  <div style={{fontSize:12,color:WITD}}>vanaf gemiddelde {n.gemDrempel.toFixed(1)}</div>
+                  <div style={{fontSize:12,color:WITD}}>vanaf gemiddelde {n.gemDrempel.toFixed(decimalen)}</div>
                 </div>
                 <div style={{fontSize:14}}>{bereikt?"✅":toekomstig?"🔒":""}</div>
               </div>
@@ -803,15 +806,38 @@ function categorieKleur(cat){
   return map[cat]||"#c9a84c";
 }
 
-const NIVEAUS=[
-  {naam:"Beginner",gemDrempel:0,emoji:"🔰",kleur:"#9aa89a"},
-  {naam:"Amateur",gemDrempel:1.0,emoji:"🥉",kleur:"#c9915a"},
-  {naam:"Clubspeler",gemDrempel:1.5,emoji:"🥈",kleur:"#c4c4cf"},
-  {naam:"Gevorderde",gemDrempel:2.0,emoji:"🥇",kleur:"#e8c96a"},
-  {naam:"Kampioen",gemDrempel:2.5,emoji:"🏆",kleur:"#7fd8e0"},
-  {naam:"Meester",gemDrempel:3.0,emoji:"👑",kleur:"#b18cf0"},
-  {naam:"Legende",gemDrempel:3.5,emoji:"💎",kleur:"#ff9fd1"}
+// Niveautabellen op basis van de officiële KNBB-klassegrenzen (moyennetabel dagbiljarten, libre/
+// driebanden/bandstoten klein). Boven de hoogste officiële "klein"-klasse (waar de top overstapt op
+// groot-tafels) is een redelijke inschatting gebruikt — expliciet als zodanig gelabeld.
+const NIVEAUS_LIBRE=[
+  {naam:"5e klasse",gemDrempel:0,emoji:"🔰",kleur:"#9aa89a"},
+  {naam:"4e klasse",gemDrempel:1.20,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"3e klasse",gemDrempel:1.70,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"2e klasse",gemDrempel:2.50,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"1e klasse",gemDrempel:4.00,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Hoofdklasse",gemDrempel:11.00,emoji:"👑",kleur:"#b18cf0"},
+  {naam:"Ereklasse",gemDrempel:13.20,emoji:"💎",kleur:"#ff9fd1"}
 ];
+const NIVEAUS_DRIEBANDEN=[
+  {naam:"3e klasse",gemDrempel:0,emoji:"🔰",kleur:"#9aa89a"},
+  {naam:"2e klasse",gemDrempel:0.350,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"1e klasse",gemDrempel:0.500,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Hoofdklasse",gemDrempel:0.800,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Ereklasse",gemDrempel:1.100,emoji:"👑",kleur:"#b18cf0"},
+  {naam:"Topklasse*",gemDrempel:1.500,emoji:"💎",kleur:"#ff9fd1"}
+];
+const NIVEAUS_BANDSTOTEN=[
+  {naam:"3e klasse",gemDrempel:0,emoji:"🔰",kleur:"#9aa89a"},
+  {naam:"2e klasse",gemDrempel:1.00,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"1e klasse",gemDrempel:2.00,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Extraklasse",gemDrempel:4.00,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Ereklasse*",gemDrempel:6.00,emoji:"💎",kleur:"#ff9fd1"}
+];
+const DISCIPLINES={
+  libre:{naam:"Libre",niveaus:NIVEAUS_LIBRE},
+  driebanden:{naam:"Driebanden",niveaus:NIVEAUS_DRIEBANDEN},
+  bandstoten:{naam:"Bandstoten",niveaus:NIVEAUS_BANDSTOTEN}
+};
 const PUNTEN_PER_DROP=1000; // elke 1000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
 
 // Twee losse, simpele assen:
@@ -854,9 +880,9 @@ function berekenNiveauInfo(partijen){
 // partijen je op dat niveau nog nodig hebt om je EFFECTIEVE gemiddelde over de volgende gemiddelde-
 // drempel te tillen. Blijft je recente vorm onder die drempel, dan kan het nooit lukken puur op dit
 // tempo — dat wordt dan ook zo teruggegeven i.p.v. een oneindig aantal partijen.
-function berekenVoorspelling(partijen){
+function berekenVoorspelling(partijen,discipline){
   const info=berekenNiveauInfo(partijen);
-  const huidig=bepaalNiveau(info.effectiefGemiddelde);
+  const huidig=bepaalNiveau(info.effectiefGemiddelde,discipline);
   if(!huidig.volgende)return null;
 
   const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten)};}).filter(function(x){return x.st;});
@@ -892,7 +918,7 @@ function berekenVoorspelling(partijen){
 }
 // Berekent de eindstand van een afgesloten (of lopend) seizoen: elk seizoen wordt behandeld als een
 // eigen, verse geschiedenis (badge-punten en records tellen alleen partijen binnen dat seizoen mee).
-function berekenSeizoenStats(alleP,seizoen){
+function berekenSeizoenStats(alleP,seizoen,discipline){
   const gefilterd=(alleP||[]).filter(function(p){
     const t=new Date(p.datum).getTime();
     const vanaf=seizoen.startDatum?new Date(seizoen.startDatum).getTime():-Infinity;
@@ -900,7 +926,7 @@ function berekenSeizoenStats(alleP,seizoen){
     return t>=vanaf&&t<tot;
   });
   const info=berekenNiveauInfo(gefilterd);
-  const niveau=bepaalNiveau(info.effectiefGemiddelde);
+  const niveau=bepaalNiveau(info.effectiefGemiddelde,discipline);
   let aantalPartijen=0;
   gefilterd.forEach(function(p){if(stat(p.beurten))aantalPartijen++;});
   return{seizoen:seizoen,aantalPartijen:aantalPartijen,gemiddelde:info.effectiefGemiddelde,
@@ -949,13 +975,14 @@ function matchGeimporteerdeData(geparsed,alleP){
   });
 }
 
-function bepaalNiveau(effectiefGemiddelde){
+function bepaalNiveau(effectiefGemiddelde,discipline){
+  const niveaus=(DISCIPLINES[discipline]||DISCIPLINES.libre).niveaus;
   let idx=0;
-  for(let i=0;i<NIVEAUS.length;i++){
-    if(effectiefGemiddelde>=NIVEAUS[i].gemDrempel)idx=i;
+  for(let i=0;i<niveaus.length;i++){
+    if(effectiefGemiddelde>=niveaus[i].gemDrempel)idx=i;
   }
-  const huidig=NIVEAUS[idx];
-  const volgende=NIVEAUS[idx+1]||null;
+  const huidig=niveaus[idx];
+  const volgende=niveaus[idx+1]||null;
   const progressPct=volgende?Math.min(100,Math.max(0,Math.round((effectiefGemiddelde-huidig.gemDrempel)/(volgende.gemDrempel-huidig.gemDrempel)*100))):100;
   const sterren=Math.max(1,Math.min(5,Math.ceil(progressPct/20)));
   return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:idx};
@@ -984,7 +1011,7 @@ function berekenMijlpalen(partijen){
   });
 }
 
-function Dashboard({partijen,niveau,tijdsvensterMaanden}){
+function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
   const ST=useMemo(()=>{
     return (partijen||[]).map(function(p){
@@ -1418,7 +1445,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
 
         {/* PUNTEN */}
         {tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
-          <NiveauKaart niveau={niveau} onClick={function(){setNiveauOpen(true);}}/>
+          <NiveauKaart niveau={niveau} discipline={discipline} onClick={function(){setNiveauOpen(true);}}/>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
             {kaart("Totaal",totaalPuntenSel,"punten",GOUD)}
@@ -1472,7 +1499,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
         </div>}
 
       </div>
-      {niveauOpen&&<NiveauOverzicht niveau={niveau} onClose={function(){setNiveauOpen(false);}}/>}
+      {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={discipline} onClose={function(){setNiveauOpen(false);}}/>}
       {badgeCatalogusOpen&&<BadgeCatalogus onClose={function(){setBadgeCatalogusOpen(false);}}/>}
     </div>
   );
@@ -1564,26 +1591,32 @@ function BiljartTracker(){
 
   const tijdsvenster=(data&&data.tijdsvenster)||"12";
   const tijdsvensterMaanden=tijdsvenster==="alles"?null:parseInt(tijdsvenster,10);
+  const huidigeDiscplineVoorLading=(data&&data.huidigeDiscipline)||"libre";
+
+  const alleP=useMemo(function(){
+    if(!data)return[];
+    return data.partijen.filter(function(p){return(p.discipline||"libre")===huidigeDiscplineVoorLading;});
+  },[data,huidigeDiscplineVoorLading]);
 
   const prestatiesMap=useMemo(function(){
-    const arr=berekenPrestaties(data?data.partijen:[],tijdsvensterMaanden);
+    const arr=berekenPrestaties(alleP,tijdsvensterMaanden);
     const m={};
     arr.forEach(function(r){m[r.id]=r;});
     return m;
-  },[data,tijdsvensterMaanden]);
+  },[alleP,tijdsvensterMaanden]);
   const huidigeRecords=useMemo(function(){
-    return berekenLopendeRecords(data?data.partijen:[],tijdsvensterMaanden);
-  },[data,tijdsvensterMaanden]);
+    return berekenLopendeRecords(alleP,tijdsvensterMaanden);
+  },[alleP,tijdsvensterMaanden]);
   const niveau=useMemo(function(){
-    // Niveau gebruikt altijd all-time data (los van de tijdsvenster-instelling hierboven, die
-    // alleen de ⭐-drempels en 👑🏓-records beïnvloedt).
-    const info=berekenNiveauInfo(data?data.partijen:[]);
-    const voorspelling=berekenVoorspelling(data?data.partijen:[]);
+    // Niveau gebruikt altijd all-time data binnen de huidige discipline (los van de tijdsvenster-
+    // instelling hierboven, die alleen de ⭐-drempels en 👑🏓-records beïnvloedt).
+    const info=berekenNiveauInfo(alleP);
+    const voorspelling=berekenVoorspelling(alleP,huidigeDiscplineVoorLading);
     let aantalPartijen=0;
-    (data?data.partijen:[]).forEach(function(p){
+    alleP.forEach(function(p){
       if(stat(p.beurten))aantalPartijen++;
     });
-    return Object.assign({},bepaalNiveau(info.effectiefGemiddelde),{
+    return Object.assign({},bepaalNiveau(info.effectiefGemiddelde,huidigeDiscplineVoorLading),{
       totaalGemiddelde:info.totaalGemiddelde,
       effectiefGemiddelde:info.effectiefGemiddelde,
       badgePunten:info.badgePunten,
@@ -1596,7 +1629,7 @@ function BiljartTracker(){
       voorspelling:voorspelling,
       aantalPartijen:aantalPartijen
     });
-  },[data]);
+  },[alleP,huidigeDiscplineVoorLading]);
 
   useEffect(function(){
     if(!data)return;
@@ -1606,7 +1639,8 @@ function BiljartTracker(){
       return;
     }
     if(niveau.index>data.laatstGezienNiveauIndex){
-      setNiveauUpInfo({van:NIVEAUS[data.laatstGezienNiveauIndex],naar:niveau.huidig});
+      const niveaus=(DISCIPLINES[huidigeDiscplineVoorLading]||DISCIPLINES.libre).niveaus;
+      setNiveauUpInfo({van:niveaus[data.laatstGezienNiveauIndex],naar:niveau.huidig});
       const nd=Object.assign({},data,{laatstGezienNiveauIndex:niveau.index});
       setData(nd);slaOp(nd);
     }
@@ -1615,7 +1649,7 @@ function BiljartTracker(){
   useEffect(function(){laadData().then(setData);},[]);
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
 
-  const alleP=data.partijen;
+  const huidigeDiscipline=huidigeDiscplineVoorLading;
   const stL=stat(lp);
   const totCarLp=lp.reduce(function(a,b){return a+b.caramboles;},0);
   const voortgang=doelType==="beurten"?lp.length:totCarLp;
@@ -1668,16 +1702,17 @@ function BiljartTracker(){
   function sluit(){
     if(!lp.length){setConfPartij(false);return;}
     const st=stat(lp);
-    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,beurten:lp},st);
-    const nd={partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1};
+    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp},st);
+    const nd=Object.assign({},data,{partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1});
     setData(nd);slaOp(nd);
     setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
     setConfPartij(false);setFase("setup");
   }
 
   function resetAlles(){
-    const leeg={partijen:[],huidigeId:1};
-    setData(leeg);slaOp(leeg);setLp([]);setBeurtNr(1);setCar(0);setInp("0");
+    const overigeDisciplines=data.partijen.filter(function(p){return(p.discipline||"libre")!==huidigeDiscipline;});
+    const nd=Object.assign({},data,{partijen:overigeDisciplines});
+    setData(nd);slaOp(nd);setLp([]);setBeurtNr(1);setCar(0);setInp("0");
     setSel(new Set());setConfReset(false);setFase("setup");
   }
 
@@ -1712,6 +1747,11 @@ function BiljartTracker(){
 
   function setTijdsvenster(v){
     const nd=Object.assign({},data,{tijdsvenster:v});
+    setData(nd);slaOp(nd);
+  }
+
+  function wisselDiscipline(d){
+    const nd=Object.assign({},data,{huidigeDiscipline:d});
     setData(nd);slaOp(nd);
   }
 
@@ -1795,7 +1835,7 @@ function BiljartTracker(){
     return(
       <div style={{flex:1,display:"flex",flexDirection:"column",padding:"10px 14px",gap:7,overflowY:"auto"}}>
         <div style={{textAlign:"center",color:GOUD,fontSize:15,fontWeight:"bold"}}>Nieuwe partij</div>
-        <NiveauKaart niveau={niveau} compact={true} onClick={function(){setNiveauOpen(true);}}/>
+        <NiveauKaart niveau={niveau} compact={true} discipline={huidigeDiscipline} onClick={function(){setNiveauOpen(true);}}/>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Tafelmaat</div>
           <div style={{display:"flex",gap:8}}>
@@ -2087,11 +2127,11 @@ function BiljartTracker(){
             const seizoenen=data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}];
             const huidig=seizoenen[seizoenen.length-1];
             const afgesloten=seizoenen.filter(function(s){return s.eindDatum!==null;});
-            const huidigStats=berekenSeizoenStats(alleP,huidig);
+            const huidigStats=berekenSeizoenStats(alleP,huidig,huidigeDiscipline);
             return(
               <div>
                 <div style={{fontSize:14,color:WIT,marginBottom:2}}>{huidig.naam} <span style={{fontSize:13,color:WITD}}>(sinds {huidig.startDatum?new Date(huidig.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"het begin"})</span></div>
-                <div style={{fontSize:13,color:WITD,marginBottom:10}}>{huidigStats.aantalPartijen} partijen · gem {huidigStats.gemiddelde.toFixed(2)} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
+                <div style={{fontSize:13,color:WITD,marginBottom:10}}>{huidigStats.aantalPartijen} partijen · gem {huidigStats.gemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
                 <div style={{display:"flex",gap:6}}>
                   {!confSeizoenAfsluiten
                     ?<button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
@@ -2292,9 +2332,9 @@ function BiljartTracker(){
         </div>
       </div>
 
-      {niveauOpen&&<NiveauOverzicht niveau={niveau} onClose={function(){setNiveauOpen(false);}}/>}
+      {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={huidigeDiscipline} onClose={function(){setNiveauOpen(false);}}/>}
 
-      {seizoenArchiefOpen&&<SeizoenArchief seizoenen={data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}]} alleP={alleP} onClose={function(){setSeizoenArchiefOpen(false);}}/>}
+      {seizoenArchiefOpen&&<SeizoenArchief seizoenen={data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}]} alleP={alleP} discipline={huidigeDiscipline} onClose={function(){setSeizoenArchiefOpen(false);}}/>}
 
       {niveauUpInfo&&(
         <div onClick={function(){setNiveauUpInfo(null);}}
@@ -2358,6 +2398,17 @@ function BiljartTracker(){
         </div>
       )}
 
+      <div style={{display:"flex",gap:6,padding:"8px 14px",background:"#152015",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
+        {Object.keys(DISCIPLINES).map(function(d){
+          return(
+            <button key={d} onClick={function(){wisselDiscipline(d);}}
+              style={{flex:1,padding:"6px 0",background:huidigeDiscipline===d?"#2d4a1e":"none",border:"1px solid "+(huidigeDiscipline===d?GOUD:KBDR),borderRadius:8,color:huidigeDiscipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
+              {DISCIPLINES[d].naam}
+            </button>
+          );
+        })}
+      </div>
+
       <div style={{display:"flex",borderBottom:"1px solid "+KBDR,background:"#152015",flexShrink:0}}>
         {[["spelen","Spelen"],["stats","Stats"],["data","Data"],["log","Log"],["dash","Dash"]].map(function(arr){
           return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:tab===arr[0]?"#1c2c1c":"none",border:"none",color:tab===arr[0]?GOUD:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===arr[0]?"2px solid "+GOUD:"2px solid transparent"}}
@@ -2377,7 +2428,7 @@ function BiljartTracker(){
         {tab==="stats"&&<Stats/>}
         {tab==="data"&&<Data/>}
         {tab==="log"&&<Log/>}
-        {tab==="dash"&&<Dashboard partijen={alleP} niveau={niveau} tijdsvensterMaanden={tijdsvensterMaanden}/>}
+        {tab==="dash"&&<Dashboard partijen={alleP} niveau={niveau} tijdsvensterMaanden={tijdsvensterMaanden} discipline={huidigeDiscipline}/>}
       </div>
     </div>
   );

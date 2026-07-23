@@ -541,6 +541,50 @@ function NiveauKaart({niveau,compact,onClick}){
           🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatId} (gem {niveau.volgendeKandidaatGem.toFixed(2)})
         </div>
       )}
+      {niveau.voorspelling&&niveau.volgende&&(
+        <div style={{marginTop:8,textAlign:"center",fontSize:11,color:WITD}}>
+          {niveau.voorspelling.recenteVorm===null
+            ?"📈 Nog te weinig recente partijen voor een voorspelling"
+            :niveau.voorspelling.mogelijk===false
+              ?"📈 Je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(2)+") ligt onder de "+niveau.volgende.gemDrempel.toFixed(1)+" die nodig is voor "+niveau.volgende.naam
+              :"📈 Bij je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(2)+") bereik je "+niveau.volgende.naam+" over ongeveer "+niveau.voorspelling.aantalPartijen+" partijen"}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SeizoenArchief({seizoenen,alleP,onClose}){
+  return(
+    <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+      <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Seizoensarchief</div>
+        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke afgesloten periode, met de eindstand van dat seizoen</div>
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {seizoenen.filter(function(s){return s.eindDatum!==null;}).slice().reverse().map(function(s){
+            const stats=berekenSeizoenStats(alleP,s);
+            return(
+              <div key={s.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid "+KBDR,borderRadius:10,padding:"10px 12px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+                  <div style={{width:32,height:32,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+stats.niveau.kleur+"cc,"+stats.niveau.kleur+"33)",border:"2px solid "+stats.niveau.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,flexShrink:0}}>
+                    {stats.niveau.emoji}
+                  </div>
+                  <div style={{flex:1}}>
+                    <div style={{fontSize:14,fontWeight:"bold",color:WIT}}>{s.naam}</div>
+                    <div style={{fontSize:11,color:WITD}}>
+                      {s.startDatum?new Date(s.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"begin"} – {new Date(s.eindDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"})}
+                    </div>
+                  </div>
+                </div>
+                <div style={{fontSize:13,color:WITD}}>
+                  {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(2)} · {stats.badgePunten}pt · <span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div onClick={onClose} style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+      </div>
     </div>
   );
 }
@@ -576,9 +620,10 @@ function NiveauOverzicht({niveau,onClose}){
   );
 }
 
-function PartijRij({p,nr,prestatie,gedropt,onVerwijder}){
+function PartijRij({p,nr,prestatie,gedropt,onVerwijder,onNotitie}){
   const [open,setOpen]=useState(false);
   const [confVerwijder,setConfVerwijder]=useState(false);
+  const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
   const st=stat(p.beurten);
   if(!st)return null;
   const punten=prestatie?prestatie.punten:0;
@@ -587,7 +632,7 @@ function PartijRij({p,nr,prestatie,gedropt,onVerwijder}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
           <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -607,6 +652,18 @@ function PartijRij({p,nr,prestatie,gedropt,onVerwijder}){
             })}
           </div>
           <PrestatieOverzicht prestatie={prestatie}/>
+          {onNotitie&&(
+            <div style={{marginTop:8}}>
+              <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Notitie</div>
+              <textarea value={notitieTekst} onChange={function(e){setNotitieTekst(e.target.value);}}
+                placeholder="Sfeer, met wie, hoe het voelde..."
+                style={{width:"100%",minHeight:50,background:"#182e14",border:"1px solid "+KBDR,borderRadius:6,color:WIT,fontSize:13,padding:8,fontFamily:"inherit",resize:"vertical"}}/>
+              {notitieTekst!==(p.notitie||"")&&(
+                <button style={{marginTop:6,padding:"6px 12px",background:"#2d4a1e",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
+                  onClick={function(){onNotitie(p.id,notitieTekst);}}>Notitie opslaan</button>
+              )}
+            </div>
+          )}
           {onVerwijder&&(
             !confVerwijder
               ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
@@ -746,6 +803,105 @@ function berekenNiveauInfo(partijen){
     volgendeKandidaatGem:volgendeKandidaat?parseFloat(volgendeKandidaat.st.gemPerBeurt):null,
     puntenTotVolgendeDrop:puntenTotVolgendeDrop};
 }
+// Simuleert, uitgaande van je recente vorm (laatste 5 partijen, beurt-gewogen gemiddelde), hoeveel
+// partijen je op dat niveau nog nodig hebt om je EFFECTIEVE gemiddelde over de volgende gemiddelde-
+// drempel te tillen. Blijft je recente vorm onder die drempel, dan kan het nooit lukken puur op dit
+// tempo — dat wordt dan ook zo teruggegeven i.p.v. een oneindig aantal partijen.
+function berekenVoorspelling(partijen){
+  const info=berekenNiveauInfo(partijen);
+  const huidig=bepaalNiveau(info.effectiefGemiddelde);
+  if(!huidig.volgende)return null;
+
+  const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten)};}).filter(function(x){return x.st;});
+  const laatste5=geldige.slice(-5);
+  if(laatste5.length<3)return{mogelijk:null,recenteVorm:null};
+  let rCar=0,rBeurt=0;
+  laatste5.forEach(function(x){rCar+=x.st.totCar;rBeurt+=x.st.aantalBeurten;});
+  const recenteVorm=rCar/rBeurt;
+  const gemBeurtenPerPartij=Math.round(rBeurt/laatste5.length);
+
+  if(recenteVorm<huidig.volgende.gemDrempel){
+    return{mogelijk:false,recenteVorm:recenteVorm};
+  }
+
+  let simPartijen=partijen.slice();
+  let volgendId=Math.max.apply(null,geldige.map(function(x){return x.p.id;}))+1;
+  for(let i=1;i<=100;i++){
+    const nieuweBeurten=[];
+    let rest=Math.round(recenteVorm*gemBeurtenPerPartij);
+    for(let j=0;j<gemBeurtenPerPartij;j++){
+      const overgebleven=gemBeurtenPerPartij-j;
+      const v=Math.max(0,Math.round(rest/overgebleven));
+      nieuweBeurten.push({caramboles:v,gemist:[],goed:[]});
+      rest-=v;
+    }
+    simPartijen=simPartijen.concat([{id:volgendId++,datum:new Date().toISOString(),tafel:"230",beurten:nieuweBeurten}]);
+    const simInfo=berekenNiveauInfo(simPartijen);
+    if(simInfo.effectiefGemiddelde>=huidig.volgende.gemDrempel){
+      return{mogelijk:true,recenteVorm:recenteVorm,aantalPartijen:i};
+    }
+  }
+  return{mogelijk:false,recenteVorm:recenteVorm};
+}
+// Berekent de eindstand van een afgesloten (of lopend) seizoen: elk seizoen wordt behandeld als een
+// eigen, verse geschiedenis (badge-punten en records tellen alleen partijen binnen dat seizoen mee).
+function berekenSeizoenStats(alleP,seizoen){
+  const gefilterd=(alleP||[]).filter(function(p){
+    const t=new Date(p.datum).getTime();
+    const vanaf=seizoen.startDatum?new Date(seizoen.startDatum).getTime():-Infinity;
+    const tot=seizoen.eindDatum?new Date(seizoen.eindDatum).getTime():Infinity;
+    return t>=vanaf&&t<tot;
+  });
+  const info=berekenNiveauInfo(gefilterd);
+  const niveau=bepaalNiveau(info.effectiefGemiddelde);
+  let aantalPartijen=0;
+  gefilterd.forEach(function(p){if(stat(p.beurten))aantalPartijen++;});
+  return{seizoen:seizoen,aantalPartijen:aantalPartijen,gemiddelde:info.effectiefGemiddelde,
+    badgePunten:info.badgePunten,niveau:niveau.huidig};
+}
+
+// Parseert een eerder gekopieerde tekst-export (uit de Data-tab) terug naar structuur, zodat
+// gemist/goed-opmerkingen alsnog teruggekoppeld kunnen worden aan bestaande partijen.
+const MAAND_NAMEN={januari:0,februari:1,maart:2,april:3,mei:4,juni:5,juli:6,augustus:7,september:8,oktober:9,november:10,december:11};
+function parseGeexporteerdeData(tekst){
+  const blokken=tekst.split(/-{10,}/);
+  const partijen=[];
+  blokken.forEach(function(blok){
+    const headerMatch=blok.match(/PARTIJ\s+\d+\s*·\s*\w+\s+(\d+)\s+(\w+)/i);
+    if(!headerMatch)return;
+    const dag=parseInt(headerMatch[1]);
+    const maandNaam=headerMatch[2].toLowerCase();
+    const maand=MAAND_NAMEN[maandNaam];
+    if(maand===undefined)return;
+    const beurtRegels=blok.split("\n").filter(function(l){return /Beurt \d+:/.test(l);});
+    const beurten=beurtRegels.map(function(line){
+      const m=line.match(/Beurt (\d+): (\d+) caramboles/);
+      if(!m)return null;
+      let gemist=[],goed=[];
+      const gm=line.match(/—\s*Gemist:\s*([^—]+)/);
+      if(gm)gemist=gm[1].trim().split(",").map(function(s){return s.trim();}).filter(Boolean);
+      const gd=line.match(/—\s*Goed:\s*(.+)$/);
+      if(gd)goed=gd[1].trim().split(",").map(function(s){return s.trim();}).filter(Boolean);
+      return{nr:parseInt(m[1]),car:parseInt(m[2]),gemist:gemist,goed:goed};
+    }).filter(Boolean);
+    if(beurten.length>0)partijen.push({dag:dag,maand:maand,beurten:beurten});
+  });
+  return partijen;
+}
+// Matcht geparste partijen aan bestaande partijen: op dag+maand van de datum, aantal beurten, én
+// totaal caramboles als extra zekerheid — alleen bij een unieke match wordt 'm gekoppeld.
+function matchGeimporteerdeData(geparsed,alleP){
+  return geparsed.map(function(gp){
+    const totCarGeparsed=gp.beurten.reduce(function(a,b){return a+b.car;},0);
+    const kandidaten=alleP.filter(function(p){
+      const d=new Date(p.datum);
+      const totCarBestaand=p.beurten.reduce(function(a,b){return a+b.caramboles;},0);
+      return d.getDate()===gp.dag&&d.getMonth()===gp.maand&&p.beurten.length===gp.beurten.length&&totCarBestaand===totCarGeparsed;
+    });
+    return{geparsed:gp,match:kandidaten.length===1?kandidaten[0]:null,meerdereKandidaten:kandidaten.length>1};
+  });
+}
+
 function bepaalNiveau(effectiefGemiddelde){
   let idx=0;
   for(let i=0;i<NIVEAUS.length;i++){
@@ -756,6 +912,29 @@ function bepaalNiveau(effectiefGemiddelde){
   const progressPct=volgende?Math.min(100,Math.max(0,Math.round((effectiefGemiddelde-huidig.gemDrempel)/(volgende.gemDrempel-huidig.gemDrempel)*100))):100;
   const sterren=Math.max(1,Math.min(5,Math.ceil(progressPct/20)));
   return{huidig:huidig,volgende:volgende,progressPct:progressPct,sterren:sterren,index:idx};
+}
+
+// Mijlpaal-badges: puur voor trouw blijven spelen, los van hoe goed je speelt. Tellen NIET mee voor
+// niveau of badge-punten — alleen decoratief, om te laten zien dat je erbij blijft.
+const MIJLPALEN=[
+  {type:"partijen",aantal:10,naam:"10 partijen",emoji:"🎮"},
+  {type:"partijen",aantal:25,naam:"25 partijen",emoji:"🎮"},
+  {type:"partijen",aantal:50,naam:"50 partijen",emoji:"🎮"},
+  {type:"partijen",aantal:100,naam:"100 partijen",emoji:"🎮"},
+  {type:"partijen",aantal:250,naam:"250 partijen",emoji:"🎮"},
+  {type:"caramboles",aantal:1000,naam:"1.000 caramboles",emoji:"🔴"},
+  {type:"caramboles",aantal:5000,naam:"5.000 caramboles",emoji:"🔴"},
+  {type:"caramboles",aantal:10000,naam:"10.000 caramboles",emoji:"🔴"},
+  {type:"caramboles",aantal:25000,naam:"25.000 caramboles",emoji:"🔴"}
+];
+function berekenMijlpalen(partijen){
+  const geldige=(partijen||[]).map(function(p){return stat(p.beurten);}).filter(Boolean);
+  const aantalPartijen=geldige.length;
+  const totaalCaramboles=geldige.reduce(function(a,st){return a+st.totCar;},0);
+  return MIJLPALEN.map(function(m){
+    const huidigeWaarde=m.type==="partijen"?aantalPartijen:totaalCaramboles;
+    return Object.assign({},m,{bereikt:huidigeWaarde>=m.aantal,huidigeWaarde:huidigeWaarde});
+  });
 }
 
 function Dashboard({partijen,niveau,tijdsvensterMaanden}){
@@ -933,7 +1112,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
       {/* Header */}
       <div style={{background:"linear-gradient(135deg,#0d1f0d,#182e14)",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0}}>
         <div style={{fontSize:15,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Dashboard</div>
-        <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Ferro · Analyse & trends · {ST.length} partijen</div>
+        <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Analyse & trends · {ST.length} partijen</div>
       </div>
 
       {/* Tabs */}
@@ -1224,6 +1403,22 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
               ))
             }
           </div>
+
+          <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
+            <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Mijlpalen</div>
+            <div style={{fontSize:11,color:WITD,opacity:0.75,marginBottom:10}}>Voor trouw blijven spelen — los van je niveau of gemiddelde</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+              {berekenMijlpalen(partijen).map(function(m){
+                return(
+                  <div key={m.type+m.aantal} style={{background:m.bereikt?"rgba(201,168,76,0.15)":"#1c2e18",border:"1px solid "+(m.bereikt?GOUD:KBDR),borderRadius:8,padding:"8px 4px",textAlign:"center",opacity:m.bereikt?1:0.55}}>
+                    <div style={{fontSize:18}}>{m.emoji}</div>
+                    <div style={{fontSize:11,color:m.bereikt?GOUD:WITD,fontWeight:m.bereikt?"bold":"normal",marginTop:2}}>{m.naam}</div>
+                    <div style={{fontSize:14}}>{m.bereikt?"✅":"🔒"}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>}
 
       </div>
@@ -1233,9 +1428,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden}){
 }
 
 
-function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder}){
+function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder,onNotitie}){
   const [open,setOpen]=useState(false);
   const [confVerwijder,setConfVerwijder]=useState(false);
+  const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
   const st=stat(p.beurten);
   const punten=prestatie?prestatie.punten:0;
   return(
@@ -1243,7 +1439,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
           {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -1252,6 +1448,18 @@ function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder}){
         <div style={{padding:"0 14px 12px"}}>
           <PrestatieOverzicht prestatie={prestatie}/>
           {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i}/>;}) }
+          {onNotitie&&(
+            <div style={{marginTop:8}}>
+              <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Notitie</div>
+              <textarea value={notitieTekst} onChange={function(e){setNotitieTekst(e.target.value);}}
+                placeholder="Sfeer, met wie, hoe het voelde..."
+                style={{width:"100%",minHeight:50,background:"#182e14",border:"1px solid "+KBDR,borderRadius:6,color:WIT,fontSize:13,padding:8,fontFamily:"inherit",resize:"vertical"}}/>
+              {notitieTekst!==(p.notitie||"")&&(
+                <button style={{marginTop:6,padding:"6px 12px",background:"#2d4a1e",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
+                  onClick={function(){onNotitie(p.id,notitieTekst);}}>Notitie opslaan</button>
+              )}
+            </div>
+          )}
           {onVerwijder&&(
             !confVerwijder
               ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
@@ -1286,6 +1494,11 @@ function BiljartTracker(){
   const [tafel,setTafel]=useState("230");
   const [confPartij,setConfPartij]=useState(false);
   const [confReset,setConfReset]=useState(false);
+  const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
+  const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
+  const [importTekst,setImportTekst]=useState("");
+  const [importMatches,setImportMatches]=useState(null);
+  const [importResultaat,setImportResultaat]=useState("");
   const [aiBezig,setAiBezig]=useState(false);
   const [aiRes,setAiRes]=useState("");
   const [aiType,setAiType]=useState("");
@@ -1313,6 +1526,7 @@ function BiljartTracker(){
     // Niveau gebruikt altijd all-time data (los van de tijdsvenster-instelling hierboven, die
     // alleen de ⭐-drempels en 👑🏓-records beïnvloedt).
     const info=berekenNiveauInfo(data?data.partijen:[]);
+    const voorspelling=berekenVoorspelling(data?data.partijen:[]);
     let aantalPartijen=0;
     (data?data.partijen:[]).forEach(function(p){
       if(stat(p.beurten))aantalPartijen++;
@@ -1327,6 +1541,7 @@ function BiljartTracker(){
       volgendeKandidaatId:info.volgendeKandidaatId,
       volgendeKandidaatGem:info.volgendeKandidaatGem,
       puntenTotVolgendeDrop:info.puntenTotVolgendeDrop,
+      voorspelling:voorspelling,
       aantalPartijen:aantalPartijen
     });
   },[data]);
@@ -1425,8 +1640,44 @@ function BiljartTracker(){
     setData(nd);slaOp(nd);
   }
 
+  function slaNotitieOp(id,tekst){
+    const nd=Object.assign({},data,{partijen:data.partijen.map(function(p){
+      return p.id===id?Object.assign({},p,{notitie:tekst}):p;
+    })});
+    setData(nd);slaOp(nd);
+  }
+
+  function pasImportToe(matches){
+    const bijgewerkteIds=new Set();
+    const nd=Object.assign({},data,{partijen:data.partijen.map(function(p){
+      const gevonden=matches.find(function(m){return m.match&&m.match.id===p.id;});
+      if(!gevonden)return p;
+      bijgewerkteIds.add(p.id);
+      const nieuweBeurten=p.beurten.map(function(b,i){
+        const gp=gevonden.geparsed.beurten[i];
+        if(!gp)return b;
+        return Object.assign({},b,{gemist:gp.gemist,goed:gp.goed});
+      });
+      return Object.assign({},p,{beurten:nieuweBeurten});
+    })});
+    setData(nd);slaOp(nd);
+    return bijgewerkteIds.size;
+  }
+
   function setTijdsvenster(v){
     const nd=Object.assign({},data,{tijdsvenster:v});
+    setData(nd);slaOp(nd);
+  }
+
+  function seizoenAfsluiten(){
+    const huidigeSeizoenen=data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}];
+    const nu=new Date().toISOString();
+    const bijgewerkt=huidigeSeizoenen.map(function(s){
+      return s.eindDatum===null?Object.assign({},s,{eindDatum:nu}):s;
+    });
+    const nieuwId=Math.max.apply(null,huidigeSeizoenen.map(function(s){return s.id;}))+1;
+    bijgewerkt.push({id:nieuwId,naam:"Seizoen "+nieuwId,startDatum:nu,eindDatum:null});
+    const nd=Object.assign({},data,{seizoenen:bijgewerkt});
     setData(nd);slaOp(nd);
   }
 
@@ -1771,7 +2022,41 @@ function BiljartTracker(){
         )}
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
-          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij}/>;}) }
+          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
+        </div>
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Seizoen</div>
+          {(function(){
+            const seizoenen=data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}];
+            const huidig=seizoenen[seizoenen.length-1];
+            const afgesloten=seizoenen.filter(function(s){return s.eindDatum!==null;});
+            const huidigStats=berekenSeizoenStats(alleP,huidig);
+            return(
+              <div>
+                <div style={{fontSize:14,color:WIT,marginBottom:2}}>{huidig.naam} <span style={{fontSize:13,color:WITD}}>(sinds {huidig.startDatum?new Date(huidig.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"het begin"})</span></div>
+                <div style={{fontSize:13,color:WITD,marginBottom:10}}>{huidigStats.aantalPartijen} partijen · gem {huidigStats.gemiddelde.toFixed(2)} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
+                <div style={{display:"flex",gap:6}}>
+                  {!confSeizoenAfsluiten
+                    ?<button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
+                      onClick={function(){setConfSeizoenAfsluiten(true);}}>Seizoen afsluiten</button>
+                    :<div style={{flex:1,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:6,padding:"7px 8px"}}>
+                      <div style={{fontSize:13,color:GOUD,marginBottom:6}}>Huidig seizoen afsluiten en een nieuwe beginnen?</div>
+                      <div style={{display:"flex",gap:6}}>
+                        <button style={{flex:1,padding:6,background:"#2d4a1e",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                          onClick={function(){seizoenAfsluiten();setConfSeizoenAfsluiten(false);}}>Ja, afsluiten</button>
+                        <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                          onClick={function(){setConfSeizoenAfsluiten(false);}}>Annuleer</button>
+                      </div>
+                    </div>
+                  }
+                  {afgesloten.length>0&&!confSeizoenAfsluiten&&(
+                    <button style={{padding:"8px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
+                      onClick={function(){setSeizoenArchiefOpen(true);}}>Archief ({afgesloten.length})</button>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
         </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
@@ -1833,6 +2118,43 @@ function BiljartTracker(){
               style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
           </div>
         )}
+
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Opmerkingen importeren</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Heb je ergens een oude "Kopieer data"-export bewaard (bijv. met gemist/goed-opmerkingen die nu leeg staan)? Plak die hieronder — de app matcht 'm automatisch aan de juiste partij.</div>
+          <textarea value={importTekst} onChange={function(e){setImportTekst(e.target.value);setImportMatches(null);setImportResultaat("");}}
+            placeholder="Plak hier een eerdere export..."
+            style={{width:"100%",height:100,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"vertical"}}/>
+          {importTekst.trim()&&!importMatches&&(
+            <button style={{marginTop:8,width:"100%",padding:10,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
+              onClick={function(){
+                const geparsed=parseGeexporteerdeData(importTekst);
+                setImportMatches(matchGeimporteerdeData(geparsed,alleP));
+              }}>Analyseren</button>
+          )}
+          {importMatches&&(
+            <div style={{marginTop:10}}>
+              {importMatches.map(function(m,i){
+                const label="Partij van "+m.geparsed.dag+" "+Object.keys(MAAND_NAMEN)[m.geparsed.maand]+" ("+m.geparsed.beurten.length+" beurten)";
+                return(
+                  <div key={i} style={{fontSize:13,color:m.match?GRNT:"#e08055",padding:"4px 0",borderBottom:"1px solid "+KBDR}}>
+                    {m.match?"✅ ":m.meerdereKandidaten?"⚠️ meerdere mogelijke matches: ":"❌ geen match: "}{label}
+                    {m.match&&" → p"+m.match.id+" ("+new Date(m.match.datum).toLocaleDateString("nl-NL",{day:"numeric",month:"short"})+")"}
+                  </div>
+                );
+              })}
+              {importMatches.some(function(m){return m.match;})&&(
+                <button style={{marginTop:10,width:"100%",padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
+                  onClick={function(){
+                    const n=pasImportToe(importMatches);
+                    setImportResultaat(n+" partij"+(n===1?"":"en")+" bijgewerkt met opmerkingen.");
+                    setImportTekst("");setImportMatches(null);
+                  }}>Toepassen op {importMatches.filter(function(m){return m.match;}).length} gevonden partij(en)</button>
+              )}
+            </div>
+          )}
+          {importResultaat&&<div style={{marginTop:8,fontSize:13,color:GRNT}}>{importResultaat}</div>}
+        </div>
       </div>
     );
   }
@@ -1848,7 +2170,7 @@ function BiljartTracker(){
           </div>
         )}
         {[].concat(alleP).reverse().map(function(p,pi){
-          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij}/>;
+          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;
         })}
       </div>
     );
@@ -1900,6 +2222,8 @@ function BiljartTracker(){
       </div>
 
       {niveauOpen&&<NiveauOverzicht niveau={niveau} onClose={function(){setNiveauOpen(false);}}/>}
+
+      {seizoenArchiefOpen&&<SeizoenArchief seizoenen={data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}]} alleP={alleP} onClose={function(){setSeizoenArchiefOpen(false);}}/>}
 
       {niveauUpInfo&&(
         <div onClick={function(){setNiveauUpInfo(null);}}

@@ -1058,6 +1058,48 @@ function berekenSeizoenStats(alleP,seizoen,discipline){
     badgePunten:info.badgePunten,niveau:niveau.huidig};
 }
 
+// Parseert een eerder gekopieerde tekst-export (uit de Data-tab) terug naar structuur, zodat
+// gemist/goed-opmerkingen alsnog teruggekoppeld kunnen worden aan bestaande partijen.
+const MAAND_NAMEN={januari:0,februari:1,maart:2,april:3,mei:4,juni:5,juli:6,augustus:7,september:8,oktober:9,november:10,december:11};
+function parseGeexporteerdeData(tekst){
+  const blokken=tekst.split(/-{10,}/);
+  const partijen=[];
+  blokken.forEach(function(blok){
+    const headerMatch=blok.match(/PARTIJ\s+\d+\s*·\s*\w+\s+(\d+)\s+(\w+)/i);
+    if(!headerMatch)return;
+    const dag=parseInt(headerMatch[1]);
+    const maandNaam=headerMatch[2].toLowerCase();
+    const maand=MAAND_NAMEN[maandNaam];
+    if(maand===undefined)return;
+    const beurtRegels=blok.split("\n").filter(function(l){return /Beurt \d+:/.test(l);});
+    const beurten=beurtRegels.map(function(line){
+      const m=line.match(/Beurt (\d+): (\d+) caramboles/);
+      if(!m)return null;
+      let gemist=[],goed=[];
+      const gm=line.match(/—\s*Gemist:\s*([^—]+)/);
+      if(gm)gemist=gm[1].trim().split(",").map(function(s){return s.trim();}).filter(Boolean);
+      const gd=line.match(/—\s*Goed:\s*(.+)$/);
+      if(gd)goed=gd[1].trim().split(",").map(function(s){return s.trim();}).filter(Boolean);
+      return{nr:parseInt(m[1]),car:parseInt(m[2]),gemist:gemist,goed:goed};
+    }).filter(Boolean);
+    if(beurten.length>0)partijen.push({dag:dag,maand:maand,beurten:beurten});
+  });
+  return partijen;
+}
+// Matcht geparste partijen aan bestaande partijen: op dag+maand van de datum, aantal beurten, én
+// totaal caramboles als extra zekerheid — alleen bij een unieke match wordt 'm gekoppeld.
+function matchGeimporteerdeData(geparsed,alleP){
+  return geparsed.map(function(gp){
+    const totCarGeparsed=gp.beurten.reduce(function(a,b){return a+b.car;},0);
+    const kandidaten=alleP.filter(function(p){
+      const d=new Date(p.datum);
+      const totCarBestaand=p.beurten.reduce(function(a,b){return a+b.caramboles;},0);
+      return d.getDate()===gp.dag&&d.getMonth()===gp.maand&&p.beurten.length===gp.beurten.length&&totCarBestaand===totCarGeparsed;
+    });
+    return{geparsed:gp,match:kandidaten.length===1?kandidaten[0]:null,meerdereKandidaten:kandidaten.length>1};
+  });
+}
+
 function bepaalNiveau(effectiefGemiddelde,discipline){
   const niveaus=(DISCIPLINES[discipline]||DISCIPLINES.libre).niveaus;
   let idx=0;
@@ -1710,6 +1752,9 @@ function BiljartTracker(){
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
   const [installUitlegOpen,setInstallUitlegOpen]=useState(false);
+  const [importTekst,setImportTekst]=useState("");
+  const [importMatches,setImportMatches]=useState(null);
+  const [importResultaat,setImportResultaat]=useState("");
   const [importJsonTekst,setImportJsonTekst]=useState("");
   const [importJsonPreview,setImportJsonPreview]=useState(null);
   const [importJsonFout,setImportJsonFout]=useState("");
@@ -1900,6 +1945,23 @@ function BiljartTracker(){
     }catch(e){
       setImportJsonFout("Importeren mislukt.");
     }
+  }
+
+  function pasImportToe(matches){
+    const bijgewerkteIds=new Set();
+    const nd=Object.assign({},data,{partijen:data.partijen.map(function(p){
+      const gevonden=matches.find(function(m){return m.match&&m.match.id===p.id;});
+      if(!gevonden)return p;
+      bijgewerkteIds.add(p.id);
+      const nieuweBeurten=p.beurten.map(function(b,i){
+        const gp=gevonden.geparsed.beurten[i];
+        if(!gp)return b;
+        return Object.assign({},b,{gemist:gp.gemist,goed:gp.goed});
+      });
+      return Object.assign({},p,{beurten:nieuweBeurten});
+    })});
+    setData(nd);slaOp(nd);
+    return bijgewerkteIds.size;
   }
 
   function slaNotitieOp(id,tekst){
@@ -2501,6 +2563,43 @@ function BiljartTracker(){
               style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
           </div>
         )}
+
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Opmerkingen importeren</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Heb je ergens een oude "Kopieer data"-export bewaard (bijv. met gemist/goed-opmerkingen die nu leeg staan)? Plak die hieronder — de app matcht 'm automatisch aan de juiste partij.</div>
+          <textarea value={importTekst} onChange={function(e){setImportTekst(e.target.value);setImportMatches(null);setImportResultaat("");}}
+            placeholder="Plak hier een eerdere export..."
+            style={{width:"100%",height:100,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"vertical"}}/>
+          {importTekst.trim()&&!importMatches&&(
+            <button style={{marginTop:8,width:"100%",padding:10,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
+              onClick={function(){
+                const geparsed=parseGeexporteerdeData(importTekst);
+                setImportMatches(matchGeimporteerdeData(geparsed,alleP));
+              }}>Analyseren</button>
+          )}
+          {importMatches&&(
+            <div style={{marginTop:10}}>
+              {importMatches.map(function(m,i){
+                const label="Partij van "+m.geparsed.dag+" "+Object.keys(MAAND_NAMEN)[m.geparsed.maand]+" ("+m.geparsed.beurten.length+" beurten)";
+                return(
+                  <div key={i} style={{fontSize:13,color:m.match?GRNT:"#e08055",padding:"4px 0",borderBottom:"1px solid "+KBDR}}>
+                    {m.match?"✅ ":m.meerdereKandidaten?"⚠️ meerdere mogelijke matches: ":"❌ geen match: "}{label}
+                    {m.match&&" → p"+m.match.id+" ("+new Date(m.match.datum).toLocaleDateString("nl-NL",{day:"numeric",month:"short"})+")"}
+                  </div>
+                );
+              })}
+              {importMatches.some(function(m){return m.match;})&&(
+                <button style={{marginTop:10,width:"100%",padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
+                  onClick={function(){
+                    const n=pasImportToe(importMatches);
+                    setImportResultaat(n+" partij"+(n===1?"":"en")+" bijgewerkt met opmerkingen.");
+                    setImportTekst("");setImportMatches(null);
+                  }}>Toepassen op {importMatches.filter(function(m){return m.match;}).length} gevonden partij(en)</button>
+              )}
+            </div>
+          )}
+          {importResultaat&&<div style={{marginTop:8,fontSize:13,color:GRNT}}>{importResultaat}</div>}
+        </div>
 
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Volledige back-up</div>

@@ -163,16 +163,16 @@ function berekenPrestaties(partijen,tijdsvensterMaanden){
       badges.push({label:"Gemiddelde boven "+drempel1.toFixed(1).replace(".",","),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel1.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
     }
 
-    const vensterBestGem=venster.length?Math.max.apply(null,venster.map(function(w){return w.gem;})):0;
+    const vensterBestGem=verwerkt.length?Math.max.apply(null,verwerkt.map(function(w){return w.gem;})):0;
     if(gem>vensterBestGem&&vensterBestGem>0){
-      badges.push({label:"Nieuw beste gemiddelde"+vensterLabel,emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:"Nieuw record: "+gem.toFixed(2)+" (vorig record"+vensterLabel+": "+vensterBestGem.toFixed(2)+")"});
+      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:"Nieuw record: "+gem.toFixed(2)+" (vorig record ooit: "+vensterBestGem.toFixed(2)+")"});
     }
 
     const tafelKey=p.tafel||"230";
-    const vensterTafel=venster.filter(function(w){return w.tafel===tafelKey;});
+    const vensterTafel=verwerkt.filter(function(w){return w.tafel===tafelKey;});
     const vensterTafelBest=vensterTafel.length?Math.max.apply(null,vensterTafel.map(function(w){return w.gem;})):0;
     if(gem>vensterTafelBest&&vensterTafelBest>0){
-      badges.push({label:"Beste partij"+vensterLabel+" op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+tafelLabel(tafelKey)+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
+      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+tafelLabel(tafelKey)+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
     }
 
     if(totaalGemTotDan!==null){
@@ -214,9 +214,9 @@ function berekenLopendeRecords(partijen,tijdsvensterMaanden){
     cutoff.setMonth(cutoff.getMonth()-tijdsvensterMaanden);
     venster=verwerkt.filter(function(w){return new Date(w.datum)>=cutoff;});
   }
-  const allTimeBestGem=venster.length?Math.max.apply(null,venster.map(function(w){return w.gem;})):0;
+  const allTimeBestGem=verwerkt.length?Math.max.apply(null,verwerkt.map(function(w){return w.gem;})):0;
   const tafelBest={};
-  venster.forEach(function(w){tafelBest[w.tafel]=Math.max(tafelBest[w.tafel]||0,w.gem);});
+  verwerkt.forEach(function(w){tafelBest[w.tafel]=Math.max(tafelBest[w.tafel]||0,w.gem);});
   const laatste5=verwerkt.slice(-5);
   const rolling5p=laatste5.length>=5?(laatste5.reduce(function(a,r){return a+r.tot;},0)/laatste5.reduce(function(a,r){return a+r.n;},0)):null;
   const vensterCar=venster.reduce(function(a,w){return a+w.tot;},0);
@@ -2320,13 +2320,23 @@ function BiljartTracker(){
         </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
-          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels en 👑🏓-records berekend worden. Je niveau (Beginner-Legende) blijft altijd all-time.</div>
-          <div style={{display:"flex",gap:6}}>
+          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je niveau (Beginner-Legende) en je 👑🏓-records blijven altijd all-time — een record blijft een record.</div>
+          <div style={{display:"flex",gap:6,marginBottom:10}}>
             {[["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
               const v=arr[0],l=arr[1];
               return <button key={v} style={{flex:1,padding:"7px 0",background:tijdsvenster===v?"#2d4a1e":"none",border:"1px solid "+(tijdsvenster===v?GOUD:KBDR),borderRadius:6,color:tijdsvenster===v?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
                 onClick={function(){setTijdsvenster(v);}}>{l}</button>;
             })}
+          </div>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div>
+              <div style={{fontSize:11,color:WITD}}>⭐-drempel-basis {tijdsvenster==="alles"?"(alles)":"(laatste "+tijdsvenster+" mnd)"}</div>
+              <div style={{fontSize:17,fontWeight:"bold",color:GOUD}}>{huidigeRecords.totaalGem!==null?huidigeRecords.totaalGem.toFixed(huidigeDiscipline==="driebanden"?3:2):"—"}</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontSize:11,color:WITD}}>je niveau (all-time)</div>
+              <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
+            </div>
           </div>
         </div>
                 {!confReset

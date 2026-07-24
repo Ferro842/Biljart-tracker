@@ -1710,6 +1710,10 @@ function BiljartTracker(){
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
   const [installUitlegOpen,setInstallUitlegOpen]=useState(false);
+  const [importJsonTekst,setImportJsonTekst]=useState("");
+  const [importJsonPreview,setImportJsonPreview]=useState(null);
+  const [importJsonFout,setImportJsonFout]=useState("");
+  const [backupGekopieerd,setBackupGekopieerd]=useState(false);
   const [deelResultaat,setDeelResultaat]=useState("");
   const [aiBezig,setAiBezig]=useState(false);
   const [aiRes,setAiRes]=useState("");
@@ -1865,6 +1869,37 @@ function BiljartTracker(){
   function verwijderPartij(id){
     const nd=Object.assign({},data,{partijen:data.partijen.filter(function(p){return p.id!==id;})});
     setData(nd);slaOp(nd);
+  }
+
+  function analyseerBackup(){
+    setImportJsonFout("");
+    try{
+      const parsed=JSON.parse(importJsonTekst);
+      if(!parsed||!Array.isArray(parsed.partijen)){
+        setImportJsonFout("Dit lijkt geen geldige back-up te zijn (geen partijen-lijst gevonden).");
+        setImportJsonPreview(null);
+        return;
+      }
+      const perDiscipline={};
+      parsed.partijen.forEach(function(p){
+        const d=p.discipline||"libre";
+        perDiscipline[d]=(perDiscipline[d]||0)+1;
+      });
+      setImportJsonPreview({aantalPartijen:parsed.partijen.length,perDiscipline:perDiscipline});
+    }catch(e){
+      setImportJsonFout("Kon de tekst niet lezen als geldige back-up (ongeldige JSON).");
+      setImportJsonPreview(null);
+    }
+  }
+
+  function pasBackupToe(){
+    try{
+      const parsed=JSON.parse(importJsonTekst);
+      setData(parsed);slaOp(parsed);
+      setImportJsonTekst("");setImportJsonPreview(null);setImportJsonFout("");
+    }catch(e){
+      setImportJsonFout("Importeren mislukt.");
+    }
   }
 
   function slaNotitieOp(id,tekst){
@@ -2466,6 +2501,44 @@ function BiljartTracker(){
               style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
           </div>
         )}
+
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Volledige back-up</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
+            Handig als je dezelfde app op meerdere plekken gebruikt (bijv. via Safari én via het beginscherm-icoontje) — die hebben allebei hun eigen opslag. Exporteer hier, en importeer op de andere plek om ze gelijk te trekken.
+          </div>
+          <button onClick={function(){
+              const json=JSON.stringify(data);
+              navigator.clipboard.writeText(json).then(function(){
+                setBackupGekopieerd(true);
+                setTimeout(function(){setBackupGekopieerd(false);},2500);
+              });
+            }} style={{width:"100%",padding:11,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit",marginBottom:8}}>
+            {backupGekopieerd?"Back-up gekopieerd!":"📋 Kopieer volledige back-up"}
+          </button>
+          <div style={{fontSize:12,color:WITD,marginBottom:6,marginTop:10}}>Back-up importeren (overschrijft alle data op déze plek):</div>
+          <textarea value={importJsonTekst} onChange={function(e){setImportJsonTekst(e.target.value);setImportJsonPreview(null);setImportJsonFout("");}}
+            placeholder="Plak hier een eerder gekopieerde back-up..."
+            style={{width:"100%",height:80,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:12,padding:8,fontFamily:"monospace",resize:"vertical"}}/>
+          {importJsonFout&&<div style={{fontSize:13,color:"#e06060",marginTop:6}}>{importJsonFout}</div>}
+          {importJsonTekst.trim()&&!importJsonPreview&&!importJsonFout&&(
+            <button onClick={analyseerBackup} style={{marginTop:8,width:"100%",padding:10,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>
+              Analyseren
+            </button>
+          )}
+          {importJsonPreview&&(
+            <div style={{marginTop:10,background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"10px 12px"}}>
+              <div style={{fontSize:13,color:"#e06060",marginBottom:8}}>
+                Gevonden: {importJsonPreview.aantalPartijen} partijen ({Object.keys(importJsonPreview.perDiscipline).map(function(d){return d+": "+importJsonPreview.perDiscipline[d];}).join(", ")}).<br/>
+                Dit vervangt ALLE data die nu op deze plek staat. Weet je het zeker?
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <button onClick={pasBackupToe} style={{flex:1,padding:9,background:"#7a3030",border:"none",borderRadius:6,color:"#fff",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>Ja, overschrijven</button>
+                <button onClick={function(){setImportJsonTekst("");setImportJsonPreview(null);}} style={{flex:1,padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>Annuleer</button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

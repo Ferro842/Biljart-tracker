@@ -550,6 +550,35 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
   );
 }
 
+function PartijSamenvatting({partij,st,prestatie,onClose}){
+  const punten=prestatie?prestatie.punten:0;
+  return(
+    <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+      <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Partij afgesloten</div>
+        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>{new Date(partij.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}</div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:14}}>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
+            <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.totCar}</div>
+            <div style={{fontSize:11,color:WITD}}>caramboles</div>
+          </div>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
+            <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.gemPerBeurt}</div>
+            <div style={{fontSize:11,color:WITD}}>gemiddelde</div>
+          </div>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
+            <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.max}</div>
+            <div style={{fontSize:11,color:WITD}}>hoogste beurt</div>
+          </div>
+        </div>
+        <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{st.aantalBeurten} beurten · {st.poedels}x poedel · <span style={{color:GOUD,fontWeight:"bold"}}>{punten}pt aan badges</span></div>
+        <PrestatieOverzicht prestatie={prestatie}/>
+        <div onClick={onClose} style={{textAlign:"center",marginTop:16,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+      </div>
+    </div>
+  );
+}
+
 function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
@@ -1031,8 +1060,14 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const [tafelFilter,setTafelFilter]=useState("alle");
   const [niveauOpen,setNiveauOpen]=useState(false);
   const [badgeCatalogusOpen,setBadgeCatalogusOpen]=useState(false);
+  const [geselecteerdeMaanden,setGeselecteerdeMaanden]=useState(null); // null=uit, anders Set van maand-keys
 
-  const selRange=useMemo(()=>ST.slice(va,tot+1),[ST,va,tot]);
+  const selRange=useMemo(()=>{
+    if(geselecteerdeMaanden&&geselecteerdeMaanden.size>0){
+      return ST.filter(p=>geselecteerdeMaanden.has(maandKey(p.datum)));
+    }
+    return ST.slice(va,tot+1);
+  },[ST,va,tot,geselecteerdeMaanden]);
   const sel=useMemo(()=>tafelFilter==="alle"?selRange:selRange.filter(p=>p.tafel===tafelFilter),[selRange,tafelFilter]);
 
   const maxTrim=Math.max(0,Math.floor((sel.length-1)/2));
@@ -1082,12 +1117,6 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     });
     return blocks;
   },[ST]);
-  const quickButtons=useMemo(()=>{
-    const btns=[["Alles",0,Math.max(ST.length-1,0)]];
-    maandBlokken.forEach(b=>btns.push([b.key,b.begin,b.eind]));
-    if(ST.length>10)btns.push(["Laatste 10",ST.length-10,ST.length-1]);
-    return btns;
-  },[ST.length,maandBlokken]);
 
   // Vergelijking eerste vs tweede helft
   const h=Math.floor(sel.length/2);
@@ -1202,26 +1231,46 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       {/* Partijselectie */}
       <div style={{background:"#152015",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`,flexShrink:0}}>
         <div style={{fontSize:12,color:WITD,marginBottom:5}}>
-          Selectie: p{va+1}–p{tot+1} · <span style={{color:GOUD}}>{filt.length} partijen</span>
+          {geselecteerdeMaanden&&geselecteerdeMaanden.size>0
+            ?<>Selectie: {[...geselecteerdeMaanden].join(", ")} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
+            :<>Selectie: p{va+1}–p{tot+1} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
+          }
         </div>
         <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6}}>
           <span style={{fontSize:12,color:WITD,minWidth:14}}>{va+1}</span>
           <input type="range" min={0} max={Math.max(ST.length-1,0)} value={va}
-            onChange={e=>setVa(Math.min(+e.target.value,tot-1))}
+            onChange={e=>{setGeselecteerdeMaanden(null);setVa(Math.min(+e.target.value,tot-1));}}
             style={{flex:1,accentColor:GOUD}}/>
           <input type="range" min={0} max={Math.max(ST.length-1,0)} value={tot}
-            onChange={e=>setTot(Math.max(+e.target.value,va+1))}
+            onChange={e=>{setGeselecteerdeMaanden(null);setTot(Math.max(+e.target.value,va+1));}}
             style={{flex:1,accentColor:GOUD}}/>
           <span style={{fontSize:12,color:WITD,minWidth:14}}>{tot+1}</span>
         </div>
         <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:2}}>
-          {quickButtons.map(([l,v,t])=>{
-            const actief=va===v&&tot===t;
+          {[["Alles",0,Math.max(ST.length-1,0)]].concat(ST.length>10?[["Laatste 10",ST.length-10,ST.length-1]]:[]).map(([l,v,t])=>{
+            const actief=(!geselecteerdeMaanden||geselecteerdeMaanden.size===0)&&va===v&&tot===t;
             return(
-              <button key={l} onClick={()=>{setVa(v);setTot(t);}}
+              <button key={l} onClick={()=>{setGeselecteerdeMaanden(null);setVa(v);setTot(t);}}
                 style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
                   borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
                 {l}
+              </button>
+            );
+          })}
+          {maandBlokken.map(b=>{
+            const actief=geselecteerdeMaanden?geselecteerdeMaanden.has(b.key):false;
+            return(
+              <button key={b.key} onClick={()=>{
+                setGeselecteerdeMaanden(prev=>{
+                  const huidige=prev?new Set(prev):new Set();
+                  if(huidige.has(b.key))huidige.delete(b.key);
+                  else huidige.add(b.key);
+                  return huidige;
+                });
+              }}
+                style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
+                  borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+                {b.key}
               </button>
             );
           })}
@@ -1250,23 +1299,23 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
 
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-              <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Rolling gemiddelde</span>
+              <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>{filt.length>=3?"Rolling gemiddelde":"Gemiddelde per partij"}</span>
               <div style={{display:"flex",gap:6}}>
-                <button onClick={()=>setW3(!w3)} style={{background:"none",border:`1px solid ${w3?GOUD:KBDR}`,
-                  borderRadius:4,color:w3?GOUD:WITD,fontSize:12,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>3p</button>
-                <button onClick={()=>setW5(!w5)} style={{background:"none",border:`1px solid ${w5?WIT:KBDR}`,
-                  borderRadius:4,color:w5?WIT:WITD,fontSize:12,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>5p</button>
+                {filt.length>=3&&<button onClick={()=>setW3(!w3)} style={{background:"none",border:`1px solid ${w3?GOUD:KBDR}`,
+                  borderRadius:4,color:w3?GOUD:WITD,fontSize:12,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>3p</button>}
+                {filt.length>=5&&<button onClick={()=>setW5(!w5)} style={{background:"none",border:`1px solid ${w5?WIT:KBDR}`,
+                  borderRadius:4,color:w5?WIT:WITD,fontSize:12,padding:"2px 8px",cursor:"pointer",fontFamily:"inherit"}}>5p</button>}
               </div>
             </div>
             <div style={{fontSize:12,color:WITD,marginBottom:6,display:"flex",gap:12}}>
               <span style={{color:"#3a5c35"}}>● Ruw</span>
-              {w3&&<span style={{color:GOUD}}>── 3-partij</span>}
-              {w5&&<span style={{color:WIT}}>╌╌ 5-partij</span>}
+              {filt.length>=3&&w3&&<span style={{color:GOUD}}>── 3-partij</span>}
+              {filt.length>=5&&w5&&<span style={{color:WIT}}>╌╌ 5-partij</span>}
             </div>
             <DashGrafiek data={rolGems}/>
-            {(w3||w5)&&<div style={{marginTop:6,display:"flex",gap:12,fontSize:13}}>
-              {w3&&<span style={{color:GOUD}}>3p nu: <strong>{r3.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
-              {w5&&<span style={{color:WIT}}>5p nu: <strong>{r5.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
+            {((filt.length>=3&&w3)||(filt.length>=5&&w5))&&<div style={{marginTop:6,display:"flex",gap:12,fontSize:13}}>
+              {filt.length>=3&&w3&&<span style={{color:GOUD}}>3p nu: <strong>{r3.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
+              {filt.length>=5&&w5&&<span style={{color:WIT}}>5p nu: <strong>{r5.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
             </div>}
           </div>
 
@@ -1569,7 +1618,7 @@ function BiljartTracker(){
   const [lp,setLp]=useState([]);
   const [doel,setDoel]=useState(25);
   const [doelType,setDoelType]=useState("beurten");
-  const [tafel,setTafel]=useState("230");
+  const [tafel,setTafel]=useState("210");
   const [confPartij,setConfPartij]=useState(false);
   const [confReset,setConfReset]=useState(false);
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
@@ -1705,6 +1754,10 @@ function BiljartTracker(){
     const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp},st);
     const nd=Object.assign({},data,{partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1});
     setData(nd);slaOp(nd);
+    const nieuweAlleP=nd.partijen.filter(function(x){return(x.discipline||"libre")===huidigeDiscipline;});
+    const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden);
+    const prestatie=resultaten.find(function(r){return r.id===p.id;});
+    setPartijSamenvatting({partij:p,st:st,prestatie:prestatie});
     setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
     setConfPartij(false);setFase("setup");
   }
@@ -2335,6 +2388,8 @@ function BiljartTracker(){
       {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={huidigeDiscipline} onClose={function(){setNiveauOpen(false);}}/>}
 
       {seizoenArchiefOpen&&<SeizoenArchief seizoenen={data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}]} alleP={alleP} discipline={huidigeDiscipline} onClose={function(){setSeizoenArchiefOpen(false);}}/>}
+
+      {partijSamenvatting&&<PartijSamenvatting partij={partijSamenvatting.partij} st={partijSamenvatting.st} prestatie={partijSamenvatting.prestatie} onClose={function(){setPartijSamenvatting(null);}}/>}
 
       {niveauUpInfo&&(
         <div onClick={function(){setNiveauUpInfo(null);}}

@@ -2088,6 +2088,7 @@ function BiljartTracker(){
   // ── GEMIST ──
   function Gemist(){
     const gs=Array.from(sel).filter(function(k){return k.startsWith("G__");});
+    const heeftSelectie=gs.length>0||andersGemist.trim().length>0;
     return(
       <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
         <div style={{flex:1,overflowY:"auto"}}>
@@ -2105,7 +2106,7 @@ function BiljartTracker(){
               style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
           </div>
           <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
-            <button style={{flex:1,padding:15,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+            <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"#1c3019",border:"1px solid "+(heeftSelectie?"transparent":KBDR),borderRadius:12,color:heeftSelectie?G:WITD,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
               onClick={function(){if(car===0){noteer();}else{setFase("goed");}}}>
             {car===0?"Opslaan":"Volgende stap"}
           </button>
@@ -2120,6 +2121,7 @@ function BiljartTracker(){
   // ── GOED ──
   function Goed(){
     const gs=Array.from(sel).filter(function(k){return k.startsWith("P__");});
+    const heeftSelectie=gs.length>0||andersGoed.trim().length>0;
     return(
       <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
         <div style={{flex:1,overflowY:"auto"}}>
@@ -2137,7 +2139,7 @@ function BiljartTracker(){
               style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
           </div>
           <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
-            <button style={{flex:1,padding:15,background:"linear-gradient(135deg,"+GRNT+",#66bb6a)",border:"none",borderRadius:12,color:WIT,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+            <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GRNT+",#66bb6a)":"#1c3019",border:"1px solid "+(heeftSelectie?"transparent":KBDR),borderRadius:12,color:heeftSelectie?WIT:WITD,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
               onClick={noteer}>Beurt opslaan</button>
             <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
               onClick={function(){setFase("gemist");}}>terug</button>
@@ -2234,11 +2236,17 @@ function BiljartTracker(){
         </div>
                 {!confReset
           ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
-            onClick={function(){
+            onClick={function(e){
               const el=statsScrollRef.current;
               const y=el?el.scrollTop:0;
+              if(e.currentTarget&&e.currentTarget.blur)e.currentTarget.blur();
               setConfReset(true);
-              requestAnimationFrame(function(){if(el)el.scrollTop=y;});
+              const herstel=function(){if(el)el.scrollTop=y;};
+              requestAnimationFrame(function(){requestAnimationFrame(herstel);});
+              setTimeout(herstel,0);
+              setTimeout(herstel,50);
+              setTimeout(herstel,150);
+              setTimeout(herstel,300);
             }}>Alle data wissen</button>
           :<div style={{background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"12px 14px"}}>
             <div style={{fontSize:14,color:"#e06060",marginBottom:10}}>Weet je het zeker?</div>

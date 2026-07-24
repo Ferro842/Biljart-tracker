@@ -2316,6 +2316,10 @@ function BiljartTracker(){
             <div style={{textAlign:"right"}}>
               <div style={{fontSize:11,color:WITD}}>je niveau (all-time)</div>
               <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
+              {niveau.aantalDrops>0
+                ?<div style={{fontSize:10,color:GOUD}}>🏅 incl. {niveau.aantalDrops}x badge-drop (ruw: {niveau.totaalGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)})</div>
+                :<div style={{fontSize:10,color:WITD,opacity:0.6}}>nog geen badge-drops verdiend</div>
+              }
             </div>
           </div>
         </div>

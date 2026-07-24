@@ -1071,6 +1071,8 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const [tafelFilter,setTafelFilter]=useState("alle");
   const [niveauOpen,setNiveauOpen]=useState(false);
   const [badgeCatalogusOpen,setBadgeCatalogusOpen]=useState(false);
+  const [uitlegModus,setUitlegModus]=useState(false);
+  const [uitlegSectie,setUitlegSectie]=useState(null);
   const [geselecteerdeMaanden,setGeselecteerdeMaanden]=useState(null); // null=uit, anders Set van maand-keys
 
   const selRange=useMemo(()=>{
@@ -1213,10 +1215,17 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     </div>
   );
 
+  const UITLEG_TEKST={
+    trend:"Hoe je gemiddelde zich ontwikkelt over de tijd. Met een rollend gemiddelde over 3 en 5 partijen, en een schuifje om uitschieters (heel goede of slechte partijen) tijdelijk weg te filteren.",
+    consist:"Hoeveel procent van je partijen boven bepaalde gemiddelde-drempels (1,5 / 2,0 / 2,5 / 3,0) uitkomt, plus je 5 beste en 5 slechtste partijen op een rij.",
+    patronen:"Analyse van je opmerkingen (wat je vaak mist of juist goed doet), hoe je caramboles per beurt verdeeld zijn, en hoe je herstelt na een poedel.",
+    vergelijk:"Vergelijkt de eerste met de tweede helft van je geselecteerde partijen (zie je progressie?), en toont je gemiddelde per maand naast elkaar.",
+    punten:"Je niveau, badge-punten, mijlpalen, en een overzicht van je best scorende partijen op badges."
+  };
   const btn=(k,l)=>(
-    <button onClick={()=>setTab(k)} style={{flex:1,padding:"10px 0",background:tab===k?"#1c2c1c":"none",
-      border:"none",color:tab===k?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"Georgia,serif",
-      borderBottom:tab===k?`2px solid ${GOUD}`:"2px solid transparent"}}>
+    <button onClick={function(){if(uitlegModus){setUitlegSectie(k);}else{setTab(k);}}} style={{flex:1,padding:"10px 0",background:tab===k&&!uitlegModus?"#1c2c1c":"none",
+      border:"none",color:tab===k&&!uitlegModus?GOUD:(uitlegModus?"#7fd8e0":WITD),fontSize:13,cursor:"pointer",fontFamily:"Georgia,serif",
+      borderBottom:tab===k&&!uitlegModus?`2px solid ${GOUD}`:"2px solid transparent"}}>
       {l}
     </button>
   );
@@ -1225,9 +1234,15 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:G,fontFamily:"Georgia,serif",color:WIT}}>
 
       {/* Header */}
-      <div style={{background:"linear-gradient(135deg,#0d1f0d,#182e14)",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0}}>
-        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Dashboard</div>
-        <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Analyse & trends · {ST.length} partijen</div>
+      <div style={{background:"linear-gradient(135deg,#0d1f0d,#182e14)",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+        <div>
+          <div style={{fontSize:15,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Dashboard</div>
+          <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Analyse & trends · {ST.length} partijen</div>
+        </div>
+        <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}}
+          style={{padding:"6px 12px",background:uitlegModus?"#2d4a1e":"none",border:"1px solid "+(uitlegModus?GOUD:KBDR),borderRadius:8,color:uitlegModus?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",flexShrink:0}}>
+          {uitlegModus?"✕ Sluit uitleg":"❓ Uitleg"}
+        </button>
       </div>
 
       {/* Tabs */}
@@ -1561,6 +1576,15 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       </div>
       {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={discipline} onClose={function(){setNiveauOpen(false);}}/>}
       {badgeCatalogusOpen&&<BadgeCatalogus onClose={function(){setBadgeCatalogusOpen(false);}}/>}
+      {uitlegSectie&&(
+        <div onClick={function(){setUitlegSectie(null);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.7)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid #7fd8e0",borderRadius:16,padding:"18px 18px",maxWidth:340,width:"100%",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+            <div style={{fontSize:16,fontWeight:"bold",color:"#7fd8e0",marginBottom:8}}>❓ {uitlegSectie==="consist"?"Consistentie":uitlegSectie.charAt(0).toUpperCase()+uitlegSectie.slice(1)}</div>
+            <div style={{fontSize:14,color:WITD,lineHeight:1.5}}>{UITLEG_TEKST[uitlegSectie]}</div>
+            <div onClick={function(){setUitlegSectie(null);}} style={{textAlign:"center",marginTop:14,fontSize:12,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

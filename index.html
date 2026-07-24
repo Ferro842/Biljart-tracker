@@ -550,11 +550,19 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
   );
 }
 
-function PartijSamenvatting({partij,st,prestatie,onClose}){
+function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,discipline,onClose}){
   const punten=prestatie?prestatie.punten:0;
+  const dec=discipline==="driebanden"?3:2;
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+        {nieuweDrop&&(
+          <div style={{background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",borderRadius:14,padding:"14px",marginBottom:14,textAlign:"center",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",boxShadow:"0 0 30px "+GOUD+"aa"}}>
+            <div style={{fontSize:28}}>🎉🥇🎉</div>
+            <div style={{fontSize:15,fontWeight:"bold",color:G,marginTop:4}}>Slechtste-partij-drop ontgrendeld!</div>
+            <div style={{fontSize:13,color:G,marginTop:4}}>p{nieuweDrop.id} (gem {nieuweDrop.gem.toFixed(dec)}) is geschrapt uit je gemiddelde</div>
+          </div>
+        )}
         <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Partij afgesloten</div>
         <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>{new Date(partij.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:14}}>
@@ -573,6 +581,22 @@ function PartijSamenvatting({partij,st,prestatie,onClose}){
         </div>
         <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{st.aantalBeurten} beurten · {st.poedels}x poedel · <span style={{color:GOUD,fontWeight:"bold"}}>{punten}pt aan badges</span></div>
         <PrestatieOverzicht prestatie={prestatie}/>
+        {infoNa&&(
+          <div style={{marginTop:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+              <span style={{fontSize:12,color:WITD}}>📊 Je gemiddelde nu</span>
+              <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{infoNa.effectiefGemiddelde.toFixed(dec)}</span>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+              <span style={{fontSize:12,color:WITD}}>🎖️ Badge-punten</span>
+              <span style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{infoNa.badgePunten} / {infoNa.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
+            </div>
+            <DashBalk pct={(infoNa.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
+            <div style={{textAlign:"center",marginTop:6,fontSize:11,color:WITD,opacity:0.8}}>
+              Nog {infoNa.puntenTotVolgendeDrop}pt tot je volgende slechtste-partij-drop
+            </div>
+          </div>
+        )}
         <div onClick={onClose} style={{textAlign:"center",marginTop:16,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
       </div>
     </div>
@@ -960,48 +984,6 @@ function berekenSeizoenStats(alleP,seizoen,discipline){
   gefilterd.forEach(function(p){if(stat(p.beurten))aantalPartijen++;});
   return{seizoen:seizoen,aantalPartijen:aantalPartijen,gemiddelde:info.effectiefGemiddelde,
     badgePunten:info.badgePunten,niveau:niveau.huidig};
-}
-
-// Parseert een eerder gekopieerde tekst-export (uit de Data-tab) terug naar structuur, zodat
-// gemist/goed-opmerkingen alsnog teruggekoppeld kunnen worden aan bestaande partijen.
-const MAAND_NAMEN={januari:0,februari:1,maart:2,april:3,mei:4,juni:5,juli:6,augustus:7,september:8,oktober:9,november:10,december:11};
-function parseGeexporteerdeData(tekst){
-  const blokken=tekst.split(/-{10,}/);
-  const partijen=[];
-  blokken.forEach(function(blok){
-    const headerMatch=blok.match(/PARTIJ\s+\d+\s*·\s*\w+\s+(\d+)\s+(\w+)/i);
-    if(!headerMatch)return;
-    const dag=parseInt(headerMatch[1]);
-    const maandNaam=headerMatch[2].toLowerCase();
-    const maand=MAAND_NAMEN[maandNaam];
-    if(maand===undefined)return;
-    const beurtRegels=blok.split("\n").filter(function(l){return /Beurt \d+:/.test(l);});
-    const beurten=beurtRegels.map(function(line){
-      const m=line.match(/Beurt (\d+): (\d+) caramboles/);
-      if(!m)return null;
-      let gemist=[],goed=[];
-      const gm=line.match(/—\s*Gemist:\s*([^—]+)/);
-      if(gm)gemist=gm[1].trim().split(",").map(function(s){return s.trim();}).filter(Boolean);
-      const gd=line.match(/—\s*Goed:\s*(.+)$/);
-      if(gd)goed=gd[1].trim().split(",").map(function(s){return s.trim();}).filter(Boolean);
-      return{nr:parseInt(m[1]),car:parseInt(m[2]),gemist:gemist,goed:goed};
-    }).filter(Boolean);
-    if(beurten.length>0)partijen.push({dag:dag,maand:maand,beurten:beurten});
-  });
-  return partijen;
-}
-// Matcht geparste partijen aan bestaande partijen: op dag+maand van de datum, aantal beurten, én
-// totaal caramboles als extra zekerheid — alleen bij een unieke match wordt 'm gekoppeld.
-function matchGeimporteerdeData(geparsed,alleP){
-  return geparsed.map(function(gp){
-    const totCarGeparsed=gp.beurten.reduce(function(a,b){return a+b.car;},0);
-    const kandidaten=alleP.filter(function(p){
-      const d=new Date(p.datum);
-      const totCarBestaand=p.beurten.reduce(function(a,b){return a+b.caramboles;},0);
-      return d.getDate()===gp.dag&&d.getMonth()===gp.maand&&p.beurten.length===gp.beurten.length&&totCarBestaand===totCarGeparsed;
-    });
-    return{geparsed:gp,match:kandidaten.length===1?kandidaten[0]:null,meerdereKandidaten:kandidaten.length>1};
-  });
 }
 
 function bepaalNiveau(effectiefGemiddelde,discipline){
@@ -1624,9 +1606,6 @@ function BiljartTracker(){
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
-  const [importTekst,setImportTekst]=useState("");
-  const [importMatches,setImportMatches]=useState(null);
-  const [importResultaat,setImportResultaat]=useState("");
   const [aiBezig,setAiBezig]=useState(false);
   const [aiRes,setAiRes]=useState("");
   const [aiType,setAiType]=useState("");
@@ -1757,7 +1736,10 @@ function BiljartTracker(){
     const nieuweAlleP=nd.partijen.filter(function(x){return(x.discipline||"libre")===huidigeDiscipline;});
     const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden);
     const prestatie=resultaten.find(function(r){return r.id===p.id;});
-    setPartijSamenvatting({partij:p,st:st,prestatie:prestatie});
+    const infoVoor=berekenNiveauInfo(alleP);
+    const infoNa=berekenNiveauInfo(nieuweAlleP);
+    const nieuweDrop=infoNa.aantalDrops>infoVoor.aantalDrops?infoNa.gedroptePartijen[infoNa.gedroptePartijen.length-1]:null;
+    setPartijSamenvatting({partij:p,st:st,prestatie:prestatie,infoNa:infoNa,nieuweDrop:nieuweDrop});
     setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
     setConfPartij(false);setFase("setup");
   }
@@ -1779,23 +1761,6 @@ function BiljartTracker(){
       return p.id===id?Object.assign({},p,{notitie:tekst}):p;
     })});
     setData(nd);slaOp(nd);
-  }
-
-  function pasImportToe(matches){
-    const bijgewerkteIds=new Set();
-    const nd=Object.assign({},data,{partijen:data.partijen.map(function(p){
-      const gevonden=matches.find(function(m){return m.match&&m.match.id===p.id;});
-      if(!gevonden)return p;
-      bijgewerkteIds.add(p.id);
-      const nieuweBeurten=p.beurten.map(function(b,i){
-        const gp=gevonden.geparsed.beurten[i];
-        if(!gp)return b;
-        return Object.assign({},b,{gemist:gp.gemist,goed:gp.goed});
-      });
-      return Object.assign({},p,{beurten:nieuweBeurten});
-    })});
-    setData(nd);slaOp(nd);
-    return bijgewerkteIds.size;
   }
 
   function setTijdsvenster(v){
@@ -2282,43 +2247,6 @@ function BiljartTracker(){
               style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
           </div>
         )}
-
-        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
-          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Opmerkingen importeren</div>
-          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Heb je ergens een oude "Kopieer data"-export bewaard (bijv. met gemist/goed-opmerkingen die nu leeg staan)? Plak die hieronder — de app matcht 'm automatisch aan de juiste partij.</div>
-          <textarea value={importTekst} onChange={function(e){setImportTekst(e.target.value);setImportMatches(null);setImportResultaat("");}}
-            placeholder="Plak hier een eerdere export..."
-            style={{width:"100%",height:100,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"vertical"}}/>
-          {importTekst.trim()&&!importMatches&&(
-            <button style={{marginTop:8,width:"100%",padding:10,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
-              onClick={function(){
-                const geparsed=parseGeexporteerdeData(importTekst);
-                setImportMatches(matchGeimporteerdeData(geparsed,alleP));
-              }}>Analyseren</button>
-          )}
-          {importMatches&&(
-            <div style={{marginTop:10}}>
-              {importMatches.map(function(m,i){
-                const label="Partij van "+m.geparsed.dag+" "+Object.keys(MAAND_NAMEN)[m.geparsed.maand]+" ("+m.geparsed.beurten.length+" beurten)";
-                return(
-                  <div key={i} style={{fontSize:13,color:m.match?GRNT:"#e08055",padding:"4px 0",borderBottom:"1px solid "+KBDR}}>
-                    {m.match?"✅ ":m.meerdereKandidaten?"⚠️ meerdere mogelijke matches: ":"❌ geen match: "}{label}
-                    {m.match&&" → p"+m.match.id+" ("+new Date(m.match.datum).toLocaleDateString("nl-NL",{day:"numeric",month:"short"})+")"}
-                  </div>
-                );
-              })}
-              {importMatches.some(function(m){return m.match;})&&(
-                <button style={{marginTop:10,width:"100%",padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
-                  onClick={function(){
-                    const n=pasImportToe(importMatches);
-                    setImportResultaat(n+" partij"+(n===1?"":"en")+" bijgewerkt met opmerkingen.");
-                    setImportTekst("");setImportMatches(null);
-                  }}>Toepassen op {importMatches.filter(function(m){return m.match;}).length} gevonden partij(en)</button>
-              )}
-            </div>
-          )}
-          {importResultaat&&<div style={{marginTop:8,fontSize:13,color:GRNT}}>{importResultaat}</div>}
-        </div>
       </div>
     );
   }
@@ -2389,7 +2317,7 @@ function BiljartTracker(){
 
       {seizoenArchiefOpen&&<SeizoenArchief seizoenen={data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}]} alleP={alleP} discipline={huidigeDiscipline} onClose={function(){setSeizoenArchiefOpen(false);}}/>}
 
-      {partijSamenvatting&&<PartijSamenvatting partij={partijSamenvatting.partij} st={partijSamenvatting.st} prestatie={partijSamenvatting.prestatie} onClose={function(){setPartijSamenvatting(null);}}/>}
+      {partijSamenvatting&&<PartijSamenvatting partij={partijSamenvatting.partij} st={partijSamenvatting.st} prestatie={partijSamenvatting.prestatie} infoNa={partijSamenvatting.infoNa} nieuweDrop={partijSamenvatting.nieuweDrop} discipline={huidigeDiscipline} onClose={function(){setPartijSamenvatting(null);}}/>}
 
       {niveauUpInfo&&(
         <div onClick={function(){setNiveauUpInfo(null);}}

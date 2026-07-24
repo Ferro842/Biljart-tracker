@@ -222,7 +222,7 @@ function berekenLopendeRecords(partijen,tijdsvensterMaanden){
   const vensterCar=venster.reduce(function(a,w){return a+w.tot;},0);
   const vensterBeurt=venster.reduce(function(a,w){return a+w.n;},0);
   const totaalGem=vensterBeurt>0?vensterCar/vensterBeurt:null;
-  return{allTimeMaxBeurt:allTimeMaxBeurt,allTimeBestGem:allTimeBestGem,tafelBest:tafelBest,totaalGem:totaalGem,rolling5p:rolling5p};
+  return{allTimeMaxBeurt:allTimeMaxBeurt,allTimeBestGem:allTimeBestGem,tafelBest:tafelBest,totaalGem:totaalGem,rolling5p:rolling5p,vensterPartijen:venster.length,vensterBeurten:vensterBeurt};
 }
 
 // Vult tafelmaat aan voor partijen die dit veld nog niet hebben (oude data van vóór deze functie).
@@ -519,12 +519,30 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
   );
 }
 
-function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,discipline,onClose}){
+function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,discipline,onClose}){
   const punten=prestatie?prestatie.punten:0;
   const dec=discipline==="driebanden"?3:2;
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+        {niveauOmhoog&&(
+          <div style={{background:"linear-gradient(160deg,#2a4a1e,#0d1f0d)",border:"2px solid "+niveauOmhoog.naar.kleur,borderRadius:14,padding:"16px 12px",marginBottom:14,textAlign:"center",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",boxShadow:"0 0 30px "+niveauOmhoog.naar.kleur+"66"}}>
+            <div style={{fontSize:13,color:WITD,marginBottom:8}}>🎉 Niveau omhoog!</div>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:14}}>
+              <div style={{textAlign:"center",opacity:0.6}}>
+                <div style={{fontSize:24}}>{niveauOmhoog.van.emoji}</div>
+                <div style={{fontSize:12,color:WITD}}>{niveauOmhoog.van.naam}</div>
+              </div>
+              <div style={{fontSize:18,color:niveauOmhoog.naar.kleur}}>→</div>
+              <div style={{textAlign:"center"}}>
+                <div style={{width:48,height:48,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+niveauOmhoog.naar.kleur+"ee,"+niveauOmhoog.naar.kleur+"55)",border:"2px solid "+niveauOmhoog.naar.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,margin:"0 auto 4px",boxShadow:"0 0 16px "+niveauOmhoog.naar.kleur+"aa"}}>
+                  {niveauOmhoog.naar.emoji}
+                </div>
+                <div style={{fontSize:13,fontWeight:"bold",color:niveauOmhoog.naar.kleur}}>{niveauOmhoog.naar.naam}</div>
+              </div>
+            </div>
+          </div>
+        )}
         {nieuweDrop&&(
           <div style={{background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",borderRadius:14,padding:"14px",marginBottom:14,textAlign:"center",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",boxShadow:"0 0 30px "+GOUD+"aa"}}>
             <div style={{fontSize:28}}>🎉🥇🎉</div>
@@ -575,8 +593,13 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,discipline,on
 function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
   const schermen=[
     {
+      titel:"Zet de app op je beginscherm",
+      body:"Voor het beste gebruik installeer je de app als een normale app-icoon op je beginscherm — dat opent sneller dan steeds de link opzoeken, en voelt als een echte app. Internet blijft wel nodig om de app te openen.",
+      installeer:true
+    },
+    {
       titel:"Welkom bij Biljart Tracker",
-      body:"Een app om je carambole-partijen bij te houden — met niveaus op basis van de echte KNBB-klassen, en badges om net dat beetje extra uit je spel te halen."
+      body:"Een app om je carambole-partijen bij te houden — met niveaus op basis van de echte KNBB-klassen, en een spelelement dat je motiveert om net dat beetje boven je eigen niveau uit te blijven presteren."
     },
     {
       titel:"Kies je discipline",
@@ -614,6 +637,14 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
                 </button>
               );
             })}
+          </div>
+        )}
+        {s.installeer&&(
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"12px 12px",marginBottom:16,fontSize:13,color:WITD,lineHeight:1.6}}>
+            <div style={{color:GOUD,fontWeight:"bold",marginBottom:4}}>📱 iPhone/iPad (Safari)</div>
+            <div style={{marginBottom:10}}>Deel-icoontje onderin → "Zet op beginscherm" → "Voeg toe"</div>
+            <div style={{color:GOUD,fontWeight:"bold",marginBottom:4}}>🤖 Android (Chrome)</div>
+            <div>Menu (⋮) rechtsboven → "App installeren" of "Toevoegen aan startscherm"</div>
           </div>
         )}
         <div style={{display:"flex",gap:8}}>
@@ -1232,7 +1263,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
 
   const UITLEG_TEKST={
     trend:"Hoe je gemiddelde zich ontwikkelt over de tijd. Met een rollend gemiddelde over 3 en 5 partijen, en een schuifje om uitschieters (heel goede of slechte partijen) tijdelijk weg te filteren.",
-    consist:"Hoeveel procent van je partijen boven bepaalde gemiddelde-drempels (1,5 / 2,0 / 2,5 / 3,0) uitkomt, plus je 5 beste en 5 slechtste partijen op een rij.",
+    consist:"Hoeveel procent van je partijen boven bepaalde gemiddelde-drempels uitkomt — die drempels schuiven automatisch mee met je eigen niveau, in stappen van 0,5. Plus je 5 beste en 5 slechtste partijen op een rij.",
     patronen:"Analyse van je opmerkingen (wat je vaak mist of juist goed doet), hoe je caramboles per beurt verdeeld zijn, en hoe je herstelt na een poedel.",
     vergelijk:"Vergelijkt de eerste met de tweede helft van je geselecteerde partijen (zie je progressie?), en toont je gemiddelde per maand naast elkaar.",
     punten:"Je niveau, badge-punten, mijlpalen, en een overzicht van je best scorende partijen op badges."
@@ -1807,15 +1838,18 @@ function BiljartTracker(){
     if(!lp.length){setConfPartij(false);return;}
     const st=stat(lp);
     const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp},st);
-    const nd=Object.assign({},data,{partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1});
-    setData(nd);slaOp(nd);
-    const nieuweAlleP=nd.partijen.filter(function(x){return(x.discipline||"libre")===huidigeDiscipline;});
+    const nieuweAlleP=data.partijen.concat([p]).filter(function(x){return(x.discipline||"libre")===huidigeDiscipline;});
     const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden);
     const prestatie=resultaten.find(function(r){return r.id===p.id;});
     const infoVoor=berekenNiveauInfo(alleP);
     const infoNa=berekenNiveauInfo(nieuweAlleP);
     const nieuweDrop=infoNa.aantalDrops>infoVoor.aantalDrops?infoNa.gedroptePartijen[infoNa.gedroptePartijen.length-1]:null;
-    setPartijSamenvatting({partij:p,st:st,prestatie:prestatie,infoNa:infoNa,nieuweDrop:nieuweDrop});
+    const niveauVoor=bepaalNiveau(infoVoor.effectiefGemiddelde,huidigeDiscipline);
+    const niveauNa=bepaalNiveau(infoNa.effectiefGemiddelde,huidigeDiscipline);
+    const niveauOmhoog=niveauNa.index>niveauVoor.index?{van:niveauVoor.huidig,naar:niveauNa.huidig}:null;
+    const nd=Object.assign({},data,{partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1,laatstGezienNiveauIndex:niveauNa.index});
+    setData(nd);slaOp(nd);
+    setPartijSamenvatting({partij:p,st:st,prestatie:prestatie,infoNa:infoNa,nieuweDrop:nieuweDrop,niveauOmhoog:niveauOmhoog});
     setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
     setConfPartij(false);setFase("setup");
   }
@@ -2091,7 +2125,7 @@ function BiljartTracker(){
             <button className="plusmin-btn" style={{flex:1,padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
               onClick={function(){setFase("gemist");}}>Noteer</button>
             <button style={{padding:"14px 13px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}
-              onClick={function(){if(lp.length){setLp(function(p){return p.slice(0,-1);});setBeurtNr(function(n){return Math.max(1,n-1);});}}}>terug</button>
+              onClick={function(){if(lp.length){setLp(function(p){return p.slice(0,-1);});setBeurtNr(function(n){return Math.max(1,n-1);});}else{setFase("setup");}}}>terug</button>
           </div>
         </div>
         <div style={{padding:"8px 12px",flex:1,overflowY:"auto"}}>
@@ -2308,19 +2342,23 @@ function BiljartTracker(){
                 onClick={function(){setTijdsvenster(v);}}>{l}</button>;
             })}
           </div>
-          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div>
-              <div style={{fontSize:11,color:WITD}}>⭐-drempel-basis {tijdsvenster==="alles"?"(alles)":"(laatste "+tijdsvenster+" mnd)"}</div>
-              <div style={{fontSize:17,fontWeight:"bold",color:GOUD}}>{huidigeRecords.totaalGem!==null?huidigeRecords.totaalGem.toFixed(huidigeDiscipline==="driebanden"?3:2):"—"}</div>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
+            <div style={{display:"flex",justifyContent:"space-between"}}>
+              <div>
+                <div style={{fontSize:11,color:WITD}}>⭐-drempel-basis</div>
+                <div style={{fontSize:17,fontWeight:"bold",color:GOUD}}>{huidigeRecords.totaalGem!==null?huidigeRecords.totaalGem.toFixed(huidigeDiscipline==="driebanden"?3:2):"—"}</div>
+                <div style={{fontSize:10,color:WITD,opacity:0.7}}>{huidigeRecords.vensterPartijen} partij{huidigeRecords.vensterPartijen===1?"":"en"} · {huidigeRecords.vensterBeurten} beurten</div>
+              </div>
+              <div style={{textAlign:"right"}}>
+                <div style={{fontSize:11,color:WITD}}>je niveau (all-time)</div>
+                <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
+                <div style={{fontSize:10,color:WITD,opacity:0.7}}>{alleP.length} partij{alleP.length===1?"":"en"}</div>
+              </div>
             </div>
-            <div style={{textAlign:"right"}}>
-              <div style={{fontSize:11,color:WITD}}>je niveau (all-time)</div>
-              <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
-              {niveau.aantalDrops>0
-                ?<div style={{fontSize:10,color:GOUD}}>🏅 incl. {niveau.aantalDrops}x badge-drop (ruw: {niveau.totaalGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)})</div>
-                :<div style={{fontSize:10,color:WITD,opacity:0.6}}>nog geen badge-drops verdiend</div>
-              }
-            </div>
+            {niveau.aantalDrops>0
+              ?<div style={{fontSize:10,color:GOUD,marginTop:6,textAlign:"center"}}>🏅 incl. {niveau.aantalDrops}x badge-drop (ruw: {niveau.totaalGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)})</div>
+              :<div style={{fontSize:10,color:WITD,opacity:0.6,marginTop:6,textAlign:"center"}}>nog geen badge-drops verdiend</div>
+            }
           </div>
         </div>
         {stA&&(
@@ -2499,7 +2537,7 @@ function BiljartTracker(){
 
       {seizoenArchiefOpen&&<SeizoenArchief seizoenen={data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}]} alleP={alleP} discipline={huidigeDiscipline} onClose={function(){setSeizoenArchiefOpen(false);}}/>}
 
-      {partijSamenvatting&&<PartijSamenvatting partij={partijSamenvatting.partij} st={partijSamenvatting.st} prestatie={partijSamenvatting.prestatie} infoNa={partijSamenvatting.infoNa} nieuweDrop={partijSamenvatting.nieuweDrop} discipline={huidigeDiscipline} onClose={function(){setPartijSamenvatting(null);}}/>}
+      {partijSamenvatting&&<PartijSamenvatting partij={partijSamenvatting.partij} st={partijSamenvatting.st} prestatie={partijSamenvatting.prestatie} infoNa={partijSamenvatting.infoNa} nieuweDrop={partijSamenvatting.nieuweDrop} niveauOmhoog={partijSamenvatting.niveauOmhoog} discipline={huidigeDiscipline} onClose={function(){setPartijSamenvatting(null);}}/>}
 
       {niveauUpInfo&&(
         <div onClick={function(){setNiveauUpInfo(null);}}

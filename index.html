@@ -172,7 +172,7 @@ function berekenPrestaties(partijen,tijdsvensterMaanden){
     const vensterTafel=venster.filter(function(w){return w.tafel===tafelKey;});
     const vensterTafelBest=vensterTafel.length?Math.max.apply(null,vensterTafel.map(function(w){return w.gem;})):0;
     if(gem>vensterTafelBest&&vensterTafelBest>0){
-      badges.push({label:"Beste partij"+vensterLabel+" op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+(tafelKey==="210"?"2,10":"2,30")+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
+      badges.push({label:"Beste partij"+vensterLabel+" op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+tafelLabel(tafelKey)+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
     }
 
     if(totaalGemTotDan!==null){
@@ -680,7 +680,7 @@ const BADGE_CATALOGUS=[
   {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:"Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde"},
   {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:"Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)"},
   {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:"Je hoogste partijgemiddelde ooit verbreken"},
-  {label:"Beste partij op deze tafel",emoji:"🏓",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat (2,10 of 2,30)"},
+  {label:"Beste partij op deze tafel",emoji:"🏓",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat"},
   {label:"Beter dan je totaalgemiddelde",emoji:"📊",punten:"10pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven je totaalgemiddelde tot dan toe"},
   {label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",punten:"15pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven het gemiddelde van je laatste 5 partijen"}
 ];
@@ -764,7 +764,7 @@ function PartijRij({p,nr,prestatie,gedropt,onVerwijder,onNotitie}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
           <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -921,6 +921,17 @@ const DISCIPLINES={
   bandstoten:{naam:"Bandstoten",niveaus:NIVEAUS_BANDSTOTEN}
 };
 const PUNTEN_PER_DROP=1000; // elke 1000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
+
+// Officiële KNBB-tafelmaten voor carambole: café-biljart, kleine matchtafel, halve match, grote
+// matchtafel (wedstrijdbiljart).
+const TAFELS={
+  "210":{label:"2,10",vol:"2,10 x 1,05",naam:"Café-biljart"},
+  "230":{label:"2,30",vol:"2,30 x 1,15",naam:"Kleine matchtafel"},
+  "255":{label:"2,55",vol:"2,55 x 1,275",naam:"Halve match"},
+  "284":{label:"2,84",vol:"2,84 x 1,42",naam:"Grote matchtafel"}
+};
+function tafelLabel(t){return(TAFELS[t]||TAFELS["230"]).label;}
+function tafelVol(t){return(TAFELS[t]||TAFELS["230"]).vol;}
 
 // Twee losse, simpele assen:
 // 1. Gemiddelde (na eventuele drops) bepaalt rechtstreeks je niveau — geen formules, geen bonus,
@@ -1305,11 +1316,11 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             );
           })}
         </div>
-        <div style={{display:"flex",gap:5,marginTop:6}}>
-          {[["alle","Alle tafels"],["210","2,10"],["230","2,30"]].map(([k,l])=>(
+        <div style={{display:"flex",gap:5,marginTop:6,overflowX:"auto",paddingBottom:2}}>
+          {[["alle","Alle tafels"]].concat(Object.keys(TAFELS).map(function(t){return[t,TAFELS[t].label];})).map(([k,l])=>(
             <button key={k} onClick={()=>setTafelFilter(k)}
-              style={{flex:1,padding:"4px 0",background:tafelFilter===k?"#2d4a1e":"none",border:`1px solid ${tafelFilter===k?GOUD:KBDR}`,
-                borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
+              style={{flex:"0 0 auto",padding:"4px 12px",background:tafelFilter===k?"#2d4a1e":"none",border:`1px solid ${tafelFilter===k?GOUD:KBDR}`,
+                borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
               {l}
             </button>
           ))}
@@ -1605,7 +1616,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder,onNotitie}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{p.tafel==="210"?"2,10":"2,30"}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
           {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -1891,7 +1902,7 @@ function BiljartTracker(){
     alleOmgekeerd.forEach(function(p,i){
       const st=stat(p.beurten);
       r.push("");
-      r.push("Partij "+(alleP.length-i)+" · "+new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})+(p.tafel?" · Tafel "+(p.tafel==="210"?"2,10x1,05":"2,30x1,15"):""));
+      r.push("Partij "+(alleP.length-i)+" · "+new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})+(p.tafel?" · Tafel "+tafelVol(p.tafel):""));
       if(st)r.push(st.aantalBeurten+"b · max "+st.max+" · gem "+st.gemPerBeurt+" · "+st.poedels+"x poedel · "+st.opbouw5+"x5+");
       p.beurten.forEach(function(b,j){
         const g=(b.gemist||[]).join(", ");
@@ -1943,11 +1954,13 @@ function BiljartTracker(){
         <NiveauKaart niveau={niveau} compact={true} discipline={huidigeDiscipline} onClick={function(){setNiveauOpen(true);}}/>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Tafelmaat</div>
-          <div style={{display:"flex",gap:8}}>
-            <button style={{flex:1,padding:"10px 8px",background:tafel==="210"?"#2d4a1e":"none",border:"1px solid "+(tafel==="210"?GOUD:KBDR),borderRadius:8,color:tafel==="210"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
-              onClick={function(){setTafel("210");}}>2,10 x 1,05</button>
-            <button style={{flex:1,padding:"10px 8px",background:tafel==="230"?"#2d4a1e":"none",border:"1px solid "+(tafel==="230"?GOUD:KBDR),borderRadius:8,color:tafel==="230"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
-              onClick={function(){setTafel("230");}}>2,30 x 1,15</button>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            {Object.keys(TAFELS).map(function(t){
+              return(
+                <button key={t} style={{padding:"9px 6px",background:tafel===t?"#2d4a1e":"none",border:"1px solid "+(tafel===t?GOUD:KBDR),borderRadius:8,color:tafel===t?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+                  onClick={function(){setTafel(t);}}>{TAFELS[t].vol}</button>
+              );
+            })}
           </div>
         </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"10px 14px"}}>
@@ -1977,7 +1990,7 @@ function BiljartTracker(){
         </div>
         {lp.length>0&&(
           <div style={{background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 14px",fontSize:14,color:WITD}}>
-            Lopende partij: {lp.length} beurten - {totCarLp} car - tafel {tafel==="210"?"2,10":"2,30"}
+            Lopende partij: {lp.length} beurten - {totCarLp} car - tafel {tafelLabel(tafel)}
             <div style={{display:"flex",gap:8,marginTop:8}}>
               <button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
                 onClick={function(){setFase("invoer");}}>Doorgaan</button>

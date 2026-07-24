@@ -1691,7 +1691,7 @@ function BiljartTracker(){
   const [partijSamenvatting,setPartijSamenvatting]=useState(null);
   const [niveauUpInfo,setNiveauUpInfo]=useState(null);
 
-  const tijdsvenster=(data&&data.tijdsvenster)||"12";
+  const tijdsvenster=(data&&data.tijdsvenster)||"alles";
   const tijdsvensterMaanden=tijdsvenster==="alles"?null:parseInt(tijdsvenster,10);
   const huidigeDiscplineVoorLading=(data&&data.huidigeDiscipline)||"libre";
 
@@ -2250,26 +2250,6 @@ function BiljartTracker(){
     const stA=stat(allB);
     return(
       <div ref={statsScrollRef} style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
-        {stA&&(
-          <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
-              {[["Car.",stA.totCar],["Max",stA.max],["Gem",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
-                return(
-                  <div key={arr[0]} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
-                    <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>
-                    <div style={{fontSize:13,color:WITD}}>{arr[0]}</div>
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{fontSize:13,color:GRNT}}>Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten 5+</div>
-          </div>
-        )}
-        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
-          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
-        </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Seizoen</div>
           {(function(){
@@ -2321,10 +2301,10 @@ function BiljartTracker(){
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
           <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je niveau (Beginner-Legende) en je 👑🏓-records blijven altijd all-time — een record blijft een record.</div>
-          <div style={{display:"flex",gap:6,marginBottom:10}}>
-            {[["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:10}}>
+            {[["1","1 mnd"],["2","2 mnd"],["3","3 mnd"],["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
               const v=arr[0],l=arr[1];
-              return <button key={v} style={{flex:1,padding:"7px 0",background:tijdsvenster===v?"#2d4a1e":"none",border:"1px solid "+(tijdsvenster===v?GOUD:KBDR),borderRadius:6,color:tijdsvenster===v?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+              return <button key={v} style={{padding:"7px 0",background:tijdsvenster===v?"#2d4a1e":"none",border:"1px solid "+(tijdsvenster===v?GOUD:KBDR),borderRadius:6,color:tijdsvenster===v?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
                 onClick={function(){setTijdsvenster(v);}}>{l}</button>;
             })}
           </div>
@@ -2338,6 +2318,26 @@ function BiljartTracker(){
               <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
             </div>
           </div>
+        </div>
+        {stA&&(
+          <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
+              {[["Car.",stA.totCar],["Max",stA.max],["Gem",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
+                return(
+                  <div key={arr[0]} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
+                    <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>
+                    <div style={{fontSize:13,color:WITD}}>{arr[0]}</div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{fontSize:13,color:GRNT}}>Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten 5+</div>
+          </div>
+        )}
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
+          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
         </div>
                 {!confReset
           ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}

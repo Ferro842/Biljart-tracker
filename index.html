@@ -1096,10 +1096,14 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const filtTot=filt.reduce((a,p)=>a+p.tot,0);
   const filtN=filt.reduce((a,p)=>a+p.n,0);
   const gemGem=filtN>0?(filtTot/filtN).toFixed(2):"—";
-  const b15=Math.round(filt.filter(p=>p.gem>=1.5).length/Math.max(filt.length,1)*100);
-  const b20=Math.round(filt.filter(p=>p.gem>=2.0).length/Math.max(filt.length,1)*100);
-  const b25=Math.round(filt.filter(p=>p.gem>=2.5).length/Math.max(filt.length,1)*100);
-  const b30=Math.round(filt.filter(p=>p.gem>=3.0).length/Math.max(filt.length,1)*100);
+  // Drempels schuiven mee met je huidige gemiddelde: eerste drempel is het hoogste 0,5-veelvoud
+  // op of onder je gemiddelde, daarna telkens +0,5.
+  const eersteDrempel=Math.floor((niveau.effectiefGemiddelde||0)/0.5)*0.5;
+  const drempD1=eersteDrempel,drempD2=eersteDrempel+0.5,drempD3=eersteDrempel+1.0,drempD4=eersteDrempel+1.5;
+  const b15=Math.round(filt.filter(p=>p.gem>=drempD1).length/Math.max(filt.length,1)*100);
+  const b20=Math.round(filt.filter(p=>p.gem>=drempD2).length/Math.max(filt.length,1)*100);
+  const b25=Math.round(filt.filter(p=>p.gem>=drempD3).length/Math.max(filt.length,1)*100);
+  const b30=Math.round(filt.filter(p=>p.gem>=drempD4).length/Math.max(filt.length,1)*100);
 
   // rolGems: behoudt originele volgorde van sel, null voor weggefilterde partijen (voor de puntjes-grafiek, per partij)
   const filtIds=useMemo(()=>new Set(filt.map(p=>p.id)),[filt]);
@@ -1370,7 +1374,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         {tab==="consist"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"14px"}}>
             <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:14}}>% boven drempel</div>
-            {[[1.5,b15,"#5a8a50"],[2.0,b20,GOUD],[2.5,b25,"#e8a84c"],[3.0,b30,ROOD]].map(([d,pct,k])=>(
+            {[[drempD1,b15,"#5a8a50"],[drempD2,b20,GOUD],[drempD3,b25,"#e8a84c"],[drempD4,b30,ROOD]].map(([d,pct,k])=>(
               <div key={d} style={{marginBottom:14}}>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
                   <span style={{fontSize:14,color:WITD}}>Boven {d}</span>

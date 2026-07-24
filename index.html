@@ -1709,7 +1709,6 @@ function BiljartTracker(){
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
-  const [installUitlegOpen,setInstallUitlegOpen]=useState(false);
   const [deelResultaat,setDeelResultaat]=useState("");
   const [gekopieerd,setGekopieerd]=useState("");
   const [toonData,setToonData]=useState(false);
@@ -2393,20 +2392,7 @@ function BiljartTracker(){
             <button onClick={deelApp} style={{width:"100%",padding:11,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit",marginBottom:8}}>
               📤 Deel deze app
             </button>
-            {deelResultaat&&<div style={{textAlign:"center",fontSize:12,color:GRNT,marginBottom:8}}>{deelResultaat}</div>}
-            <button onClick={function(){setInstallUitlegOpen(function(v){return !v;});}} style={{width:"100%",padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>
-              {installUitlegOpen?"▲ Verberg installatie-instructies":"▼ Hoe installeer ik dit op mijn telefoon?"}
-            </button>
-            {installUitlegOpen&&(
-              <div style={{marginTop:10,fontSize:13,color:WITD,lineHeight:1.7}}>
-                <strong style={{color:GOUD}}>Op de iPhone/iPad (Safari):</strong><br/>
-                1. Open deze link in Safari<br/>
-                2. Tik op het deel-icoontje onderin (vierkantje met pijl omhoog)<br/>
-                3. Scroll naar beneden en tik op "Zet op beginscherm"<br/>
-                4. Tik op "Voeg toe"<br/>
-                Er verschijnt nu een icoontje op je beginscherm — dat werkt als een normale app, met je eigen data.
-              </div>
-            )}
+            {deelResultaat&&<div style={{textAlign:"center",fontSize:12,color:GRNT}}>{deelResultaat}</div>}
           </div>
       </div>
     );

@@ -24,6 +24,8 @@ body{background:#1a2e1a;font-family:Georgia,serif;color:#f5f0e8}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 input[type=number]{-moz-appearance:textfield}
 @keyframes badgePopIn{0%{opacity:0;transform:scale(0.7) translateY(10px);}60%{opacity:1;transform:scale(1.04) translateY(0);}100%{opacity:1;transform:scale(1) translateY(0);}}
+.plusmin-btn{transition:background-color 0.08s,transform 0.08s;-webkit-tap-highlight-color:transparent;}
+.plusmin-btn:active{background-color:#e8c96a!important;color:#1a2e1a!important;transform:scale(0.92);}
 </style>
 </head>
 <body>
@@ -1974,8 +1976,8 @@ function BiljartTracker(){
           </div>
         </div>
         <div style={{padding:"6px 12px 10px",flexShrink:0,borderTop:"1px solid "+KBDR,borderBottom:"1px solid "+KBDR}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:18,marginBottom:4}}>
-            <button style={{width:46,height:46,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:24,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:16,marginBottom:4}}>
+            <button className="plusmin-btn" style={{width:60,height:60,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
               onClick={function(){const n=Math.max(0,car-1);setCar(n);setInp(String(n));}}>-</button>
             <div style={{textAlign:"center"}}>
               <div style={{fontSize:13,color:WITD,marginBottom:4}}>{beurtNr}e Beurt</div>
@@ -1989,12 +1991,12 @@ function BiljartTracker(){
                 {car===0?"Poedel":car>=10?"💫 Topserie!":car>=8?"🔥 Sterke serie!":car>=5?"🎯 Opbouw!":""}
               </div>
             </div>
-            <button style={{width:46,height:46,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:24,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
+            <button className="plusmin-btn" style={{width:60,height:60,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
               onClick={function(){const n=car+1;setCar(n);setInp(String(n));}}>+</button>
           </div>
           <div style={{display:"flex",gap:8,marginTop:10}}>
-            <button style={{flex:1,padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
-              onClick={function(){setFase("gemist");}}>Volgende</button>
+            <button className="plusmin-btn" style={{flex:1,padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+              onClick={function(){setFase("gemist");}}>Noteer</button>
             <button style={{padding:"14px 13px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}
               onClick={function(){if(lp.length){setLp(function(p){return p.slice(0,-1);});setBeurtNr(function(n){return Math.max(1,n-1);});}}}>terug</button>
           </div>
@@ -2106,7 +2108,7 @@ function BiljartTracker(){
               style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
           </div>
           <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
-            <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"#1c3019",border:"1px solid "+(heeftSelectie?"transparent":KBDR),borderRadius:12,color:heeftSelectie?G:WITD,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
+            <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"rgba(224,96,96,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(224,96,96,0.45)"),borderRadius:12,color:heeftSelectie?G:"#e0a0a0",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
               onClick={function(){if(car===0){noteer();}else{setFase("goed");}}}>
             {car===0?"Opslaan":"Volgende stap"}
           </button>
@@ -2139,7 +2141,7 @@ function BiljartTracker(){
               style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
           </div>
           <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
-            <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GRNT+",#66bb6a)":"#1c3019",border:"1px solid "+(heeftSelectie?"transparent":KBDR),borderRadius:12,color:heeftSelectie?WIT:WITD,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
+            <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GRNT+",#66bb6a)":"rgba(102,187,106,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(102,187,106,0.45)"),borderRadius:12,color:heeftSelectie?WIT:"#a8d5aa",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
               onClick={noteer}>Beurt opslaan</button>
             <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
               onClick={function(){setFase("gemist");}}>terug</button>

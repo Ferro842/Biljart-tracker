@@ -35,25 +35,25 @@ const KBG="#22341f",KBDR="#3a5c35",ROOD="#e05555",GRNT="#4caf50";
 
 
 const GEMIST=[
-  {label:"Trekstoot",emoji:"↩️"},{label:"Doorstoot",emoji:"➡️"},
-  {label:"Bandstoot",emoji:"💢"},{label:"Te zacht",emoji:"🐌"},
-  {label:"Driebanden",emoji:"🔺"},{label:"Achterom",emoji:"🔙"},
-  {label:"Verzamelen",emoji:"🔄"},{label:"Positioneren",emoji:"📍"},
-  {label:"Moeilijk",emoji:"😓"},{label:"Slechte positie",emoji:"⚠️"},
-  {label:"Klos",emoji:"💥"},{label:"Direct",emoji:"➤"},
-  {label:"Makkelijk",emoji:"😌"},{label:"Slechte keuze",emoji:"🤔"},
-  {label:"Acquit",emoji:"🎬"},{label:"Snijden",emoji:"✂️"},
+  {label:"Trekstoot",emoji:"↩️"},{label:"Direct",emoji:"➤"},
+  {label:"Bandstoot",emoji:"💢"},{label:"Driebanden",emoji:"🔺"},
+  {label:"Achterom",emoji:"🔙"},{label:"Te zacht",emoji:"🐌"},
+  {label:"Doorstoot",emoji:"➡️"},{label:"Moeilijk",emoji:"😓"},
+  {label:"Onnodige fout",emoji:"😌"},{label:"Verzamelen",emoji:"🔄"},
+  {label:"Positioneren",emoji:"📍"},{label:"Slechte positie",emoji:"⚠️"},
+  {label:"Klos",emoji:"💥"},{label:"Slechte keuze",emoji:"🤔"},
+  {label:"Snijden",emoji:"✂️"},{label:"Amorti",emoji:"🪃"},
   {label:"Massé",emoji:"🌀"},{label:"Piqué",emoji:"🎯"},
-  {label:"Dun",emoji:"🪶"},
+  {label:"Dun",emoji:"🪶"},{label:"Acquit",emoji:"🎬"},
 ];
 const GOED=[
   {label:"Verzamelen",emoji:"🔄"},{label:"Positioneren",emoji:"📍"},
-  {label:"Trekstoot",emoji:"↩️"},{label:"Doorstoot",emoji:"➡️"},
-  {label:"Bandstoot",emoji:"💢"},{label:"Direct",emoji:"➤"},
-  {label:"Klein / Simpel",emoji:"🤏"},{label:"Acquit",emoji:"🎬"},
-  {label:"Driebanden",emoji:"🔺"},{label:"Snijden",emoji:"✂️"},
+  {label:"Compact gehouden",emoji:"🤏"},{label:"Trekstoot",emoji:"↩️"},
+  {label:"Direct",emoji:"➤"},{label:"Driebanden",emoji:"🔺"},
+  {label:"Bandstoot",emoji:"💢"},{label:"Snijden",emoji:"✂️"},
+  {label:"Dun",emoji:"🪶"},{label:"Amorti",emoji:"🪃"},
   {label:"Massé",emoji:"🌀"},{label:"Piqué",emoji:"🎯"},
-  {label:"Dun",emoji:"🪶"},
+  {label:"Doorstoot",emoji:"➡️"},{label:"Acquit",emoji:"🎬"},
 ];
 
 const SK="biljart-tracker-v2";
@@ -580,9 +580,8 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,discipline,on
           </div>
         </div>
         <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{st.aantalBeurten} beurten · {st.poedels}x poedel · <span style={{color:GOUD,fontWeight:"bold"}}>{punten}pt aan badges</span></div>
-        <PrestatieOverzicht prestatie={prestatie}/>
         {infoNa&&(
-          <div style={{marginTop:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
+          <div style={{marginBottom:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
               <span style={{fontSize:12,color:WITD}}>📊 Je gemiddelde nu</span>
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{infoNa.effectiefGemiddelde.toFixed(dec)}</span>
@@ -597,6 +596,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,discipline,on
             </div>
           </div>
         )}
+        <PrestatieOverzicht prestatie={prestatie}/>
         <div onClick={onClose} style={{textAlign:"center",marginTop:16,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
       </div>
     </div>
@@ -1596,6 +1596,8 @@ function BiljartTracker(){
   const [inp,setInp]=useState("0");
   const [beurtNr,setBeurtNr]=useState(1);
   const [sel,setSel]=useState(new Set());
+  const [andersGemist,setAndersGemist]=useState("");
+  const [andersGoed,setAndersGoed]=useState("");
   const [fase,setFase]=useState("setup");
   const [lp,setLp]=useState([]);
   const [doel,setDoel]=useState(25);
@@ -1612,6 +1614,7 @@ function BiljartTracker(){
   const [gekopieerd,setGekopieerd]=useState("");
   const [toonData,setToonData]=useState(false);
   const inputRef=useRef(null);
+  const statsScrollRef=useRef(null);
   const [toastGroep,setToastGroep]=useState(null);
   const [niveauOpen,setNiveauOpen]=useState(false);
   const [partijSamenvatting,setPartijSamenvatting]=useState(null);
@@ -1719,12 +1722,14 @@ function BiljartTracker(){
   function noteer(){
     const gemist=Array.from(sel).filter(function(k){return k.startsWith("G__");}).map(function(k){return k.replace("G__","");});
     const goed=Array.from(sel).filter(function(k){return k.startsWith("P__");}).map(function(k){return k.replace("P__","");});
+    if(andersGemist.trim())gemist.push(andersGemist.trim());
+    if(andersGoed.trim())goed.push(andersGoed.trim());
     const b={id:data.huidigeId,caramboles:car,gemist:gemist,goed:goed,tijd:new Date().toISOString()};
     const nd=Object.assign({},data,{huidigeId:data.huidigeId+1});
     setData(nd);slaOp(nd);
     toonToast(checkLiveBadges(lp,car));
     setLp(function(p){return p.concat([b]);});
-    setCar(0);setInp("0");setBeurtNr(function(n){return n+1;});setSel(new Set());setFase("invoer");
+    setCar(0);setInp("0");setBeurtNr(function(n){return n+1;});setSel(new Set());setAndersGemist("");setAndersGoed("");setFase("invoer");
   }
 
   function sluit(){
@@ -1915,12 +1920,23 @@ function BiljartTracker(){
     const poedels=lp.filter(function(b){return b.caramboles===0;}).length;
     const poedelPct=lp.length>0?Math.round(poedels/lp.length*100):0;
     const opbouwPct=lp.length>0?Math.round((stL?stL.opbouw5:0)/lp.length*100):0;
+    let partijPunten=0;
+    if(lp.length>0){
+      const virtuelePartij=Object.assign({id:-1,datum:new Date().toISOString(),tafel:tafel,discipline:huidigeDiscipline,beurten:lp},stat(lp));
+      const resultaten=berekenPrestaties(alleP.concat([virtuelePartij]),tijdsvensterMaanden);
+      const entry=resultaten.find(function(r){return r.id===-1;});
+      partijPunten=entry?entry.punten:0;
+    }
     return(
       <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
         <div style={{height:3,background:KBDR,flexShrink:0}}>
           <div style={{height:3,background:GOUD,width:progPct+"%",transition:"width 0.3s"}}/>
         </div>
-        <div style={{padding:"10px 12px 6px",flexShrink:0}}>
+        <div style={{padding:"10px 12px 6px",flex:1,overflowY:"auto"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
+            <span style={{fontSize:12,color:WITD}}>🎖️ Deze partij: <strong style={{color:GOUD}}>{partijPunten}pt</strong></span>
+            <span style={{fontSize:12,color:WITD}}>Totaal: <strong style={{color:GOUD}}>{niveau.badgePunten+partijPunten}pt</strong></span>
+          </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
             {[["Gespeeld",lp.length,WIT],["Caramboles",stL?stL.totCar:0,GOUD],["Gem.",stL?stL.gemPerBeurt:"0.00",GOUDL],["Max",stL?stL.max:0,"#e8a84c"]].map(function(arr){
               return(
@@ -2049,7 +2065,7 @@ function BiljartTracker(){
                 onKeyDown={function(e){if(e.key==="Enter")setFase("gemist");}}
                 style={{width:86,fontSize:48,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:"3px solid "+(car>=5?GRNT:GOUD),textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:3}}
               />
-              <div style={{fontSize:13,color:car>=5?GRNT:GOUD,marginTop:4}}>
+              <div style={{fontSize:13,color:car>=5?GRNT:GOUD,marginTop:4,height:18,lineHeight:"18px"}}>
                 {car===0?"Poedel":car>=10?"💫 Topserie!":car>=8?"🔥 Sterke serie!":car>=5?"🎯 Opbouw!":""}
               </div>
             </div>
@@ -2078,6 +2094,11 @@ function BiljartTracker(){
             {gs.length>0&&<span style={{fontSize:13,color:ROOD}}>{gs.length}x</span>}
           </div>
           <OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={toggle}/>
+          <div style={{padding:"0 12px 8px"}}>
+            <input type="text" value={andersGemist} onChange={function(e){setAndersGemist(e.target.value);}}
+              placeholder="Anders... (typ zelf iets)"
+              style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
+          </div>
         </div>
         <div style={{padding:"10px 14px",display:"flex",gap:8}}>
           <button style={{flex:1,padding:15,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
@@ -2102,6 +2123,11 @@ function BiljartTracker(){
             {gs.length>0&&<span style={{fontSize:13,color:GRNT}}>{gs.length}x</span>}
           </div>
           <OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={toggle}/>
+          <div style={{padding:"0 12px 8px"}}>
+            <input type="text" value={andersGoed} onChange={function(e){setAndersGoed(e.target.value);}}
+              placeholder="Anders... (typ zelf iets)"
+              style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
+          </div>
         </div>
         <div style={{padding:"10px 14px",display:"flex",gap:8}}>
           <button style={{flex:1,padding:15,background:"linear-gradient(135deg,"+GRNT+",#66bb6a)",border:"none",borderRadius:12,color:WIT,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
@@ -2118,7 +2144,7 @@ function BiljartTracker(){
     const allB=alleP.flatMap(function(p){return p.beurten;});
     const stA=stat(allB);
     return(
-      <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+      <div ref={statsScrollRef} style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
         {stA&&(
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
             <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
@@ -2200,7 +2226,12 @@ function BiljartTracker(){
         </div>
                 {!confReset
           ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
-            onClick={function(){setConfReset(true);}}>Alle data wissen</button>
+            onClick={function(){
+              const el=statsScrollRef.current;
+              const y=el?el.scrollTop:0;
+              setConfReset(true);
+              requestAnimationFrame(function(){if(el)el.scrollTop=y;});
+            }}>Alle data wissen</button>
           :<div style={{background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"12px 14px"}}>
             <div style={{fontSize:14,color:"#e06060",marginBottom:10}}>Weet je het zeker?</div>
             <div style={{display:"flex",gap:8}}>

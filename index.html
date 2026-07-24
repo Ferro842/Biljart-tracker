@@ -575,7 +575,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,discipline,on
 function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
   const schermen=[
     {
-      titel:"Welkom bij Biljart Tracker 🎱",
+      titel:"Welkom bij Biljart Tracker",
       body:"Een app om je carambole-partijen bij te houden — met niveaus op basis van de echte KNBB-klassen, en badges om net dat beetje extra uit je spel te halen."
     },
     {
@@ -1662,6 +1662,8 @@ function BiljartTracker(){
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
+  const [installUitlegOpen,setInstallUitlegOpen]=useState(false);
+  const [deelResultaat,setDeelResultaat]=useState("");
   const [aiBezig,setAiBezig]=useState(false);
   const [aiRes,setAiRes]=useState("");
   const [aiType,setAiType]=useState("");
@@ -1835,6 +1837,23 @@ function BiljartTracker(){
   function sluitOnboarding(){
     const nd=Object.assign({},data,{onboardingGezien:true});
     setData(nd);slaOp(nd);
+  }
+
+  function deelApp(){
+    const url=window.location.href;
+    const tekst="Ik gebruik deze Biljart Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?";
+    if(navigator.share){
+      navigator.share({title:"Biljart Tracker",text:tekst,url:url}).catch(function(){});
+    }else if(navigator.clipboard){
+      navigator.clipboard.writeText(url).then(function(){
+        setDeelResultaat("Link gekopieerd naar klembord!");
+        setTimeout(function(){setDeelResultaat("");},2500);
+      }).catch(function(){
+        setDeelResultaat("Kopiëren mislukt — kopieer de link handmatig uit de adresbalk.");
+      });
+    }else{
+      setDeelResultaat("Kopieer de link handmatig uit de adresbalk.");
+    }
   }
 
   function seizoenAfsluiten(){
@@ -2314,6 +2333,30 @@ function BiljartTracker(){
               <button style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={function(){setConfReset(false);}}>Annuleer</button>
             </div>
           </div>}
+
+          <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Over deze app</div>
+            <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
+              Biljart Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.
+            </div>
+            <button onClick={deelApp} style={{width:"100%",padding:11,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit",marginBottom:8}}>
+              📤 Deel deze app
+            </button>
+            {deelResultaat&&<div style={{textAlign:"center",fontSize:12,color:GRNT,marginBottom:8}}>{deelResultaat}</div>}
+            <button onClick={function(){setInstallUitlegOpen(function(v){return !v;});}} style={{width:"100%",padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>
+              {installUitlegOpen?"▲ Verberg installatie-instructies":"▼ Hoe installeer ik dit op mijn telefoon?"}
+            </button>
+            {installUitlegOpen&&(
+              <div style={{marginTop:10,fontSize:13,color:WITD,lineHeight:1.7}}>
+                <strong style={{color:GOUD}}>Op de iPhone/iPad (Safari):</strong><br/>
+                1. Open deze link in Safari<br/>
+                2. Tik op het deel-icoontje onderin (vierkantje met pijl omhoog)<br/>
+                3. Scroll naar beneden en tik op "Zet op beginscherm"<br/>
+                4. Tik op "Voeg toe"<br/>
+                Er verschijnt nu een icoontje op je beginscherm — dat werkt als een normale app, met je eigen data.
+              </div>
+            )}
+          </div>
       </div>
     );
   }

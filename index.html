@@ -63,27 +63,47 @@ const GOED=[
 
 const SK="biljart-tracker-v2";
 
-function stat(beurten){
+// Wat een "goede", "sterke" en "top"-beurt is, verschilt enorm per discipline — bij Driebanden is
+// 1 carambole al een prestatie, bij Libre pas 5+. Kader 38/2 en 47/2 (grotere vakken) liggen dicht bij
+// Libre; Kader 57/2 en 71/2 (kleinere vakken) zitten lager, net als Bandstoten.
+function beurtDrempels(discipline){
+  if(discipline==="driebanden")return{opbouwMin:1,opbouwMax:1,sterkMin:2,sterkMax:2,topMin:3};
+  if(discipline==="bandstoten")return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
+  if(discipline==="kader57"||discipline==="kader71")return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
+  return{opbouwMin:5,opbouwMax:7,sterkMin:8,sterkMax:9,topMin:10}; // libre, kader38, kader47
+}
+// Buckets voor de caramboles-verdeling-histogram (Patronen-tab) — dezelfde indeling-logica als
+// beurtDrempels, maar dan als volledige reeks bakjes in plaats van drie drempels.
+function histogramBuckets(discipline){
+  if(discipline==="driebanden")return[["0 (poedel)",0,0],["1",1,1],["2",2,2],["3",3,3],["4",4,4],["5+",5,Infinity]];
+  if(discipline==="bandstoten"||discipline==="kader57"||discipline==="kader71")
+    return[["0 (poedel)",0,0],["1",1,1],["2",2,2],["3-4",3,4],["5-6",5,6],["7+",7,Infinity]];
+  return[["0 (poedel)",0,0],["1-2",1,2],["3-4",3,4],["5-7",5,7],["8-9",8,9],["10+",10,Infinity]]; // libre, kader38, kader47
+}
+
+function stat(beurten,discipline){
   if(!beurten||!beurten.length)return null;
+  const d=beurtDrempels(discipline);
   const cars=beurten.map(b=>b.caramboles);
   const totCar=cars.reduce((a,b)=>a+b,0);
   const mx=Math.max(...cars);
   const poedels=beurten.filter(b=>b.caramboles===0).length;
   const gemPerBeurt=(totCar/beurten.length).toFixed(2);
-  const opbouw5=beurten.filter(b=>b.caramboles>=5).length;
-  const opbouw57=beurten.filter(b=>b.caramboles>=5&&b.caramboles<=7).length;
-  const opbouw89=beurten.filter(b=>b.caramboles>=8&&b.caramboles<=9).length;
-  const opbouw10=beurten.filter(b=>b.caramboles>=10).length;
+  const opbouw5=beurten.filter(b=>b.caramboles>=d.opbouwMin).length;
+  const opbouw57=beurten.filter(b=>b.caramboles>=d.opbouwMin&&b.caramboles<=d.opbouwMax).length;
+  const opbouw89=beurten.filter(b=>b.caramboles>=d.sterkMin&&b.caramboles<=d.sterkMax).length;
+  const opbouw10=beurten.filter(b=>b.caramboles>=d.topMin).length;
   return{totCar,max:mx,aantalBeurten:beurten.length,poedels,gemPerBeurt,opbouw5,opbouw57,opbouw89,opbouw10};
 }
 
 // Berekent chronologisch (oud->nieuw) welke prestatie-badges elke partij heeft verdiend.
 // "Record"-achtige badges vergelijken tegen de staat VOOR die partij, niet achteraf.
 // Retourneert een array in dezelfde volgorde als partijen: [{id,badges:[{label,emoji,aantal,punten}],punten}]
-function berekenPrestaties(partijen,tijdsvensterMaanden){
+function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
   let allTimeMaxBeurt=0;
   const verwerkt=[];
   const resultaten=[];
+  const d=beurtDrempels(discipline);
 
   function vensterSlice(datum){
     if(!tijdsvensterMaanden)return verwerkt;
@@ -93,22 +113,22 @@ function berekenPrestaties(partijen,tijdsvensterMaanden){
   }
 
   (partijen||[]).forEach(function(p){
-    const st=stat(p.beurten);
+    const st=stat(p.beurten,discipline);
     if(!st){resultaten.push({id:p.id,badges:[],punten:0});return;}
     const gem=parseFloat(st.gemPerBeurt);
     const badges=[];
 
     if(st.opbouw57>0){
-      const waarden=p.beurten.filter(function(b){return b.caramboles>=5&&b.caramboles<=7;}).map(function(b){return b.caramboles;});
-      badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: 5-7 car per beurt)"});
+      const waarden=p.beurten.filter(function(b){return b.caramboles>=d.opbouwMin&&b.caramboles<=d.opbouwMax;}).map(function(b){return b.caramboles;});
+      badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: "+d.opbouwMin+"-"+d.opbouwMax+" car per beurt)"});
     }
     if(st.opbouw89>0){
-      const waarden=p.beurten.filter(function(b){return b.caramboles>=8&&b.caramboles<=9;}).map(function(b){return b.caramboles;});
-      badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: 8-9 car per beurt)"});
+      const waarden=p.beurten.filter(function(b){return b.caramboles>=d.sterkMin&&b.caramboles<=d.sterkMax;}).map(function(b){return b.caramboles;});
+      badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: "+d.sterkMin+"-"+d.sterkMax+" car per beurt)"});
     }
     if(st.opbouw10>0){
-      const waarden=p.beurten.filter(function(b){return b.caramboles>=10;}).map(function(b){return b.caramboles;});
-      badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: 10+ car per beurt)"});
+      const waarden=p.beurten.filter(function(b){return b.caramboles>=d.topMin;}).map(function(b){return b.caramboles;});
+      badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: "+d.topMin+"+ car per beurt)"});
     }
 
     if(st.max>allTimeMaxBeurt&&allTimeMaxBeurt>0){
@@ -632,7 +652,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
         <div style={{fontSize:14,color:WITD,textAlign:"center",lineHeight:1.5,marginBottom:16}}>{s.body}</div>
         {s.kies&&(
           <div style={{display:"flex",gap:6,marginBottom:16}}>
-            {Object.keys(DISCIPLINES).map(function(d){
+            {HOOFDDISCIPLINES.map(function(d){
               return(
                 <button key={d} onClick={function(){wisselDiscipline(d);}}
                   style={{flex:1,padding:"9px 4px",background:discipline===d?"#2d4a1e":"none",border:"1px solid "+(discipline===d?GOUD:KBDR),borderRadius:8,color:discipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
@@ -701,24 +721,28 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
   );
 }
 
-const BADGE_CATALOGUS=[
-  {label:"Opbouw",emoji:"🎯",punten:"10pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van 5-7 caramboles"},
-  {label:"Sterke serie",emoji:"🔥",punten:"20pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van 8-9 caramboles"},
-  {label:"Topserie",emoji:"💫",punten:"35pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van 10+ caramboles"},
-  {label:"Nieuw record beurt",emoji:"🏆",punten:"50pt",categorie:"Beurt-pieken",uitleg:"Je hoogste beurt ooit verbreken"},
-  {label:"Geen poedel hele partij",emoji:"🛡️",punten:"30pt",categorie:"Consistentie",uitleg:"Geen enkele poedel in de hele partij"},
-  {label:"Lange reeks zonder poedel",emoji:"⛓️",punten:"25pt",categorie:"Consistentie",uitleg:"8 of meer beurten op rij zonder poedel"},
-  {label:"Reeks zonder poedel",emoji:"⛓️",punten:"15pt",categorie:"Consistentie",uitleg:"5 of meer beurten op rij zonder poedel"},
-  {label:"Weinig poedels",emoji:"✅",punten:"15pt",categorie:"Consistentie",uitleg:"Minder dan 20% van je beurten was een poedel"},
-  {label:"Sterk herstel na poedel",emoji:"💪",punten:"15pt per keer",categorie:"Mentaliteit",uitleg:"5 of meer caramboles direct na een poedel"},
-  {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:"Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde"},
-  {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:"Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)"},
-  {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:"Je hoogste partijgemiddelde ooit verbreken"},
-  {label:"Beste partij op deze tafel",emoji:"🏓",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat"},
-  {label:"Beter dan je totaalgemiddelde",emoji:"📊",punten:"10pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven je totaalgemiddelde tot dan toe"},
-  {label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",punten:"15pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven het gemiddelde van je laatste 5 partijen"}
-];
-function BadgeCatalogus({onClose}){
+function bouwBadgeCatalogus(discipline){
+  const d=beurtDrempels(discipline);
+  return[
+    {label:"Opbouw",emoji:"🎯",punten:"10pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van "+d.opbouwMin+"-"+d.opbouwMax+" caramboles"},
+    {label:"Sterke serie",emoji:"🔥",punten:"20pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van "+d.sterkMin+"-"+d.sterkMax+" caramboles"},
+    {label:"Topserie",emoji:"💫",punten:"35pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van "+d.topMin+"+ caramboles"},
+    {label:"Nieuw record beurt",emoji:"🏆",punten:"50pt",categorie:"Beurt-pieken",uitleg:"Je hoogste beurt ooit verbreken"},
+    {label:"Geen poedel hele partij",emoji:"🛡️",punten:"30pt",categorie:"Consistentie",uitleg:"Geen enkele poedel in de hele partij"},
+    {label:"Lange reeks zonder poedel",emoji:"⛓️",punten:"25pt",categorie:"Consistentie",uitleg:"8 of meer beurten op rij zonder poedel"},
+    {label:"Reeks zonder poedel",emoji:"⛓️",punten:"15pt",categorie:"Consistentie",uitleg:"5 of meer beurten op rij zonder poedel"},
+    {label:"Weinig poedels",emoji:"✅",punten:"15pt",categorie:"Consistentie",uitleg:"Minder dan 20% van je beurten was een poedel"},
+    {label:"Sterk herstel na poedel",emoji:"💪",punten:"15pt per keer",categorie:"Mentaliteit",uitleg:d.opbouwMin+" of meer caramboles direct na een poedel"},
+    {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:"Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde"},
+    {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:"Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)"},
+    {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:"Je hoogste partijgemiddelde ooit verbreken"},
+    {label:"Beste partij op deze tafel",emoji:"🏓",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat"},
+    {label:"Beter dan je totaalgemiddelde",emoji:"📊",punten:"10pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven je totaalgemiddelde tot dan toe"},
+    {label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",punten:"15pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven het gemiddelde van je laatste 5 partijen"}
+  ];
+}
+function BadgeCatalogus({discipline,onClose}){
+  const BADGE_CATALOGUS=bouwBadgeCatalogus(discipline);
   const categorieen=[];
   BADGE_CATALOGUS.forEach(function(b){if(categorieen.indexOf(b.categorie)===-1)categorieen.push(b.categorie);});
   return(
@@ -786,12 +810,13 @@ function NiveauOverzicht({niveau,discipline,onClose}){
   );
 }
 
-function PartijRij({p,nr,prestatie,gedropt,onVerwijder,onNotitie}){
+function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
   const [open,setOpen]=useState(false);
   const [confVerwijder,setConfVerwijder]=useState(false);
   const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
-  const st=stat(p.beurten);
+  const st=stat(p.beurten,discipline);
   if(!st)return null;
+  const dRij=beurtDrempels(discipline);
   const punten=prestatie?prestatie.punten:0;
   return(
     <div style={{borderBottom:"1px solid "+KBDR}}>
@@ -807,7 +832,7 @@ function PartijRij({p,nr,prestatie,gedropt,onVerwijder,onNotitie}){
         <div style={{paddingBottom:10}}>
           <Grafiek beurten={p.beurten}/>
           <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
-            {[["5-7",st.opbouw57,"#4caf50"],["8-9",st.opbouw89,"#e8c96a"],["10+",st.opbouw10,"#ff9f40"]].map(function(arr){
+            {[[dRij.opbouwMin+"-"+dRij.opbouwMax,st.opbouw57,"#4caf50"],[dRij.sterkMin+"-"+dRij.sterkMax,st.opbouw89,"#e8c96a"],[dRij.topMin+"+",st.opbouw10,"#ff9f40"]].map(function(arr){
               const l=arr[0],n=arr[1],k=arr[2];
               return(
                 <div key={l} style={{background:n>0?"#2d4a1e":"#1c2e18",border:"1px solid "+(n>0?k:KBDR),borderRadius:6,padding:"4px 10px",textAlign:"center",minWidth:48}}>
@@ -949,11 +974,53 @@ const NIVEAUS_BANDSTOTEN=[
   {naam:"Extraklasse",gemDrempel:4.00,emoji:"🏆",kleur:"#7fd8e0"},
   {naam:"Ereklasse*",gemDrempel:6.00,emoji:"💎",kleur:"#ff9fd1"}
 ];
+// Kader kent geen nette "5e klasse t/m Ereklasse"-systeem zoals Libre — de KNBB gebruikt hier losse
+// letter-intervallen en toernooiniveaus per variant, geen doorlopende klassenreeks. Onderstaande is
+// daarom een praktische, zelf opgezette indeling op basis van de officiële interval/partijlengte-
+// tabellen, geen letterlijke KNBB-klassenaam — vandaar steeds duidelijk "Klasse" i.p.v. "e klasse".
+// 38/2 en 47/2 hebben 9 (grotere) vakken en zijn de instapvarianten; 57/2 en 71/2 hebben 6 (kleinere,
+// dus lastigere) vakken en liggen een niveau hoger.
+const NIVEAUS_KADER38=[
+  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 2",gemDrempel:2.00,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Klasse 3",gemDrempel:4.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Klasse 4",gemDrempel:7.00,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Klasse 5*",gemDrempel:11.00,emoji:"💎",kleur:"#ff9fd1"}
+];
+const NIVEAUS_KADER47=[
+  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 2",gemDrempel:2.00,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Klasse 3",gemDrempel:4.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Klasse 4",gemDrempel:7.00,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Klasse 5*",gemDrempel:11.00,emoji:"💎",kleur:"#ff9fd1"}
+];
+const NIVEAUS_KADER57=[
+  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 2",gemDrempel:1.00,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Klasse 3",gemDrempel:2.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Klasse 4",gemDrempel:3.50,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Klasse 5*",gemDrempel:5.50,emoji:"💎",kleur:"#ff9fd1"}
+];
+const NIVEAUS_KADER71=[
+  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 2",gemDrempel:1.00,emoji:"🥈",kleur:"#c4c4cf"},
+  {naam:"Klasse 3",gemDrempel:2.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Klasse 4",gemDrempel:3.50,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Klasse 5*",gemDrempel:5.50,emoji:"💎",kleur:"#ff9fd1"}
+];
 const DISCIPLINES={
   libre:{naam:"Libre",niveaus:NIVEAUS_LIBRE},
   driebanden:{naam:"Driebanden",niveaus:NIVEAUS_DRIEBANDEN},
-  bandstoten:{naam:"Bandstoten",niveaus:NIVEAUS_BANDSTOTEN}
+  bandstoten:{naam:"Bandstoten",niveaus:NIVEAUS_BANDSTOTEN},
+  kader38:{naam:"Kader 38/2",niveaus:NIVEAUS_KADER38,groep:"kader"},
+  kader47:{naam:"Kader 47/2",niveaus:NIVEAUS_KADER47,groep:"kader"},
+  kader57:{naam:"Kader 57/2",niveaus:NIVEAUS_KADER57,groep:"kader"},
+  kader71:{naam:"Kader 71/2",niveaus:NIVEAUS_KADER71,groep:"kader"}
 };
+// De hoofdknoppen bovenin de app: Libre/Driebanden/Bandstoten zijn losse disciplines, Kader is één
+// knop die daarna een sub-keuze toont tussen de vier varianten.
+const HOOFDDISCIPLINES=["libre","driebanden","bandstoten"];
+const KADER_VARIANTEN=["kader38","kader47","kader57","kader71"];
 const PUNTEN_PER_DROP=1000; // elke 1000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
 
 // Officiële KNBB-tafelmaten voor carambole: café-biljart, kleine matchtafel, halve match, grote
@@ -976,11 +1043,12 @@ function tafelVol(t){return(TAFELS[t]||TAFELS["230"]).vol;}
 //    partij uit de gemiddelde-berekening (net als bij golf-handicaps) — zo krijgt goed spelen ook
 //    direct invloed op je gemiddelde, zonder dat een mindere partij ooit "aftrekt".
 function berekenNiveauInfo(partijen){
-  const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten)};}).filter(function(x){return x.st;});
+  const discipline=(partijen&&partijen.length>0)?(partijen[0].discipline||"libre"):"libre";
+  const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten,discipline)};}).filter(function(x){return x.st;});
   let car=0,beurt=0;
   geldige.forEach(function(x){car+=x.st.totCar;beurt+=x.st.aantalBeurten;});
   const totaalGemiddelde=beurt>0?car/beurt:0;
-  const badgePunten=berekenPrestaties(partijen,null).reduce(function(a,r){return a+r.punten;},0);
+  const badgePunten=berekenPrestaties(partijen,null,discipline).reduce(function(a,r){return a+r.punten;},0);
 
   const aantalDrops=Math.floor(badgePunten/PUNTEN_PER_DROP);
   const gesorteerd=geldige.slice().sort(function(a,b){return parseFloat(a.st.gemPerBeurt)-parseFloat(b.st.gemPerBeurt);});
@@ -1100,11 +1168,11 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
   const ST=useMemo(()=>{
     return (partijen||[]).map(function(p){
-      const st=stat(p.beurten);
+      const st=stat(p.beurten,discipline);
       if(!st)return null;
       return{id:p.id,datum:p.datum,tafel:p.tafel||"230",tot:st.totCar,n:st.aantalBeurten,max:st.max,poedels:st.poedels,opbouw:st.opbouw5,gem:parseFloat(st.gemPerBeurt),beurten:p.beurten};
     }).filter(Boolean);
-  },[partijen]);
+  },[partijen,discipline]);
 
   const [va,setVa]=useState(0);
   const [tot,setTot]=useState(Math.max(ST.length-1,0));
@@ -1200,7 +1268,8 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   // ── PUNTEN: prestatie-badges, chronologisch berekend over de volledige geschiedenis ──
   const prestatiesMap=useMemo(()=>{
     const m={};
-    berekenPrestaties(partijen,tijdsvensterMaanden).forEach(r=>{m[r.id]=r;});
+    const disc=(partijen&&partijen.length>0)?(partijen[0].discipline||"libre"):"libre";
+    berekenPrestaties(partijen,tijdsvensterMaanden,disc).forEach(r=>{m[r.id]=r;});
     return m;
   },[partijen,tijdsvensterMaanden]);
   const puntenSel=useMemo(()=>sel.map(p=>Object.assign({},p,prestatiesMap[p.id]||{badges:[],punten:0})),[sel,prestatiesMap]);
@@ -1232,11 +1301,11 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   },[sel]);
 
   const histData=useMemo(()=>{
-    const buckets=[["0 (poedel)",0,0],["1-2",1,2],["3-4",3,4],["5-7",5,7],["8-9",8,9],["10+",10,Infinity]];
+    const buckets=histogramBuckets(discipline);
     const allCar=sel.flatMap(p=>p.beurten.map(b=>b.caramboles));
     const counts=buckets.map(([label,lo,hi])=>({label,n:allCar.filter(c=>c>=lo&&c<=hi).length}));
     return{counts,totBeurt:allCar.length};
-  },[sel]);
+  },[sel,discipline]);
 
   const poedelHerstel=useMemo(()=>{
     let tilt=0,klein=0,sterk=0,totaalPoedels=0,geenVolgende=0;
@@ -1369,7 +1438,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
             {kaart("Gem.",gemGem,"per beurt",parseFloat(gemGem)>=2.5?GRNT:parseFloat(gemGem)>=2?GOUD:ROOD)}
             {kaart("Max",filt.length?Math.max(...filt.map(p=>p.gem)):"—","partij",GOUDL)}
-            {kaart("Opbouw",filt.length?Math.round(filt.reduce((a,p)=>a+p.opbouw,0)/filt.reduce((a,p)=>a+p.n,0)*100)+"%":"—","beurten ≥5",GRNT)}
+            {kaart("Opbouw",filt.length?Math.round(filt.reduce((a,p)=>a+p.opbouw,0)/filt.reduce((a,p)=>a+p.n,0)*100)+"%":"—","beurten ≥"+beurtDrempels(discipline).opbouwMin,GRNT)}
           </div>
 
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
@@ -1493,9 +1562,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             {histData.totBeurt===0
               ?<div style={{fontSize:14,color:WITD}}>Geen beurten in selectie.</div>
               :<>
-                {histData.counts.map(({label,n})=>{
+                {histData.counts.map(({label,n},idx)=>{
                   const pct=Math.round(n/histData.totBeurt*100);
-                  const kleur=label==="0 (poedel)"?"#e08055":label==="10+"?"#ff9f40":label==="8-9"?GOUDL:label==="5-7"?GRNT:GOUD;
+                  const laatste=histData.counts.length-1;
+                  const kleur=idx===0?"#e08055":idx===laatste?"#ff9f40":idx===laatste-1?GOUDL:idx===laatste-2?GRNT:GOUD;
                   return(
                     <div key={label} style={{marginBottom:10}}>
                       <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
@@ -1624,7 +1694,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
 
       </div>
       {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={discipline} onClose={function(){setNiveauOpen(false);}}/>}
-      {badgeCatalogusOpen&&<BadgeCatalogus onClose={function(){setBadgeCatalogusOpen(false);}}/>}
+      {badgeCatalogusOpen&&<BadgeCatalogus discipline={discipline} onClose={function(){setBadgeCatalogusOpen(false);}}/>}
       {uitlegSectie&&(
         <div onClick={function(){setUitlegSectie(null);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.7)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
           <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid #7fd8e0",borderRadius:16,padding:"18px 18px",maxWidth:340,width:"100%",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
@@ -1639,11 +1709,11 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
 }
 
 
-function LogPartijRij({p,nr,prestatie,gedropt,onVerwijder,onNotitie}){
+function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
   const [open,setOpen]=useState(false);
   const [confVerwijder,setConfVerwijder]=useState(false);
   const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
-  const st=stat(p.beurten);
+  const st=stat(p.beurten,discipline);
   const punten=prestatie?prestatie.punten:0;
   return(
     <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,marginBottom:10}}>
@@ -1711,6 +1781,7 @@ function BiljartTracker(){
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
+  const [kaderKiezerOpen,setKaderKiezerOpen]=useState(false);
   const [deelResultaat,setDeelResultaat]=useState("");
   const [gekopieerd,setGekopieerd]=useState("");
   const [toonData,setToonData]=useState(false);
@@ -1731,7 +1802,7 @@ function BiljartTracker(){
   },[data,huidigeDiscplineVoorLading]);
 
   const prestatiesMap=useMemo(function(){
-    const arr=berekenPrestaties(alleP,tijdsvensterMaanden);
+    const arr=berekenPrestaties(alleP,tijdsvensterMaanden,huidigeDiscplineVoorLading);
     const m={};
     arr.forEach(function(r){m[r.id]=r;});
     return m;
@@ -1782,7 +1853,7 @@ function BiljartTracker(){
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
 
   const huidigeDiscipline=huidigeDiscplineVoorLading;
-  const stL=stat(lp);
+  const stL=stat(lp,huidigeDiscipline);
   const totCarLp=lp.reduce(function(a,b){return a+b.caramboles;},0);
   const voortgang=doelType==="beurten"?lp.length:totCarLp;
   const progPct=Math.min(100,Math.round(voortgang/doel*100));
@@ -1794,17 +1865,18 @@ function BiljartTracker(){
   }
 
   function checkLiveBadges(lpVoor,car){
+    const dLive=beurtDrempels(huidigeDiscipline);
     const items=[];
-    if(car>=5&&car<=7)items.push({emoji:"🎯",label:"Opbouw",punten:10,categorie:"Beurt-pieken"});
-    else if(car>=8&&car<=9)items.push({emoji:"🔥",label:"Sterke serie",punten:20,categorie:"Beurt-pieken"});
-    else if(car>=10)items.push({emoji:"💫",label:"Topserie",punten:35,categorie:"Beurt-pieken"});
+    if(car>=dLive.opbouwMin&&car<=dLive.opbouwMax)items.push({emoji:"🎯",label:"Opbouw",punten:10,categorie:"Beurt-pieken"});
+    else if(car>=dLive.sterkMin&&car<=dLive.sterkMax)items.push({emoji:"🔥",label:"Sterke serie",punten:20,categorie:"Beurt-pieken"});
+    else if(car>=dLive.topMin)items.push({emoji:"💫",label:"Topserie",punten:35,categorie:"Beurt-pieken"});
 
     const maxInPartijVoor=lpVoor.length?Math.max.apply(null,lpVoor.map(function(x){return x.caramboles;})):0;
     if(car>huidigeRecords.allTimeMaxBeurt&&huidigeRecords.allTimeMaxBeurt>0&&car>maxInPartijVoor){
       items.push({emoji:"🏆",label:"Nieuw record beurt!",punten:50,categorie:"Beurt-pieken"});
     }
 
-    if(lpVoor.length>0&&lpVoor[lpVoor.length-1].caramboles===0&&car>=5){
+    if(lpVoor.length>0&&lpVoor[lpVoor.length-1].caramboles===0&&car>=dLive.opbouwMin){
       items.push({emoji:"💪",label:"Sterk herstel na poedel",punten:15,categorie:"Mentaliteit"});
     }
 
@@ -1835,10 +1907,10 @@ function BiljartTracker(){
 
   function sluit(){
     if(!lp.length){setConfPartij(false);return;}
-    const st=stat(lp);
+    const st=stat(lp,huidigeDiscipline);
     const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp},st);
     const nieuweAlleP=data.partijen.concat([p]).filter(function(x){return(x.discipline||"libre")===huidigeDiscipline;});
-    const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden);
+    const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden,huidigeDiscipline);
     const prestatie=resultaten.find(function(r){return r.id===p.id;});
     const infoVoor=berekenNiveauInfo(alleP);
     const infoNa=berekenNiveauInfo(nieuweAlleP);
@@ -1928,15 +2000,16 @@ function BiljartTracker(){
   }
 
   function bouwTekst(){
-    const stA=stat(alleP.flatMap(function(p){return p.beurten;}));
+    const stA=stat(alleP.flatMap(function(p){return p.beurten;}),huidigeDiscipline);
     const r=["BILJART DATA — "+new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"}),"========================================"];
     if(stA)r.push("TOTAAL: "+alleP.length+" partijen · "+stA.totCar+"car · gem "+stA.gemPerBeurt+" · max "+stA.max+" · "+stA.poedels+" poedels");
     var alleOmgekeerd=[].concat(alleP).reverse();
+    const dTxt=beurtDrempels(huidigeDiscipline);
     alleOmgekeerd.forEach(function(p,i){
-      const st=stat(p.beurten);
+      const st=stat(p.beurten,huidigeDiscipline);
       r.push("");
       r.push("Partij "+(alleP.length-i)+" · "+new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})+(p.tafel?" · Tafel "+tafelVol(p.tafel):""));
-      if(st)r.push(st.aantalBeurten+"b · max "+st.max+" · gem "+st.gemPerBeurt+" · "+st.poedels+"x poedel · "+st.opbouw5+"x5+");
+      if(st)r.push(st.aantalBeurten+"b · max "+st.max+" · gem "+st.gemPerBeurt+" · "+st.poedels+"x poedel · "+st.opbouw5+"x"+dTxt.opbouwMin+"+");
       p.beurten.forEach(function(b,j){
         const g=(b.gemist||[]).join(", ");
         const gd=(b.goed||[]).join(", ");
@@ -2026,16 +2099,17 @@ function BiljartTracker(){
 
   // ── INVOER ──
   function Invoer(){
-    const s57=lp.filter(function(b){return b.caramboles>=5&&b.caramboles<=7;}).length;
-    const s89=lp.filter(function(b){return b.caramboles>=8&&b.caramboles<=9;}).length;
-    const s10=lp.filter(function(b){return b.caramboles>=10;}).length;
+    const dInv=beurtDrempels(huidigeDiscipline);
+    const s57=lp.filter(function(b){return b.caramboles>=dInv.opbouwMin&&b.caramboles<=dInv.opbouwMax;}).length;
+    const s89=lp.filter(function(b){return b.caramboles>=dInv.sterkMin&&b.caramboles<=dInv.sterkMax;}).length;
+    const s10=lp.filter(function(b){return b.caramboles>=dInv.topMin;}).length;
     const poedels=lp.filter(function(b){return b.caramboles===0;}).length;
     const poedelPct=lp.length>0?Math.round(poedels/lp.length*100):0;
     const opbouwPct=lp.length>0?Math.round((stL?stL.opbouw5:0)/lp.length*100):0;
     let partijPunten=0;
     if(lp.length>0){
-      const virtuelePartij=Object.assign({id:-1,datum:new Date().toISOString(),tafel:tafel,discipline:huidigeDiscipline,beurten:lp},stat(lp));
-      const resultaten=berekenPrestaties(alleP.concat([virtuelePartij]),tijdsvensterMaanden);
+      const virtuelePartij=Object.assign({id:-1,datum:new Date().toISOString(),tafel:tafel,discipline:huidigeDiscipline,beurten:lp},stat(lp,huidigeDiscipline));
+      const resultaten=berekenPrestaties(alleP.concat([virtuelePartij]),tijdsvensterMaanden,huidigeDiscipline);
       const entry=resultaten.find(function(r){return r.id===-1;});
       partijPunten=entry?entry.punten:0;
     }
@@ -2073,7 +2147,7 @@ function BiljartTracker(){
             <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 8px"}}>
               <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Series</div>
               <div style={{display:"flex",gap:4,justifyContent:"space-around"}}>
-                {[["5-7",s57,"#4caf50"],["8-9",s89,"#e8c96a"],["10+",s10,"#ff9f40"]].map(function(arr){
+                {[[dInv.opbouwMin+"-"+dInv.opbouwMax,s57,"#4caf50"],[dInv.sterkMin+"-"+dInv.sterkMax,s89,"#e8c96a"],[dInv.topMin+"+",s10,"#ff9f40"]].map(function(arr){
                   return(
                     <div key={arr[0]} style={{textAlign:"center"}}>
                       <div style={{fontSize:16,fontWeight:"bold",color:arr[1]>0?arr[2]:KBDR}}>{arr[1]}</div>
@@ -2095,10 +2169,10 @@ function BiljartTracker(){
                 onChange={function(e){const v=e.target.value;if(v===""||v==="-"){setInp(v);return;}const n=parseInt(v);if(!isNaN(n)&&n>=0){setCar(n);setInp(String(n));};}}
                 onFocus={function(e){e.target.select();}}
                 onKeyDown={function(e){if(e.key==="Enter")setFase("gemist");}}
-                style={{width:86,fontSize:48,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:"3px solid "+(car>=5?GRNT:GOUD),textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:3}}
+                style={{width:86,fontSize:48,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:"3px solid "+(car>=dInv.opbouwMin?GRNT:GOUD),textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:3}}
               />
-              <div style={{fontSize:13,color:car>=5?GRNT:GOUD,marginTop:4,height:18,lineHeight:"18px"}}>
-                {car===0?"Poedel":car>=10?"💫 Topserie!":car>=8?"🔥 Sterke serie!":car>=5?"🎯 Opbouw!":""}
+              <div style={{fontSize:13,color:car>=dInv.opbouwMin?GRNT:GOUD,marginTop:4,height:18,lineHeight:"18px"}}>
+                {car===0?"Poedel":car>=dInv.topMin?"💫 Topserie!":car>=dInv.sterkMin?"🔥 Sterke serie!":car>=dInv.opbouwMin?"🎯 Opbouw!":""}
               </div>
             </div>
             <button className="plusmin-btn" style={{width:60,height:60,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
@@ -2124,7 +2198,7 @@ function BiljartTracker(){
               else hints.push("⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(8-huidigeStreak)+" tot 25pt)");
             }
             if(lp.length>0&&lp[lp.length-1].caramboles===0){
-              hints.push("💪 Volgende beurt 5+ car = sterk herstel (+15pt)");
+              hints.push("💪 Volgende beurt "+dInv.opbouwMin+"+ car = sterk herstel (+15pt)");
             }
             if(stL){
               const gemNu=parseFloat(stL.gemPerBeurt);
@@ -2264,7 +2338,7 @@ function BiljartTracker(){
   // ── STATS ──
   function Stats(){
     const allB=alleP.flatMap(function(p){return p.beurten;});
-    const stA=stat(allB);
+    const stA=stat(allB,huidigeDiscipline);
     return(
       <div ref={statsScrollRef} style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
@@ -2357,12 +2431,12 @@ function BiljartTracker(){
                 );
               })}
             </div>
-            <div style={{fontSize:13,color:GRNT}}>Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten 5+</div>
+            <div style={{fontSize:13,color:GRNT}}>Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten {beurtDrempels(huidigeDiscipline).opbouwMin}+</div>
           </div>
         )}
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
-          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
+          {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} discipline={huidigeDiscipline} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
         </div>
                 {!confReset
           ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
@@ -2446,7 +2520,7 @@ function BiljartTracker(){
           </div>
         )}
         {[].concat(alleP).reverse().map(function(p,pi){
-          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;
+          return <LogPartijRij key={p.id} p={p} nr={alleP.length-pi} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} discipline={huidigeDiscipline} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;
         })}
       </div>
     );
@@ -2547,7 +2621,7 @@ function BiljartTracker(){
       )}
 
       <div style={{display:"flex",gap:6,padding:"8px 14px",background:"#152015",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
-        {Object.keys(DISCIPLINES).map(function(d){
+        {HOOFDDISCIPLINES.map(function(d){
           return(
             <button key={d} onClick={function(){wisselDiscipline(d);}}
               style={{flex:1,padding:"6px 0",background:huidigeDiscipline===d?"#2d4a1e":"none",border:"1px solid "+(huidigeDiscipline===d?GOUD:KBDR),borderRadius:8,color:huidigeDiscipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
@@ -2555,11 +2629,42 @@ function BiljartTracker(){
             </button>
           );
         })}
+        {(function(){
+          const kaderActief=KADER_VARIANTEN.indexOf(huidigeDiscipline)!==-1;
+          return(
+            <button onClick={function(){setKaderKiezerOpen(true);}}
+              style={{flex:1,padding:"6px 0",background:kaderActief?"#2d4a1e":"none",border:"1px solid "+(kaderActief?GOUD:KBDR),borderRadius:8,color:kaderActief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
+              {kaderActief?DISCIPLINES[huidigeDiscipline].naam:"Kader"}
+            </button>
+          );
+        })()}
       </div>
+      {kaderKiezerOpen&&(
+        <div onClick={function(){setKaderKiezerOpen(false);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:220,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
+          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:16,padding:"18px 16px",maxWidth:340,width:"100%"}}>
+            <div style={{fontSize:16,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Kies je kader-variant</div>
+            <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke variant heeft zijn eigen gemiddelde en niveau, los van de andere</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              {KADER_VARIANTEN.map(function(k){
+                const actief=huidigeDiscipline===k;
+                return(
+                  <button key={k} onClick={function(){wisselDiscipline(k);setKaderKiezerOpen(false);}}
+                    style={{padding:"12px 10px",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:10,color:actief?GOUD:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:15,textAlign:"left"}}>
+                    {DISCIPLINES[k].naam}
+                  </button>
+                );
+              })}
+            </div>
+            <div onClick={function(){setKaderKiezerOpen(false);}} style={{textAlign:"center",marginTop:14,fontSize:12,color:WITD,opacity:0.7,cursor:"pointer"}}>Tik om te sluiten</div>
+          </div>
+        </div>
+      )}
 
       <div style={{display:"flex",borderBottom:"1px solid "+KBDR,background:"#152015",flexShrink:0}}>
-        {[["spelen","Spelen"],["stats","Stats"],["data","Data"],["log","Log"],["dash","Dash"]].map(function(arr){
-          return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:tab===arr[0]?"#1c2c1c":"none",border:"none",color:tab===arr[0]?GOUD:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===arr[0]?"2px solid "+GOUD:"2px solid transparent"}}
+        {[["spelen","Spelen"],["stats","Stats"],["dash","Dash"],["log","Log"],["data","Data"]].map(function(arr){
+          const isDash=arr[0]==="dash";
+          const actief=tab===arr[0];
+          return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:actief?"#1c2c1c":(isDash?"rgba(201,168,76,0.06)":"none"),border:"none",color:actief?GOUD:(isDash?GOUDL:WITD),fontSize:isDash?15:14,fontWeight:isDash?"bold":"normal",cursor:"pointer",fontFamily:"inherit",borderBottom:actief?"2px solid "+GOUD:(isDash?"2px solid "+"#7a6a3a":"2px solid transparent")}}
             onClick={function(){setTab(arr[0]);}}>{arr[1]}</button>;
         })}
       </div>

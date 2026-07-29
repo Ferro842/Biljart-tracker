@@ -977,36 +977,37 @@ const NIVEAUS_BANDSTOTEN=[
 // Kader kent geen nette "5e klasse t/m Ereklasse"-systeem zoals Libre — de KNBB gebruikt hier losse
 // letter-intervallen en toernooiniveaus per variant, geen doorlopende klassenreeks. Onderstaande is
 // daarom een praktische, zelf opgezette indeling op basis van de officiële interval/partijlengte-
-// tabellen, geen letterlijke KNBB-klassenaam — vandaar steeds duidelijk "Klasse" i.p.v. "e klasse".
+// tabellen, geen letterlijke KNBB-klassenaam. Genummerd aflopend (3→2→1), net als bij Driebanden en
+// Bandstoten, zodat medaille en klassenummer overeenkomen (🥉=3, 🥈=2, 🥇=1).
 // 38/2 en 47/2 hebben 9 (grotere) vakken en zijn de instapvarianten; 57/2 en 71/2 hebben 6 (kleinere,
 // dus lastigere) vakken en liggen een niveau hoger.
 const NIVEAUS_KADER38=[
-  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 3",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
   {naam:"Klasse 2",gemDrempel:2.00,emoji:"🥈",kleur:"#c4c4cf"},
-  {naam:"Klasse 3",gemDrempel:4.00,emoji:"🥇",kleur:"#e8c96a"},
-  {naam:"Klasse 4",gemDrempel:7.00,emoji:"🏆",kleur:"#7fd8e0"},
-  {naam:"Klasse 5*",gemDrempel:11.00,emoji:"💎",kleur:"#ff9fd1"}
+  {naam:"Klasse 1",gemDrempel:4.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Hoofdklasse*",gemDrempel:7.00,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Ereklasse*",gemDrempel:11.00,emoji:"💎",kleur:"#ff9fd1"}
 ];
 const NIVEAUS_KADER47=[
-  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 3",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
   {naam:"Klasse 2",gemDrempel:2.00,emoji:"🥈",kleur:"#c4c4cf"},
-  {naam:"Klasse 3",gemDrempel:4.00,emoji:"🥇",kleur:"#e8c96a"},
-  {naam:"Klasse 4",gemDrempel:7.00,emoji:"🏆",kleur:"#7fd8e0"},
-  {naam:"Klasse 5*",gemDrempel:11.00,emoji:"💎",kleur:"#ff9fd1"}
+  {naam:"Klasse 1",gemDrempel:4.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Hoofdklasse*",gemDrempel:7.00,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Ereklasse*",gemDrempel:11.00,emoji:"💎",kleur:"#ff9fd1"}
 ];
 const NIVEAUS_KADER57=[
-  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 3",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
   {naam:"Klasse 2",gemDrempel:1.00,emoji:"🥈",kleur:"#c4c4cf"},
-  {naam:"Klasse 3",gemDrempel:2.00,emoji:"🥇",kleur:"#e8c96a"},
-  {naam:"Klasse 4",gemDrempel:3.50,emoji:"🏆",kleur:"#7fd8e0"},
-  {naam:"Klasse 5*",gemDrempel:5.50,emoji:"💎",kleur:"#ff9fd1"}
+  {naam:"Klasse 1",gemDrempel:2.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Hoofdklasse*",gemDrempel:3.50,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Ereklasse*",gemDrempel:5.50,emoji:"💎",kleur:"#ff9fd1"}
 ];
 const NIVEAUS_KADER71=[
-  {naam:"Klasse 1",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
+  {naam:"Klasse 3",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
   {naam:"Klasse 2",gemDrempel:1.00,emoji:"🥈",kleur:"#c4c4cf"},
-  {naam:"Klasse 3",gemDrempel:2.00,emoji:"🥇",kleur:"#e8c96a"},
-  {naam:"Klasse 4",gemDrempel:3.50,emoji:"🏆",kleur:"#7fd8e0"},
-  {naam:"Klasse 5*",gemDrempel:5.50,emoji:"💎",kleur:"#ff9fd1"}
+  {naam:"Klasse 1",gemDrempel:2.00,emoji:"🥇",kleur:"#e8c96a"},
+  {naam:"Hoofdklasse*",gemDrempel:3.50,emoji:"🏆",kleur:"#7fd8e0"},
+  {naam:"Ereklasse*",gemDrempel:5.50,emoji:"💎",kleur:"#ff9fd1"}
 ];
 const DISCIPLINES={
   libre:{naam:"Libre",niveaus:NIVEAUS_LIBRE},
@@ -2662,9 +2663,7 @@ function BiljartTracker(){
 
       <div style={{display:"flex",borderBottom:"1px solid "+KBDR,background:"#152015",flexShrink:0}}>
         {[["spelen","Spelen"],["stats","Stats"],["dash","Dash"],["log","Log"],["data","Data"]].map(function(arr){
-          const isDash=arr[0]==="dash";
-          const actief=tab===arr[0];
-          return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:actief?"#1c2c1c":(isDash?"rgba(201,168,76,0.06)":"none"),border:"none",color:actief?GOUD:(isDash?GOUDL:WITD),fontSize:isDash?15:14,fontWeight:isDash?"bold":"normal",cursor:"pointer",fontFamily:"inherit",borderBottom:actief?"2px solid "+GOUD:(isDash?"2px solid "+"#7a6a3a":"2px solid transparent")}}
+          return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:tab===arr[0]?"#1c2c1c":"none",border:"none",color:tab===arr[0]?GOUD:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===arr[0]?"2px solid "+GOUD:"2px solid transparent"}}
             onClick={function(){setTab(arr[0]);}}>{arr[1]}</button>;
         })}
       </div>

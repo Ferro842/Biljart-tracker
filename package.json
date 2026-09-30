@@ -1,0 +1,29 @@
+{
+  "name": "biljart-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "rm -rf www && mkdir www && cp index.html manifest.json sw.js icon192.png icon512.png www/",
+    "ios": "npm run build && npx cap sync ios && npx cap open ios"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ferro842/Biljart-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ferro842/Biljart-tracker/issues"
+  },
+  "homepage": "https://github.com/Ferro842/Biljart-tracker#readme",
+  "private": true,
+  "dependencies": {
+    "@capacitor/core": "^8.5.2",
+    "@capacitor/ios": "^8.5.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.2"
+  }
+}

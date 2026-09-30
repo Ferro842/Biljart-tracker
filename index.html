@@ -2000,6 +2000,46 @@ function BiljartTracker(){
     setData(nd);slaOp(nd);
   }
 
+  function exporteerData(){
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url;a.download="biljart-backup-"+new Date().toISOString().slice(0,10)+".json";
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  }
+
+  function importeerData(e){
+    const bestand=e.target.files&&e.target.files[0];
+    e.target.value="";
+    if(!bestand)return;
+    const reader=new FileReader();
+    reader.onload=function(){
+      let parsed;
+      try{parsed=JSON.parse(reader.result);}catch(err){parsed=null;}
+      if(!parsed||!Array.isArray(parsed.partijen)){
+        alert("Dit lijkt geen geldige back-up te zijn (geen partijen-lijst gevonden).");
+        return;
+      }
+      const perDiscipline={};
+      parsed.partijen.forEach(function(p){
+        const d=p.discipline||"libre";
+        perDiscipline[d]=(perDiscipline[d]||0)+1;
+      });
+      const overzicht=Object.keys(perDiscipline).map(function(d){return d+": "+perDiscipline[d];}).join(", ");
+      if(!window.confirm("Gevonden: "+parsed.partijen.length+" partijen ("+overzicht+").\n\nDit vervangt ALLE huidige data ("+data.partijen.length+" partijen). Doorgaan?"))return;
+      migreerTafels(parsed);
+      let maxId=0;
+      parsed.partijen.forEach(function(p){
+        maxId=Math.max(maxId,p.id||0);
+        (p.beurten||[]).forEach(function(b){maxId=Math.max(maxId,b.id||0);});
+      });
+      if(!(parsed.huidigeId>maxId))parsed.huidigeId=maxId+1;
+      setData(parsed);slaOp(parsed);
+    };
+    reader.readAsText(bestand);
+  }
+
   function bouwTekst(){
     const stA=stat(alleP.flatMap(function(p){return p.beurten;}),huidigeDiscipline);
     const r=["BILJART DATA — "+new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"}),"========================================"];
@@ -2506,6 +2546,20 @@ function BiljartTracker(){
               style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
           </div>
         )}
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Back-up</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
+            Sla al je data op als bestand, of zet een eerder bestand terug.
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
+              onClick={exporteerData}>📤 Exporteer data</button>
+            <label style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit",textAlign:"center",boxSizing:"border-box"}}>
+              📥 Importeer data
+              <input type="file" accept=".json,application/json" onChange={importeerData} style={{display:"none"}}/>
+            </label>
+          </div>
+        </div>
       </div>
     );
   }

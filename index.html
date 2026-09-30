@@ -72,6 +72,8 @@ const GOED=[
 ];
 
 const SK="biljart-tracker-v2";
+// true in de native iOS-app; de class "native" wordt gezet door het script in <head>
+const IS_NATIVE=document.documentElement.classList.contains("native");
 
 // Wat een "goede", "sterke" en "top"-beurt is, verschilt enorm per discipline — bij Driebanden is
 // 1 carambole al een prestatie, bij Libre pas 5+. Kader 38/2 en 47/2 (grotere vakken) liggen dicht bij
@@ -276,7 +278,53 @@ function migreerTafels(d){
   return changed;
 }
 
+// In de iOS-app (Capacitor) staat de data in een bestand in de Library-map van de app: dat blijft
+// bewaard en gaat mee in iPhone-backups, anders dan de localStorage van de webview. localStorage wordt
+// daarnaast bijgehouden als extra kopie. De webversie gebruikt alleen localStorage.
+const DATA_BESTAND="biljart-data.json",DATA_TMP="biljart-data.tmp";
+function nativeFS(){return window.Capacitor.Plugins.Filesystem;}
+async function leesNative(pad){
+  try{
+    const r=await nativeFS().readFile({path:pad,directory:"LIBRARY",encoding:"utf8"});
+    const d=JSON.parse(r.data);
+    return d&&Array.isArray(d.partijen)?d:null;
+  }catch(e){return null;}
+}
+// Schrijven gaat via een tijdelijk bestand dat daarna wordt hernoemd, zodat een crash halverwege nooit
+// een half bestand achterlaat. De wachtrij zorgt dat snel opeenvolgende saves niet door elkaar lopen.
+let schrijfRij=Promise.resolve();
+function schrijfNative(json){
+  schrijfRij=schrijfRij.then(async function(){
+    await nativeFS().writeFile({path:DATA_TMP,data:json,directory:"LIBRARY",encoding:"utf8"});
+    try{await nativeFS().deleteFile({path:DATA_BESTAND,directory:"LIBRARY"});}catch(e){}
+    await nativeFS().rename({from:DATA_TMP,to:DATA_BESTAND,directory:"LIBRARY",toDirectory:"LIBRARY"});
+  }).catch(function(e){console.log("Native opslaan mislukt:",e);});
+  return schrijfRij;
+}
+
 async function laadData(){
+  if(IS_NATIVE){
+    // Het tijdelijke bestand is de fallback voor als de app crashte tussen verwijderen en hernoemen
+    const d=(await leesNative(DATA_BESTAND))||(await leesNative(DATA_TMP));
+    if(d){
+      console.log("Geladen uit native bestand: "+d.partijen.length+" partijen");
+      let changed=migreerTafels(d);
+      if(d.onboardingGezien===undefined&&d.partijen.length>0){d.onboardingGezien=true;changed=true;}
+      if(changed)await slaOp(d);
+      return d;
+    }
+    // Nog geen bestand: eenmalige migratie van bestaande localStorage-data (die blijft ook staan)
+    const oud=await laadWebData();
+    if(oud.partijen.length>0){
+      await slaOp(oud);
+      console.log("Gemigreerd naar native bestand: "+oud.partijen.length+" partijen");
+    }
+    return oud;
+  }
+  return laadWebData();
+}
+
+async function laadWebData(){
   // Eerst localStorage
   try{
     const s=localStorage.getItem(SK);
@@ -312,6 +360,7 @@ async function laadData(){
   return{huidigeId:1,partijen:[]};
 }
 async function slaOp(d){
+  if(IS_NATIVE)await schrijfNative(JSON.stringify(d));
   try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){console.log("Opslaan mislukt:",e);}
   try{if(window.storage)await window.storage.set(SK,JSON.stringify(d));}catch(e){}
 }
@@ -2010,11 +2059,24 @@ function BiljartTracker(){
     setData(nd);slaOp(nd);
   }
 
-  function exporteerData(){
+  async function exporteerData(){
+    const naam="biljart-backup-"+new Date().toISOString().slice(0,10)+".json";
+    if(IS_NATIVE){
+      // In de iOS-app werkt een download-link niet: schrijf een tijdelijk bestand en open het deelmenu
+      // (Bewaar in Bestanden, AirDrop, mail, ...).
+      try{
+        await nativeFS().writeFile({path:naam,data:JSON.stringify(data,null,2),directory:"CACHE",encoding:"utf8"});
+        const r=await nativeFS().getUri({path:naam,directory:"CACHE"});
+        await window.Capacitor.Plugins.Share.share({files:[r.uri]});
+      }catch(e){
+        if(!/cancel/i.test(String(e&&e.message)))alert("Exporteren mislukt: "+(e&&e.message||e));
+      }
+      return;
+    }
     const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
     const url=URL.createObjectURL(blob);
     const a=document.createElement("a");
-    a.href=url;a.download="biljart-backup-"+new Date().toISOString().slice(0,10)+".json";
+    a.href=url;a.download=naam;
     document.body.appendChild(a);a.click();document.body.removeChild(a);
     setTimeout(function(){URL.revokeObjectURL(url);},1000);
   }

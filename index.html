@@ -686,7 +686,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
     },
     {
       titel:"Kies je discipline",
-      body:"Libre, Driebanden, Bandstoten en Kader (38/2, 47/2, 57/2 en 71/2) zijn losse trajecten — elk met een eigen gemiddelde en niveau, helemaal gescheiden van elkaar. Kies hieronder waar je mee begint; Kader en wisselen vind je altijd bovenin de app.",
+      body:"Libre, Driebanden, Bandstoten en Kader (38/2, 47/2, 57/2 en 71/2) zijn losse trajecten — elk met een eigen gemiddelde en niveau, helemaal gescheiden van elkaar. Je kunt in de app altijd van discipline wisselen.",
       kies:true
     },
     {
@@ -721,6 +721,8 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
   ].filter(function(s){return IS_NATIVE?!s.alleenWeb:!s.alleenApp;});
   const s=schermen[stap];
   const laatste=stap===schermen.length-1;
+  const kaderActief=KADER_VARIANTEN.indexOf(discipline)!==-1;
+  const [kaderOpen,setKaderOpen]=useState(kaderActief);
   return(
     <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
       <div style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"22px 20px",maxWidth:380,width:"100%",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
@@ -732,15 +734,34 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
         <div style={{fontSize:19,fontWeight:"bold",color:GOUD,textAlign:"center",marginBottom:10}}>{s.titel}</div>
         <div style={{fontSize:14,color:WITD,textAlign:"center",lineHeight:1.5,marginBottom:16}}>{s.body}</div>
         {s.kies&&(
-          <div style={{display:"flex",gap:6,marginBottom:16}}>
-            {HOOFDDISCIPLINES.map(function(d){
-              return(
-                <button key={d} onClick={function(){wisselDiscipline(d);}}
-                  style={{flex:1,padding:"9px 4px",background:discipline===d?"#2d4a1e":"none",border:"1px solid "+(discipline===d?GOUD:KBDR),borderRadius:8,color:discipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
-                  {DISCIPLINES[d].naam}
-                </button>
-              );
-            })}
+          <div style={{marginBottom:16}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+              {HOOFDDISCIPLINES.map(function(d){
+                return(
+                  <button key={d} onClick={function(){wisselDiscipline(d);setKaderOpen(false);}}
+                    style={{padding:"9px 4px",background:discipline===d?"#2d4a1e":"none",border:"1px solid "+(discipline===d?GOUD:KBDR),borderRadius:8,color:discipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
+                    {DISCIPLINES[d].naam}
+                  </button>
+                );
+              })}
+              <button onClick={function(){setKaderOpen(function(v){return !v;});}}
+                style={{padding:"9px 4px",background:kaderActief?"#2d4a1e":"none",border:"1px solid "+(kaderActief||kaderOpen?GOUD:KBDR),borderRadius:8,color:kaderActief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
+                {kaderActief?DISCIPLINES[discipline].naam:"Kader"} {kaderOpen?"▴":"▾"}
+              </button>
+            </div>
+            {kaderOpen&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,marginTop:6}}>
+                {KADER_VARIANTEN.map(function(k){
+                  const actief=discipline===k;
+                  return(
+                    <button key={k} onClick={function(){wisselDiscipline(k);}}
+                      style={{padding:"8px 2px",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
+                      {DISCIPLINES[k].naam.replace("Kader ","")}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
         {s.lijst&&(

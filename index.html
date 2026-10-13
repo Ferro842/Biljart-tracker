@@ -73,7 +73,7 @@ const GOED=[
 
 const SK="biljart-tracker-v2";
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-13.3";
+const APP_VERSIE="2026-10-13.4";
 // true in de native iOS-app; de class "native" wordt gezet door het script in <head>
 const IS_NATIVE=document.documentElement.classList.contains("native");
 
@@ -1657,14 +1657,6 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             </div>}
           </div>
 
-          {sel.length>0&&<div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
-              <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Alle beurten</span>
-              <span style={{fontSize:12,color:WITD}}>{sel.length} partijen · {sel.reduce((a,p)=>a+p.n,0)} beurten</span>
-            </div>
-            <BeurtenTijdlijn partijen={sel} nummers={sel.map(p=>ST.indexOf(p)+1)} discipline={discipline}/>
-          </div>}
-
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
             <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Uitschieters weggooien</div>
             <div style={{display:"flex",gap:10,marginBottom:8}}>
@@ -1684,6 +1676,13 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               <span style={{fontSize:20,fontWeight:"bold",color:parseFloat(gemGem)>=2?GOUD:WITD}}>{gemGem}</span>
             </div>
           </div>
+          {sel.length>0&&<div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
+              <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Alle beurten</span>
+              <span style={{fontSize:12,color:WITD}}>{sel.length} partijen · {sel.reduce((a,p)=>a+p.n,0)} beurten</span>
+            </div>
+            <BeurtenTijdlijn partijen={sel} nummers={sel.map(p=>ST.indexOf(p)+1)} discipline={discipline}/>
+          </div>}
         </div>}
 
         {/* CONSISTENTIE */}

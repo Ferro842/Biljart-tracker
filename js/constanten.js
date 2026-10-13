@@ -29,6 +29,10 @@ const GOED=[
 ];
 
 const SK="biljart-tracker-v2";
+// Openbare adressen van de app, o.a. voor "Deel deze app" vanuit de iOS-app. APP_STORE_URL invullen
+// zodra de app in de App Store staat (vorm: https://apps.apple.com/app/id1234567890).
+const WEB_URL="https://ferro842.github.io/Biljart-tracker/";
+const APP_STORE_URL=null;
 
 // Niveautabellen op basis van de officiële KNBB-klassegrenzen (moyennetabel dagbiljarten, libre/
 // driebanden/bandstoten klein). Boven de hoogste officiële "klein"-klasse (waar de top overstapt op

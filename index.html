@@ -24,17 +24,17 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-13.9">
+<link rel="stylesheet" href="css/app.css?v=2026-10-13.10">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-13.9"></script>
-<script src="js/berekeningen.js?v=2026-10-13.9"></script>
-<script src="js/opslag.js?v=2026-10-13.9"></script>
+<script src="js/constanten.js?v=2026-10-13.10"></script>
+<script src="js/berekeningen.js?v=2026-10-13.10"></script>
+<script src="js/opslag.js?v=2026-10-13.10"></script>
 <script type="text/babel">
 const {useState,useEffect,useRef,useMemo}=React;
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-13.9";
+const APP_VERSIE="2026-10-13.10";
 
 function Grafiek({beurten}){
   if(!beurten||beurten.length<2)return null;
@@ -1572,7 +1572,9 @@ function BiljartTracker(){
   }
 
   function deelApp(){
-    const url=window.location.href;
+    // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link (zodra die
+    // er is) of anders de website.
+    const url=IS_NATIVE?(APP_STORE_URL||WEB_URL):window.location.href;
     const tekst="Ik gebruik deze Biljart Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?";
     if(navigator.share){
       navigator.share({title:"Biljart Tracker",text:tekst,url:url}).catch(function(){});
@@ -2128,13 +2130,15 @@ function BiljartTracker(){
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
             <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Over deze app</div>
             <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-              Biljart Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.
+              Biljart Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.
             </div>
             <button onClick={deelApp} style={{width:"100%",padding:11,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit",marginBottom:8}}>
               📤 Deel deze app
             </button>
             {deelResultaat&&<div style={{textAlign:"center",fontSize:12,color:GRNT}}>{deelResultaat}</div>}
-            <div style={{textAlign:"center",fontSize:11,color:WITD,opacity:0.6,marginTop:4}}>Versie {APP_VERSIE}</div>
+            <div style={{textAlign:"center",fontSize:11,color:WITD,opacity:0.6,marginTop:4}}>
+              Versie {APP_VERSIE} · <a href={WEB_URL+"privacy.html"} target="_blank" rel="noopener" style={{color:WITD}}>Privacybeleid</a>
+            </div>
           </div>
       </div>
     );

@@ -20,20 +20,21 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
   if(vp)vp.content+=", viewport-fit=cover";
 }
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-13.8">
+<!-- React 18.2.0 en Babel 7.23.2 staan lokaal in vendor/ (identiek aan cdnjs), zodat de app zonder internet start -->
+<script src="vendor/react.production.min.js"></script>
+<script src="vendor/react-dom.production.min.js"></script>
+<script src="vendor/babel.min.js"></script>
+<link rel="stylesheet" href="css/app.css?v=2026-10-13.9">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-13.8"></script>
-<script src="js/berekeningen.js?v=2026-10-13.8"></script>
-<script src="js/opslag.js?v=2026-10-13.8"></script>
+<script src="js/constanten.js?v=2026-10-13.9"></script>
+<script src="js/berekeningen.js?v=2026-10-13.9"></script>
+<script src="js/opslag.js?v=2026-10-13.9"></script>
 <script type="text/babel">
 const {useState,useEffect,useRef,useMemo}=React;
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-13.8";
+const APP_VERSIE="2026-10-13.9";
 
 function Grafiek({beurten}){
   if(!beurten||beurten.length<2)return null;

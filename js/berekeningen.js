@@ -381,3 +381,10 @@ function besteVenster(waarden,lengte,richting){
   }
   return{van:besteVan,tot:besteVan+lengte-1,gemiddelde:besteSom/lengte};
 }
+
+// "Je gemiddelde" in de app is altijd het gemiddelde ZONDER de slechtste partijen die je met badge-punten
+// hebt weggespeeld (1 per PUNTEN_PER_DROP). Deze tekst legt dat uit, overal op dezelfde manier.
+function gemUitleg(info,dec,periode){
+  if(!info.aantalDrops)return"alle partijen tellen mee";
+  return"zonder je "+(info.aantalDrops===1?"slechtste partij":info.aantalDrops+" slechtste partijen")+(periode||"")+" (met alle partijen: "+info.totaalGemiddelde.toFixed(dec)+")";
+}

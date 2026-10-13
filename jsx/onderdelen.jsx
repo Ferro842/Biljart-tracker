@@ -4,7 +4,8 @@
 
 const {useState,useEffect,useRef,useMemo}=React;
 
-function Grafiek({beurten}){
+function Grafiek({beurten,discipline}){
+  const opbouwMin=beurtDrempels(discipline||"libre").opbouwMin;
   if(!beurten||beurten.length<2)return null;
   const vals=beurten.map(b=>b.caramboles);
   const maxV=Math.max(...vals,1);
@@ -19,10 +20,10 @@ function Grafiek({beurten}){
         <polyline points={ps} fill="none" stroke={GOUD} strokeWidth="1.5" strokeLinejoin="round"/>
         {vals.map(function(v,i){
           const cx=lp+i*ppp,cy=tp+H-(v/maxV)*H;
-          const k=v>=10?"#ff9f40":v>=8?"#e8c96a":v>=5?GRNT:GOUD;
+          const k=beurtKleur(v,discipline||"libre");
           return React.createElement("g",{key:i},
-            React.createElement("circle",{cx:cx,cy:cy,r:v>=5?3:2,fill:k}),
-            React.createElement("text",{x:cx,y:cy-5,textAnchor:"middle",fontSize:fs,fill:k,fontFamily:"Georgia,serif",fontWeight:v>=5?"bold":"normal"},v)
+            React.createElement("circle",{cx:cx,cy:cy,r:v>=opbouwMin?3:2,fill:k}),
+            React.createElement("text",{x:cx,y:cy-5,textAnchor:"middle",fontSize:fs,fill:k,fontFamily:"Georgia,serif",fontWeight:v>=opbouwMin?"bold":"normal"},v)
           );
         })}
       </svg>
@@ -48,7 +49,7 @@ function OpmGrid({lijst,prefix,kleur,geselecteerd,toggle}){
   );
 }
 
-function LogRij({b,nr}){
+function LogRij({b,nr,discipline}){
   const isPoedel=b.caramboles===0;
   const heeftGemist=(b.gemist||[]).length>0;
   const heeftGoed=(b.goed||[]).length>0;
@@ -57,7 +58,7 @@ function LogRij({b,nr}){
     <div style={{borderBottom:"1px solid "+KBDR,padding:"5px 0"}}>
       <div style={{display:"flex",alignItems:"center",gap:6}}>
         <span style={{fontSize:13,color:WITD,minWidth:18,textAlign:"right"}}>{nr}</span>
-        <span style={{fontSize:20,fontWeight:"bold",color:b.caramboles>=5?GOUDL:isPoedel?"#e08055":WIT,minWidth:26}}>{b.caramboles}</span>
+        <span style={{fontSize:20,fontWeight:"bold",color:b.caramboles>=beurtDrempels(discipline||"libre").opbouwMin?GOUDL:isPoedel?"#e08055":WIT,minWidth:26}}>{b.caramboles}</span>
         <div style={{flex:1,display:"flex",gap:3,flexWrap:"wrap",alignItems:"center"}}>
           {isPoedel&&<span style={{fontSize:13,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>poedel</span>}
           {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
@@ -249,7 +250,7 @@ function DashBalk({pct,kleur,hoogte=8}){
   );
 }
 
-function DashGrafiek({data,h=70}){
+function DashGrafiek({data,h=70,grenzen}){
   if(!data||data.length<2)return null;
   const vals=data.filter(v=>v!==null);
   if(vals.length<1)return null;
@@ -270,7 +271,7 @@ function DashGrafiek({data,h=70}){
   return(
     <div style={{overflowX:"auto"}}>
       <svg width={W} height={h+8} style={{display:"block"}}>
-        {[1,2,3].map(v=>(
+        {(grenzen?[grenzen.laag,grenzen.hoog]:[1,2,3]).filter(v=>v>0).map(v=>(
           <line key={v} x1={0} y1={h-(v/max)*(h-8)+4} x2={W} y2={h-(v/max)*(h-8)+4}
             stroke={KBDR} strokeWidth="0.5" strokeDasharray="3,3"/>
         ))}
@@ -280,7 +281,7 @@ function DashGrafiek({data,h=70}){
         {data.map((v,i)=>{
           if(v===null)return null;
           const cx=i*16+8, cy=h-(v/max)*(h-8)+4;
-          const k=v>=2.5?GRNT:v>=2?GOUD:v>=1.5?WITD:ROOD;
+          const k=grenzen?gemKleur(v,grenzen):v>=2.5?GRNT:v>=2?GOUD:v>=1.5?WITD:ROOD;
           return <g key={i}>
             <circle cx={cx} cy={cy} r={3} fill={k}/>
             <text x={cx} y={cy-6} textAnchor="middle" fontSize="8" fill={k} fontFamily="Georgia">{v}</text>

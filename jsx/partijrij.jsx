@@ -21,7 +21,7 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
       </button>
       {open&&(
         <div style={{paddingBottom:10}}>
-          <Grafiek beurten={p.beurten}/>
+          <Grafiek beurten={p.beurten} discipline={discipline}/>
           <div style={{display:"flex",gap:6,marginTop:8,flexWrap:"wrap"}}>
             {[[dRij.opbouwMin+"-"+dRij.opbouwMax,st.opbouw57,"#4caf50"],[dRij.sterkMin+"-"+dRij.sterkMax,st.opbouw89,"#e8c96a"],[dRij.topMin+"+",st.opbouw10,"#ff9f40"]].map(function(arr){
               const l=arr[0],n=arr[1],k=arr[2];
@@ -85,7 +85,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie})
       {open&&(
         <div style={{padding:"0 14px 12px"}}>
           <PrestatieOverzicht prestatie={prestatie}/>
-          {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i}/>;}) }
+          {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i} discipline={discipline}/>;}) }
           {onNotitie&&(
             <div style={{marginTop:8}}>
               <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Notitie</div>

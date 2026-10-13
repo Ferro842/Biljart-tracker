@@ -8,7 +8,7 @@ function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij
       {lp.length>0&&(
         <div style={{background:KBG,border:"2px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:10}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Lopende partij</div>
-          {[].concat(lp).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={lp.length-i}/>;}) }
+          {[].concat(lp).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={lp.length-i} discipline={huidigeDiscipline}/>;}) }
         </div>
       )}
       {[].concat(alleP).reverse().map(function(p,pi){

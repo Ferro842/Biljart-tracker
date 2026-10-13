@@ -297,6 +297,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   },[ST,va,tot,geselecteerdeMaanden]);
   const sel=useMemo(()=>tafelFilter==="alle"?selRange:selRange.filter(p=>p.tafel===tafelFilter),[selRange,tafelFilter]);
 
+  // Kleuren van gemiddeldes volgen je klassegrenzen in deze discipline (zie gemGrenzen)
+  const grenzen=gemGrenzen(niveau.effectiefGemiddelde||0,discipline);
+  const decD=discipline==="driebanden"?3:2;
+
   const maxTrim=Math.max(0,Math.floor((sel.length-1)/2));
   const trimLClamped=Math.min(trimL,maxTrim);
   const trimHClamped=Math.min(trimH,maxTrim);
@@ -365,6 +369,8 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     });
     return Object.entries(groups);
   },[sel]);
+  // Volle balk per maand: ruim boven je volgende klasse, of het beste maandgemiddelde als dat hoger is
+  const maandSchaal=Math.max(grenzen.hoog*1.25,...maandGroepen.map(([,ps])=>ps.reduce((a,p)=>a+p.tot,0)/Math.max(1,ps.reduce((a,p)=>a+p.n,0))));
 
   // ── PUNTEN: prestatie-badges, chronologisch berekend over de volledige geschiedenis ──
   const prestatiesMap=useMemo(()=>{
@@ -537,7 +543,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         {/* TREND */}
         {tab==="trend"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-            {kaart("Gem.",gemGem,"alle partijen in selectie",parseFloat(gemGem)>=2.5?GRNT:parseFloat(gemGem)>=2?GOUD:ROOD)}
+            {kaart("Gem.",gemGem,"alle partijen in selectie",gemKleur(parseFloat(gemGem),grenzen))}
             {kaart("Max",filt.length?Math.max(...filt.map(p=>p.gem)):"—","partij",GOUDL)}
             {kaart("Opbouw",filt.length?Math.round(filt.reduce((a,p)=>a+p.opbouw,0)/filt.reduce((a,p)=>a+p.n,0)*100)+"%":"—","beurten ≥"+beurtDrempels(discipline).opbouwMin,GRNT)}
           </div>
@@ -557,7 +563,12 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               {filt.length>=3&&w3&&<span style={{color:GOUD}}>── 3-partij</span>}
               {filt.length>=5&&w5&&<span style={{color:WIT}}>╌╌ 5-partij</span>}
             </div>
-            <DashGrafiek data={rolGems}/>
+            <DashGrafiek data={rolGems} grenzen={grenzen}/>
+            <div style={{fontSize:11,color:WITD,marginTop:4,display:"flex",gap:10,flexWrap:"wrap"}}>
+              <span style={{color:GRNT}}>● vanaf {grenzen.hoog.toFixed(decD)}{grenzen.volgendeNaam?" ("+grenzen.volgendeNaam+")":""}</span>
+              <span style={{color:GOUD}}>● {grenzen.laag.toFixed(decD)}–{grenzen.hoog.toFixed(decD)}{grenzen.volgendeNaam?" ("+grenzen.huidigNaam+")":""}</span>
+              <span style={{color:ROOD}}>● onder {grenzen.laag.toFixed(decD)}</span>
+            </div>
             {((filt.length>=3&&w3)||(filt.length>=5&&w5))&&<div style={{marginTop:6,display:"flex",gap:12,fontSize:13}}>
               {filt.length>=3&&w3&&<span style={{color:GOUD}}>3p nu: <strong>{r3.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
               {filt.length>=5&&w5&&<span style={{color:WIT}}>5p nu: <strong>{r5.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
@@ -580,7 +591,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             </div>
             <div style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px"}}>
               <span style={{fontSize:13,color:WITD}}>Gefilterd gemiddelde: </span>
-              <span style={{fontSize:20,fontWeight:"bold",color:parseFloat(gemGem)>=2?GOUD:WITD}}>{gemGem}</span>
+              <span style={{fontSize:20,fontWeight:"bold",color:parseFloat(gemGem)>=grenzen.laag?GOUD:WITD}}>{gemGem}</span>
             </div>
           </div>
           {sel.length>0&&<div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
@@ -714,9 +725,9 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               {[[`p1–p${h}`,g1,h1],[`p${h+1}–p${sel.length}`,g2,h2]].map(([label,gem,ps])=>(
                 <div key={label} style={{background:"#1a3019",borderRadius:8,padding:"12px",textAlign:"center"}}>
                   <div style={{fontSize:13,color:WITD,marginBottom:4}}>{label}</div>
-                  <div style={{fontSize:28,fontWeight:"bold",color:parseFloat(gem)>=2.5?GRNT:parseFloat(gem)>=2?GOUD:ROOD}}>{gem}</div>
+                  <div style={{fontSize:28,fontWeight:"bold",color:gemKleur(parseFloat(gem),grenzen)}}>{gem}</div>
                   <div style={{fontSize:12,color:WITD,marginTop:4}}>{ps.length} partijen</div>
-                  <div style={{fontSize:12,color:GRNT}}>{Math.round(ps.filter(p=>p.gem>=2).length/Math.max(ps.length,1)*100)}% boven 2.0</div>
+                  <div style={{fontSize:12,color:GRNT}}>{Math.round(ps.filter(p=>p.gem>=grenzen.hoog).length/Math.max(ps.length,1)*100)}% vanaf {grenzen.hoog.toFixed(decD)}</div>
                 </div>
               ))}
             </div>
@@ -731,14 +742,14 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Per maand</div>
             {maandGroepen.map(([naam,ps])=>{
               const gem=(ps.reduce((a,p)=>a+p.tot,0)/ps.reduce((a,p)=>a+p.n,0)).toFixed(2);
-              const k=parseFloat(gem)>=2.5?GRNT:parseFloat(gem)>=2?GOUD:WITD;
+              const k=parseFloat(gem)>=grenzen.hoog?GRNT:parseFloat(gem)>=grenzen.laag?GOUD:WITD;
               return(
                 <div key={naam} style={{marginBottom:10}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
                     <span style={{fontSize:14,color:WITD}}>{naam} <span style={{fontSize:12,color:WITD}}>({ps.length}p)</span></span>
                     <span style={{fontSize:14,fontWeight:"bold",color:k}}>{gem}</span>
                   </div>
-                  <DashBalk pct={parseFloat(gem)/4*100} kleur={k}/>
+                  <DashBalk pct={parseFloat(gem)/maandSchaal*100} kleur={k}/>
                 </div>
               );
             })}

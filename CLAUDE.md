@@ -50,6 +50,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 - Tafels: "210", "230", "255", "284" (KNBB-maten).
 - Niveaus: libre volgt de KNBB-tabel; kader is een eigen praktische indeling, geen officiële KNBB-klassen.
 - Badge-drempels per discipline uit `beurtDrempels()`/`histogramBuckets()`; nooit libre-waarden hardcoden.
+  Kleur van een beurt: `beurtKleur()`. Kleur van een gemiddelde: `gemGrenzen()`/`gemKleur()` (groen vanaf je
+  volgende klasse, goud binnen je huidige klasse, rood daaronder).
 - Elke `PUNTEN_PER_DROP` (1000) badge-punten schrapt de slechtste partij uit het gemiddelde.
   **"Je gemiddelde" is overal het gemiddelde zonder die geschrapte partijen**; leg dat uit met `gemUitleg()`.
   Waar alle partijen meetellen, zeg dat er expliciet bij.
@@ -90,8 +92,8 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ## Open punten
 
-- Kleurgrenzen in Dash (Gem.-kaart, rolling-grafiek, Vergelijk, "% boven 2.0") en in `Grafiek` zijn nog
-  libre-waarden; moeten per discipline.
+- De ⭐-badge ("Gemiddelde boven …") en de Consistentie-drempels in Dash werken in stappen van 0,5; voor
+  driebanden (gemiddeldes rond 0,4) is dat te grof.
 - "Sterk herstel na poedel": `berekenPrestaties` en de Dash-patronen gebruiken vast 5 car, de catalogus,
   live-toast en hint gebruiken `opbouwMin`.
 - Dash toont op sommige plekken `p{id}` (intern id) in plaats van het partijnummer.

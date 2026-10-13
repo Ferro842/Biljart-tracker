@@ -232,7 +232,7 @@ function InvoerScherm({spel}){
         })()}
         {lp.length>1&&(
           <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"6px 8px"}}>
-            <Grafiek beurten={lp}/>
+            <Grafiek beurten={lp} discipline={huidigeDiscipline}/>
           </div>
         )}
       </div>

@@ -388,3 +388,21 @@ function gemUitleg(info,dec,periode){
   if(!info.aantalDrops)return"alle partijen tellen mee";
   return"zonder je "+(info.aantalDrops===1?"slechtste partij":info.aantalDrops+" slechtste partijen")+(periode||"")+" (met alle partijen: "+info.totaalGemiddelde.toFixed(dec)+")";
 }
+
+// Kleurgrenzen voor een gemiddelde, per discipline en op basis van je huidige klasse: groen vanaf de
+// drempel van je volgende klasse, goud binnen je huidige klasse, rood daaronder. In de laagste klasse
+// (drempel 0) ligt de ondergrens halverwege de volgende klasse; in de hoogste klasse ligt de bovengrens
+// 20% boven je klassedrempel.
+function gemGrenzen(effectiefGemiddelde,discipline){
+  const n=bepaalNiveau(effectiefGemiddelde,discipline);
+  const laag=n.huidig.gemDrempel>0?n.huidig.gemDrempel:(n.volgende?n.volgende.gemDrempel/2:0);
+  const hoog=n.volgende?n.volgende.gemDrempel:n.huidig.gemDrempel*1.2;
+  return{laag:laag,hoog:hoog,huidigNaam:n.huidig.naam,volgendeNaam:n.volgende?n.volgende.naam:null};
+}
+function gemKleur(v,grenzen){return v>=grenzen.hoog?GRNT:v>=grenzen.laag?GOUD:ROOD;}
+
+// Kleur van een beurt (caramboles) volgens de drempels van de discipline, zoals in de beurtengrafiek
+function beurtKleur(v,discipline){
+  const d=beurtDrempels(discipline);
+  return v===0?"#e08055":v>=d.topMin?"#ff9f40":v>=d.sterkMin?GOUDL:v>=d.opbouwMin?GRNT:GOUD;
+}

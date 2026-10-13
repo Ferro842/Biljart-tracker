@@ -73,7 +73,7 @@ const GOED=[
 
 const SK="biljart-tracker-v2";
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-13.2";
+const APP_VERSIE="2026-10-13.3";
 // true in de native iOS-app; de class "native" wordt gezet door het script in <head>
 const IS_NATIVE=document.documentElement.classList.contains("native");
 
@@ -1038,6 +1038,88 @@ function DashGrafiek({data,h=70}){
   );
 }
 
+// Doorlopende grafiek met alle beurten van alle (geselecteerde) partijen achter elkaar, horizontaal
+// scrollbaar. Elke partij heeft een eigen band met nummer en datum; de eerste beurt van een partij
+// krijgt een ring, de laatste een vierkantje. Tik op een punt voor de details van die beurt.
+function BeurtenTijdlijn({partijen,nummers,discipline}){
+  const scrollRef=useRef(null);
+  const [gekozen,setGekozen]=useState(null);
+  useEffect(function(){
+    const el=scrollRef.current;
+    if(el)el.scrollLeft=el.scrollWidth;
+    setGekozen(null);
+  },[partijen]);
+  if(!partijen||!partijen.length)return null;
+
+  const d=beurtDrempels(discipline);
+  const STAP=14,TUSSEN=14,BOVEN=34,H=90,ONDER=10;
+  let maxV=1;
+  partijen.forEach(function(p){p.beurten.forEach(function(b){if(b.caramboles>maxV)maxV=b.caramboles;});});
+  const y=function(v){return BOVEN+H-(v/maxV)*H;};
+  const kleur=function(v){return v===0?"#e08055":v>=d.topMin?"#ff9f40":v>=d.sterkMin?GOUDL:v>=d.opbouwMin?GRNT:GOUD;};
+
+  let x=TUSSEN/2;
+  const blokken=partijen.map(function(p,pi){
+    const x0=x;
+    const punten=p.beurten.map(function(b,bi){return{x:x0+bi*STAP+STAP/2,y:y(b.caramboles),v:b.caramboles,bi:bi};});
+    x+=p.beurten.length*STAP+TUSSEN;
+    return{p:p,pi:pi,x0:x0,x1:x0+p.beurten.length*STAP,punten:punten};
+  });
+  const W=Math.max(x-TUSSEN/2,60);
+
+  let info="Tik op een punt voor de details van die beurt";
+  if(gekozen){
+    const p=partijen[gekozen.pi];
+    const n=p.beurten.length;
+    const v=p.beurten[gekozen.bi].caramboles;
+    info="p"+nummers[gekozen.pi]+" · "+fmtDatum(p.datum)+" · beurt "+(gekozen.bi+1)+" van "+n+" · "+v+" car"+(v===0?" (poedel)":"")+
+      (gekozen.bi===0?" · eerste beurt":gekozen.bi===n-1?" · laatste beurt":"");
+  }
+
+  return(
+    <div>
+      <div ref={scrollRef} style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+        <svg width={W} height={BOVEN+H+ONDER} style={{display:"block"}}>
+          {blokken.map(function(bl){
+            const smal=bl.x1-bl.x0<44;
+            return(
+              <g key={bl.p.id}>
+                <rect x={bl.x0-TUSSEN/2+1} y={0} width={bl.x1-bl.x0+TUSSEN-2} height={BOVEN+H+ONDER} rx={4}
+                  fill={bl.pi%2===0?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.015)"}/>
+                <text x={bl.x0} y={11} fontSize="10" fill={GOUD} fontFamily="Georgia,serif" fontWeight="bold">p{nummers[bl.pi]}</text>
+                {!smal&&<text x={bl.x0} y={23} fontSize="9" fill={WITD} fontFamily="Georgia,serif">{fmtDatum(bl.p.datum)}</text>}
+                <polyline points={bl.punten.map(function(pt){return pt.x+","+pt.y;}).join(" ")} fill="none" stroke="#5a7a55" strokeWidth="1.2" strokeLinejoin="round"/>
+                {bl.punten.map(function(pt){
+                  const k=kleur(pt.v);
+                  const eerste=pt.bi===0,laatste=pt.bi===bl.punten.length-1;
+                  const actief=gekozen&&gekozen.pi===bl.pi&&gekozen.bi===pt.bi;
+                  return(
+                    <g key={pt.bi} onClick={function(){setGekozen({pi:bl.pi,bi:pt.bi});}} style={{cursor:"pointer"}}>
+                      <circle cx={pt.x} cy={pt.y} r={8} fill="transparent"/>
+                      {laatste&&!eerste
+                        ?<rect x={pt.x-4} y={pt.y-4} width={8} height={8} fill={G} stroke={WIT} strokeWidth="1.5"/>
+                        :eerste
+                          ?<circle cx={pt.x} cy={pt.y} r={4.5} fill={G} stroke={WIT} strokeWidth="1.5"/>
+                          :null}
+                      <circle cx={pt.x} cy={pt.y} r={actief?4:2.5} fill={k} stroke={actief?WIT:"none"}/>
+                      {pt.v>0&&<text x={pt.x} y={pt.y-7} textAnchor="middle" fontSize="8" fill={k} fontFamily="Georgia,serif">{pt.v}</text>}
+                    </g>
+                  );
+                })}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+      <div style={{fontSize:12,color:gekozen?WIT:WITD,marginTop:6,minHeight:16}}>{info}</div>
+      <div style={{fontSize:11,color:WITD,marginTop:4,display:"flex",gap:10,flexWrap:"wrap"}}>
+        <span>◯ eerste beurt</span><span>□ laatste beurt</span>
+        <span style={{color:GRNT}}>● {d.opbouwMin}+</span><span style={{color:GOUDL}}>● {d.sterkMin}+</span><span style={{color:"#ff9f40"}}>● {d.topMin}+</span><span style={{color:"#e08055"}}>● poedel</span>
+      </div>
+    </div>
+  );
+}
+
 function maandKey(iso){
   const MND=["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
   const d=new Date(iso);
@@ -1574,6 +1656,14 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               {filt.length>=5&&w5&&<span style={{color:WIT}}>5p nu: <strong>{r5.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
             </div>}
           </div>
+
+          {sel.length>0&&<div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
+              <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Alle beurten</span>
+              <span style={{fontSize:12,color:WITD}}>{sel.length} partijen · {sel.reduce((a,p)=>a+p.n,0)} beurten</span>
+            </div>
+            <BeurtenTijdlijn partijen={sel} nummers={sel.map(p=>ST.indexOf(p)+1)} discipline={discipline}/>
+          </div>}
 
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
             <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Uitschieters weggooien</div>

@@ -72,6 +72,8 @@ const GOED=[
 ];
 
 const SK="biljart-tracker-v2";
+// Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
+const APP_VERSIE="2026-10-13.1";
 // true in de native iOS-app; de class "native" wordt gezet door het script in <head>
 const IS_NATIVE=document.documentElement.classList.contains("native");
 
@@ -2632,6 +2634,7 @@ function BiljartTracker(){
               📤 Deel deze app
             </button>
             {deelResultaat&&<div style={{textAlign:"center",fontSize:12,color:GRNT}}>{deelResultaat}</div>}
+            <div style={{textAlign:"center",fontSize:11,color:WITD,opacity:0.6,marginTop:4}}>Versie {APP_VERSIE}</div>
           </div>
       </div>
     );
@@ -2847,15 +2850,18 @@ function BiljartTracker(){
       <div style={{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}}>
         {tab==="spelen"&&(
           <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-            {fase==="setup"&&<Setup/>}
-            {fase==="invoer"&&<Invoer/>}
-            {fase==="gemist"&&<Gemist/>}
-            {fase==="goed"&&<Goed/>}
+            {/* Deze schermen staan binnen BiljartTracker en worden daarom als gewone functie aangeroepen,
+                niet als <Component/>: anders ziet React ze bij elke render als nieuw component, verliest een
+                invoerveld na elke letter de focus en springt de scrollpositie terug. Geen hooks in deze functies. */}
+            {fase==="setup"&&Setup()}
+            {fase==="invoer"&&Invoer()}
+            {fase==="gemist"&&Gemist()}
+            {fase==="goed"&&Goed()}
           </div>
         )}
-        {tab==="stats"&&<Stats/>}
-        {tab==="data"&&<Data/>}
-        {tab==="log"&&<Log/>}
+        {tab==="stats"&&Stats()}
+        {tab==="data"&&Data()}
+        {tab==="log"&&Log()}
         {tab==="dash"&&<Dashboard partijen={alleP} niveau={niveau} tijdsvensterMaanden={tijdsvensterMaanden} discipline={huidigeDiscipline}/>}
       </div>
     </div>

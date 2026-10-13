@@ -24,17 +24,24 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-13.11">
+<link rel="stylesheet" href="css/app.css?v=2026-10-14.1">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-13.11"></script>
-<script src="js/berekeningen.js?v=2026-10-13.11"></script>
-<script src="js/opslag.js?v=2026-10-13.11"></script>
+<script src="js/constanten.js?v=2026-10-14.1"></script>
+<script src="js/berekeningen.js?v=2026-10-14.1"></script>
+<script src="js/opslag.js?v=2026-10-14.1"></script>
 <script type="text/babel">
 const {useState,useEffect,useRef,useMemo}=React;
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-13.11";
+const APP_VERSIE="2026-10-14.1";
+
+// "Je gemiddelde" in de app is altijd het gemiddelde ZONDER de slechtste partijen die je met badge-punten
+// hebt weggespeeld (1 per PUNTEN_PER_DROP). Deze tekst legt dat uit, overal op dezelfde manier.
+function gemUitleg(info,dec){
+  if(!info.aantalDrops)return"alle partijen tellen mee";
+  return"zonder je "+(info.aantalDrops===1?"slechtste partij":info.aantalDrops+" slechtste partijen")+" (met alle partijen: "+info.totaalGemiddelde.toFixed(dec)+")";
+}
 
 function Grafiek({beurten}){
   if(!beurten||beurten.length<2)return null;
@@ -185,6 +192,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</span>
             </div>
             <div style={{fontSize:12,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
+            {niveau.aantalDrops>0&&<div style={{fontSize:11,color:WITD,marginTop:2}}>Gemiddelde {gemUitleg(niveau,dec)}</div>}
           </div>
         </div>
         {niveau.volgende&&<div style={{marginTop:6}}>
@@ -210,7 +218,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
         <div style={{marginLeft:"auto",textAlign:"right"}}>
           <div style={{fontSize:12,color:WITD}}>gemiddelde</div>
           <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
-          {niveau.aantalDrops>0&&<div style={{fontSize:12,color:WITD}}>(ruw: {niveau.totaalGemiddelde.toFixed(dec)})</div>}
+          {niveau.aantalDrops>0&&<div style={{fontSize:11,color:WITD,maxWidth:160}}>{gemUitleg(niveau,dec)}</div>}
         </div>
       </div>
       {niveau.volgende
@@ -326,6 +334,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
               <span style={{fontSize:12,color:WITD}}>📊 Je gemiddelde nu</span>
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{infoNa.effectiefGemiddelde.toFixed(dec)}</span>
             </div>
+            {infoNa.aantalDrops>0&&<div style={{fontSize:11,color:WITD,marginTop:-3,marginBottom:6}}>{gemUitleg(infoNa,dec)}</div>}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
               <span style={{fontSize:12,color:WITD}}>🎖️ Badge-punten</span>
               <span style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{infoNa.badgePunten} / {infoNa.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
@@ -692,7 +701,7 @@ function DashGrafiek({data,h=70}){
 // krijgt een ring, de laatste een vierkantje. Tik op een punt voor de details van die beurt.
 // Met "Selecteren" aan sleep je met je vinger een reeks beurten (ook over partijgrenzen heen) en zie je
 // daar de cijfers van; "Beste/Zwakste reeks" zoekt zelf het sterkste of zwakste stuk van N beurten.
-function BeurtenTijdlijn({partijen,nummers,discipline}){
+function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
   const scrollRef=useRef(null);
   const svgRef=useRef(null);
   const sleepRef=useRef(null); // ankerindex tijdens slepen, anders null
@@ -731,7 +740,8 @@ function BeurtenTijdlijn({partijen,nummers,discipline}){
   });
   const W=Math.max(x-TUSSEN/2,60);
   const waarden=alle.map(function(pt){return pt.v;});
-  const basisGem=waarden.reduce(function(a,v){return a+v;},0)/waarden.length;
+  // Vergelijken met "je gemiddelde" zoals overal in de app: zonder de weggespeelde slechtste partijen
+  const basisGem=niveau?niveau.effectiefGemiddelde:waarden.reduce(function(a,v){return a+v;},0)/waarden.length;
 
   const sel=selectie?{van:Math.min(selectie.van,selectie.tot),tot:Math.max(selectie.van,selectie.tot)}:null;
   const inSel=function(g){return sel&&g>=sel.van&&g<=sel.tot;};
@@ -888,7 +898,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline}){
             {(function(){
               const verschil=selStats.gemiddelde-basisGem;
               return <span style={{marginLeft:"auto",fontSize:13,fontWeight:"bold",color:verschil>=0?GRNT:ROOD}}>
-                {verschil>=0?"▲ +":"▼ "}{verschil.toFixed(dec)} <span style={{fontWeight:"normal",color:WITD,fontSize:11}}>t.o.v. {basisGem.toFixed(dec)}</span>
+                {verschil>=0?"▲ +":"▼ "}{verschil.toFixed(dec)} <span style={{fontWeight:"normal",color:WITD,fontSize:11}}>t.o.v. je gemiddelde {basisGem.toFixed(dec)}</span>
               </span>;
             })()}
           </div>
@@ -1182,7 +1192,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         {/* TREND */}
         {tab==="trend"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-            {kaart("Gem.",gemGem,"per beurt",parseFloat(gemGem)>=2.5?GRNT:parseFloat(gemGem)>=2?GOUD:ROOD)}
+            {kaart("Gem.",gemGem,"alle partijen in selectie",parseFloat(gemGem)>=2.5?GRNT:parseFloat(gemGem)>=2?GOUD:ROOD)}
             {kaart("Max",filt.length?Math.max(...filt.map(p=>p.gem)):"—","partij",GOUDL)}
             {kaart("Opbouw",filt.length?Math.round(filt.reduce((a,p)=>a+p.opbouw,0)/filt.reduce((a,p)=>a+p.n,0)*100)+"%":"—","beurten ≥"+beurtDrempels(discipline).opbouwMin,GRNT)}
           </div>
@@ -1233,7 +1243,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Alle beurten</span>
               <span style={{fontSize:12,color:WITD}}>{sel.length} partijen · {sel.reduce((a,p)=>a+p.n,0)} beurten</span>
             </div>
-            <BeurtenTijdlijn partijen={sel} nummers={sel.map(p=>ST.indexOf(p)+1)} discipline={discipline}/>
+            <BeurtenTijdlijn partijen={sel} nummers={sel.map(p=>ST.indexOf(p)+1)} discipline={discipline} niveau={niveau}/>
           </div>}
         </div>}
 
@@ -2199,7 +2209,7 @@ function BiljartTracker(){
         </div>
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
-          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je niveau (Beginner-Legende) en je 👑🏓-records blijven altijd all-time — een record blijft een record.</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je gemiddelde, je niveau en je 👑🏓-records blijven altijd all-time — een record blijft een record.</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:10}}>
             {[["1","1 mnd"],["2","2 mnd"],["3","3 mnd"],["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
               const v=arr[0],l=arr[1];
@@ -2215,13 +2225,13 @@ function BiljartTracker(){
                 <div style={{fontSize:10,color:WITD,opacity:0.7}}>{huidigeRecords.vensterPartijen} partij{huidigeRecords.vensterPartijen===1?"":"en"} · {huidigeRecords.vensterBeurten} beurten</div>
               </div>
               <div style={{textAlign:"right"}}>
-                <div style={{fontSize:11,color:WITD}}>je niveau (all-time)</div>
+                <div style={{fontSize:11,color:WITD}}>je gemiddelde (all-time)</div>
                 <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
                 <div style={{fontSize:10,color:WITD,opacity:0.7}}>{alleP.length} partij{alleP.length===1?"":"en"}</div>
               </div>
             </div>
             {niveau.aantalDrops>0
-              ?<div style={{fontSize:10,color:GOUD,marginTop:6,textAlign:"center"}}>🏅 incl. {niveau.aantalDrops}x badge-drop (ruw: {niveau.totaalGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)})</div>
+              ?<div style={{fontSize:10,color:GOUD,marginTop:6,textAlign:"center"}}>🏅 Je gemiddelde is {gemUitleg(niveau,huidigeDiscipline==="driebanden"?3:2)}</div>
               :<div style={{fontSize:10,color:WITD,opacity:0.6,marginTop:6,textAlign:"center"}}>nog geen badge-drops verdiend</div>
             }
           </div>
@@ -2230,7 +2240,7 @@ function BiljartTracker(){
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
             <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
-              {[["Car.",stA.totCar],["Max",stA.max],["Gem",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
+              {[["Car.",stA.totCar],["Max",stA.max],["Gem. alle partijen",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
                 return(
                   <div key={arr[0]} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
                     <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>

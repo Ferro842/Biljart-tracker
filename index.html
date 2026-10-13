@@ -24,23 +24,23 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-14.1">
+<link rel="stylesheet" href="css/app.css?v=2026-10-14.2">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-14.1"></script>
-<script src="js/berekeningen.js?v=2026-10-14.1"></script>
-<script src="js/opslag.js?v=2026-10-14.1"></script>
+<script src="js/constanten.js?v=2026-10-14.2"></script>
+<script src="js/berekeningen.js?v=2026-10-14.2"></script>
+<script src="js/opslag.js?v=2026-10-14.2"></script>
 <script type="text/babel">
 const {useState,useEffect,useRef,useMemo}=React;
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-14.1";
+const APP_VERSIE="2026-10-14.2";
 
 // "Je gemiddelde" in de app is altijd het gemiddelde ZONDER de slechtste partijen die je met badge-punten
 // hebt weggespeeld (1 per PUNTEN_PER_DROP). Deze tekst legt dat uit, overal op dezelfde manier.
-function gemUitleg(info,dec){
+function gemUitleg(info,dec,periode){
   if(!info.aantalDrops)return"alle partijen tellen mee";
-  return"zonder je "+(info.aantalDrops===1?"slechtste partij":info.aantalDrops+" slechtste partijen")+" (met alle partijen: "+info.totaalGemiddelde.toFixed(dec)+")";
+  return"zonder je "+(info.aantalDrops===1?"slechtste partij":info.aantalDrops+" slechtste partijen")+(periode||"")+" (met alle partijen: "+info.totaalGemiddelde.toFixed(dec)+")";
 }
 
 function Grafiek({beurten}){
@@ -500,6 +500,7 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
                 <div style={{fontSize:13,color:WITD}}>
                   {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)} · {stats.badgePunten}pt · <span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
                 </div>
+                {stats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:2}}>Gemiddelde {gemUitleg(stats,discipline==="driebanden"?3:2," van dit seizoen")}</div>}
               </div>
             );
           })}
@@ -2169,7 +2170,8 @@ function BiljartTracker(){
             return(
               <div>
                 <div style={{fontSize:14,color:WIT,marginBottom:2}}>{huidig.naam} <span style={{fontSize:13,color:WITD}}>(sinds {huidig.startDatum?new Date(huidig.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"het begin"})</span></div>
-                <div style={{fontSize:13,color:WITD,marginBottom:10}}>{huidigStats.aantalPartijen} partijen · gem {huidigStats.gemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
+                <div style={{fontSize:13,color:WITD,marginBottom:huidigStats.aantalDrops>0?2:10}}>{huidigStats.aantalPartijen} partijen · gem {huidigStats.gemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
+                {huidigStats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:10}}>Gemiddelde {gemUitleg(huidigStats,huidigeDiscipline==="driebanden"?3:2," van dit seizoen")}. Elk seizoen telt zijn eigen badge-punten.</div>}
                 <div style={{display:"flex",gap:6}}>
                   {!confSeizoenAfsluiten
                     ?<button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}

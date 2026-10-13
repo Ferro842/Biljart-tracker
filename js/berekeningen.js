@@ -319,7 +319,8 @@ function berekenSeizoenStats(alleP,seizoen,discipline){
   let aantalPartijen=0;
   gefilterd.forEach(function(p){if(stat(p.beurten))aantalPartijen++;});
   return{seizoen:seizoen,aantalPartijen:aantalPartijen,gemiddelde:info.effectiefGemiddelde,
-    badgePunten:info.badgePunten,niveau:niveau.huidig};
+    badgePunten:info.badgePunten,niveau:niveau.huidig,
+    aantalDrops:info.aantalDrops,totaalGemiddelde:info.totaalGemiddelde};
 }
 
 function bepaalNiveau(effectiefGemiddelde,discipline){

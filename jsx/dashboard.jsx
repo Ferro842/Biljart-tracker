@@ -74,7 +74,8 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
     else if(clientX>r.right-30)el.scrollLeft+=12;
   }
   // Met Selecteer aan: een rand van de selectie vastpakken verschuift alleen die rand, binnen de
-  // selectie pakken verschuift het hele stuk (zelfde lengte), ergens anders begint een nieuwe selectie.
+  // selectie pakken verschuift het hele stuk (zelfde lengte), ernaast slepen scrolt de grafiek zonder de
+  // selectie te veranderen. Zonder selectie begint slepen een nieuwe selectie.
   const RAND=16; // grijpafstand in px rond een rand, ruim genoeg voor een vinger
   function onDown(e){
     if(!selecteerModus)return;
@@ -88,8 +89,8 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
       }else if(g>=sel.van&&g<=sel.tot){
         sleepRef.current={modus:"verplaats",start:g,van:sel.van,lengte:sel.tot-sel.van};
       }else{
-        sleepRef.current={modus:"nieuw",anker:g};
-        setSelectie({van:g,tot:g,bron:"hand"});
+        // touch-action staat uit tijdens Selecteer, dus het scrollen doen we hier zelf
+        sleepRef.current={modus:"scroll",startX:e.clientX,startScroll:scrollRef.current.scrollLeft};
       }
     }else{
       sleepRef.current={modus:"nieuw",anker:g};
@@ -100,6 +101,10 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
   function onMove(e){
     const s=sleepRef.current;
     if(!selecteerModus||!s)return;
+    if(s.modus==="scroll"){
+      scrollRef.current.scrollLeft=s.startScroll-(e.clientX-s.startX);
+      return;
+    }
     randScroll(e.clientX);
     const g=indexBij(e.clientX);
     if(s.modus==="verplaats"){
@@ -131,7 +136,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
   const plek=function(g){const pt=alle[g];return"p"+nummers[pt.pi]+" beurt "+(pt.bi+1);};
 
   let info=selecteerModus
-    ?(selectie?"Sleep een rand om te verlengen of in het midden om te verschuiven":"Sleep met je vinger over de grafiek om beurten te selecteren")
+    ?(selectie?"Sleep een rand om te verlengen, het midden om te verschuiven, of ernaast om de grafiek te scrollen. ✕ voor een nieuwe selectie":"Sleep met je vinger over de grafiek om beurten te selecteren")
     :(selectie?"Tik op de grafiek om de selectie weg te halen":"Tik op een punt voor de details van die beurt");
   if(gekozen){
     const p=partijen[gekozen.pi];

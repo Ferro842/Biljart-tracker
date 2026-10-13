@@ -17,6 +17,7 @@ const GEMIST=[
   {label:"Snijden",emoji:"✂️"},{label:"Amorti",emoji:"🪃"},
   {label:"Massé",emoji:"🌀"},{label:"Piqué",emoji:"🎯"},
   {label:"Dun",emoji:"🪶"},{label:"Acquit",emoji:"🎬"},
+  {label:"Los",emoji:"🍃"},
 ];
 const GOED=[
   {label:"Verzamelen",emoji:"🔄"},{label:"Positioneren",emoji:"📍"},
@@ -26,6 +27,7 @@ const GOED=[
   {label:"Dun",emoji:"🪶"},{label:"Amorti",emoji:"🪃"},
   {label:"Massé",emoji:"🌀"},{label:"Piqué",emoji:"🎯"},
   {label:"Doorstoot",emoji:"➡️"},{label:"Acquit",emoji:"🎬"},
+  {label:"Los",emoji:"🍃"},
 ];
 
 const SK="biljart-tracker-v2";

@@ -1,5 +1,6 @@
 // Test van de beurtengrafiek in Dash > Trend (draai op telefoonformaat, met test/testdata.json):
-// nieuwe selectie slepen, rechterrand verlengen, linkerrand verkorten, midden verschuiven, tik met
+// nieuwe selectie slepen, rechterrand verlengen, linkerrand verkorten, midden verschuiven, ernaast
+// slepen scrolt zonder de selectie te veranderen, tik met
 // Selecteer uit wist de selectie, Beste springt mee bij een andere reekslengte.
 // Draaien: await eval(await fetch("/test/tijdlijn.js").then(r=>r.text()))
 (async function(){
@@ -36,13 +37,17 @@
   rd=randen();await sleep(rd[0],rd[0]+42);uit.linkerRand=aantal();
   const plekVoor=plek();
   rd=randen();await sleep((rd[0]+rd[1])/2,(rd[0]+rd[1])/2-56);uit.verschuiven=aantal();uit.verschoven=plek()!==plekVoor;
+  // Naast de selectie slepen scrolt de grafiek, de selectie blijft gelijk
+  rd=randen();const scrollVoor=svg().parentElement.scrollLeft,plekVoorScroll=plek();
+  await sleep(rd[1]+40,rd[1]+140);
+  uit.scrolltNaast=svg().parentElement.scrollLeft!==scrollVoor&&plek()===plekVoorScroll&&aantal()===uit.verschuiven;
   uit.handvatjes=svg().querySelectorAll("rect[fill='#7fd8e0']").length;
   k("✋").click();await w(150);svg().dispatchEvent(new MouseEvent("click",{bubbles:true}));await w(150);uit.naTik=aantal();
   k("🏆").click();await w(300);uit.beste25=aantal();
   k("50").click();await w(300);uit.beste50=aantal();
   k("10").click();await w(300);uit.beste10=aantal();
   k("25").click();await w(200);
-  const goed=uit.nieuw>1&&uit.rechterRand>uit.nieuw&&uit.linkerRand<uit.rechterRand&&uit.verschuiven===uit.linkerRand&&uit.verschoven
+  const goed=uit.nieuw>1&&uit.rechterRand>uit.nieuw&&uit.linkerRand<uit.rechterRand&&uit.verschuiven===uit.linkerRand&&uit.verschoven&&uit.scrolltNaast
     &&uit.handvatjes===2&&uit.naTik===0&&uit.beste25===25&&uit.beste50===50&&uit.beste10===10;
   return{goed:goed,details:uit};
 })()

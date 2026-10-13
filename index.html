@@ -23,23 +23,7 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body,#root{height:100%;width:100%;overflow:hidden}
-html{-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:100%}
-body{background:#1a2e1a;font-family:Georgia,serif;color:#f5f0e8}
-.app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto}
-html.native .app{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-@media (min-width:700px){
-  body{display:flex;justify-content:center}
-  .app{max-width:960px;border-left:1px solid #3a5c35;border-right:1px solid #3a5c35}
-}
-input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
-input[type=number]{-moz-appearance:textfield}
-@keyframes badgePopIn{0%{opacity:0;transform:scale(0.7) translateY(10px);}60%{opacity:1;transform:scale(1.04) translateY(0);}100%{opacity:1;transform:scale(1) translateY(0);}}
-.plusmin-btn{transition:background-color 0.08s,transform 0.08s;-webkit-tap-highlight-color:transparent;}
-.plusmin-btn:active{background-color:#e8c96a!important;color:#1a2e1a!important;transform:scale(0.92);}
-</style>
+<link rel="stylesheet" href="css/app.css?v=2026-10-13.5">
 </head>
 <body>
 <div id="root"></div>
@@ -73,7 +57,7 @@ const GOED=[
 
 const SK="biljart-tracker-v2";
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-13.4";
+const APP_VERSIE="2026-10-13.5";
 // true in de native iOS-app; de class "native" wordt gezet door het script in <head>
 const IS_NATIVE=document.documentElement.classList.contains("native");
 

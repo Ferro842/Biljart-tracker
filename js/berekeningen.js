@@ -344,3 +344,39 @@ function berekenMijlpalen(partijen){
     return Object.assign({},m,{bereikt:huidigeWaarde>=m.aantal,huidigeWaarde:huidigeWaarde});
   });
 }
+
+// Kerncijfers van een willekeurige reeks beurten (bijv. een stuk dat je in de beurtengrafiek selecteert,
+// ook over partijgrenzen heen). waarden = caramboles per beurt, in volgorde.
+function reeksStats(waarden,discipline){
+  const n=waarden.length;
+  if(!n)return null;
+  const d=beurtDrempels(discipline);
+  let tot=0,max=0,poedels=0,opbouw=0,sterk=0,top=0,langste=0,huidige=0;
+  waarden.forEach(function(v){
+    tot+=v;
+    if(v>max)max=v;
+    if(v===0){poedels++;huidige=0;}
+    else{huidige++;if(huidige>langste)langste=huidige;}
+    if(v>=d.topMin)top++;
+    else if(v>=d.sterkMin)sterk++;
+    else if(v>=d.opbouwMin)opbouw++;
+  });
+  return{aantal:n,totaal:tot,gemiddelde:tot/n,max:max,poedels:poedels,poedelPct:poedels/n*100,
+    opbouw:opbouw,sterk:sterk,top:top,langsteZonderPoedel:langste};
+}
+
+// Zoekt het aaneengesloten stuk van precies `lengte` beurten met het hoogste (richting "beste") of
+// laagste (richting "zwakste") gemiddelde. Bij gelijke stand wint het meest recente stuk.
+// Retourneert {van,tot,gemiddelde} (indexen in waarden, tot inclusief) of null als er te weinig beurten zijn.
+function besteVenster(waarden,lengte,richting){
+  if(!lengte||waarden.length<lengte)return null;
+  let som=0;
+  for(let i=0;i<lengte;i++)som+=waarden[i];
+  let besteSom=som,besteVan=0;
+  for(let i=lengte;i<waarden.length;i++){
+    som+=waarden[i]-waarden[i-lengte];
+    const beter=richting==="zwakste"?som<=besteSom:som>=besteSom;
+    if(beter){besteSom=som;besteVan=i-lengte+1;}
+  }
+  return{van:besteVan,tot:besteVan+lengte-1,gemiddelde:besteSom/lengte};
+}

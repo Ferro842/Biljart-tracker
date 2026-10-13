@@ -24,17 +24,17 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-13.10">
+<link rel="stylesheet" href="css/app.css?v=2026-10-13.11">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-13.10"></script>
-<script src="js/berekeningen.js?v=2026-10-13.10"></script>
-<script src="js/opslag.js?v=2026-10-13.10"></script>
+<script src="js/constanten.js?v=2026-10-13.11"></script>
+<script src="js/berekeningen.js?v=2026-10-13.11"></script>
+<script src="js/opslag.js?v=2026-10-13.11"></script>
 <script type="text/babel">
 const {useState,useEffect,useRef,useMemo}=React;
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-13.10";
+const APP_VERSIE="2026-10-13.11";
 
 function Grafiek({beurten}){
   if(!beurten||beurten.length<2)return null;
@@ -690,33 +690,105 @@ function DashGrafiek({data,h=70}){
 // Doorlopende grafiek met alle beurten van alle (geselecteerde) partijen achter elkaar, horizontaal
 // scrollbaar. Elke partij heeft een eigen band met nummer en datum; de eerste beurt van een partij
 // krijgt een ring, de laatste een vierkantje. Tik op een punt voor de details van die beurt.
+// Met "Selecteren" aan sleep je met je vinger een reeks beurten (ook over partijgrenzen heen) en zie je
+// daar de cijfers van; "Beste/Zwakste reeks" zoekt zelf het sterkste of zwakste stuk van N beurten.
 function BeurtenTijdlijn({partijen,nummers,discipline}){
   const scrollRef=useRef(null);
+  const svgRef=useRef(null);
+  const sleepRef=useRef(null); // ankerindex tijdens slepen, anders null
   const [gekozen,setGekozen]=useState(null);
+  const [selectie,setSelectie]=useState(null); // {van,tot,bron} met globale beurtindexen
+  const [selecteerModus,setSelecteerModus]=useState(false);
+  const [vensterLengte,setVensterLengte]=useState(25);
   useEffect(function(){
     const el=scrollRef.current;
     if(el)el.scrollLeft=el.scrollWidth;
     setGekozen(null);
+    setSelectie(null);
   },[partijen]);
   if(!partijen||!partijen.length)return null;
 
   const d=beurtDrempels(discipline);
+  const dec=discipline==="driebanden"?3:2;
   const STAP=14,TUSSEN=14,BOVEN=34,H=90,ONDER=10;
   let maxV=1;
   partijen.forEach(function(p){p.beurten.forEach(function(b){if(b.caramboles>maxV)maxV=b.caramboles;});});
   const y=function(v){return BOVEN+H-(v/maxV)*H;};
   const kleur=function(v){return v===0?"#e08055":v>=d.topMin?"#ff9f40":v>=d.sterkMin?GOUDL:v>=d.opbouwMin?GRNT:GOUD;};
 
+  // Alle beurten plat achter elkaar, met hun positie en globale index g
+  const alle=[];
   let x=TUSSEN/2;
   const blokken=partijen.map(function(p,pi){
     const x0=x;
-    const punten=p.beurten.map(function(b,bi){return{x:x0+bi*STAP+STAP/2,y:y(b.caramboles),v:b.caramboles,bi:bi};});
+    const punten=p.beurten.map(function(b,bi){
+      const pt={x:x0+bi*STAP+STAP/2,y:y(b.caramboles),v:b.caramboles,pi:pi,bi:bi,g:alle.length};
+      alle.push(pt);
+      return pt;
+    });
     x+=p.beurten.length*STAP+TUSSEN;
     return{p:p,pi:pi,x0:x0,x1:x0+p.beurten.length*STAP,punten:punten};
   });
   const W=Math.max(x-TUSSEN/2,60);
+  const waarden=alle.map(function(pt){return pt.v;});
+  const basisGem=waarden.reduce(function(a,v){return a+v;},0)/waarden.length;
 
-  let info="Tik op een punt voor de details van die beurt";
+  const sel=selectie?{van:Math.min(selectie.van,selectie.tot),tot:Math.max(selectie.van,selectie.tot)}:null;
+  const inSel=function(g){return sel&&g>=sel.van&&g<=sel.tot;};
+  const selStats=sel?reeksStats(waarden.slice(sel.van,sel.tot+1),discipline):null;
+
+  // Vingerpositie -> dichtstbijzijnde beurt
+  function indexBij(clientX){
+    const r=svgRef.current.getBoundingClientRect();
+    const px=clientX-r.left;
+    let beste=0,afstand=Infinity;
+    for(let i=0;i<alle.length;i++){
+      const a=Math.abs(alle[i].x-px);
+      if(a<afstand){afstand=a;beste=i;}
+      else if(alle[i].x>px)break;
+    }
+    return beste;
+  }
+  // Bij slepen tegen de rand van het zichtbare stuk scrolt de grafiek mee
+  function randScroll(clientX){
+    const el=scrollRef.current;
+    if(!el)return;
+    const r=el.getBoundingClientRect();
+    if(clientX<r.left+30)el.scrollLeft-=12;
+    else if(clientX>r.right-30)el.scrollLeft+=12;
+  }
+  function onDown(e){
+    if(!selecteerModus)return;
+    const g=indexBij(e.clientX);
+    sleepRef.current=g;
+    setGekozen(null);
+    setSelectie({van:g,tot:g,bron:"hand"});
+    try{e.currentTarget.setPointerCapture(e.pointerId);}catch(err){}
+  }
+  function onMove(e){
+    if(!selecteerModus||sleepRef.current===null)return;
+    randScroll(e.clientX);
+    const g=indexBij(e.clientX);
+    setSelectie({van:sleepRef.current,tot:g,bron:"hand"});
+  }
+  function onUp(){sleepRef.current=null;}
+
+  function zoekReeks(richting){
+    const lengte=Math.min(vensterLengte,waarden.length);
+    const r=besteVenster(waarden,lengte,richting);
+    if(!r)return;
+    setGekozen(null);
+    setSelectie({van:r.van,tot:r.tot,bron:richting});
+    const el=scrollRef.current;
+    if(el){
+      const midden=(alle[r.van].x+alle[r.tot].x)/2;
+      el.scrollTo({left:Math.max(0,midden-el.clientWidth/2),behavior:"smooth"});
+    }
+  }
+
+  const plek=function(g){const pt=alle[g];return"p"+nummers[pt.pi]+" beurt "+(pt.bi+1);};
+
+  let info=selecteerModus?"Sleep met je vinger over de grafiek om beurten te selecteren":"Tik op een punt voor de details van die beurt";
   if(gekozen){
     const p=partijen[gekozen.pi];
     const n=p.beurten.length;
@@ -725,16 +797,32 @@ function BeurtenTijdlijn({partijen,nummers,discipline}){
       (gekozen.bi===0?" · eerste beurt":gekozen.bi===n-1?" · laatste beurt":"");
   }
 
+  const chip=function(actief){return{padding:"5px 9px",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:6,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"};};
+
   return(
     <div>
       <div ref={scrollRef} style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
-        <svg width={W} height={BOVEN+H+ONDER} style={{display:"block"}}>
+        <svg ref={svgRef} width={W} height={BOVEN+H+ONDER}
+          onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
+          style={{display:"block",touchAction:selecteerModus?"none":"pan-x",userSelect:"none",WebkitUserSelect:"none"}}>
+          {blokken.map(function(bl){
+            return(
+              <rect key={"b"+bl.p.id} x={bl.x0-TUSSEN/2+1} y={0} width={bl.x1-bl.x0+TUSSEN-2} height={BOVEN+H+ONDER} rx={4}
+                fill={bl.pi%2===0?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.015)"}/>
+            );
+          })}
+          {sel&&(
+            <g>
+              <rect x={alle[sel.van].x-STAP/2} y={BOVEN-6} width={alle[sel.tot].x-alle[sel.van].x+STAP} height={H+12} rx={4}
+                fill="rgba(127,216,224,0.13)" stroke="#7fd8e0" strokeWidth="1"/>
+              <line x1={alle[sel.van].x-STAP/2} x2={alle[sel.tot].x+STAP/2} y1={y(selStats.gemiddelde)} y2={y(selStats.gemiddelde)}
+                stroke="#7fd8e0" strokeWidth="1.5" strokeDasharray="4,3"/>
+            </g>
+          )}
           {blokken.map(function(bl){
             const smal=bl.x1-bl.x0<44;
             return(
-              <g key={bl.p.id}>
-                <rect x={bl.x0-TUSSEN/2+1} y={0} width={bl.x1-bl.x0+TUSSEN-2} height={BOVEN+H+ONDER} rx={4}
-                  fill={bl.pi%2===0?"rgba(255,255,255,0.05)":"rgba(255,255,255,0.015)"}/>
+              <g key={bl.p.id} opacity={sel&&!bl.punten.some(function(pt){return inSel(pt.g);})?0.35:1}>
                 <text x={bl.x0} y={11} fontSize="10" fill={GOUD} fontFamily="Georgia,serif" fontWeight="bold">p{nummers[bl.pi]}</text>
                 {!smal&&<text x={bl.x0} y={23} fontSize="9" fill={WITD} fontFamily="Georgia,serif">{fmtDatum(bl.p.datum)}</text>}
                 <polyline points={bl.punten.map(function(pt){return pt.x+","+pt.y;}).join(" ")} fill="none" stroke="#5a7a55" strokeWidth="1.2" strokeLinejoin="round"/>
@@ -742,8 +830,10 @@ function BeurtenTijdlijn({partijen,nummers,discipline}){
                   const k=kleur(pt.v);
                   const eerste=pt.bi===0,laatste=pt.bi===bl.punten.length-1;
                   const actief=gekozen&&gekozen.pi===bl.pi&&gekozen.bi===pt.bi;
+                  const gedimd=sel&&!inSel(pt.g);
                   return(
-                    <g key={pt.bi} onClick={function(){setGekozen({pi:bl.pi,bi:pt.bi});}} style={{cursor:"pointer"}}>
+                    <g key={pt.bi} opacity={gedimd?0.45:1} style={{cursor:"pointer"}}
+                      onClick={function(){if(!selecteerModus)setGekozen({pi:bl.pi,bi:pt.bi});}}>
                       <circle cx={pt.x} cy={pt.y} r={8} fill="transparent"/>
                       {laatste&&!eerste
                         ?<rect x={pt.x-4} y={pt.y-4} width={8} height={8} fill={G} stroke={WIT} strokeWidth="1.5"/>
@@ -760,11 +850,62 @@ function BeurtenTijdlijn({partijen,nummers,discipline}){
           })}
         </svg>
       </div>
+
       <div style={{fontSize:12,color:gekozen?WIT:WITD,marginTop:6,minHeight:16}}>{info}</div>
       <div style={{fontSize:11,color:WITD,marginTop:4,display:"flex",gap:10,flexWrap:"wrap"}}>
         <span>◯ eerste beurt</span><span>□ laatste beurt</span>
         <span style={{color:GRNT}}>● {d.opbouwMin}+</span><span style={{color:GOUDL}}>● {d.sterkMin}+</span><span style={{color:"#ff9f40"}}>● {d.topMin}+</span><span style={{color:"#e08055"}}>● poedel</span>
       </div>
+
+      <div style={{display:"flex",gap:6,marginTop:10,flexWrap:"wrap",alignItems:"center"}}>
+        <button onClick={function(){setSelecteerModus(function(v){return !v;});setGekozen(null);}} style={chip(selecteerModus)}>
+          ✋ Selecteer
+        </button>
+        <button onClick={function(){zoekReeks("beste");}} style={chip(selectie&&selectie.bron==="beste")}>🏆 Beste</button>
+        <button onClick={function(){zoekReeks("zwakste");}} style={chip(selectie&&selectie.bron==="zwakste")}>🧊 Zwakste</button>
+        {selectie&&<button onClick={function(){setSelectie(null);}} style={chip(false)}>✕</button>}
+      </div>
+      <div style={{display:"flex",gap:6,marginTop:6,alignItems:"center",fontSize:12,color:WITD}}>
+        <span>Beste/zwakste reeks van</span>
+        {[10,25,50].map(function(n){
+          return <button key={n} onClick={function(){setVensterLengte(n);}} style={chip(vensterLengte===n)}>{n}</button>;
+        })}
+        <span>beurten</span>
+      </div>
+
+      {selStats&&(
+        <div style={{marginTop:10,background:"rgba(127,216,224,0.08)",border:"1px solid #7fd8e0",borderRadius:10,padding:"10px 12px"}}>
+          <div style={{fontSize:12,color:"#7fd8e0",marginBottom:2}}>
+            {selectie.bron==="beste"?"🏆 Je beste reeks van "+selStats.aantal+" beurten":selectie.bron==="zwakste"?"🧊 Je zwakste reeks van "+selStats.aantal+" beurten":"Selectie: "+selStats.aantal+" beurt"+(selStats.aantal===1?"":"en")}
+          </div>
+          <div style={{fontSize:11,color:WITD,marginBottom:8}}>
+            {plek(sel.van)}{sel.tot!==sel.van?" → "+plek(sel.tot):""}
+            {alle[sel.van].pi!==alle[sel.tot].pi?" · "+(alle[sel.tot].pi-alle[sel.van].pi+1)+" partijen":""}
+          </div>
+          <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:10}}>
+            <span style={{fontSize:30,fontWeight:"bold",color:GOUD,lineHeight:1}}>{selStats.gemiddelde.toFixed(dec)}</span>
+            <span style={{fontSize:12,color:WITD}}>gemiddelde</span>
+            {(function(){
+              const verschil=selStats.gemiddelde-basisGem;
+              return <span style={{marginLeft:"auto",fontSize:13,fontWeight:"bold",color:verschil>=0?GRNT:ROOD}}>
+                {verschil>=0?"▲ +":"▼ "}{verschil.toFixed(dec)} <span style={{fontWeight:"normal",color:WITD,fontSize:11}}>t.o.v. {basisGem.toFixed(dec)}</span>
+              </span>;
+            })()}
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+            {[["Caramboles",selStats.totaal,GOUD],["Hoogste",selStats.max,"#ff9f40"],["Poedels",selStats.poedels+" · "+Math.round(selStats.poedelPct)+"%","#e08055"],
+              [d.opbouwMin+"–"+d.opbouwMax,selStats.opbouw+"x",GRNT],[d.sterkMin+"–"+d.sterkMax,selStats.sterk+"x",GOUDL],[d.topMin+"+",selStats.top+"x","#ff9f40"]].map(function(arr){
+              return(
+                <div key={arr[0]} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"6px 4px",textAlign:"center"}}>
+                  <div style={{fontSize:16,fontWeight:"bold",color:arr[2]}}>{arr[1]}</div>
+                  <div style={{fontSize:11,color:WITD}}>{arr[0]}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{fontSize:12,color:WITD,marginTop:8}}>⛓️ Langste reeks zonder poedel: <strong style={{color:WIT}}>{selStats.langsteZonderPoedel}</strong> beurten</div>
+        </div>
+      )}
     </div>
   );
 }

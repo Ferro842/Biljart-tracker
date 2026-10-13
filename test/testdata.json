@@ -1,0 +1,8623 @@
+{
+ "huidigeId": 980,
+ "partijen": [
+  {
+   "id": 26,
+   "datum": "2026-03-02T19:25:00.000Z",
+   "beurten": [
+    {
+     "id": 1,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-02T19:00:00.000Z"
+    },
+    {
+     "id": 2,
+     "caramboles": 4,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-02T19:01:00.000Z"
+    },
+    {
+     "id": 3,
+     "caramboles": 18,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-02T19:02:00.000Z"
+    },
+    {
+     "id": 4,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:03:00.000Z"
+    },
+    {
+     "id": 5,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-02T19:04:00.000Z"
+    },
+    {
+     "id": 6,
+     "caramboles": 5,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:05:00.000Z"
+    },
+    {
+     "id": 7,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:06:00.000Z"
+    },
+    {
+     "id": 8,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:07:00.000Z"
+    },
+    {
+     "id": 9,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-02T19:08:00.000Z"
+    },
+    {
+     "id": 10,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-02T19:09:00.000Z"
+    },
+    {
+     "id": 11,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-02T19:10:00.000Z"
+    },
+    {
+     "id": 12,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:11:00.000Z"
+    },
+    {
+     "id": 13,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-02T19:12:00.000Z"
+    },
+    {
+     "id": 14,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:13:00.000Z"
+    },
+    {
+     "id": 15,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-02T19:14:00.000Z"
+    },
+    {
+     "id": 16,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:15:00.000Z"
+    },
+    {
+     "id": 17,
+     "caramboles": 12,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-02T19:16:00.000Z"
+    },
+    {
+     "id": 18,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:17:00.000Z"
+    },
+    {
+     "id": 19,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-02T19:18:00.000Z"
+    },
+    {
+     "id": 20,
+     "caramboles": 3,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:19:00.000Z"
+    },
+    {
+     "id": 21,
+     "caramboles": 6,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:20:00.000Z"
+    },
+    {
+     "id": 22,
+     "caramboles": 3,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-02T19:21:00.000Z"
+    },
+    {
+     "id": 23,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:22:00.000Z"
+    },
+    {
+     "id": 24,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-02T19:23:00.000Z"
+    },
+    {
+     "id": 25,
+     "caramboles": 3,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-02T19:24:00.000Z"
+    }
+   ]
+  },
+  {
+   "id": 67,
+   "datum": "2026-03-06T19:40:00.000Z",
+   "beurten": [
+    {
+     "id": 27,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:00:00.000Z"
+    },
+    {
+     "id": 28,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-06T19:01:00.000Z"
+    },
+    {
+     "id": 29,
+     "caramboles": 4,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-06T19:02:00.000Z"
+    },
+    {
+     "id": 30,
+     "caramboles": 9,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:03:00.000Z"
+    },
+    {
+     "id": 31,
+     "caramboles": 3,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:04:00.000Z"
+    },
+    {
+     "id": 32,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:05:00.000Z"
+    },
+    {
+     "id": 33,
+     "caramboles": 15,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-06T19:06:00.000Z"
+    },
+    {
+     "id": 34,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-06T19:07:00.000Z"
+    },
+    {
+     "id": 35,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-06T19:08:00.000Z"
+    },
+    {
+     "id": 36,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-06T19:09:00.000Z"
+    },
+    {
+     "id": 37,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:10:00.000Z"
+    },
+    {
+     "id": 38,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:11:00.000Z"
+    },
+    {
+     "id": 39,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:12:00.000Z"
+    },
+    {
+     "id": 40,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:13:00.000Z"
+    },
+    {
+     "id": 41,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:14:00.000Z"
+    },
+    {
+     "id": 42,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:15:00.000Z"
+    },
+    {
+     "id": 43,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:16:00.000Z"
+    },
+    {
+     "id": 44,
+     "caramboles": 3,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:17:00.000Z"
+    },
+    {
+     "id": 45,
+     "caramboles": 8,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-06T19:18:00.000Z"
+    },
+    {
+     "id": 46,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:19:00.000Z"
+    },
+    {
+     "id": 47,
+     "caramboles": 6,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-06T19:20:00.000Z"
+    },
+    {
+     "id": 48,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:21:00.000Z"
+    },
+    {
+     "id": 49,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:22:00.000Z"
+    },
+    {
+     "id": 50,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-06T19:23:00.000Z"
+    },
+    {
+     "id": 51,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:24:00.000Z"
+    },
+    {
+     "id": 52,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:25:00.000Z"
+    },
+    {
+     "id": 53,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:26:00.000Z"
+    },
+    {
+     "id": 54,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-06T19:27:00.000Z"
+    },
+    {
+     "id": 55,
+     "caramboles": 3,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-06T19:28:00.000Z"
+    },
+    {
+     "id": 56,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:29:00.000Z"
+    },
+    {
+     "id": 57,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:30:00.000Z"
+    },
+    {
+     "id": 58,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-06T19:31:00.000Z"
+    },
+    {
+     "id": 59,
+     "caramboles": 7,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-06T19:32:00.000Z"
+    },
+    {
+     "id": 60,
+     "caramboles": 4,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:33:00.000Z"
+    },
+    {
+     "id": 61,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-06T19:34:00.000Z"
+    },
+    {
+     "id": 62,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-06T19:35:00.000Z"
+    },
+    {
+     "id": 63,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-06T19:36:00.000Z"
+    },
+    {
+     "id": 64,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-06T19:37:00.000Z"
+    },
+    {
+     "id": 65,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-06T19:38:00.000Z"
+    },
+    {
+     "id": 66,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-06T19:39:00.000Z"
+    }
+   ],
+   "notitie": "Testnotitie"
+  },
+  {
+   "id": 98,
+   "datum": "2026-03-10T19:30:00.000Z",
+   "beurten": [
+    {
+     "id": 68,
+     "caramboles": 9,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:00:00.000Z"
+    },
+    {
+     "id": 69,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:01:00.000Z"
+    },
+    {
+     "id": 70,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:02:00.000Z"
+    },
+    {
+     "id": 71,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:03:00.000Z"
+    },
+    {
+     "id": 72,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:04:00.000Z"
+    },
+    {
+     "id": 73,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:05:00.000Z"
+    },
+    {
+     "id": 74,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:06:00.000Z"
+    },
+    {
+     "id": 75,
+     "caramboles": 10,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-10T19:07:00.000Z"
+    },
+    {
+     "id": 76,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:08:00.000Z"
+    },
+    {
+     "id": 77,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:09:00.000Z"
+    },
+    {
+     "id": 78,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-10T19:10:00.000Z"
+    },
+    {
+     "id": 79,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:11:00.000Z"
+    },
+    {
+     "id": 80,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-10T19:12:00.000Z"
+    },
+    {
+     "id": 81,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-10T19:13:00.000Z"
+    },
+    {
+     "id": 82,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:14:00.000Z"
+    },
+    {
+     "id": 83,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-10T19:15:00.000Z"
+    },
+    {
+     "id": 84,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:16:00.000Z"
+    },
+    {
+     "id": 85,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:17:00.000Z"
+    },
+    {
+     "id": 86,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:18:00.000Z"
+    },
+    {
+     "id": 87,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:19:00.000Z"
+    },
+    {
+     "id": 88,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-10T19:20:00.000Z"
+    },
+    {
+     "id": 89,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:21:00.000Z"
+    },
+    {
+     "id": 90,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:22:00.000Z"
+    },
+    {
+     "id": 91,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:23:00.000Z"
+    },
+    {
+     "id": 92,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-10T19:24:00.000Z"
+    },
+    {
+     "id": 93,
+     "caramboles": 8,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-10T19:25:00.000Z"
+    },
+    {
+     "id": 94,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-10T19:26:00.000Z"
+    },
+    {
+     "id": 95,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-10T19:27:00.000Z"
+    },
+    {
+     "id": 96,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-10T19:28:00.000Z"
+    },
+    {
+     "id": 97,
+     "caramboles": 5,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-10T19:29:00.000Z"
+    }
+   ]
+  },
+  {
+   "id": 120,
+   "datum": "2026-03-14T19:21:00.000Z",
+   "beurten": [
+    {
+     "id": 99,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-14T19:00:00.000Z"
+    },
+    {
+     "id": 100,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-14T19:01:00.000Z"
+    },
+    {
+     "id": 101,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:02:00.000Z"
+    },
+    {
+     "id": 102,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:03:00.000Z"
+    },
+    {
+     "id": 103,
+     "caramboles": 4,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-14T19:04:00.000Z"
+    },
+    {
+     "id": 104,
+     "caramboles": 10,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-14T19:05:00.000Z"
+    },
+    {
+     "id": 105,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:06:00.000Z"
+    },
+    {
+     "id": 106,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:07:00.000Z"
+    },
+    {
+     "id": 107,
+     "caramboles": 16,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-14T19:08:00.000Z"
+    },
+    {
+     "id": 108,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:09:00.000Z"
+    },
+    {
+     "id": 109,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:10:00.000Z"
+    },
+    {
+     "id": 110,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:11:00.000Z"
+    },
+    {
+     "id": 111,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-14T19:12:00.000Z"
+    },
+    {
+     "id": 112,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:13:00.000Z"
+    },
+    {
+     "id": 113,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:14:00.000Z"
+    },
+    {
+     "id": 114,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:15:00.000Z"
+    },
+    {
+     "id": 115,
+     "caramboles": 6,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:16:00.000Z"
+    },
+    {
+     "id": 116,
+     "caramboles": 8,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-14T19:17:00.000Z"
+    },
+    {
+     "id": 117,
+     "caramboles": 3,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-14T19:18:00.000Z"
+    },
+    {
+     "id": 118,
+     "caramboles": 5,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-14T19:19:00.000Z"
+    },
+    {
+     "id": 119,
+     "caramboles": 8,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-14T19:20:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 139,
+   "datum": "2026-03-18T19:18:00.000Z",
+   "beurten": [
+    {
+     "id": 121,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-18T19:00:00.000Z"
+    },
+    {
+     "id": 122,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:01:00.000Z"
+    },
+    {
+     "id": 123,
+     "caramboles": 4,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:02:00.000Z"
+    },
+    {
+     "id": 124,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-18T19:03:00.000Z"
+    },
+    {
+     "id": 125,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-18T19:04:00.000Z"
+    },
+    {
+     "id": 126,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-18T19:05:00.000Z"
+    },
+    {
+     "id": 127,
+     "caramboles": 10,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-18T19:06:00.000Z"
+    },
+    {
+     "id": 128,
+     "caramboles": 6,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-18T19:07:00.000Z"
+    },
+    {
+     "id": 129,
+     "caramboles": 15,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:08:00.000Z"
+    },
+    {
+     "id": 130,
+     "caramboles": 3,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:09:00.000Z"
+    },
+    {
+     "id": 131,
+     "caramboles": 11,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-18T19:10:00.000Z"
+    },
+    {
+     "id": 132,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-18T19:11:00.000Z"
+    },
+    {
+     "id": 133,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:12:00.000Z"
+    },
+    {
+     "id": 134,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-18T19:13:00.000Z"
+    },
+    {
+     "id": 135,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:14:00.000Z"
+    },
+    {
+     "id": 136,
+     "caramboles": 4,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:15:00.000Z"
+    },
+    {
+     "id": 137,
+     "caramboles": 5,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-18T19:16:00.000Z"
+    },
+    {
+     "id": 138,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-18T19:17:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 158,
+   "datum": "2026-03-22T19:18:00.000Z",
+   "beurten": [
+    {
+     "id": 140,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:00:00.000Z"
+    },
+    {
+     "id": 141,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-22T19:01:00.000Z"
+    },
+    {
+     "id": 142,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-22T19:02:00.000Z"
+    },
+    {
+     "id": 143,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-22T19:03:00.000Z"
+    },
+    {
+     "id": 144,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:04:00.000Z"
+    },
+    {
+     "id": 145,
+     "caramboles": 2,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:05:00.000Z"
+    },
+    {
+     "id": 146,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-22T19:06:00.000Z"
+    },
+    {
+     "id": 147,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-22T19:07:00.000Z"
+    },
+    {
+     "id": 148,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:08:00.000Z"
+    },
+    {
+     "id": 149,
+     "caramboles": 2,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-22T19:09:00.000Z"
+    },
+    {
+     "id": 150,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-22T19:10:00.000Z"
+    },
+    {
+     "id": 151,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:11:00.000Z"
+    },
+    {
+     "id": 152,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:12:00.000Z"
+    },
+    {
+     "id": 153,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:13:00.000Z"
+    },
+    {
+     "id": 154,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:14:00.000Z"
+    },
+    {
+     "id": 155,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-22T19:15:00.000Z"
+    },
+    {
+     "id": 156,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-22T19:16:00.000Z"
+    },
+    {
+     "id": 157,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-22T19:17:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 189,
+   "datum": "2026-03-26T19:30:00.000Z",
+   "beurten": [
+    {
+     "id": 159,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:00:00.000Z"
+    },
+    {
+     "id": 160,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-26T19:01:00.000Z"
+    },
+    {
+     "id": 161,
+     "caramboles": 8,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-26T19:02:00.000Z"
+    },
+    {
+     "id": 162,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-26T19:03:00.000Z"
+    },
+    {
+     "id": 163,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:04:00.000Z"
+    },
+    {
+     "id": 164,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:05:00.000Z"
+    },
+    {
+     "id": 165,
+     "caramboles": 11,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-26T19:06:00.000Z"
+    },
+    {
+     "id": 166,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:07:00.000Z"
+    },
+    {
+     "id": 167,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:08:00.000Z"
+    },
+    {
+     "id": 168,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-26T19:09:00.000Z"
+    },
+    {
+     "id": 169,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-26T19:10:00.000Z"
+    },
+    {
+     "id": 170,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-26T19:11:00.000Z"
+    },
+    {
+     "id": 171,
+     "caramboles": 5,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-26T19:12:00.000Z"
+    },
+    {
+     "id": 172,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:13:00.000Z"
+    },
+    {
+     "id": 173,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:14:00.000Z"
+    },
+    {
+     "id": 174,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-26T19:15:00.000Z"
+    },
+    {
+     "id": 175,
+     "caramboles": 4,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:16:00.000Z"
+    },
+    {
+     "id": 176,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:17:00.000Z"
+    },
+    {
+     "id": 177,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:18:00.000Z"
+    },
+    {
+     "id": 178,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:19:00.000Z"
+    },
+    {
+     "id": 179,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-03-26T19:20:00.000Z"
+    },
+    {
+     "id": 180,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-26T19:21:00.000Z"
+    },
+    {
+     "id": 181,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-26T19:22:00.000Z"
+    },
+    {
+     "id": 182,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-26T19:23:00.000Z"
+    },
+    {
+     "id": 183,
+     "caramboles": 8,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:24:00.000Z"
+    },
+    {
+     "id": 184,
+     "caramboles": 10,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-26T19:25:00.000Z"
+    },
+    {
+     "id": 185,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:26:00.000Z"
+    },
+    {
+     "id": 186,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-26T19:27:00.000Z"
+    },
+    {
+     "id": 187,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-26T19:28:00.000Z"
+    },
+    {
+     "id": 188,
+     "caramboles": 2,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-26T19:29:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 206,
+   "datum": "2026-03-30T19:16:00.000Z",
+   "beurten": [
+    {
+     "id": 190,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-03-30T19:00:00.000Z"
+    },
+    {
+     "id": 191,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-30T19:01:00.000Z"
+    },
+    {
+     "id": 192,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-30T19:02:00.000Z"
+    },
+    {
+     "id": 193,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-30T19:03:00.000Z"
+    },
+    {
+     "id": 194,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-03-30T19:04:00.000Z"
+    },
+    {
+     "id": 195,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-30T19:05:00.000Z"
+    },
+    {
+     "id": 196,
+     "caramboles": 9,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-30T19:06:00.000Z"
+    },
+    {
+     "id": 197,
+     "caramboles": 9,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-30T19:07:00.000Z"
+    },
+    {
+     "id": 198,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-30T19:08:00.000Z"
+    },
+    {
+     "id": 199,
+     "caramboles": 9,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-03-30T19:09:00.000Z"
+    },
+    {
+     "id": 200,
+     "caramboles": 8,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-30T19:10:00.000Z"
+    },
+    {
+     "id": 201,
+     "caramboles": 3,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-30T19:11:00.000Z"
+    },
+    {
+     "id": 202,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-03-30T19:12:00.000Z"
+    },
+    {
+     "id": 203,
+     "caramboles": 14,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-30T19:13:00.000Z"
+    },
+    {
+     "id": 204,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-03-30T19:14:00.000Z"
+    },
+    {
+     "id": 205,
+     "caramboles": 4,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-03-30T19:15:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 232,
+   "datum": "2026-04-03T19:25:00.000Z",
+   "beurten": [
+    {
+     "id": 207,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-03T19:00:00.000Z"
+    },
+    {
+     "id": 208,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:01:00.000Z"
+    },
+    {
+     "id": 209,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:02:00.000Z"
+    },
+    {
+     "id": 210,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:03:00.000Z"
+    },
+    {
+     "id": 211,
+     "caramboles": 6,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-03T19:04:00.000Z"
+    },
+    {
+     "id": 212,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-03T19:05:00.000Z"
+    },
+    {
+     "id": 213,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-03T19:06:00.000Z"
+    },
+    {
+     "id": 214,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:07:00.000Z"
+    },
+    {
+     "id": 215,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-03T19:08:00.000Z"
+    },
+    {
+     "id": 216,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:09:00.000Z"
+    },
+    {
+     "id": 217,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:10:00.000Z"
+    },
+    {
+     "id": 218,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:11:00.000Z"
+    },
+    {
+     "id": 219,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:12:00.000Z"
+    },
+    {
+     "id": 220,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-03T19:13:00.000Z"
+    },
+    {
+     "id": 221,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-03T19:14:00.000Z"
+    },
+    {
+     "id": 222,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:15:00.000Z"
+    },
+    {
+     "id": 223,
+     "caramboles": 5,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:16:00.000Z"
+    },
+    {
+     "id": 224,
+     "caramboles": 7,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-03T19:17:00.000Z"
+    },
+    {
+     "id": 225,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:18:00.000Z"
+    },
+    {
+     "id": 226,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-03T19:19:00.000Z"
+    },
+    {
+     "id": 227,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-03T19:20:00.000Z"
+    },
+    {
+     "id": 228,
+     "caramboles": 7,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:21:00.000Z"
+    },
+    {
+     "id": 229,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-03T19:22:00.000Z"
+    },
+    {
+     "id": 230,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-03T19:23:00.000Z"
+    },
+    {
+     "id": 231,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-03T19:24:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 260,
+   "datum": "2026-04-07T19:27:00.000Z",
+   "beurten": [
+    {
+     "id": 233,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:00:00.000Z"
+    },
+    {
+     "id": 234,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:01:00.000Z"
+    },
+    {
+     "id": 235,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:02:00.000Z"
+    },
+    {
+     "id": 236,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:03:00.000Z"
+    },
+    {
+     "id": 237,
+     "caramboles": 2,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-07T19:04:00.000Z"
+    },
+    {
+     "id": 238,
+     "caramboles": 14,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-07T19:05:00.000Z"
+    },
+    {
+     "id": 239,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-07T19:06:00.000Z"
+    },
+    {
+     "id": 240,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-07T19:07:00.000Z"
+    },
+    {
+     "id": 241,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:08:00.000Z"
+    },
+    {
+     "id": 242,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-07T19:09:00.000Z"
+    },
+    {
+     "id": 243,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:10:00.000Z"
+    },
+    {
+     "id": 244,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:11:00.000Z"
+    },
+    {
+     "id": 245,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-07T19:12:00.000Z"
+    },
+    {
+     "id": 246,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-07T19:13:00.000Z"
+    },
+    {
+     "id": 247,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:14:00.000Z"
+    },
+    {
+     "id": 248,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:15:00.000Z"
+    },
+    {
+     "id": 249,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:16:00.000Z"
+    },
+    {
+     "id": 250,
+     "caramboles": 8,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-07T19:17:00.000Z"
+    },
+    {
+     "id": 251,
+     "caramboles": 12,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-07T19:18:00.000Z"
+    },
+    {
+     "id": 252,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:19:00.000Z"
+    },
+    {
+     "id": 253,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-07T19:20:00.000Z"
+    },
+    {
+     "id": 254,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-07T19:21:00.000Z"
+    },
+    {
+     "id": 255,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-07T19:22:00.000Z"
+    },
+    {
+     "id": 256,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:23:00.000Z"
+    },
+    {
+     "id": 257,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-07T19:24:00.000Z"
+    },
+    {
+     "id": 258,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-07T19:25:00.000Z"
+    },
+    {
+     "id": 259,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-07T19:26:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 286,
+   "datum": "2026-04-11T19:25:00.000Z",
+   "beurten": [
+    {
+     "id": 261,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:00:00.000Z"
+    },
+    {
+     "id": 262,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-11T19:01:00.000Z"
+    },
+    {
+     "id": 263,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-11T19:02:00.000Z"
+    },
+    {
+     "id": 264,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:03:00.000Z"
+    },
+    {
+     "id": 265,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-11T19:04:00.000Z"
+    },
+    {
+     "id": 266,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:05:00.000Z"
+    },
+    {
+     "id": 267,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:06:00.000Z"
+    },
+    {
+     "id": 268,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:07:00.000Z"
+    },
+    {
+     "id": 269,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-11T19:08:00.000Z"
+    },
+    {
+     "id": 270,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:09:00.000Z"
+    },
+    {
+     "id": 271,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-11T19:10:00.000Z"
+    },
+    {
+     "id": 272,
+     "caramboles": 4,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-11T19:11:00.000Z"
+    },
+    {
+     "id": 273,
+     "caramboles": 5,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-11T19:12:00.000Z"
+    },
+    {
+     "id": 274,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:13:00.000Z"
+    },
+    {
+     "id": 275,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-11T19:14:00.000Z"
+    },
+    {
+     "id": 276,
+     "caramboles": 12,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:15:00.000Z"
+    },
+    {
+     "id": 277,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-11T19:16:00.000Z"
+    },
+    {
+     "id": 278,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:17:00.000Z"
+    },
+    {
+     "id": 279,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:18:00.000Z"
+    },
+    {
+     "id": 280,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-11T19:19:00.000Z"
+    },
+    {
+     "id": 281,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-11T19:20:00.000Z"
+    },
+    {
+     "id": 282,
+     "caramboles": 4,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:21:00.000Z"
+    },
+    {
+     "id": 283,
+     "caramboles": 10,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-11T19:22:00.000Z"
+    },
+    {
+     "id": 284,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-11T19:23:00.000Z"
+    },
+    {
+     "id": 285,
+     "caramboles": 4,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-11T19:24:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 305,
+   "datum": "2026-04-15T19:18:00.000Z",
+   "beurten": [
+    {
+     "id": 287,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-15T19:00:00.000Z"
+    },
+    {
+     "id": 288,
+     "caramboles": 6,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-15T19:01:00.000Z"
+    },
+    {
+     "id": 289,
+     "caramboles": 9,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-15T19:02:00.000Z"
+    },
+    {
+     "id": 290,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-15T19:03:00.000Z"
+    },
+    {
+     "id": 291,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-15T19:04:00.000Z"
+    },
+    {
+     "id": 292,
+     "caramboles": 6,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-15T19:05:00.000Z"
+    },
+    {
+     "id": 293,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-15T19:06:00.000Z"
+    },
+    {
+     "id": 294,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-15T19:07:00.000Z"
+    },
+    {
+     "id": 295,
+     "caramboles": 7,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-15T19:08:00.000Z"
+    },
+    {
+     "id": 296,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-15T19:09:00.000Z"
+    },
+    {
+     "id": 297,
+     "caramboles": 4,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-15T19:10:00.000Z"
+    },
+    {
+     "id": 298,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-15T19:11:00.000Z"
+    },
+    {
+     "id": 299,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-15T19:12:00.000Z"
+    },
+    {
+     "id": 300,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-15T19:13:00.000Z"
+    },
+    {
+     "id": 301,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-15T19:14:00.000Z"
+    },
+    {
+     "id": 302,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-15T19:15:00.000Z"
+    },
+    {
+     "id": 303,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-15T19:16:00.000Z"
+    },
+    {
+     "id": 304,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-15T19:17:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 331,
+   "datum": "2026-04-19T19:25:00.000Z",
+   "beurten": [
+    {
+     "id": 306,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-19T19:00:00.000Z"
+    },
+    {
+     "id": 307,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-19T19:01:00.000Z"
+    },
+    {
+     "id": 308,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:02:00.000Z"
+    },
+    {
+     "id": 309,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-19T19:03:00.000Z"
+    },
+    {
+     "id": 310,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-19T19:04:00.000Z"
+    },
+    {
+     "id": 311,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-19T19:05:00.000Z"
+    },
+    {
+     "id": 312,
+     "caramboles": 8,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-19T19:06:00.000Z"
+    },
+    {
+     "id": 313,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-19T19:07:00.000Z"
+    },
+    {
+     "id": 314,
+     "caramboles": 4,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-19T19:08:00.000Z"
+    },
+    {
+     "id": 315,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:09:00.000Z"
+    },
+    {
+     "id": 316,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-19T19:10:00.000Z"
+    },
+    {
+     "id": 317,
+     "caramboles": 4,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:11:00.000Z"
+    },
+    {
+     "id": 318,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:12:00.000Z"
+    },
+    {
+     "id": 319,
+     "caramboles": 5,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-19T19:13:00.000Z"
+    },
+    {
+     "id": 320,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-19T19:14:00.000Z"
+    },
+    {
+     "id": 321,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:15:00.000Z"
+    },
+    {
+     "id": 322,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-19T19:16:00.000Z"
+    },
+    {
+     "id": 323,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-19T19:17:00.000Z"
+    },
+    {
+     "id": 324,
+     "caramboles": 7,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-19T19:18:00.000Z"
+    },
+    {
+     "id": 325,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-19T19:19:00.000Z"
+    },
+    {
+     "id": 326,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-19T19:20:00.000Z"
+    },
+    {
+     "id": 327,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:21:00.000Z"
+    },
+    {
+     "id": 328,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:22:00.000Z"
+    },
+    {
+     "id": 329,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-19T19:23:00.000Z"
+    },
+    {
+     "id": 330,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-19T19:24:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 354,
+   "datum": "2026-04-23T19:22:00.000Z",
+   "beurten": [
+    {
+     "id": 332,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:00:00.000Z"
+    },
+    {
+     "id": 333,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:01:00.000Z"
+    },
+    {
+     "id": 334,
+     "caramboles": 6,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-23T19:02:00.000Z"
+    },
+    {
+     "id": 335,
+     "caramboles": 4,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:03:00.000Z"
+    },
+    {
+     "id": 336,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-23T19:04:00.000Z"
+    },
+    {
+     "id": 337,
+     "caramboles": 5,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:05:00.000Z"
+    },
+    {
+     "id": 338,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-23T19:06:00.000Z"
+    },
+    {
+     "id": 339,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:07:00.000Z"
+    },
+    {
+     "id": 340,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:08:00.000Z"
+    },
+    {
+     "id": 341,
+     "caramboles": 15,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:09:00.000Z"
+    },
+    {
+     "id": 342,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:10:00.000Z"
+    },
+    {
+     "id": 343,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-23T19:11:00.000Z"
+    },
+    {
+     "id": 344,
+     "caramboles": 4,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:12:00.000Z"
+    },
+    {
+     "id": 345,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:13:00.000Z"
+    },
+    {
+     "id": 346,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-23T19:14:00.000Z"
+    },
+    {
+     "id": 347,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-23T19:15:00.000Z"
+    },
+    {
+     "id": 348,
+     "caramboles": 5,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-23T19:16:00.000Z"
+    },
+    {
+     "id": 349,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-23T19:17:00.000Z"
+    },
+    {
+     "id": 350,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-23T19:18:00.000Z"
+    },
+    {
+     "id": 351,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-23T19:19:00.000Z"
+    },
+    {
+     "id": 352,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-23T19:20:00.000Z"
+    },
+    {
+     "id": 353,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-23T19:21:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 382,
+   "datum": "2026-04-27T19:27:00.000Z",
+   "beurten": [
+    {
+     "id": 355,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:00:00.000Z"
+    },
+    {
+     "id": 356,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:01:00.000Z"
+    },
+    {
+     "id": 357,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-27T19:02:00.000Z"
+    },
+    {
+     "id": 358,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:03:00.000Z"
+    },
+    {
+     "id": 359,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-27T19:04:00.000Z"
+    },
+    {
+     "id": 360,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:05:00.000Z"
+    },
+    {
+     "id": 361,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:06:00.000Z"
+    },
+    {
+     "id": 362,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-27T19:07:00.000Z"
+    },
+    {
+     "id": 363,
+     "caramboles": 6,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:08:00.000Z"
+    },
+    {
+     "id": 364,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-27T19:09:00.000Z"
+    },
+    {
+     "id": 365,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:10:00.000Z"
+    },
+    {
+     "id": 366,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:11:00.000Z"
+    },
+    {
+     "id": 367,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:12:00.000Z"
+    },
+    {
+     "id": 368,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-27T19:13:00.000Z"
+    },
+    {
+     "id": 369,
+     "caramboles": 6,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-04-27T19:14:00.000Z"
+    },
+    {
+     "id": 370,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-27T19:15:00.000Z"
+    },
+    {
+     "id": 371,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-04-27T19:16:00.000Z"
+    },
+    {
+     "id": 372,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:17:00.000Z"
+    },
+    {
+     "id": 373,
+     "caramboles": 5,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-27T19:18:00.000Z"
+    },
+    {
+     "id": 374,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-27T19:19:00.000Z"
+    },
+    {
+     "id": 375,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:20:00.000Z"
+    },
+    {
+     "id": 376,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-04-27T19:21:00.000Z"
+    },
+    {
+     "id": 377,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-04-27T19:22:00.000Z"
+    },
+    {
+     "id": 378,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:23:00.000Z"
+    },
+    {
+     "id": 379,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:24:00.000Z"
+    },
+    {
+     "id": 380,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-04-27T19:25:00.000Z"
+    },
+    {
+     "id": 381,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-04-27T19:26:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 406,
+   "datum": "2026-05-01T19:23:00.000Z",
+   "beurten": [
+    {
+     "id": 383,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-01T19:00:00.000Z"
+    },
+    {
+     "id": 384,
+     "caramboles": 7,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-01T19:01:00.000Z"
+    },
+    {
+     "id": 385,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-01T19:02:00.000Z"
+    },
+    {
+     "id": 386,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:03:00.000Z"
+    },
+    {
+     "id": 387,
+     "caramboles": 5,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-01T19:04:00.000Z"
+    },
+    {
+     "id": 388,
+     "caramboles": 4,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-01T19:05:00.000Z"
+    },
+    {
+     "id": 389,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:06:00.000Z"
+    },
+    {
+     "id": 390,
+     "caramboles": 8,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-01T19:07:00.000Z"
+    },
+    {
+     "id": 391,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:08:00.000Z"
+    },
+    {
+     "id": 392,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-01T19:09:00.000Z"
+    },
+    {
+     "id": 393,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-01T19:10:00.000Z"
+    },
+    {
+     "id": 394,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:11:00.000Z"
+    },
+    {
+     "id": 395,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-01T19:12:00.000Z"
+    },
+    {
+     "id": 396,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-01T19:13:00.000Z"
+    },
+    {
+     "id": 397,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:14:00.000Z"
+    },
+    {
+     "id": 398,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:15:00.000Z"
+    },
+    {
+     "id": 399,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-01T19:16:00.000Z"
+    },
+    {
+     "id": 400,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:17:00.000Z"
+    },
+    {
+     "id": 401,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-01T19:18:00.000Z"
+    },
+    {
+     "id": 402,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-01T19:19:00.000Z"
+    },
+    {
+     "id": 403,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:20:00.000Z"
+    },
+    {
+     "id": 404,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-01T19:21:00.000Z"
+    },
+    {
+     "id": 405,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-01T19:22:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 431,
+   "datum": "2026-05-05T19:24:00.000Z",
+   "beurten": [
+    {
+     "id": 407,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:00:00.000Z"
+    },
+    {
+     "id": 408,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:01:00.000Z"
+    },
+    {
+     "id": 409,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-05T19:02:00.000Z"
+    },
+    {
+     "id": 410,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-05T19:03:00.000Z"
+    },
+    {
+     "id": 411,
+     "caramboles": 8,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-05T19:04:00.000Z"
+    },
+    {
+     "id": 412,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:05:00.000Z"
+    },
+    {
+     "id": 413,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-05T19:06:00.000Z"
+    },
+    {
+     "id": 414,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-05T19:07:00.000Z"
+    },
+    {
+     "id": 415,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:08:00.000Z"
+    },
+    {
+     "id": 416,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:09:00.000Z"
+    },
+    {
+     "id": 417,
+     "caramboles": 5,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:10:00.000Z"
+    },
+    {
+     "id": 418,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:11:00.000Z"
+    },
+    {
+     "id": 419,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:12:00.000Z"
+    },
+    {
+     "id": 420,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:13:00.000Z"
+    },
+    {
+     "id": 421,
+     "caramboles": 13,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:14:00.000Z"
+    },
+    {
+     "id": 422,
+     "caramboles": 8,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-05T19:15:00.000Z"
+    },
+    {
+     "id": 423,
+     "caramboles": 8,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-05T19:16:00.000Z"
+    },
+    {
+     "id": 424,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:17:00.000Z"
+    },
+    {
+     "id": 425,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-05T19:18:00.000Z"
+    },
+    {
+     "id": 426,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-05T19:19:00.000Z"
+    },
+    {
+     "id": 427,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:20:00.000Z"
+    },
+    {
+     "id": 428,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-05T19:21:00.000Z"
+    },
+    {
+     "id": 429,
+     "caramboles": 5,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:22:00.000Z"
+    },
+    {
+     "id": 430,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-05T19:23:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 462,
+   "datum": "2026-05-09T19:30:00.000Z",
+   "beurten": [
+    {
+     "id": 432,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:00:00.000Z"
+    },
+    {
+     "id": 433,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-09T19:01:00.000Z"
+    },
+    {
+     "id": 434,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:02:00.000Z"
+    },
+    {
+     "id": 435,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:03:00.000Z"
+    },
+    {
+     "id": 436,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-09T19:04:00.000Z"
+    },
+    {
+     "id": 437,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-09T19:05:00.000Z"
+    },
+    {
+     "id": 438,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:06:00.000Z"
+    },
+    {
+     "id": 439,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:07:00.000Z"
+    },
+    {
+     "id": 440,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-09T19:08:00.000Z"
+    },
+    {
+     "id": 441,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:09:00.000Z"
+    },
+    {
+     "id": 442,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:10:00.000Z"
+    },
+    {
+     "id": 443,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:11:00.000Z"
+    },
+    {
+     "id": 444,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:12:00.000Z"
+    },
+    {
+     "id": 445,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:13:00.000Z"
+    },
+    {
+     "id": 446,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:14:00.000Z"
+    },
+    {
+     "id": 447,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:15:00.000Z"
+    },
+    {
+     "id": 448,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:16:00.000Z"
+    },
+    {
+     "id": 449,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:17:00.000Z"
+    },
+    {
+     "id": 450,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:18:00.000Z"
+    },
+    {
+     "id": 451,
+     "caramboles": 2,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:19:00.000Z"
+    },
+    {
+     "id": 452,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:20:00.000Z"
+    },
+    {
+     "id": 453,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:21:00.000Z"
+    },
+    {
+     "id": 454,
+     "caramboles": 5,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-09T19:22:00.000Z"
+    },
+    {
+     "id": 455,
+     "caramboles": 11,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-09T19:23:00.000Z"
+    },
+    {
+     "id": 456,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:24:00.000Z"
+    },
+    {
+     "id": 457,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-09T19:25:00.000Z"
+    },
+    {
+     "id": 458,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-09T19:26:00.000Z"
+    },
+    {
+     "id": 459,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-09T19:27:00.000Z"
+    },
+    {
+     "id": 460,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-09T19:28:00.000Z"
+    },
+    {
+     "id": 461,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-09T19:29:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "libre"
+  },
+  {
+   "id": 485,
+   "datum": "2026-05-13T19:22:00.000Z",
+   "beurten": [
+    {
+     "id": 463,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:00:00.000Z"
+    },
+    {
+     "id": 464,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:01:00.000Z"
+    },
+    {
+     "id": 465,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:02:00.000Z"
+    },
+    {
+     "id": 466,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:03:00.000Z"
+    },
+    {
+     "id": 467,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:04:00.000Z"
+    },
+    {
+     "id": 468,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:05:00.000Z"
+    },
+    {
+     "id": 469,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:06:00.000Z"
+    },
+    {
+     "id": 470,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:07:00.000Z"
+    },
+    {
+     "id": 471,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:08:00.000Z"
+    },
+    {
+     "id": 472,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:09:00.000Z"
+    },
+    {
+     "id": 473,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:10:00.000Z"
+    },
+    {
+     "id": 474,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:11:00.000Z"
+    },
+    {
+     "id": 475,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:12:00.000Z"
+    },
+    {
+     "id": 476,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:13:00.000Z"
+    },
+    {
+     "id": 477,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:14:00.000Z"
+    },
+    {
+     "id": 478,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:15:00.000Z"
+    },
+    {
+     "id": 479,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:16:00.000Z"
+    },
+    {
+     "id": 480,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:17:00.000Z"
+    },
+    {
+     "id": 481,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:18:00.000Z"
+    },
+    {
+     "id": 482,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:19:00.000Z"
+    },
+    {
+     "id": 483,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-13T19:20:00.000Z"
+    },
+    {
+     "id": 484,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-13T19:21:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden"
+  },
+  {
+   "id": 508,
+   "datum": "2026-05-17T19:22:00.000Z",
+   "beurten": [
+    {
+     "id": 486,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:00:00.000Z"
+    },
+    {
+     "id": 487,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-17T19:01:00.000Z"
+    },
+    {
+     "id": 488,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-17T19:02:00.000Z"
+    },
+    {
+     "id": 489,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-17T19:03:00.000Z"
+    },
+    {
+     "id": 490,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-17T19:04:00.000Z"
+    },
+    {
+     "id": 491,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-17T19:05:00.000Z"
+    },
+    {
+     "id": 492,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-17T19:06:00.000Z"
+    },
+    {
+     "id": 493,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:07:00.000Z"
+    },
+    {
+     "id": 494,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:08:00.000Z"
+    },
+    {
+     "id": 495,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-17T19:09:00.000Z"
+    },
+    {
+     "id": 496,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-17T19:10:00.000Z"
+    },
+    {
+     "id": 497,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:11:00.000Z"
+    },
+    {
+     "id": 498,
+     "caramboles": 2,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-17T19:12:00.000Z"
+    },
+    {
+     "id": 499,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:13:00.000Z"
+    },
+    {
+     "id": 500,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:14:00.000Z"
+    },
+    {
+     "id": 501,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:15:00.000Z"
+    },
+    {
+     "id": 502,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:16:00.000Z"
+    },
+    {
+     "id": 503,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-17T19:17:00.000Z"
+    },
+    {
+     "id": 504,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:18:00.000Z"
+    },
+    {
+     "id": 505,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-17T19:19:00.000Z"
+    },
+    {
+     "id": 506,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:20:00.000Z"
+    },
+    {
+     "id": 507,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-17T19:21:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden",
+   "notitie": "Testnotitie"
+  },
+  {
+   "id": 536,
+   "datum": "2026-05-21T19:27:00.000Z",
+   "beurten": [
+    {
+     "id": 509,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:00:00.000Z"
+    },
+    {
+     "id": 510,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:01:00.000Z"
+    },
+    {
+     "id": 511,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:02:00.000Z"
+    },
+    {
+     "id": 512,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-21T19:03:00.000Z"
+    },
+    {
+     "id": 513,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:04:00.000Z"
+    },
+    {
+     "id": 514,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:05:00.000Z"
+    },
+    {
+     "id": 515,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-21T19:06:00.000Z"
+    },
+    {
+     "id": 516,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:07:00.000Z"
+    },
+    {
+     "id": 517,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:08:00.000Z"
+    },
+    {
+     "id": 518,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:09:00.000Z"
+    },
+    {
+     "id": 519,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:10:00.000Z"
+    },
+    {
+     "id": 520,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:11:00.000Z"
+    },
+    {
+     "id": 521,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:12:00.000Z"
+    },
+    {
+     "id": 522,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:13:00.000Z"
+    },
+    {
+     "id": 523,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:14:00.000Z"
+    },
+    {
+     "id": 524,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-21T19:15:00.000Z"
+    },
+    {
+     "id": 525,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:16:00.000Z"
+    },
+    {
+     "id": 526,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:17:00.000Z"
+    },
+    {
+     "id": 527,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-21T19:18:00.000Z"
+    },
+    {
+     "id": 528,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:19:00.000Z"
+    },
+    {
+     "id": 529,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:20:00.000Z"
+    },
+    {
+     "id": 530,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-21T19:21:00.000Z"
+    },
+    {
+     "id": 531,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:22:00.000Z"
+    },
+    {
+     "id": 532,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:23:00.000Z"
+    },
+    {
+     "id": 533,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-21T19:24:00.000Z"
+    },
+    {
+     "id": 534,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:25:00.000Z"
+    },
+    {
+     "id": 535,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-21T19:26:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden"
+  },
+  {
+   "id": 555,
+   "datum": "2026-05-25T19:18:00.000Z",
+   "beurten": [
+    {
+     "id": 537,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-25T19:00:00.000Z"
+    },
+    {
+     "id": 538,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-25T19:01:00.000Z"
+    },
+    {
+     "id": 539,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-25T19:02:00.000Z"
+    },
+    {
+     "id": 540,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-25T19:03:00.000Z"
+    },
+    {
+     "id": 541,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-25T19:04:00.000Z"
+    },
+    {
+     "id": 542,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-25T19:05:00.000Z"
+    },
+    {
+     "id": 543,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-25T19:06:00.000Z"
+    },
+    {
+     "id": 544,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-25T19:07:00.000Z"
+    },
+    {
+     "id": 545,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-05-25T19:08:00.000Z"
+    },
+    {
+     "id": 546,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-25T19:09:00.000Z"
+    },
+    {
+     "id": 547,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-05-25T19:10:00.000Z"
+    },
+    {
+     "id": 548,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-25T19:11:00.000Z"
+    },
+    {
+     "id": 549,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-25T19:12:00.000Z"
+    },
+    {
+     "id": 550,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-25T19:13:00.000Z"
+    },
+    {
+     "id": 551,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-25T19:14:00.000Z"
+    },
+    {
+     "id": 552,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-25T19:15:00.000Z"
+    },
+    {
+     "id": 553,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-25T19:16:00.000Z"
+    },
+    {
+     "id": 554,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-25T19:17:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden"
+  },
+  {
+   "id": 578,
+   "datum": "2026-05-29T19:22:00.000Z",
+   "beurten": [
+    {
+     "id": 556,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:00:00.000Z"
+    },
+    {
+     "id": 557,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-29T19:01:00.000Z"
+    },
+    {
+     "id": 558,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-29T19:02:00.000Z"
+    },
+    {
+     "id": 559,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:03:00.000Z"
+    },
+    {
+     "id": 560,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:04:00.000Z"
+    },
+    {
+     "id": 561,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-29T19:05:00.000Z"
+    },
+    {
+     "id": 562,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-29T19:06:00.000Z"
+    },
+    {
+     "id": 563,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-29T19:07:00.000Z"
+    },
+    {
+     "id": 564,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:08:00.000Z"
+    },
+    {
+     "id": 565,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-29T19:09:00.000Z"
+    },
+    {
+     "id": 566,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:10:00.000Z"
+    },
+    {
+     "id": 567,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:11:00.000Z"
+    },
+    {
+     "id": 568,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:12:00.000Z"
+    },
+    {
+     "id": 569,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:13:00.000Z"
+    },
+    {
+     "id": 570,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:14:00.000Z"
+    },
+    {
+     "id": 571,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:15:00.000Z"
+    },
+    {
+     "id": 572,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-05-29T19:16:00.000Z"
+    },
+    {
+     "id": 573,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:17:00.000Z"
+    },
+    {
+     "id": 574,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:18:00.000Z"
+    },
+    {
+     "id": 575,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-05-29T19:19:00.000Z"
+    },
+    {
+     "id": 576,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-05-29T19:20:00.000Z"
+    },
+    {
+     "id": 577,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-05-29T19:21:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden"
+  },
+  {
+   "id": 609,
+   "datum": "2026-06-02T19:30:00.000Z",
+   "beurten": [
+    {
+     "id": 579,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:00:00.000Z"
+    },
+    {
+     "id": 580,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:01:00.000Z"
+    },
+    {
+     "id": 581,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:02:00.000Z"
+    },
+    {
+     "id": 582,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:03:00.000Z"
+    },
+    {
+     "id": 583,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:04:00.000Z"
+    },
+    {
+     "id": 584,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:05:00.000Z"
+    },
+    {
+     "id": 585,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:06:00.000Z"
+    },
+    {
+     "id": 586,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:07:00.000Z"
+    },
+    {
+     "id": 587,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:08:00.000Z"
+    },
+    {
+     "id": 588,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:09:00.000Z"
+    },
+    {
+     "id": 589,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:10:00.000Z"
+    },
+    {
+     "id": 590,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:11:00.000Z"
+    },
+    {
+     "id": 591,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:12:00.000Z"
+    },
+    {
+     "id": 592,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:13:00.000Z"
+    },
+    {
+     "id": 593,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:14:00.000Z"
+    },
+    {
+     "id": 594,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:15:00.000Z"
+    },
+    {
+     "id": 595,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:16:00.000Z"
+    },
+    {
+     "id": 596,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-02T19:17:00.000Z"
+    },
+    {
+     "id": 597,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:18:00.000Z"
+    },
+    {
+     "id": 598,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:19:00.000Z"
+    },
+    {
+     "id": 599,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:20:00.000Z"
+    },
+    {
+     "id": 600,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:21:00.000Z"
+    },
+    {
+     "id": 601,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:22:00.000Z"
+    },
+    {
+     "id": 602,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-06-02T19:23:00.000Z"
+    },
+    {
+     "id": 603,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:24:00.000Z"
+    },
+    {
+     "id": 604,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-02T19:25:00.000Z"
+    },
+    {
+     "id": 605,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:26:00.000Z"
+    },
+    {
+     "id": 606,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-02T19:27:00.000Z"
+    },
+    {
+     "id": 607,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:28:00.000Z"
+    },
+    {
+     "id": 608,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-02T19:29:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden"
+  },
+  {
+   "id": 633,
+   "datum": "2026-06-06T19:23:00.000Z",
+   "beurten": [
+    {
+     "id": 610,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:00:00.000Z"
+    },
+    {
+     "id": 611,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-06T19:01:00.000Z"
+    },
+    {
+     "id": 612,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-06T19:02:00.000Z"
+    },
+    {
+     "id": 613,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-06T19:03:00.000Z"
+    },
+    {
+     "id": 614,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:04:00.000Z"
+    },
+    {
+     "id": 615,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-06T19:05:00.000Z"
+    },
+    {
+     "id": 616,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:06:00.000Z"
+    },
+    {
+     "id": 617,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:07:00.000Z"
+    },
+    {
+     "id": 618,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:08:00.000Z"
+    },
+    {
+     "id": 619,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:09:00.000Z"
+    },
+    {
+     "id": 620,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-06T19:10:00.000Z"
+    },
+    {
+     "id": 621,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:11:00.000Z"
+    },
+    {
+     "id": 622,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-06T19:12:00.000Z"
+    },
+    {
+     "id": 623,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:13:00.000Z"
+    },
+    {
+     "id": 624,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:14:00.000Z"
+    },
+    {
+     "id": 625,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-06-06T19:15:00.000Z"
+    },
+    {
+     "id": 626,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-06T19:16:00.000Z"
+    },
+    {
+     "id": 627,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:17:00.000Z"
+    },
+    {
+     "id": 628,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:18:00.000Z"
+    },
+    {
+     "id": 629,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:19:00.000Z"
+    },
+    {
+     "id": 630,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:20:00.000Z"
+    },
+    {
+     "id": 631,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-06T19:21:00.000Z"
+    },
+    {
+     "id": 632,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-06T19:22:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden"
+  },
+  {
+   "id": 651,
+   "datum": "2026-06-10T19:17:00.000Z",
+   "beurten": [
+    {
+     "id": 634,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:00:00.000Z"
+    },
+    {
+     "id": 635,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-06-10T19:01:00.000Z"
+    },
+    {
+     "id": 636,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-10T19:02:00.000Z"
+    },
+    {
+     "id": 637,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:03:00.000Z"
+    },
+    {
+     "id": 638,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-10T19:04:00.000Z"
+    },
+    {
+     "id": 639,
+     "caramboles": 2,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-10T19:05:00.000Z"
+    },
+    {
+     "id": 640,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-10T19:06:00.000Z"
+    },
+    {
+     "id": 641,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-10T19:07:00.000Z"
+    },
+    {
+     "id": 642,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:08:00.000Z"
+    },
+    {
+     "id": 643,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:09:00.000Z"
+    },
+    {
+     "id": 644,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:10:00.000Z"
+    },
+    {
+     "id": 645,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:11:00.000Z"
+    },
+    {
+     "id": 646,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:12:00.000Z"
+    },
+    {
+     "id": 647,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:13:00.000Z"
+    },
+    {
+     "id": 648,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-10T19:14:00.000Z"
+    },
+    {
+     "id": 649,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-10T19:15:00.000Z"
+    },
+    {
+     "id": 650,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-10T19:16:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "driebanden"
+  },
+  {
+   "id": 670,
+   "datum": "2026-06-14T19:18:00.000Z",
+   "beurten": [
+    {
+     "id": 652,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:00:00.000Z"
+    },
+    {
+     "id": 653,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-06-14T19:01:00.000Z"
+    },
+    {
+     "id": 654,
+     "caramboles": 3,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:02:00.000Z"
+    },
+    {
+     "id": 655,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-14T19:03:00.000Z"
+    },
+    {
+     "id": 656,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-14T19:04:00.000Z"
+    },
+    {
+     "id": 657,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-14T19:05:00.000Z"
+    },
+    {
+     "id": 658,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:06:00.000Z"
+    },
+    {
+     "id": 659,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:07:00.000Z"
+    },
+    {
+     "id": 660,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:08:00.000Z"
+    },
+    {
+     "id": 661,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:09:00.000Z"
+    },
+    {
+     "id": 662,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-14T19:10:00.000Z"
+    },
+    {
+     "id": 663,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:11:00.000Z"
+    },
+    {
+     "id": 664,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:12:00.000Z"
+    },
+    {
+     "id": 665,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-14T19:13:00.000Z"
+    },
+    {
+     "id": 666,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:14:00.000Z"
+    },
+    {
+     "id": 667,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:15:00.000Z"
+    },
+    {
+     "id": 668,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-14T19:16:00.000Z"
+    },
+    {
+     "id": 669,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-06-14T19:17:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "bandstoten"
+  },
+  {
+   "id": 693,
+   "datum": "2026-06-18T19:22:00.000Z",
+   "beurten": [
+    {
+     "id": 671,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:00:00.000Z"
+    },
+    {
+     "id": 672,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:01:00.000Z"
+    },
+    {
+     "id": 673,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:02:00.000Z"
+    },
+    {
+     "id": 674,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:03:00.000Z"
+    },
+    {
+     "id": 675,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:04:00.000Z"
+    },
+    {
+     "id": 676,
+     "caramboles": 5,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-18T19:05:00.000Z"
+    },
+    {
+     "id": 677,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:06:00.000Z"
+    },
+    {
+     "id": 678,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:07:00.000Z"
+    },
+    {
+     "id": 679,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:08:00.000Z"
+    },
+    {
+     "id": 680,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:09:00.000Z"
+    },
+    {
+     "id": 681,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:10:00.000Z"
+    },
+    {
+     "id": 682,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:11:00.000Z"
+    },
+    {
+     "id": 683,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:12:00.000Z"
+    },
+    {
+     "id": 684,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-18T19:13:00.000Z"
+    },
+    {
+     "id": 685,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:14:00.000Z"
+    },
+    {
+     "id": 686,
+     "caramboles": 3,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-18T19:15:00.000Z"
+    },
+    {
+     "id": 687,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-18T19:16:00.000Z"
+    },
+    {
+     "id": 688,
+     "caramboles": 9,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:17:00.000Z"
+    },
+    {
+     "id": 689,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:18:00.000Z"
+    },
+    {
+     "id": 690,
+     "caramboles": 6,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-18T19:19:00.000Z"
+    },
+    {
+     "id": 691,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:20:00.000Z"
+    },
+    {
+     "id": 692,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-18T19:21:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "bandstoten",
+   "notitie": "Testnotitie"
+  },
+  {
+   "id": 718,
+   "datum": "2026-06-22T19:24:00.000Z",
+   "beurten": [
+    {
+     "id": 694,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-06-22T19:00:00.000Z"
+    },
+    {
+     "id": 695,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:01:00.000Z"
+    },
+    {
+     "id": 696,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:02:00.000Z"
+    },
+    {
+     "id": 697,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-06-22T19:03:00.000Z"
+    },
+    {
+     "id": 698,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-22T19:04:00.000Z"
+    },
+    {
+     "id": 699,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:05:00.000Z"
+    },
+    {
+     "id": 700,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:06:00.000Z"
+    },
+    {
+     "id": 701,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:07:00.000Z"
+    },
+    {
+     "id": 702,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:08:00.000Z"
+    },
+    {
+     "id": 703,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:09:00.000Z"
+    },
+    {
+     "id": 704,
+     "caramboles": 5,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-06-22T19:10:00.000Z"
+    },
+    {
+     "id": 705,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-22T19:11:00.000Z"
+    },
+    {
+     "id": 706,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-22T19:12:00.000Z"
+    },
+    {
+     "id": 707,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:13:00.000Z"
+    },
+    {
+     "id": 708,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-22T19:14:00.000Z"
+    },
+    {
+     "id": 709,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-22T19:15:00.000Z"
+    },
+    {
+     "id": 710,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:16:00.000Z"
+    },
+    {
+     "id": 711,
+     "caramboles": 5,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:17:00.000Z"
+    },
+    {
+     "id": 712,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:18:00.000Z"
+    },
+    {
+     "id": 713,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:19:00.000Z"
+    },
+    {
+     "id": 714,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-22T19:20:00.000Z"
+    },
+    {
+     "id": 715,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:21:00.000Z"
+    },
+    {
+     "id": 716,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-22T19:22:00.000Z"
+    },
+    {
+     "id": 717,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-06-22T19:23:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "bandstoten"
+  },
+  {
+   "id": 746,
+   "datum": "2026-06-26T19:27:00.000Z",
+   "beurten": [
+    {
+     "id": 719,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-06-26T19:00:00.000Z"
+    },
+    {
+     "id": 720,
+     "caramboles": 5,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:01:00.000Z"
+    },
+    {
+     "id": 721,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-26T19:02:00.000Z"
+    },
+    {
+     "id": 722,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:03:00.000Z"
+    },
+    {
+     "id": 723,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-06-26T19:04:00.000Z"
+    },
+    {
+     "id": 724,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-26T19:05:00.000Z"
+    },
+    {
+     "id": 725,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:06:00.000Z"
+    },
+    {
+     "id": 726,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-26T19:07:00.000Z"
+    },
+    {
+     "id": 727,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-26T19:08:00.000Z"
+    },
+    {
+     "id": 728,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:09:00.000Z"
+    },
+    {
+     "id": 729,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-26T19:10:00.000Z"
+    },
+    {
+     "id": 730,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:11:00.000Z"
+    },
+    {
+     "id": 731,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-26T19:12:00.000Z"
+    },
+    {
+     "id": 732,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:13:00.000Z"
+    },
+    {
+     "id": 733,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:14:00.000Z"
+    },
+    {
+     "id": 734,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-26T19:15:00.000Z"
+    },
+    {
+     "id": 735,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:16:00.000Z"
+    },
+    {
+     "id": 736,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:17:00.000Z"
+    },
+    {
+     "id": 737,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:18:00.000Z"
+    },
+    {
+     "id": 738,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:19:00.000Z"
+    },
+    {
+     "id": 739,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:20:00.000Z"
+    },
+    {
+     "id": 740,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:21:00.000Z"
+    },
+    {
+     "id": 741,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:22:00.000Z"
+    },
+    {
+     "id": 742,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-26T19:23:00.000Z"
+    },
+    {
+     "id": 743,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-26T19:24:00.000Z"
+    },
+    {
+     "id": 744,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-26T19:25:00.000Z"
+    },
+    {
+     "id": 745,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-26T19:26:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "bandstoten"
+  },
+  {
+   "id": 763,
+   "datum": "2026-06-30T19:16:00.000Z",
+   "beurten": [
+    {
+     "id": 747,
+     "caramboles": 10,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-06-30T19:00:00.000Z"
+    },
+    {
+     "id": 748,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-30T19:01:00.000Z"
+    },
+    {
+     "id": 749,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-30T19:02:00.000Z"
+    },
+    {
+     "id": 750,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-06-30T19:03:00.000Z"
+    },
+    {
+     "id": 751,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-06-30T19:04:00.000Z"
+    },
+    {
+     "id": 752,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-06-30T19:05:00.000Z"
+    },
+    {
+     "id": 753,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-30T19:06:00.000Z"
+    },
+    {
+     "id": 754,
+     "caramboles": 5,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-06-30T19:07:00.000Z"
+    },
+    {
+     "id": 755,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-30T19:08:00.000Z"
+    },
+    {
+     "id": 756,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-30T19:09:00.000Z"
+    },
+    {
+     "id": 757,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-30T19:10:00.000Z"
+    },
+    {
+     "id": 758,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-06-30T19:11:00.000Z"
+    },
+    {
+     "id": 759,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-06-30T19:12:00.000Z"
+    },
+    {
+     "id": 760,
+     "caramboles": 3,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-06-30T19:13:00.000Z"
+    },
+    {
+     "id": 761,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-30T19:14:00.000Z"
+    },
+    {
+     "id": 762,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-06-30T19:15:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "bandstoten"
+  },
+  {
+   "id": 791,
+   "datum": "2026-07-04T19:27:00.000Z",
+   "beurten": [
+    {
+     "id": 764,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:00:00.000Z"
+    },
+    {
+     "id": 765,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:01:00.000Z"
+    },
+    {
+     "id": 766,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:02:00.000Z"
+    },
+    {
+     "id": 767,
+     "caramboles": 2,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-04T19:03:00.000Z"
+    },
+    {
+     "id": 768,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:04:00.000Z"
+    },
+    {
+     "id": 769,
+     "caramboles": 4,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:05:00.000Z"
+    },
+    {
+     "id": 770,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:06:00.000Z"
+    },
+    {
+     "id": 771,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:07:00.000Z"
+    },
+    {
+     "id": 772,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:08:00.000Z"
+    },
+    {
+     "id": 773,
+     "caramboles": 5,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:09:00.000Z"
+    },
+    {
+     "id": 774,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:10:00.000Z"
+    },
+    {
+     "id": 775,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:11:00.000Z"
+    },
+    {
+     "id": 776,
+     "caramboles": 3,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-04T19:12:00.000Z"
+    },
+    {
+     "id": 777,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-04T19:13:00.000Z"
+    },
+    {
+     "id": 778,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:14:00.000Z"
+    },
+    {
+     "id": 779,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-04T19:15:00.000Z"
+    },
+    {
+     "id": 780,
+     "caramboles": 2,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:16:00.000Z"
+    },
+    {
+     "id": 781,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-04T19:17:00.000Z"
+    },
+    {
+     "id": 782,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:18:00.000Z"
+    },
+    {
+     "id": 783,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:19:00.000Z"
+    },
+    {
+     "id": 784,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-04T19:20:00.000Z"
+    },
+    {
+     "id": 785,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:21:00.000Z"
+    },
+    {
+     "id": 786,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:22:00.000Z"
+    },
+    {
+     "id": 787,
+     "caramboles": 2,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:23:00.000Z"
+    },
+    {
+     "id": 788,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-04T19:24:00.000Z"
+    },
+    {
+     "id": 789,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-04T19:25:00.000Z"
+    },
+    {
+     "id": 790,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-04T19:26:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "bandstoten"
+  },
+  {
+   "id": 820,
+   "datum": "2026-07-08T19:28:00.000Z",
+   "beurten": [
+    {
+     "id": 792,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:00:00.000Z"
+    },
+    {
+     "id": 793,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-08T19:01:00.000Z"
+    },
+    {
+     "id": 794,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-08T19:02:00.000Z"
+    },
+    {
+     "id": 795,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-08T19:03:00.000Z"
+    },
+    {
+     "id": 796,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:04:00.000Z"
+    },
+    {
+     "id": 797,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:05:00.000Z"
+    },
+    {
+     "id": 798,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:06:00.000Z"
+    },
+    {
+     "id": 799,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:07:00.000Z"
+    },
+    {
+     "id": 800,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:08:00.000Z"
+    },
+    {
+     "id": 801,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-08T19:09:00.000Z"
+    },
+    {
+     "id": 802,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:10:00.000Z"
+    },
+    {
+     "id": 803,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:11:00.000Z"
+    },
+    {
+     "id": 804,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:12:00.000Z"
+    },
+    {
+     "id": 805,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-08T19:13:00.000Z"
+    },
+    {
+     "id": 806,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-08T19:14:00.000Z"
+    },
+    {
+     "id": 807,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:15:00.000Z"
+    },
+    {
+     "id": 808,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-08T19:16:00.000Z"
+    },
+    {
+     "id": 809,
+     "caramboles": 8,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-07-08T19:17:00.000Z"
+    },
+    {
+     "id": 810,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-08T19:18:00.000Z"
+    },
+    {
+     "id": 811,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-07-08T19:19:00.000Z"
+    },
+    {
+     "id": 812,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-08T19:20:00.000Z"
+    },
+    {
+     "id": 813,
+     "caramboles": 8,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-08T19:21:00.000Z"
+    },
+    {
+     "id": 814,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:22:00.000Z"
+    },
+    {
+     "id": 815,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:23:00.000Z"
+    },
+    {
+     "id": 816,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-08T19:24:00.000Z"
+    },
+    {
+     "id": 817,
+     "caramboles": 8,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-08T19:25:00.000Z"
+    },
+    {
+     "id": 818,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-08T19:26:00.000Z"
+    },
+    {
+     "id": 819,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-08T19:27:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "kader38"
+  },
+  {
+   "id": 845,
+   "datum": "2026-07-12T19:24:00.000Z",
+   "beurten": [
+    {
+     "id": 821,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:00:00.000Z"
+    },
+    {
+     "id": 822,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-12T19:01:00.000Z"
+    },
+    {
+     "id": 823,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:02:00.000Z"
+    },
+    {
+     "id": 824,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-12T19:03:00.000Z"
+    },
+    {
+     "id": 825,
+     "caramboles": 3,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-12T19:04:00.000Z"
+    },
+    {
+     "id": 826,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:05:00.000Z"
+    },
+    {
+     "id": 827,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:06:00.000Z"
+    },
+    {
+     "id": 828,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:07:00.000Z"
+    },
+    {
+     "id": 829,
+     "caramboles": 4,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:08:00.000Z"
+    },
+    {
+     "id": 830,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:09:00.000Z"
+    },
+    {
+     "id": 831,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:10:00.000Z"
+    },
+    {
+     "id": 832,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:11:00.000Z"
+    },
+    {
+     "id": 833,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:12:00.000Z"
+    },
+    {
+     "id": 834,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:13:00.000Z"
+    },
+    {
+     "id": 835,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:14:00.000Z"
+    },
+    {
+     "id": 836,
+     "caramboles": 3,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-12T19:15:00.000Z"
+    },
+    {
+     "id": 837,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-12T19:16:00.000Z"
+    },
+    {
+     "id": 838,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:17:00.000Z"
+    },
+    {
+     "id": 839,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:18:00.000Z"
+    },
+    {
+     "id": 840,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:19:00.000Z"
+    },
+    {
+     "id": 841,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:20:00.000Z"
+    },
+    {
+     "id": 842,
+     "caramboles": 5,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:21:00.000Z"
+    },
+    {
+     "id": 843,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-12T19:22:00.000Z"
+    },
+    {
+     "id": 844,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-12T19:23:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "kader38",
+   "notitie": "Testnotitie"
+  },
+  {
+   "id": 866,
+   "datum": "2026-07-16T19:20:00.000Z",
+   "beurten": [
+    {
+     "id": 846,
+     "caramboles": 6,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:00:00.000Z"
+    },
+    {
+     "id": 847,
+     "caramboles": 3,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-16T19:01:00.000Z"
+    },
+    {
+     "id": 848,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-07-16T19:02:00.000Z"
+    },
+    {
+     "id": 849,
+     "caramboles": 6,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-16T19:03:00.000Z"
+    },
+    {
+     "id": 850,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:04:00.000Z"
+    },
+    {
+     "id": 851,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:05:00.000Z"
+    },
+    {
+     "id": 852,
+     "caramboles": 2,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-16T19:06:00.000Z"
+    },
+    {
+     "id": 853,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:07:00.000Z"
+    },
+    {
+     "id": 854,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:08:00.000Z"
+    },
+    {
+     "id": 855,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:09:00.000Z"
+    },
+    {
+     "id": 856,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-16T19:10:00.000Z"
+    },
+    {
+     "id": 857,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-16T19:11:00.000Z"
+    },
+    {
+     "id": 858,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-16T19:12:00.000Z"
+    },
+    {
+     "id": 859,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-16T19:13:00.000Z"
+    },
+    {
+     "id": 860,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-16T19:14:00.000Z"
+    },
+    {
+     "id": 861,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:15:00.000Z"
+    },
+    {
+     "id": 862,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-16T19:16:00.000Z"
+    },
+    {
+     "id": 863,
+     "caramboles": 4,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-16T19:17:00.000Z"
+    },
+    {
+     "id": 864,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-16T19:18:00.000Z"
+    },
+    {
+     "id": 865,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-16T19:19:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "kader38"
+  },
+  {
+   "id": 894,
+   "datum": "2026-07-20T19:27:00.000Z",
+   "beurten": [
+    {
+     "id": 867,
+     "caramboles": 4,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-20T19:00:00.000Z"
+    },
+    {
+     "id": 868,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-20T19:01:00.000Z"
+    },
+    {
+     "id": 869,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:02:00.000Z"
+    },
+    {
+     "id": 870,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:03:00.000Z"
+    },
+    {
+     "id": 871,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:04:00.000Z"
+    },
+    {
+     "id": 872,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:05:00.000Z"
+    },
+    {
+     "id": 873,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:06:00.000Z"
+    },
+    {
+     "id": 874,
+     "caramboles": 6,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:07:00.000Z"
+    },
+    {
+     "id": 875,
+     "caramboles": 4,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-20T19:08:00.000Z"
+    },
+    {
+     "id": 876,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-20T19:09:00.000Z"
+    },
+    {
+     "id": 877,
+     "caramboles": 5,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-07-20T19:10:00.000Z"
+    },
+    {
+     "id": 878,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:11:00.000Z"
+    },
+    {
+     "id": 879,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-07-20T19:12:00.000Z"
+    },
+    {
+     "id": 880,
+     "caramboles": 2,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:13:00.000Z"
+    },
+    {
+     "id": 881,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:14:00.000Z"
+    },
+    {
+     "id": 882,
+     "caramboles": 11,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:15:00.000Z"
+    },
+    {
+     "id": 883,
+     "caramboles": 3,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-20T19:16:00.000Z"
+    },
+    {
+     "id": 884,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:17:00.000Z"
+    },
+    {
+     "id": 885,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-20T19:18:00.000Z"
+    },
+    {
+     "id": 886,
+     "caramboles": 2,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-20T19:19:00.000Z"
+    },
+    {
+     "id": 887,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:20:00.000Z"
+    },
+    {
+     "id": 888,
+     "caramboles": 3,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:21:00.000Z"
+    },
+    {
+     "id": 889,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:22:00.000Z"
+    },
+    {
+     "id": 890,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:23:00.000Z"
+    },
+    {
+     "id": 891,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:24:00.000Z"
+    },
+    {
+     "id": 892,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-20T19:25:00.000Z"
+    },
+    {
+     "id": 893,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-20T19:26:00.000Z"
+    }
+   ],
+   "tafel": "284",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "kader38"
+  },
+  {
+   "id": 919,
+   "datum": "2026-07-24T19:24:00.000Z",
+   "beurten": [
+    {
+     "id": 895,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:00:00.000Z"
+    },
+    {
+     "id": 896,
+     "caramboles": 6,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:01:00.000Z"
+    },
+    {
+     "id": 897,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:02:00.000Z"
+    },
+    {
+     "id": 898,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:03:00.000Z"
+    },
+    {
+     "id": 899,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-24T19:04:00.000Z"
+    },
+    {
+     "id": 900,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:05:00.000Z"
+    },
+    {
+     "id": 901,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:06:00.000Z"
+    },
+    {
+     "id": 902,
+     "caramboles": 7,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-24T19:07:00.000Z"
+    },
+    {
+     "id": 903,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:08:00.000Z"
+    },
+    {
+     "id": 904,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:09:00.000Z"
+    },
+    {
+     "id": 905,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:10:00.000Z"
+    },
+    {
+     "id": 906,
+     "caramboles": 4,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:11:00.000Z"
+    },
+    {
+     "id": 907,
+     "caramboles": 2,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:12:00.000Z"
+    },
+    {
+     "id": 908,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-24T19:13:00.000Z"
+    },
+    {
+     "id": 909,
+     "caramboles": 4,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:14:00.000Z"
+    },
+    {
+     "id": 910,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:15:00.000Z"
+    },
+    {
+     "id": 911,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-24T19:16:00.000Z"
+    },
+    {
+     "id": 912,
+     "caramboles": 5,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-24T19:17:00.000Z"
+    },
+    {
+     "id": 913,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:18:00.000Z"
+    },
+    {
+     "id": 914,
+     "caramboles": 2,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:19:00.000Z"
+    },
+    {
+     "id": 915,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-24T19:20:00.000Z"
+    },
+    {
+     "id": 916,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:21:00.000Z"
+    },
+    {
+     "id": 917,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:22:00.000Z"
+    },
+    {
+     "id": 918,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-24T19:23:00.000Z"
+    }
+   ],
+   "tafel": "210",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "kader71"
+  },
+  {
+   "id": 949,
+   "datum": "2026-07-28T19:29:00.000Z",
+   "beurten": [
+    {
+     "id": 920,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:00:00.000Z"
+    },
+    {
+     "id": 921,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:01:00.000Z"
+    },
+    {
+     "id": 922,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:02:00.000Z"
+    },
+    {
+     "id": 923,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:03:00.000Z"
+    },
+    {
+     "id": 924,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:04:00.000Z"
+    },
+    {
+     "id": 925,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:05:00.000Z"
+    },
+    {
+     "id": 926,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:06:00.000Z"
+    },
+    {
+     "id": 927,
+     "caramboles": 1,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:07:00.000Z"
+    },
+    {
+     "id": 928,
+     "caramboles": 2,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:08:00.000Z"
+    },
+    {
+     "id": 929,
+     "caramboles": 6,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-28T19:09:00.000Z"
+    },
+    {
+     "id": 930,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:10:00.000Z"
+    },
+    {
+     "id": 931,
+     "caramboles": 4,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:11:00.000Z"
+    },
+    {
+     "id": 932,
+     "caramboles": 3,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-28T19:12:00.000Z"
+    },
+    {
+     "id": 933,
+     "caramboles": 11,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:13:00.000Z"
+    },
+    {
+     "id": 934,
+     "caramboles": 1,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-28T19:14:00.000Z"
+    },
+    {
+     "id": 935,
+     "caramboles": 1,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-07-28T19:15:00.000Z"
+    },
+    {
+     "id": 936,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:16:00.000Z"
+    },
+    {
+     "id": 937,
+     "caramboles": 2,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:17:00.000Z"
+    },
+    {
+     "id": 938,
+     "caramboles": 1,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:18:00.000Z"
+    },
+    {
+     "id": 939,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:19:00.000Z"
+    },
+    {
+     "id": 940,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:20:00.000Z"
+    },
+    {
+     "id": 941,
+     "caramboles": 2,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-07-28T19:21:00.000Z"
+    },
+    {
+     "id": 942,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:22:00.000Z"
+    },
+    {
+     "id": 943,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:23:00.000Z"
+    },
+    {
+     "id": 944,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-07-28T19:24:00.000Z"
+    },
+    {
+     "id": 945,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:25:00.000Z"
+    },
+    {
+     "id": 946,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:26:00.000Z"
+    },
+    {
+     "id": 947,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-07-28T19:27:00.000Z"
+    },
+    {
+     "id": 948,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-07-28T19:28:00.000Z"
+    }
+   ],
+   "tafel": "230",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "kader71",
+   "notitie": "Testnotitie"
+  },
+  {
+   "id": 979,
+   "datum": "2026-08-01T19:29:00.000Z",
+   "beurten": [
+    {
+     "id": 950,
+     "caramboles": 9,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-08-01T19:00:00.000Z"
+    },
+    {
+     "id": 951,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Verzamelen"
+     ],
+     "tijd": "2026-08-01T19:01:00.000Z"
+    },
+    {
+     "id": 952,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:02:00.000Z"
+    },
+    {
+     "id": 953,
+     "caramboles": 1,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:03:00.000Z"
+    },
+    {
+     "id": 954,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:04:00.000Z"
+    },
+    {
+     "id": 955,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:05:00.000Z"
+    },
+    {
+     "id": 956,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:06:00.000Z"
+    },
+    {
+     "id": 957,
+     "caramboles": 0,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:07:00.000Z"
+    },
+    {
+     "id": 958,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:08:00.000Z"
+    },
+    {
+     "id": 959,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:09:00.000Z"
+    },
+    {
+     "id": 960,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:10:00.000Z"
+    },
+    {
+     "id": 961,
+     "caramboles": 0,
+     "gemist": [
+      "Klos"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:11:00.000Z"
+    },
+    {
+     "id": 962,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-08-01T19:12:00.000Z"
+    },
+    {
+     "id": 963,
+     "caramboles": 0,
+     "gemist": [
+      "Trekstoot"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:13:00.000Z"
+    },
+    {
+     "id": 964,
+     "caramboles": 1,
+     "gemist": [],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-08-01T19:14:00.000Z"
+    },
+    {
+     "id": 965,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:15:00.000Z"
+    },
+    {
+     "id": 966,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:16:00.000Z"
+    },
+    {
+     "id": 967,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:17:00.000Z"
+    },
+    {
+     "id": 968,
+     "caramboles": 3,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [
+      "Positioneren"
+     ],
+     "tijd": "2026-08-01T19:18:00.000Z"
+    },
+    {
+     "id": 969,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:19:00.000Z"
+    },
+    {
+     "id": 970,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:20:00.000Z"
+    },
+    {
+     "id": 971,
+     "caramboles": 0,
+     "gemist": [
+      "Direct"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:21:00.000Z"
+    },
+    {
+     "id": 972,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-08-01T19:22:00.000Z"
+    },
+    {
+     "id": 973,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:23:00.000Z"
+    },
+    {
+     "id": 974,
+     "caramboles": 0,
+     "gemist": [
+      "Dun"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:24:00.000Z"
+    },
+    {
+     "id": 975,
+     "caramboles": 0,
+     "gemist": [],
+     "goed": [],
+     "tijd": "2026-08-01T19:25:00.000Z"
+    },
+    {
+     "id": 976,
+     "caramboles": 0,
+     "gemist": [
+      "Te zacht"
+     ],
+     "goed": [],
+     "tijd": "2026-08-01T19:26:00.000Z"
+    },
+    {
+     "id": 977,
+     "caramboles": 2,
+     "gemist": [],
+     "goed": [
+      "Doorstoot"
+     ],
+     "tijd": "2026-08-01T19:27:00.000Z"
+    },
+    {
+     "id": 978,
+     "caramboles": 1,
+     "gemist": [
+      "Positioneren"
+     ],
+     "goed": [
+      "Snijden"
+     ],
+     "tijd": "2026-08-01T19:28:00.000Z"
+    }
+   ],
+   "tafel": "255",
+   "doel": 25,
+   "doelType": "beurten",
+   "discipline": "kader71"
+  }
+ ],
+ "tijdsvenster": "alles",
+ "seizoenen": [
+  {
+   "id": 1,
+   "naam": "Seizoen 1",
+   "startDatum": null,
+   "eindDatum": "2026-05-01T00:00:00.000Z"
+  },
+  {
+   "id": 2,
+   "naam": "Seizoen 2",
+   "startDatum": "2026-05-01T00:00:00.000Z",
+   "eindDatum": null
+  }
+ ],
+ "huidigeDiscipline": "libre",
+ "onboardingGezien": true
+}

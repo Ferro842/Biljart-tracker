@@ -1,10 +1,57 @@
 // Uitklapbare partijregels: PartijRij in de Stats-tab (met grafiek en series) en LogPartijRij in de
-// Log-tab (beurt voor beurt). Beide met notitie en verwijderen. JSX via Babel, na jsx/vensters.jsx.
+// Log-tab (beurt voor beurt). Beide gebruiken PartijLabels en PartijBeheer (notitie en verwijderen).
+// JSX via Babel, na jsx/vensters.jsx.
+
+// Labels achter de datum van een partij: tafelmaat, badge-punten, geschrapt uit gemiddelde, notitie
+function PartijLabels({p,punten,gedropt}){
+  return(
+    <>
+      {p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}
+      {punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}
+      {gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}
+      {p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}
+    </>
+  );
+}
+
+// Onderkant van een opengeklapte partij: notitie bewerken en partij verwijderen (met bevestiging)
+function PartijBeheer({p,onNotitie,onVerwijder}){
+  const [confVerwijder,setConfVerwijder]=useState(false);
+  const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
+  return(
+    <>
+      {onNotitie&&(
+        <div style={{marginTop:8}}>
+          <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Notitie</div>
+          <textarea value={notitieTekst} onChange={function(e){setNotitieTekst(e.target.value);}}
+            placeholder="Sfeer, met wie, hoe het voelde..."
+            style={{width:"100%",minHeight:50,background:"#182e14",border:"1px solid "+KBDR,borderRadius:6,color:WIT,fontSize:13,padding:8,fontFamily:"inherit",resize:"vertical"}}/>
+          {notitieTekst!==(p.notitie||"")&&(
+            <button style={{marginTop:6,padding:"6px 12px",background:"#2d4a1e",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
+              onClick={function(){onNotitie(p.id,notitieTekst);}}>Notitie opslaan</button>
+          )}
+        </div>
+      )}
+      {onVerwijder&&(
+        !confVerwijder
+          ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
+            onClick={function(){setConfVerwijder(true);}}>Partij verwijderen</button>
+          :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:6,padding:"8px 10px"}}>
+            <div style={{fontSize:13,color:"#e06060",marginBottom:6}}>Deze partij definitief verwijderen?</div>
+            <div style={{display:"flex",gap:6}}>
+              <button style={{flex:1,padding:6,background:"#7a3030",border:"none",borderRadius:5,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                onClick={function(){onVerwijder(p.id);}}>Ja, verwijderen</button>
+              <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                onClick={function(){setConfVerwijder(false);}}>Annuleer</button>
+            </div>
+          </div>
+      )}
+    </>
+  );
+}
 
 function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
   const [open,setOpen]=useState(false);
-  const [confVerwijder,setConfVerwijder]=useState(false);
-  const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
   const st=stat(p.beurten,discipline);
   if(!st)return null;
   const dRij=beurtDrempels(discipline);
@@ -14,7 +61,7 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
           <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -34,32 +81,7 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
             })}
           </div>
           <PrestatieOverzicht prestatie={prestatie}/>
-          {onNotitie&&(
-            <div style={{marginTop:8}}>
-              <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Notitie</div>
-              <textarea value={notitieTekst} onChange={function(e){setNotitieTekst(e.target.value);}}
-                placeholder="Sfeer, met wie, hoe het voelde..."
-                style={{width:"100%",minHeight:50,background:"#182e14",border:"1px solid "+KBDR,borderRadius:6,color:WIT,fontSize:13,padding:8,fontFamily:"inherit",resize:"vertical"}}/>
-              {notitieTekst!==(p.notitie||"")&&(
-                <button style={{marginTop:6,padding:"6px 12px",background:"#2d4a1e",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-                  onClick={function(){onNotitie(p.id,notitieTekst);}}>Notitie opslaan</button>
-              )}
-            </div>
-          )}
-          {onVerwijder&&(
-            !confVerwijder
-              ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-                onClick={function(){setConfVerwijder(true);}}>Partij verwijderen</button>
-              :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:6,padding:"8px 10px"}}>
-                <div style={{fontSize:13,color:"#e06060",marginBottom:6}}>Deze partij definitief verwijderen?</div>
-                <div style={{display:"flex",gap:6}}>
-                  <button style={{flex:1,padding:6,background:"#7a3030",border:"none",borderRadius:5,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                    onClick={function(){onVerwijder(p.id);}}>Ja, verwijderen</button>
-                  <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                    onClick={function(){setConfVerwijder(false);}}>Annuleer</button>
-                </div>
-              </div>
-          )}
+          <PartijBeheer p={p} onNotitie={onNotitie} onVerwijder={onVerwijder}/>
         </div>
       )}
     </div>
@@ -68,8 +90,6 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
 
 function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
   const [open,setOpen]=useState(false);
-  const [confVerwijder,setConfVerwijder]=useState(false);
-  const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
   const st=stat(p.beurten,discipline);
   const punten=prestatie?prestatie.punten:0;
   return(
@@ -77,7 +97,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie})
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}{p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}{punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}{gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}{p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}</div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
           {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
@@ -86,32 +106,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie})
         <div style={{padding:"0 14px 12px"}}>
           <PrestatieOverzicht prestatie={prestatie}/>
           {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i} discipline={discipline}/>;}) }
-          {onNotitie&&(
-            <div style={{marginTop:8}}>
-              <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Notitie</div>
-              <textarea value={notitieTekst} onChange={function(e){setNotitieTekst(e.target.value);}}
-                placeholder="Sfeer, met wie, hoe het voelde..."
-                style={{width:"100%",minHeight:50,background:"#182e14",border:"1px solid "+KBDR,borderRadius:6,color:WIT,fontSize:13,padding:8,fontFamily:"inherit",resize:"vertical"}}/>
-              {notitieTekst!==(p.notitie||"")&&(
-                <button style={{marginTop:6,padding:"6px 12px",background:"#2d4a1e",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-                  onClick={function(){onNotitie(p.id,notitieTekst);}}>Notitie opslaan</button>
-              )}
-            </div>
-          )}
-          {onVerwijder&&(
-            !confVerwijder
-              ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-                onClick={function(){setConfVerwijder(true);}}>Partij verwijderen</button>
-              :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:6,padding:"8px 10px"}}>
-                <div style={{fontSize:13,color:"#e06060",marginBottom:6}}>Deze partij definitief verwijderen?</div>
-                <div style={{display:"flex",gap:6}}>
-                  <button style={{flex:1,padding:6,background:"#7a3030",border:"none",borderRadius:5,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                    onClick={function(){onVerwijder(p.id);}}>Ja, verwijderen</button>
-                  <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                    onClick={function(){setConfVerwijder(false);}}>Annuleer</button>
-                </div>
-              </div>
-          )}
+          <PartijBeheer p={p} onNotitie={onNotitie} onVerwijder={onVerwijder}/>
         </div>
       )}
     </div>

@@ -24,7 +24,7 @@ Laadvolgorde in `index.html` (alles deelt de globale scope):
 | `js/opslag.js` | `IS_NATIVE`, `laadData`/`laadWebData`/`slaOp`, `migreerTafels`, native bestand-I/O |
 | `jsx/onderdelen.jsx` | Eerste Babel-script: React-hooks, `Grafiek`, `OpmGrid`, `LogRij`, `PrestatieOverzicht`, `NiveauKaart`, `DashBalk`, `DashGrafiek` |
 | `jsx/vensters.jsx` | Overlays: `PartijSamenvatting`, `WelkomstFlow`, `SeizoenArchief`, `BadgeCatalogus`, `NiveauOverzicht` |
-| `jsx/partijrij.jsx` | `PartijRij` (Stats) en `LogPartijRij` (Log) |
+| `jsx/partijrij.jsx` | `PartijRij` (Stats) en `LogPartijRij` (Log), met gedeelde `PartijLabels` en `PartijBeheer` |
 | `jsx/dashboard.jsx` | `BeurtenTijdlijn` (beurtengrafiek met selecteren, beste/zwakste reeks) en `Dashboard` |
 | `jsx/tabs.jsx` | `LogTab`, `DataTab` (AI-prompt, tekstexport, export/import), `StatsTab` |
 | `jsx/spelen.jsx` | `SetupScherm`, `InvoerScherm`, `GemistScherm`, `GoedScherm`; krijgen de spelstatus als object `spel` |
@@ -80,7 +80,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Testdata laden (in de browserconsole), daarna herladen:
   `localStorage.setItem("biljart-tracker-v2", JSON.stringify(await fetch("/test/testdata.json").then(r=>r.json())))`
 - Alle tests (liefst op telefoonformaat 375 breed): `await eval(await fetch("/test/alles.js").then(r=>r.text()))`
-  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `vensters`, `datatab`
+  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `vensters`, `datatab`
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.
@@ -99,6 +99,5 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ## Open punten
 
-- `PartijRij` en `LogPartijRij` hebben dubbele notitie/verwijder-code; scroll-noodoplossing in `StatsTab`
-  is sinds stap 10 overbodig.
+- De scroll-noodoplossing bij "Alle data wissen" in `StatsTab` is sinds stap 10 overbodig.
 - Offline-cache voor de website (service worker) is nog niet gebouwd.

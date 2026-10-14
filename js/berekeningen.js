@@ -553,7 +553,8 @@ function vergelijkSeries(partijen,discipline,modus,opties){
   return{modus:modus,vergelijkingen:vergelijkingen,teWeinig:teWeinig};
 }
 
-// Je hoogste series: de top van alle beurten (met opmerkingen), je record per tafel en per tafel of het de
+// Je hoogste series: al je grote series (vanaf sterkMin, of vanaf opbouwMin als je die nog niet hebt) per
+// aantal, elk met datum, tafel, partij, beurt en opmerkingen, je record per tafel en per tafel of het de
 // goede kant op gaat: je laatste 10 partijen (bij minder dan 20 de laatste helft) tegenover die ervoor, in
 // gemiddelde hoogste serie per partij en grote series (sterkMin en hoger) per partij. Per tafel, want op de
 // kleinere tafel maak je vanzelf grotere series. Oordeel bij minstens 6 partijen op die tafel; een verschil
@@ -569,14 +570,27 @@ function berekenHoogsteSeries(partijen,discipline){
     });
   });
   if(!alle.length)return null;
-  // Hoogste eerst; bij gelijke stand de recentste eerst
-  const top=alle.filter(function(b){return b.car>0;}).sort(function(a,b){return b.car-a.car||new Date(b.datum)-new Date(a.datum)||b.beurt-a.beurt;}).slice(0,10);
+  // Hoogste eerst; bij gelijke stand de recentste eerst. Gegroepeerd per aantal caramboles.
+  const vanaf=alle.some(function(b){return b.car>=d.sterkMin;})?d.sterkMin:d.opbouwMin;
+  const groot=alle.filter(function(b){return b.car>=vanaf;}).sort(function(a,b){return b.car-a.car||new Date(b.datum)-new Date(a.datum)||b.beurt-a.beurt;});
+  const perAantal=[];
+  groot.forEach(function(b){
+    const g=perAantal[perAantal.length-1];
+    if(g&&g.car===b.car)g.series.push(b);else perAantal.push({car:b.car,series:[b]});
+  });
   const tafels=Object.keys(TAFELS).filter(function(k){return alle.some(function(b){return b.tafel===k;});});
   const gemVan=function(x){return x.length?x.reduce(function(s,v){return s+v;},0)/x.length:0;};
   const perTafel=tafels.map(function(k){
     const lijst=partijen.map(function(p,pi){
       const c=(p.beurten||[]).map(function(b){return b.caramboles;});
-      return{nr:p.nr||pi+1,datum:p.datum,tafel:p.tafel||"230",max:c.length?Math.max.apply(null,c):0,groot:c.filter(function(x){return x>=d.sterkMin;}).length,n:c.length};
+      const max=c.length?Math.max.apply(null,c):0,bi=c.indexOf(max),b=(p.beurten||[])[bi]||{};
+      // Beurt van de hoogste serie (de eerste als hij vaker voorkwam), met de opmerkingen van die beurt
+      return{nr:p.nr||pi+1,datum:p.datum,tafel:p.tafel||"230",max:max,groot:c.filter(function(x){return x>=d.sterkMin;}).length,n:c.length,
+        gem:c.length?c.reduce(function(s,x){return s+x;},0)/c.length:0,beurt:bi+1,keer:c.filter(function(x){return x===max;}).length,
+        goed:(b.goed||[]).filter(function(l){return l!=="Acquit"||bi>0;}),gemist:b.gemist||[],
+        // Alle grote series (vanaf `vanaf`) in deze partij, hoogste eerst: er kunnen er meer in één partij zitten
+        series:(p.beurten||[]).map(function(x,j){return{car:x.caramboles,beurt:j+1,goed:(x.goed||[]).filter(function(l){return l!=="Acquit"||j>0;}),gemist:x.gemist||[]};})
+          .filter(function(x){return x.car>=vanaf;}).sort(function(a,b){return b.car-a.car||a.beurt-b.beurt;})};
     }).filter(function(x){return x.tafel===k&&x.n>0;});
     const record=alle.filter(function(b){return b.tafel===k;}).sort(function(a,b){return b.car-a.car||new Date(b.datum)-new Date(a.datum);})[0];
     const aantal=Math.min(10,Math.floor(lijst.length/2));
@@ -590,7 +604,7 @@ function berekenHoogsteSeries(partijen,discipline){
     }
     return{tafel:k,record:record,partijen:lijst,aantal:aantal,voor:mv,na:mn,oordeel:oordeel};
   });
-  return{top:top,perTafel:perTafel,grootMin:d.sterkMin};
+  return{perAantal:perAantal,vanaf:vanaf,perTafel:perTafel,grootMin:d.sterkMin};
 }
 
 function berekenInzicht(partijen,discipline){

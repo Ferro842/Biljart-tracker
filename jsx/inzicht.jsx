@@ -16,6 +16,10 @@ function InzichtKaart({titel,uitleg,children,rand}){
 
 function InzichtPaneel({partijen,discipline}){
   const inz=useMemo(function(){return berekenInzicht(partijen,discipline);},[partijen,discipline]);
+  // Hoogste series: welk aantal caramboles is opengeklapt (null = het hoogste)
+  const [serieAantal,setSerieAantal]=useState(null);
+  // Aangetikt staafje in de grafiek hoogste serie per partij: {tafel,nr}
+  const [staaf,setStaaf]=useState(null);
   // Vergelijken in poedels en series: welke twee groepen partijen (zie vergelijkSeries)
   const [vgModus,setVgModus]=useState("helften");
   // "Vanaf": knip bij een zelf gekozen maand (standaard de maand die de partijen het eerlijkst in tweeën deelt)
@@ -113,19 +117,61 @@ function InzichtPaneel({partijen,discipline}){
                     <span style={{fontSize:12,color:WITD}}>record · {fmtDatum(x.record.datum)} · p{x.record.nr}, beurt {x.record.beurt}</span>
                   </div>}
                   {/* Hoogste serie per partij */}
+                  <div style={{fontSize:11,color:WITD,marginBottom:2}}>Hoogste serie per partij (1 staafje = 1 partij, tik voor details):</div>
                   <div style={{display:"flex",alignItems:"flex-end",gap:2,height:74,paddingTop:12}}>
                     {x.partijen.map(function(p,i){
                       const recent=i>=x.partijen.length-x.aantal,isRecord=x.record&&p.nr===x.record.nr&&p.max===x.record.car;
+                      const gekozen=staaf&&staaf.tafel===x.tafel&&staaf.nr===p.nr;
                       return(
-                        <div key={p.nr} style={{flex:1,minWidth:2,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%"}}>
-                          {metGetal&&<span style={{fontSize:8,color:recent?WIT:WITD,opacity:recent?1:0.6,marginBottom:1}}>{p.max}</span>}
-                          <div style={{width:"100%",height:Math.max(2,p.max/hoogsteOoit*56),background:beurtKleur(p.max,discipline),opacity:recent?1:0.35,
-                            borderRadius:"2px 2px 0 0",outline:isRecord?"1px solid "+WIT:"none"}}/>
+                        <div key={p.nr} onClick={function(){setStaaf(gekozen?null:{tafel:x.tafel,nr:p.nr});}}
+                          style={{flex:1,minWidth:2,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%",cursor:"pointer"}}>
+                          {metGetal&&p.series.length>1&&<span style={{fontSize:7,color:GOUDL,opacity:gekozen||recent?1:0.6,lineHeight:1}}>×{p.series.length}</span>}
+                          {metGetal&&<span style={{fontSize:8,color:gekozen||recent?WIT:WITD,opacity:gekozen||recent?1:0.6,marginBottom:1,fontWeight:gekozen?"bold":"normal"}}>{p.max}</span>}
+                          <div style={{width:"100%",height:Math.max(2,p.max/hoogsteOoit*56),background:beurtKleur(p.max,discipline),opacity:gekozen||recent?1:0.35,
+                            borderRadius:"2px 2px 0 0",outline:gekozen?"2px solid "+WIT:isRecord?"1px solid "+WIT:"none"}}/>
                         </div>
                       );
                     })}
                   </div>
                   <div style={{height:1,background:"rgba(255,255,255,0.15)",marginBottom:8}}/>
+                  {(function(){
+                    const p=staaf&&staaf.tafel===x.tafel?x.partijen.find(function(y){return y.nr===staaf.nr;}):null;
+                    if(!p)return null;
+                    return(
+                      <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 9px",marginBottom:8}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",gap:8}}>
+                          <span style={{fontSize:12,color:WIT}}>p{p.nr} · {fmtDatum(p.datum)} · gemiddelde {komma(p.gem,dec)}</span>
+                          <span onClick={function(){setStaaf(null);}} style={{fontSize:14,color:WITD,cursor:"pointer",padding:"0 2px"}}>✕</span>
+                        </div>
+                        {(function(){
+                          // Alle grote series in deze partij; zonder grote serie alleen de hoogste
+                          const rijen=p.series.length?p.series:[{car:p.max,beurt:p.beurt,goed:p.goed,gemist:p.gemist}];
+                          return(
+                            <>
+                              <div style={{fontSize:12,color:WITD,marginTop:2}}>
+                                {p.series.length>1?p.series.length+" series van "+hs.vanaf+" of meer in deze partij ("+p.n+" beurten):"
+                                  :p.series.length===1?"1 serie van "+hs.vanaf+" of meer in deze partij ("+p.n+" beurten):"
+                                  :"Geen serie van "+hs.vanaf+" of meer; je hoogste ("+p.n+" beurten):"}
+                              </div>
+                              {rijen.map(function(s,i){
+                                return(
+                                  <div key={i} style={{display:"flex",gap:8,padding:"4px 0",borderTop:i?"1px solid rgba(255,255,255,0.06)":"none"}}>
+                                    <strong style={{width:24,fontSize:16,color:beurtKleur(s.car,discipline),lineHeight:1.2}}>{s.car}</strong>
+                                    <div style={{flex:1,minWidth:0}}>
+                                      <div style={{fontSize:11,color:WIT}}>beurt {s.beurt}</div>
+                                      {s.goed.length>0&&<div style={{fontSize:11,color:GRNT,lineHeight:1.35}}>✓ {s.goed.join(", ")}</div>}
+                                      {s.gemist.length>0&&<div style={{fontSize:11,color:ROOD,lineHeight:1.35}}>✗ eindigde door: {s.gemist.join(", ")}</div>}
+                                      {!s.goed.length&&!s.gemist.length&&<div style={{fontSize:11,color:WITD,opacity:0.7}}>geen opmerkingen bijgehouden</div>}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </>
+                          );
+                        })()}
+                      </div>
+                    );
+                  })()}
                   {x.aantal>0&&x.voor.partijen>0&&<div style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",gap:6,alignItems:"center",fontSize:12}}>
                     <div style={{color:WITD,textAlign:"center"}}>
                       <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:0.5}}>{x.voor.partijen} ervoor</div>
@@ -142,22 +188,44 @@ function InzichtPaneel({partijen,discipline}){
                 </div>
               );
             })}
-            {/* Top 10 */}
-            <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,margin:"4px 0 6px"}}>Je top {hs.top.length}</div>
-            {hs.top.map(function(b,i){
+            {/* Al je grote series per aantal; tik een aantal aan voor wanneer het was */}
+            {hs.perAantal.length>0&&(function(){
+              const open=hs.perAantal.find(function(g){return g.car===serieAantal;})||hs.perAantal[0];
+              const max=30;
               return(
-                <div key={i} style={{display:"flex",gap:10,padding:"7px 0",borderTop:i?"1px solid rgba(255,255,255,0.06)":"none"}}>
-                  <div style={{width:20,fontSize:11,color:WITD,paddingTop:5}}>{i+1}.</div>
-                  <div style={{width:34,fontSize:22,fontWeight:"bold",color:beurtKleur(b.car,discipline),lineHeight:1.1}}>{b.car}</div>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:12,color:WIT}}>{tafelLabel(b.tafel)} · {fmtDatum(b.datum)} · p{b.nr}, beurt {b.beurt} van {b.beurten}</div>
-                    {b.goed.length>0&&<div style={{fontSize:11,color:GRNT,lineHeight:1.35}}>✓ {b.goed.join(", ")}</div>}
-                    {b.gemist.length>0&&<div style={{fontSize:11,color:ROOD,lineHeight:1.35}}>✗ eindigde door: {b.gemist.join(", ")}</div>}
-                    {!b.goed.length&&!b.gemist.length&&<div style={{fontSize:11,color:WITD,opacity:0.7}}>geen opmerkingen bijgehouden</div>}
+                <div>
+                  <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,margin:"4px 0 3px"}}>Al je series van {hs.vanaf} of meer</div>
+                  <div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:8}}>Tik een aantal aan om te zien wanneer het was.</div>
+                  <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+                    {hs.perAantal.map(function(g){
+                      const aan=g===open;
+                      return(
+                        <button key={g.car} onClick={function(){setSerieAantal(g.car);}}
+                          style={{padding:"5px 10px",background:aan?"#2d4a1e":"rgba(0,0,0,0.2)",border:"1px solid "+(aan?GOUD:KBDR),borderRadius:6,
+                            cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"baseline",gap:4}}>
+                          <strong style={{fontSize:16,color:beurtKleur(g.car,discipline)}}>{g.car}</strong>
+                          <span style={{fontSize:11,color:aan?GOUD:WITD}}>×{g.series.length}</span>
+                        </button>
+                      );
+                    })}
                   </div>
+                  <div style={{fontSize:12,color:WIT,marginBottom:2}}>
+                    <strong style={{color:beurtKleur(open.car,discipline)}}>{open.series.length}×</strong> een serie van <strong style={{color:beurtKleur(open.car,discipline)}}>{open.car}</strong>:
+                  </div>
+                  {open.series.slice(0,max).map(function(b,i){
+                    return(
+                      <div key={i} style={{padding:"7px 0",borderTop:i?"1px solid rgba(255,255,255,0.06)":"none"}}>
+                        <div style={{fontSize:12,color:WIT}}>{tafelLabel(b.tafel)} · {fmtDatum(b.datum)} · p{b.nr}, beurt {b.beurt} van {b.beurten}</div>
+                        {b.goed.length>0&&<div style={{fontSize:11,color:GRNT,lineHeight:1.35}}>✓ {b.goed.join(", ")}</div>}
+                        {b.gemist.length>0&&<div style={{fontSize:11,color:ROOD,lineHeight:1.35}}>✗ eindigde door: {b.gemist.join(", ")}</div>}
+                        {!b.goed.length&&!b.gemist.length&&<div style={{fontSize:11,color:WITD,opacity:0.7}}>geen opmerkingen bijgehouden</div>}
+                      </div>
+                    );
+                  })}
+                  {open.series.length>max&&<div style={{fontSize:11,color:WITD,paddingTop:4}}>en nog {open.series.length-max} keer</div>}
                 </div>
               );
-            })}
+            })()}
           </InzichtKaart>
         );
       })()}

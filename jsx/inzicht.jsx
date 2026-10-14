@@ -19,7 +19,7 @@ function InzichtPaneel({partijen,discipline}){
   if(!inz)return <div style={{fontSize:14,color:WITD,padding:"8px 0"}}>Nog geen beurten in deze selectie.</div>;
   const dec=discipline==="driebanden"?3:2;
   const pctTekst=function(x){return Math.round(x*100)+"%";};
-  const icoon={vorm:"📊",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
+  const icoon={vorm:"📊",poedel:"⭕",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
   const spelZinnen=inz.coach.filter(function(c){return c.soort!=="omstandigheid";});
   const omstZinnen=inz.coach.filter(function(c){return c.soort==="omstandigheid";});
   const zin=function(c,i,lijst){
@@ -31,9 +31,20 @@ function InzichtPaneel({partijen,discipline}){
     );
   };
   const kopje=function(t){return <div style={{fontSize:11,color:GOUDL,textTransform:"uppercase",letterSpacing:1,margin:"4px 0 8px",opacity:0.85}}>{t}</div>;};
-  const op=inz.opbouw;
-  const opbouwRijen=[op.totaal].concat(op.perTafel).concat(op.eerste&&op.tweede?[op.eerste,op.tweede]:[]);
-  const maxAlsScoort=Math.max(1,...opbouwRijen.map(function(x){return x.alsScoort;}));
+  // Poedels en series: kleur per groep (poedel, kleine series ... grootste series)
+  const se=inz.series;
+  const groepKleur=[ROOD,"#7d8f72",GOUD,GRNT,GOUDL,"#ff9f40"];
+  const kleurVan=function(i){return groepKleur[Math.min(i,groepKleur.length-1)];};
+  const groepNaam=function(g){return g.van===0?"Poedels":"Series van "+g.label.replace("-","–");};
+  const k1=function(x){return komma(x,1);};
+  // Je gemiddelde partij als blokjes: per groep afgerond, samen precies het aantal beurten (grootste rest)
+  const blokjes=(function(){
+    const N=se.hefboom.beurten,ruw=se.nu.groepen.map(function(g){return g.perPartij*N/Math.max(se.nu.beurtenPP,1);});
+    const af=ruw.map(Math.floor);let rest=N-af.reduce(function(s,x){return s+x;},0);
+    ruw.map(function(x,i){return{i:i,r:x-Math.floor(x)};}).sort(function(a,b){return b.r-a.r;}).forEach(function(x){if(rest>0){af[x.i]++;rest--;}});
+    const lijst=[];af.forEach(function(aantal,i){for(let j=0;j<aantal;j++)lijst.push(i);});
+    return lijst;
+  })();
   const maxGebruik=Math.max(1,...inz.profiel.map(function(x){return x.gebruik;}));
   const maxSerie=Math.max(1,...inz.seriemakers.map(function(x){return x.gem;}));
   const stoppers=inz.seriestoppers.filter(function(x){return x.aantal>=3;}).slice(0,6);
@@ -71,42 +82,93 @@ function InzichtPaneel({partijen,discipline}){
         </div>
       </div>
 
-      {/* Opbouw van je gemiddelde */}
-      <InzichtKaart titel="Waar komt je gemiddelde vandaan"
-        uitleg="Je gemiddelde is twee dingen: hoe vaak je in een beurt scoort, en hoeveel caramboles je dan maakt. Hier tellen alle partijen mee, ook de geschrapte.">
-        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexWrap:"wrap",background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"12px 8px",marginBottom:12}}>
-          <div style={{textAlign:"center"}}><div style={{fontSize:24,fontWeight:"bold",color:GRNT}}>{pctTekst(op.totaal.scoorPct)}</div><div style={{fontSize:11,color:WITD}}>van je beurten<br/>scoor je</div></div>
-          <div style={{fontSize:20,color:WITD}}>×</div>
-          <div style={{textAlign:"center"}}><div style={{fontSize:24,fontWeight:"bold",color:GOUDL}}>{komma(op.totaal.alsScoort,2)}</div><div style={{fontSize:11,color:WITD}}>caramboles<br/>als je scoort</div></div>
-          <div style={{fontSize:20,color:WITD}}>=</div>
-          <div style={{textAlign:"center"}}><div style={{fontSize:24,fontWeight:"bold",color:GOUD}}>{komma(op.totaal.gem,dec)}</div><div style={{fontSize:11,color:WITD}}>gemiddeld<br/>per beurt</div></div>
+      {/* Poedels en series: waar je gemiddelde vandaan komt */}
+      <InzichtKaart titel="Poedels en series"
+        uitleg="Elke beurt eindigt met een misser. Je gemiddelde gaat alleen omhoog door minder poedels en grotere series. Hier tellen alle partijen mee, ook de geschrapte.">
+        <div style={{fontSize:12,color:WITD,marginBottom:6}}>Je gemiddelde partij van {se.hefboom.beurten} beurten:</div>
+        <div style={{display:"flex",flexWrap:"wrap",gap:3,marginBottom:6}}>
+          {blokjes.map(function(i,j){return <div key={j} style={{width:14,height:14,borderRadius:3,background:kleurVan(i)}}/>;})}
         </div>
-        {opbouwRijen.length>1&&(
-          <div>
-            <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>
-              <span style={{width:84}}></span><span style={{flex:1}}>scoort</span><span style={{flex:1,paddingLeft:6}}>als je scoort</span><span style={{width:42,textAlign:"right"}}>gem</span>
+        <div style={{fontSize:11,color:WITD,display:"flex",flexWrap:"wrap",gap:"2px 10px",marginBottom:4}}>
+          {se.nu.groepen.map(function(g,i){return <span key={g.label}><span style={{color:kleurVan(i)}}>■</span> {g.van===0?"poedel":g.label.replace("-","–")}</span>;})}
+        </div>
+        {(function(){
+          // Groepen die door het afronden niet als blokje te zien zijn, toch even noemen
+          const zeldzaam=se.nu.groepen.filter(function(g){return g.van>0&&g.perPartij>0&&g.perPartij<0.5;});
+          return zeldzaam.length?<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:4}}>
+            {zeldzaam.map(function(g){return"Series van "+g.label.replace("-","–")+": gemiddeld "+k1(g.perPartij)+" per partij (ongeveer 1 op de "+Math.round(1/g.perPartij)+" partijen)";}).join(". ")}.
+          </div>:null;
+        })()}
+        <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,margin:"10px 0 2px"}}>
+          <span style={{flex:1}}></span><span style={{width:44,textAlign:"right"}}>per partij</span>
+          <span style={{width:110,textAlign:"right"}}>van je caramboles</span>
+        </div>
+        {se.nu.groepen.map(function(g,i){
+          return(
+            <div key={g.label} style={{display:"flex",alignItems:"center",gap:8,fontSize:13,padding:"4px 0",borderTop:i?"1px solid rgba(255,255,255,0.05)":"none"}}>
+              <span style={{flex:1,color:WIT,whiteSpace:"nowrap"}}><span style={{color:kleurVan(i)}}>■</span> {groepNaam(g)}</span>
+              <span style={{width:36,textAlign:"right",color:WIT,fontWeight:"bold"}}>{k1(g.perPartij)}</span>
+              <span style={{width:66,height:7,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}}>
+                <span style={{display:"block",width:(g.carAandeel*100)+"%",height:"100%",background:kleurVan(i)}}/>
+              </span>
+              <span style={{width:34,textAlign:"right",color:g.van===0?ROOD:WITD}}>{g.van===0?"0":pctTekst(g.carAandeel)}</span>
             </div>
-            {opbouwRijen.map(function(x,i){
-              const scheiding=(i===1&&op.perTafel.length>0)||(op.eerste&&x===op.eerste);
+          );
+        })}
+
+        {/* Eerder tegenover nu, per tafel */}
+        {se.vergelijkingen.length>0&&inz.helftLabels&&(
+          <div style={{marginTop:14}}>
+            <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,marginBottom:6}}>Eerder tegenover nu · {inz.helftLabels.eerste} → {inz.helftLabels.tweede}</div>
+            {se.vergelijkingen.map(function(v){
               return(
-                <div key={x.label} style={{display:"flex",alignItems:"center",fontSize:12,padding:"5px 0",borderTop:scheiding?"1px solid "+KBDR:"none"}}>
-                  <span style={{width:84,color:WIT}}>{x.label}</span>
-                  <span style={{flex:1,display:"flex",alignItems:"center",gap:4}}>
-                    <span style={{flex:1,height:6,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}}><span style={{display:"block",width:(x.scoorPct*100)+"%",height:"100%",background:GRNT}}/></span>
-                    <span style={{width:30,color:WITD,textAlign:"right"}}>{pctTekst(x.scoorPct)}</span>
-                  </span>
-                  <span style={{flex:1,display:"flex",alignItems:"center",gap:4,paddingLeft:6}}>
-                    <span style={{flex:1,height:6,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}}><span style={{display:"block",width:(x.alsScoort/maxAlsScoort*100)+"%",height:"100%",background:GOUDL}}/></span>
-                    <span style={{width:30,color:WITD,textAlign:"right"}}>{komma(x.alsScoort,1)}</span>
-                  </span>
-                  <span style={{width:42,textAlign:"right",fontWeight:"bold",color:GOUD}}>{komma(x.gem,dec)}</span>
+                <div key={v.tafel||"alle"} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 10px",marginBottom:8}}>
+                  <div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:6}}>
+                    <span style={{color:WIT,fontWeight:"bold"}}>{v.tafel?tafelLabel(v.tafel):"Alle partijen"}</span>
+                    <span style={{color:WITD}}>gemiddelde {komma(v.e.gem,dec)} → <strong style={{color:v.w.gem>=v.e.gem?GRNT:ROOD}}>{komma(v.w.gem,dec)}</strong></span>
+                  </div>
+                  <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:2}}>
+                    <span style={{flex:1}}></span><span style={{width:84,textAlign:"right"}}>per partij</span><span style={{width:64,textAlign:"right"}}>effect</span>
+                  </div>
+                  {v.e.groepen.map(function(g,i){
+                    const w=v.w.groepen[i],eff=v.bijdrage[i];
+                    const beter=g.van===0?w.perPartij<g.perPartij-0.2:eff>0.02,slechter=g.van===0?w.perPartij>g.perPartij+0.2:eff<-0.02;
+                    return(
+                      <div key={g.label} style={{display:"flex",fontSize:12,padding:"2px 0"}}>
+                        <span style={{flex:1,color:WITD}}><span style={{color:kleurVan(i)}}>■</span> {groepNaam(g)}</span>
+                        <span style={{width:84,textAlign:"right",color:WIT}}>{k1(g.perPartij)} → {k1(w.perPartij)}</span>
+                        <span style={{width:64,textAlign:"right",color:beter?GRNT:slechter?ROOD:WITD}}>
+                          {g.van===0?(beter?"▼ minder":slechter?"▲ meer":"≈"):(Math.abs(eff)<0.005?"≈":(eff>0?"+":"−")+komma(Math.abs(eff),2))}
+                        </span>
+                      </div>
+                    );
+                  })}
+                  <div style={{display:"flex",fontSize:12,padding:"4px 0 0",marginTop:2,borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+                    <span style={{flex:1,color:WITD}}>🔥 Hoogste serie</span>
+                    <span style={{width:84,textAlign:"right",color:WIT}}>{k1(v.e.hoogste)} → {k1(v.w.hoogste)}</span>
+                    <span style={{width:64}}></span>
+                  </div>
                 </div>
               );
             })}
+            <div style={{fontSize:11,color:WITD,opacity:0.8}}>"Effect" is hoeveel die groep je gemiddelde omhoog (+) of omlaag (−) bracht; samen is dat precies het verschil. Minder poedels zie je terug als meer series.</div>
           </div>
         )}
-        {/* Motor, poedel en hoogste serie als drie kleine tegels */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginTop:12}}>
+
+        {/* Wat levert het op */}
+        <div style={{marginTop:14,background:"rgba(201,168,76,0.08)",border:"1px solid "+KBDR,borderRadius:8,padding:"10px 12px"}}>
+          <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,marginBottom:6}}>Wat levert het op? (partij van {se.hefboom.beurten} beurten)</div>
+          <div style={{display:"flex",justifyContent:"space-between",fontSize:13,padding:"3px 0"}}>
+            <span style={{color:WITD}}>1 poedel minder (een beurt van {se.hefboom.klein})</span><strong style={{color:GRNT}}>+{komma(se.hefboom.klein/se.hefboom.beurten,2)}</strong>
+          </div>
+          <div style={{display:"flex",justifyContent:"space-between",fontSize:13,padding:"3px 0"}}>
+            <span style={{color:WITD}}>1 serie van {se.hefboom.groot} in plaats van een poedel</span><strong style={{color:GRNT}}>+{komma(se.hefboom.groot/se.hefboom.beurten,2)}</strong>
+          </div>
+          <div style={{fontSize:12,color:WIT,marginTop:4}}>Eén grote serie is evenveel waard als {Math.round(se.hefboom.groot/se.hefboom.klein)} poedels minder.</div>
+        </div>
+
+        {/* Motor en reactie op een poedel */}
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginTop:12}}>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GOUDL}}>{pctTekst(inz.motor.carPct)}</div>
             <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>van je caramboles uit {pctTekst(inz.motor.beurtPct)} van je beurten ({inz.motor.drempel}+)</div>
@@ -114,10 +176,6 @@ function InzichtPaneel({partijen,discipline}){
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:inz.poedel.naPoedel!==null&&inz.poedel.naPoedel-inz.poedel.kans>=0.1?ROOD:GRNT}}>{inz.poedel.naPoedel===null?"—":pctTekst(inz.poedel.naPoedel)}</div>
             <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>kans op poedel na een poedel (gewoonlijk {pctTekst(inz.poedel.kans)})</div>
-          </div>
-          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
-            <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{inz.hoogsteSerie?komma(inz.hoogsteSerie.eerste,1)+" → "+komma(inz.hoogsteSerie.tweede,1):"—"}</div>
-            <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>hoogste serie per partij, eerste → tweede helft</div>
           </div>
         </div>
       </InzichtKaart>

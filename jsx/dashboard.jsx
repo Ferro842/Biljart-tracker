@@ -297,7 +297,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     }
     return ST.slice(va,tot+1);
   },[ST,va,tot,geselecteerdeMaanden]);
-  const sel=useMemo(()=>tafelFilter==="alle"?selRange:selRange.filter(p=>p.tafel===tafelFilter),[selRange,tafelFilter]);
+  // Alleen tafels waarop in deze discipline gespeeld is; een gekozen tafel die er niet (meer) is telt als "alle"
+  const gespeeldeTafels=useMemo(()=>Object.keys(TAFELS).filter(k=>ST.some(p=>p.tafel===k)),[ST]);
+  const tafelKeuze=gespeeldeTafels.indexOf(tafelFilter)!==-1?tafelFilter:"alle";
+  const sel=useMemo(()=>tafelKeuze==="alle"?selRange:selRange.filter(p=>p.tafel===tafelKeuze),[selRange,tafelKeuze]);
 
   // Kleuren van gemiddeldes volgen je klassegrenzen in deze discipline (zie gemGrenzen)
   const grenzen=gemGrenzen(niveau.effectiefGemiddelde||0,discipline);
@@ -536,10 +539,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             })}
           </div>
           <div style={{display:"flex",gap:5,marginTop:6,overflowX:"auto",paddingBottom:2}}>
-            {[["alle","Alle tafels"]].concat(Object.keys(TAFELS).map(function(t){return[t,TAFELS[t].label];})).map(([k,l])=>(
+            {[["alle","Alle tafels"]].concat(gespeeldeTafels.map(function(t){return[t,TAFELS[t].label];})).map(([k,l])=>(
               <button key={k} onClick={()=>setTafelFilter(k)}
-                style={{flex:"0 0 auto",padding:"4px 12px",background:tafelFilter===k?"#2d4a1e":"none",border:`1px solid ${tafelFilter===k?GOUD:KBDR}`,
-                  borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+                style={{flex:"0 0 auto",padding:"4px 12px",background:tafelKeuze===k?"#2d4a1e":"none",border:`1px solid ${tafelKeuze===k?GOUD:KBDR}`,
+                  borderRadius:5,color:tafelKeuze===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
                 {l}
               </button>
             ))}

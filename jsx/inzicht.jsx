@@ -27,7 +27,7 @@ function InzichtPaneel({partijen,discipline}){
   if(!inz)return <div style={{fontSize:14,color:WITD,padding:"8px 0"}}>Nog geen beurten in deze selectie.</div>;
   const dec=discipline==="driebanden"?3:2;
   const pctTekst=function(x){return Math.round(x*100)+"%";};
-  const icoon={vorm:"📊",poedel:"⭕",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
+  const icoon={vorm:"📊",hoogste:"🏆",poedel:"⭕",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
   const spelZinnen=inz.coach.filter(function(c){return c.soort!=="omstandigheid";});
   const omstZinnen=inz.coach.filter(function(c){return c.soort==="omstandigheid";});
   const zin=function(c,i,lijst){
@@ -89,6 +89,78 @@ function InzichtPaneel({partijen,discipline}){
           {" "}Tafel, avond en fase gaan over al je partijen. Conclusies pas vanaf {INZICHT_MIN} voorbeelden.
         </div>
       </div>
+
+
+      {/* Je hoogste series: record per tafel, gaat het de goede kant op, en je top 10 */}
+      {inz.hoogste&&(function(){
+        const hs=inz.hoogste;
+        const oordeelStijl={beter:["✅ Gaat de goede kant op",GRNT],stabiel:["➖ Blijft gelijk",GOUD],minder:["⚠️ Heeft nog wat nodig",ROOD]};
+        const hoogsteOoit=Math.max(1,...hs.perTafel.map(function(x){return x.record?x.record.car:0;}));
+        return(
+          <InzichtKaart titel="Je hoogste series" rand={GOUD}
+            uitleg={"Per tafel je record en je hoogste serie per partij. Je laatste partijen (fel) tegenover die ervoor (vaag): gaat het de goede kant op? Grote series = "+hs.grootMin+" of meer."}>
+            {hs.perTafel.map(function(x){
+              const o=x.oordeel?oordeelStijl[x.oordeel]:null;
+              const metGetal=x.partijen.length<=30;
+              return(
+                <div key={x.tafel} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px",marginBottom:10}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6,gap:8}}>
+                    <span style={{fontSize:14,color:WIT,fontWeight:"bold"}}>{hs.perTafel.length>1?tafelLabel(x.tafel):"Alle partijen"}</span>
+                    <span style={{fontSize:12,color:o?o[1]:WITD,fontWeight:o?"bold":"normal",textAlign:"right"}}>{o?o[0]:"Nog te weinig partijen voor een oordeel"}</span>
+                  </div>
+                  {x.record&&<div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:8}}>
+                    <span style={{fontSize:30,fontWeight:"bold",color:"#ff9f40",lineHeight:1}}>🏆 {x.record.car}</span>
+                    <span style={{fontSize:12,color:WITD}}>record · {fmtDatum(x.record.datum)} · p{x.record.nr}, beurt {x.record.beurt}</span>
+                  </div>}
+                  {/* Hoogste serie per partij */}
+                  <div style={{display:"flex",alignItems:"flex-end",gap:2,height:74,paddingTop:12}}>
+                    {x.partijen.map(function(p,i){
+                      const recent=i>=x.partijen.length-x.aantal,isRecord=x.record&&p.nr===x.record.nr&&p.max===x.record.car;
+                      return(
+                        <div key={p.nr} style={{flex:1,minWidth:2,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%"}}>
+                          {metGetal&&<span style={{fontSize:8,color:recent?WIT:WITD,opacity:recent?1:0.6,marginBottom:1}}>{p.max}</span>}
+                          <div style={{width:"100%",height:Math.max(2,p.max/hoogsteOoit*56),background:beurtKleur(p.max,discipline),opacity:recent?1:0.35,
+                            borderRadius:"2px 2px 0 0",outline:isRecord?"1px solid "+WIT:"none"}}/>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{height:1,background:"rgba(255,255,255,0.15)",marginBottom:8}}/>
+                  {x.aantal>0&&x.voor.partijen>0&&<div style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",gap:6,alignItems:"center",fontSize:12}}>
+                    <div style={{color:WITD,textAlign:"center"}}>
+                      <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:0.5}}>{x.voor.partijen} ervoor</div>
+                      <div><strong style={{fontSize:16,color:WIT}}>{k1(x.voor.hoogste)}</strong> hoogste</div>
+                      <div>{k1(x.voor.groot)} × {hs.grootMin}+ per partij</div>
+                    </div>
+                    <div style={{fontSize:16,color:o?o[1]:WITD}}>→</div>
+                    <div style={{color:WITD,textAlign:"center"}}>
+                      <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:0.5}}>laatste {x.aantal}</div>
+                      <div><strong style={{fontSize:16,color:o?o[1]:WIT}}>{k1(x.na.hoogste)}</strong> hoogste</div>
+                      <div style={{color:x.na.groot>x.voor.groot+0.1?GRNT:x.na.groot<x.voor.groot-0.1?ROOD:WITD}}>{k1(x.na.groot)} × {hs.grootMin}+ per partij</div>
+                    </div>
+                  </div>}
+                </div>
+              );
+            })}
+            {/* Top 10 */}
+            <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,margin:"4px 0 6px"}}>Je top {hs.top.length}</div>
+            {hs.top.map(function(b,i){
+              return(
+                <div key={i} style={{display:"flex",gap:10,padding:"7px 0",borderTop:i?"1px solid rgba(255,255,255,0.06)":"none"}}>
+                  <div style={{width:20,fontSize:11,color:WITD,paddingTop:5}}>{i+1}.</div>
+                  <div style={{width:34,fontSize:22,fontWeight:"bold",color:beurtKleur(b.car,discipline),lineHeight:1.1}}>{b.car}</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:12,color:WIT}}>{tafelLabel(b.tafel)} · {fmtDatum(b.datum)} · p{b.nr}, beurt {b.beurt} van {b.beurten}</div>
+                    {b.goed.length>0&&<div style={{fontSize:11,color:GRNT,lineHeight:1.35}}>✓ {b.goed.join(", ")}</div>}
+                    {b.gemist.length>0&&<div style={{fontSize:11,color:ROOD,lineHeight:1.35}}>✗ eindigde door: {b.gemist.join(", ")}</div>}
+                    {!b.goed.length&&!b.gemist.length&&<div style={{fontSize:11,color:WITD,opacity:0.7}}>geen opmerkingen bijgehouden</div>}
+                  </div>
+                </div>
+              );
+            })}
+          </InzichtKaart>
+        );
+      })()}
 
       {/* Poedels en series: waar je gemiddelde vandaan komt */}
       <InzichtKaart titel="Poedels en series"

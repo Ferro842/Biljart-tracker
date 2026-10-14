@@ -553,6 +553,46 @@ function vergelijkSeries(partijen,discipline,modus,opties){
   return{modus:modus,vergelijkingen:vergelijkingen,teWeinig:teWeinig};
 }
 
+// Je hoogste series: de top van alle beurten (met opmerkingen), je record per tafel en per tafel of het de
+// goede kant op gaat: je laatste 10 partijen (bij minder dan 20 de laatste helft) tegenover die ervoor, in
+// gemiddelde hoogste serie per partij en grote series (sterkMin en hoger) per partij. Per tafel, want op de
+// kleinere tafel maak je vanzelf grotere series. Oordeel bij minstens 6 partijen op die tafel; een verschil
+// van minder dan 8% in de hoogste serie heet "stabiel".
+function berekenHoogsteSeries(partijen,discipline){
+  partijen=partijen||[];
+  const d=beurtDrempels(discipline);
+  const alle=[];
+  partijen.forEach(function(p,pi){
+    (p.beurten||[]).forEach(function(b,bi){
+      alle.push({car:b.caramboles,tafel:p.tafel||"230",datum:p.datum,nr:p.nr||pi+1,beurt:bi+1,beurten:p.beurten.length,
+        goed:(b.goed||[]).filter(function(l){return l!=="Acquit"||bi>0;}),gemist:b.gemist||[]});
+    });
+  });
+  if(!alle.length)return null;
+  // Hoogste eerst; bij gelijke stand de recentste eerst
+  const top=alle.filter(function(b){return b.car>0;}).sort(function(a,b){return b.car-a.car||new Date(b.datum)-new Date(a.datum)||b.beurt-a.beurt;}).slice(0,10);
+  const tafels=Object.keys(TAFELS).filter(function(k){return alle.some(function(b){return b.tafel===k;});});
+  const gemVan=function(x){return x.length?x.reduce(function(s,v){return s+v;},0)/x.length:0;};
+  const perTafel=tafels.map(function(k){
+    const lijst=partijen.map(function(p,pi){
+      const c=(p.beurten||[]).map(function(b){return b.caramboles;});
+      return{nr:p.nr||pi+1,datum:p.datum,tafel:p.tafel||"230",max:c.length?Math.max.apply(null,c):0,groot:c.filter(function(x){return x>=d.sterkMin;}).length,n:c.length};
+    }).filter(function(x){return x.tafel===k&&x.n>0;});
+    const record=alle.filter(function(b){return b.tafel===k;}).sort(function(a,b){return b.car-a.car||new Date(b.datum)-new Date(a.datum);})[0];
+    const aantal=Math.min(10,Math.floor(lijst.length/2));
+    const voor=lijst.slice(0,lijst.length-aantal),na=lijst.slice(lijst.length-aantal);
+    const meet=function(x){return{partijen:x.length,hoogste:gemVan(x.map(function(y){return y.max;})),groot:gemVan(x.map(function(y){return y.groot;}))};};
+    const mv=meet(voor),mn=meet(na);
+    let oordeel=null;
+    if(lijst.length>=6&&mv.hoogste>0){
+      const v=(mn.hoogste-mv.hoogste)/mv.hoogste;
+      oordeel=v>=0.08?"beter":v<=-0.08?"minder":"stabiel";
+    }
+    return{tafel:k,record:record,partijen:lijst,aantal:aantal,voor:mv,na:mn,oordeel:oordeel};
+  });
+  return{top:top,perTafel:perTafel,grootMin:d.sterkMin};
+}
+
 function berekenInzicht(partijen,discipline){
   const d=beurtDrempels(discipline);
   const gemistLabels=GEMIST.map(function(o){return o.label;}),goedLabels=GOED.map(function(o){return o.label;});
@@ -738,6 +778,15 @@ function berekenInzicht(partijen,discipline){
     const h=series.hefboom;
     coach.push({soort:"poedel",tekst:"Poedels: gemiddeld "+k1(nu.groepen[0].perPartij)+" per partij van "+h.beurten+" beurten ("+pc(poedel.kans)+"). Eén poedel minder (een beurt van "+h.klein+" in plaats van 0) levert +"+k2(h.klein/h.beurten)+" op je gemiddelde; één serie van "+h.groot+" in plaats van een poedel levert +"+k2(h.groot/h.beurten)+", evenveel als "+Math.round(h.groot/h.klein)+" poedels minder."});
   }
+  // Hoogste series per tafel: record en of het de goede kant op gaat
+  const hs=berekenHoogsteSeries(partijen,discipline);
+  if(hs){
+    hs.perTafel.filter(function(x){return x.record&&x.oordeel;}).forEach(function(x){
+      const waar=hs.perTafel.length>1?" op de "+tafelLabel(x.tafel):"";
+      const richting={beter:"dat gaat de goede kant op",stabiel:"dat blijft gelijk",minder:"daar is nog wat nodig"}[x.oordeel];
+      coach.push({soort:"hoogste",tekst:"Hoogste serie"+waar+": record "+x.record.car+" ("+fmtDatum(x.record.datum)+"). Je laatste "+x.aantal+" partijen gemiddeld "+k1(x.na.hoogste)+", ervoor "+k1(x.voor.hoogste)+": "+richting+"."});
+    });
+  }
   if(sterkste)coach.push({soort:"sterk",tekst:"Je sterkste techniek is "+sterkste.label+": "+sterkste.goed+" van de "+sterkste.gebruik+" keer goed ("+Math.round(sterkste.pct*100)+"%, tegen gemiddeld "+Math.round(refPct*100)+"% over al je technieken)."});
   if(werkpunt)coach.push({soort:"werk",tekst:werkpunt.label+(werkpunt.gebruik>=15?" speel je vaak":" komt voor")+" ("+werkpunt.gebruik+"×), maar lukt minder vaak dan je andere technieken: "+werkpunt.goed+" van de "+werkpunt.gebruik+" keer goed ("+Math.round(werkpunt.pct*100)+"%). Daar valt het meest te winnen."});
   const topSerie=seriemakers.filter(function(x){return x.aantal>=10;})[0];
@@ -773,10 +822,10 @@ function berekenInzicht(partijen,discipline){
   if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
 
   // Volgorde in de samenvatting: eerst poedels en series (waar je gemiddelde vandaan komt), dan technieken
-  const volgorde={vorm:0,poedel:1,motor:2,serie:3,sterk:4,werk:5,mentaal:6,trend:7,omstandigheid:8};
-  const plek=function(c){return c.soort in volgorde?volgorde[c.soort]:9;}; // let op: vorm heeft plek 0
+  const volgorde={vorm:0,hoogste:1,poedel:2,motor:3,serie:4,sterk:5,werk:6,mentaal:7,trend:8,omstandigheid:9};
+  const plek=function(c){return c.soort in volgorde?volgorde[c.soort]:10;}; // let op: vorm heeft plek 0
   coach.sort(function(a,b){return plek(a)-plek(b);});
-  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,series:series,helftLabels:helftLabels,motor:motor,poedel:poedel,
+  return{aantalBeurten:n,hoogste:hs,basis:basis,basisTag:basisTag,dekking:dekking,series:series,helftLabels:helftLabels,motor:motor,poedel:poedel,
     acquitPartijen:beurten.filter(isAcquitBeurt).length,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
     profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
     metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};

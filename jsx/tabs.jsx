@@ -166,6 +166,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
   seizoenAfsluiten,seizoensplitsingOngedaanMaken,openArchief,verwijderPartij,slaNotitieOp,resetAlles,setSpelelement,
   vormVenster,setVormVenster}){
   const spel=useContext(SpelContext);
+  const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [confReset,setConfReset]=useState(false);
@@ -243,29 +244,47 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           );
         })()}
       </div>
-      {/* Je niveau: vorm (laatste N partijen) naast de officiële moyenne, en de keuze voor N */}
+      {/* Je niveau: vorm (laatste N partijen) naast de officiële moyenne, de keuze voor N, en een weergave
+          per tafel. Het niveau bovenin de app gaat altijd over alle tafels. */}
       {(function(){
         const dec=huidigeDiscipline==="driebanden"?3:2;
+        const gespeeld=Object.keys(TAFELS).filter(function(k){return alleP.some(function(p){return(p.tafel||"230")===k;});});
+        const tafel=gespeeld.indexOf(niveauTafel)!==-1?niveauTafel:"alle";
+        const opTafel=tafel==="alle"?"":" op "+tafelLabel(tafel);
+        // Voor één tafel: zelfde berekening, alleen met de partijen op die tafel
+        const info=tafel==="alle"?niveau:berekenNiveauInfo(alleP.filter(function(p){return(p.tafel||"230")===tafel;}),!spel,{venster:vormVenster==="alles"?null:vormVenster});
+        const niv=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline);
+        const chip=function(actief){return{flex:1,padding:"7px 0",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13};};
         return(
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
             <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Je niveau</div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+            {gespeeld.length>1&&(
+              <div style={{display:"flex",gap:6,marginBottom:10}}>
+                {[["alle","Alle tafels"]].concat(gespeeld.map(function(k){return[k,tafelLabel(k)];})).map(function(x){
+                  return <button key={x[0]} onClick={function(){setNiveauTafel(x[0]);}} style={chip(tafel===x[0])}>{x[1]}</button>;
+                })}
+              </div>
+            )}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:tafel==="alle"?10:6}}>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
-                <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
-                <div style={{fontSize:11,color:WITD}}>vorm · {niveau.venster?"laatste "+niveau.aantalPartijen:"alle partijen"}</div>
-                <div style={{fontSize:10,color:spel&&niveau.aantalDrops>0?GOUD:WITD,marginTop:2}}>
+                <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{info.effectiefGemiddelde.toFixed(dec)}</div>
+                <div style={{fontSize:11,color:WITD}}>vorm · {info.venster?"laatste "+info.aantalPartijen:"alle partijen"}{opTafel}</div>
+                <div style={{fontSize:10,color:spel&&info.aantalDrops>0?GOUD:WITD,marginTop:2}}>
                   {!spel?"niets geschrapt · spelelement uit"
-                    :niveau.aantalDrops>0?"zonder je "+(niveau.aantalDrops===1?"slechtste":niveau.aantalDrops+" slechtste")+" · spelelement aan"
+                    :info.aantalDrops>0?"zonder je "+(info.aantalDrops===1?"slechtste":info.aantalDrops+" slechtste")+" · spelelement aan"
                     :"nog niets geschrapt · spelelement aan"}
                 </div>
-                <div style={{fontSize:10,color:WITD,opacity:0.7}}>bepaalt je niveau</div>
+                <div style={{fontSize:10,color:niv.huidig.kleur,marginTop:2}}>{niv.huidig.emoji} {niv.huidig.naam} {niv.progressPct}%</div>
               </div>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
-                <div style={{fontSize:22,fontWeight:"bold",color:WIT}}>{niveau.moyenne.toFixed(dec)}</div>
-                <div style={{fontSize:11,color:WITD}}>moyenne · alle {niveau.aantalPartijenTotaal}</div>
+                <div style={{fontSize:22,fontWeight:"bold",color:WIT}}>{info.moyenne.toFixed(dec)}</div>
+                <div style={{fontSize:11,color:WITD}}>moyenne · alle {info.aantalPartijenTotaal}{opTafel}</div>
                 <div style={{fontSize:10,color:WITD,opacity:0.7}}>officieel, niets geschrapt</div>
               </div>
             </div>
+            {tafel!=="alle"&&(
+              <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>Alleen je partijen op de {tafelLabel(tafel)}. Je niveau bovenin de app gaat over alle tafels.</div>
+            )}
             <div style={{fontSize:12,color:WITD,marginBottom:6}}>Niveau op basis van je laatste:</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
               {[[10,"10"],[20,"20"],[30,"30"],["alles","Alle"]].map(function(x){

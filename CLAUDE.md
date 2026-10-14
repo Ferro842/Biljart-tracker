@@ -123,4 +123,33 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ## Open punten
 
-- (geen)
+### Na goedkeuring van het Apple Developer-account (staat op "Pending", paspoort is ingestuurd)
+
+1. **App Store klaarmaken**: ontwikkelteam kiezen in Xcode (Signing & Capabilities), Product → Archive →
+   Distribute App → App Store Connect; in App Store Connect schermafbeeldingen (kunnen uit de simulator),
+   beschrijving, privacy-URL (`privacy.html`) en App Privacy "Data Not Collected". Na publicatie
+   `APP_STORE_URL` in `js/constanten.js` invullen (voor "Deel deze app").
+2. **Automatische back-up naar iCloud Drive** (alleen iOS-app), zodat je nooit meer zelf hoeft te exporteren:
+   - De app zet zelf een kopie van de data in de iCloud Drive van de gebruiker, map "Biljart Tracker",
+     bijgewerkt na elke partij (laatste paar versies bewaren). Blijft bestaan als de app verwijderd wordt en
+     is zichtbaar op iPad/Mac.
+   - Iedere gebruiker gebruikt zijn eigen iCloud (eigen Apple ID); niets gaat naar de maker of een server.
+     Geen externe dienst, dus binnen de harde regels.
+   - Nodig: iCloud-capability (iCloud Documents/ubiquity container) in Xcode en een klein eigen Swift-
+     plugin, omdat `@capacitor/filesystem` iCloud Drive niet ondersteunt. Kan pas met het betaalde account.
+   - Werkt alleen als iCloud Drive aan staat. Zo niet: app werkt zoals nu (data alleen op de telefoon) en
+     valt terug op de back-upherinnering hieronder.
+   - In het Data-tabblad tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
+   - `privacy.html` aanpassen: er komt een reservekopie in je eigen iCloud Drive waar alleen jij bij kunt.
+     "Data Not Collected" in App Store Connect blijft kloppen.
+   - De eigen data van de eigenaar gaat één keer over van de website naar de app via Exporteer/Importeer.
+3. **Back-upherinnering** (website, Android, en iOS zonder iCloud Drive): alleen bedoeld om eraan te
+   herinneren dat data die alleen op je telefoon staat uiteindelijk kwijt kan raken (telefoon kwijt/kapot,
+   app of website-opslag verwijderd). Af en toe tonen (bijv. na 10 partijen of een maand zonder export),
+   met één tik naar het deelmenu (Exporteer). Op de website ook `navigator.storage.persist()` aanvragen.
+   Niet tonen als de automatische iCloud Drive-back-up werkt.
+
+### Overig
+
+- Sneller opstarten: JSX vooraf laten vertalen (bijv. esbuild) in plaats van Babel in de browser; vraagt
+  een ontwikkelpakket, dus alleen met akkoord van de eigenaar.

@@ -24,6 +24,12 @@ function InzichtPaneel({partijen,discipline}){
   const maxSerie=Math.max(1,...inz.seriemakers.map(function(x){return x.gem;}));
   const stoppers=inz.seriestoppers.filter(function(x){return x.aantal>=3;}).slice(0,6);
   const maxStop=Math.max(0.01,...stoppers.map(function(x){return x.aandeel;}));
+  // Als bijna alle bijgehouden partijen op één tafel zijn gespeeld, zegt de techniekanalyse vooral iets over die tafel
+  const metTafels=inz.dekking.perTafel.filter(function(x){return x.partijen>0;});
+  const hoofdTafel=metTafels.slice().sort(function(a,b){return b.bijgehouden-a.bijgehouden;})[0];
+  const dekkingWaarschuwing=inz.dekking.bijgehouden>=3&&metTafels.length>1&&hoofdTafel&&hoofdTafel.bijgehouden/inz.dekking.bijgehouden>=0.75
+    ?"Dat zegt dus vooral iets over je spel op de "+tafelLabel(hoofdTafel.tafel)+"."
+    :null;
   // Kleur van een slagingspercentage t.o.v. je eigen gemiddelde over alle technieken
   const pctKleur=function(p){return p>=inz.refPct+0.1?GRNT:p<=inz.refPct-0.1?ROOD:GOUD;};
 
@@ -34,7 +40,7 @@ function InzichtPaneel({partijen,discipline}){
       <div style={{background:"linear-gradient(160deg,#24401f,#132613)",border:"1px solid "+GOUD,borderRadius:12,padding:"14px 12px"}}>
         <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Wat je data zegt</div>
         {inz.coach.length===0
-          ?<div style={{fontSize:14,color:WITD,lineHeight:1.5}}>Nog te weinig opmerkingen in deze selectie voor duidelijke conclusies. Vink na een beurt aan waardoor je serie eindigde en wat goed ging, dan vult dit zich vanzelf.</div>
+          ?<div style={{fontSize:14,color:WITD,lineHeight:1.5}}>Nog te weinig opmerkingen in deze selectie voor duidelijke conclusies. Vink in een partij na elke beurt aan waardoor je serie eindigde en wat goed ging, dan vult dit zich vanzelf.</div>
           :inz.coach.map(function(c,i){
             return(
               <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:i<inz.coach.length-1?10:0}}>
@@ -43,8 +49,12 @@ function InzichtPaneel({partijen,discipline}){
               </div>
             );
           })}
-        <div style={{fontSize:11,color:WITD,opacity:0.7,marginTop:12}}>
-          Op basis van {inz.metOpmerking} beurten met een opmerking ({pctTekst(inz.metOpmerking/inz.aantalBeurten)} van je {inz.aantalBeurten} beurten). Conclusies alleen bij minstens {INZICHT_MIN} voorbeelden.
+        <div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:12,lineHeight:1.45,borderTop:"1px solid "+KBDR,paddingTop:8}}>
+          📋 Technieken en series: {inz.dekking.bijgehouden} van je {inz.dekking.partijen} partijen bijgehouden
+          (minstens {pctTekst(INZICHT_DEKKING)} van de beurten met een opmerking); alleen die tellen mee.
+          {inz.dekking.perTafel.length>1&&(" Per tafel: "+inz.dekking.perTafel.map(function(x){return tafelLabel(x.tafel)+" "+x.bijgehouden+" van "+x.partijen;}).join(", ")+".")}
+          {dekkingWaarschuwing&&<span style={{color:GOUDL}}> {dekkingWaarschuwing}</span>}
+          {" "}Tafel, tijdstip en fase gaan over al je partijen. Conclusies pas vanaf {INZICHT_MIN} voorbeelden.
         </div>
       </div>
 
@@ -81,7 +91,7 @@ function InzichtPaneel({partijen,discipline}){
       {/* Seriemakers */}
       {inz.seriemakers.length>0&&(
         <InzichtKaart titel="Wat levert grote series op"
-          uitleg={"Gemiddeld aantal caramboles in beurten waarin dit goed ging, tegenover je gemiddelde van "+komma(inz.basis,dec)+" per beurt."}>
+          uitleg={"Gemiddeld aantal caramboles in beurten waarin dit goed ging, tegenover je gemiddelde van "+komma(inz.basisTag,dec)+" per beurt in de bijgehouden partijen."}>
           {inz.seriemakers.map(function(x){
             return(
               <div key={x.label} style={{marginBottom:8}}>
@@ -145,7 +155,7 @@ function InzichtPaneel({partijen,discipline}){
       {/* Trend van seriestoppers */}
       {inz.trend.length>0&&(
         <InzichtKaart titel="Werk je je werkpunten weg?"
-          uitleg="Hoe vaak een oorzaak je serie beëindigde, per 100 beurten: eerste helft van de geselecteerde partijen tegenover de tweede helft. Ben je anders gaan aanvinken, dan zie je dat hier ook terug.">
+          uitleg="Hoe vaak een oorzaak je serie beëindigde, per 100 beurten: eerste helft van je bijgehouden partijen tegenover de tweede helft. Ben je anders gaan aanvinken, dan zie je dat hier ook terug.">
           {inz.trend.map(function(x){
             const beter=x.verandering<=-0.3,slechter=x.verandering>=0.3;
             return(

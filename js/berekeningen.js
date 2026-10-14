@@ -430,7 +430,12 @@ function beurtKleur(v,discipline){
 // - Er wordt vaker aangevinkt wat misging dan wat goed ging, dus percentages worden met elkaar
 //   vergeleken (refPct), niet met 100%.
 // - Conclusies alleen bij genoeg voorbeelden (INZICHT_MIN).
+// - Opmerkingen worden niet in elke partij bijgehouden (vaak wel of juist helemaal niet, en op de ene tafel
+//   meer dan op de andere). Alles wat op opmerkingen leunt gebruikt daarom alleen "bijgehouden" partijen:
+//   minstens INZICHT_DEKKING van de beurten heeft een opmerking. In andere partijen zegt het ontbreken van
+//   een opmerking niets. Omstandigheden (tafel, tijdstip, fase) gebruiken geen opmerkingen: alle partijen.
 const INZICHT_MIN=5;
+const INZICHT_DEKKING=0.25;
 function berekenInzicht(partijen,discipline){
   const d=beurtDrempels(discipline);
   const gemistLabels=GEMIST.map(function(o){return o.label;}),goedLabels=GOED.map(function(o){return o.label;});
@@ -447,10 +452,27 @@ function berekenInzicht(partijen,discipline){
   const som=function(a){return a.reduce(function(s,b){return s+b.car;},0);};
   const basis=som(beurten)/n;
 
+  // Welke partijen zijn bijgehouden? Alleen daarvan tellen de opmerkingen mee.
+  const heeftOpmerking=function(b){return b.gemist.length>0||b.goed.length>0;};
+  const bijgehouden={},perTafel={};
+  (partijen||[]).forEach(function(p,pi){
+    const bs=beurten.filter(function(b){return b.pi===pi;});
+    const ok=bs.length>0&&bs.filter(heeftOpmerking).length/bs.length>=INZICHT_DEKKING;
+    if(ok)bijgehouden[pi]=true;
+    const t=p.tafel||"230";
+    perTafel[t]=perTafel[t]||{tafel:t,partijen:0,bijgehouden:0};
+    perTafel[t].partijen++;if(ok)perTafel[t].bijgehouden++;
+  });
+  const bijgehoudenIdx=Object.keys(bijgehouden).map(Number).sort(function(a,b){return a-b;});
+  const tagBeurten=beurten.filter(function(b){return bijgehouden[b.pi];});
+  const basisTag=tagBeurten.length?som(tagBeurten)/tagBeurten.length:0;
+  const dekking={partijen:(partijen||[]).length,bijgehouden:bijgehoudenIdx.length,
+    perTafel:Object.keys(perTafel).map(function(k){return perTafel[k];})};
+
   // 1. Speelprofiel per techniek: gebruik (goed+fout), slagingspercentage, gem. caramboles als het goed ging
   const profiel=technieken.map(function(t){
     let goed=0,fout=0,carGoed=0;
-    beurten.forEach(function(b){
+    tagBeurten.forEach(function(b){
       if(b.goed.indexOf(t)!==-1){goed++;carGoed+=b.car;}
       if(b.gemist.indexOf(t)!==-1)fout++;
     });
@@ -467,13 +489,13 @@ function berekenInzicht(partijen,discipline){
 
   // 2. Seriemakers: wat je aanvinkte als het goed ging, en wat dat aan caramboles opleverde
   const seriemakers=goedLabels.map(function(t){
-    const met=beurten.filter(function(b){return b.goed.indexOf(t)!==-1;});
+    const met=tagBeurten.filter(function(b){return b.goed.indexOf(t)!==-1;});
     return{label:t,aantal:met.length,gem:met.length?som(met)/met.length:0};
-  }).filter(function(x){return x.aantal>=INZICHT_MIN;}).map(function(x){return Object.assign(x,{factor:basis>0?x.gem/basis:0});})
+  }).filter(function(x){return x.aantal>=INZICHT_MIN;}).map(function(x){return Object.assign(x,{factor:basisTag>0?x.gem/basisTag:0});})
     .sort(function(a,b){return b.gem-a.gem;});
 
   // 3. Seriestoppers: waardoor je series eindigden (alleen beschrijvend). Zelf getypte tekst = Overig.
-  const metOorzaak=beurten.filter(function(b){return b.gemist.length>0;});
+  const metOorzaak=tagBeurten.filter(function(b){return b.gemist.length>0;});
   const stopTel={};
   metOorzaak.forEach(function(b){
     b.gemist.forEach(function(t){
@@ -507,9 +529,10 @@ function berekenInzicht(partijen,discipline){
       function(k){return{p:"na een poedel",k:"na 1–"+(d.opbouwMin-1)+" car",s:"na "+d.opbouwMin+"+ car"}[k];})
   ].filter(Boolean);
 
-  // 5. Trend: komen oorzaken in de tweede helft van de partijen minder vaak voor? (per 100 beurten)
-  const helft=Math.floor((partijen||[]).length/2);
-  const eerste=beurten.filter(function(b){return b.pi<helft;}),tweede=beurten.filter(function(b){return b.pi>=helft;});
+  // 5. Trend binnen de bijgehouden partijen: eerste helft tegenover tweede helft (per 100 beurten)
+  const helft=Math.floor(bijgehoudenIdx.length/2);
+  const grens=helft>0?bijgehoudenIdx[helft]:Infinity;
+  const eerste=tagBeurten.filter(function(b){return b.pi<grens;}),tweede=tagBeurten.filter(function(b){return b.pi>=grens;});
   const trend=helft<2?[]:seriestoppers.filter(function(x){return x.label!=="Overig"&&x.aantal>=6;}).slice(0,6).map(function(x){
     const tel=function(a){return a.filter(function(b){return b.gemist.indexOf(x.label)!==-1;}).length;};
     const v=tel(eerste)/Math.max(1,eerste.length)*100,n2=tel(tweede)/Math.max(1,tweede.length)*100;
@@ -521,7 +544,7 @@ function berekenInzicht(partijen,discipline){
   if(sterkste)coach.push({soort:"sterk",tekst:"Je sterkste techniek is "+sterkste.label+": "+sterkste.goed+" van de "+sterkste.gebruik+" keer goed ("+Math.round(sterkste.pct*100)+"%, tegen gemiddeld "+Math.round(refPct*100)+"% over al je technieken)."});
   if(werkpunt)coach.push({soort:"werk",tekst:werkpunt.label+(werkpunt.gebruik>=15?" speel je vaak":" komt voor")+" ("+werkpunt.gebruik+"×), maar lukt minder vaak dan je andere technieken: "+werkpunt.goed+" van de "+werkpunt.gebruik+" keer goed ("+Math.round(werkpunt.pct*100)+"%). Daar valt het meest te winnen."});
   const topSerie=seriemakers.filter(function(x){return x.aantal>=10;})[0];
-  if(topSerie&&topSerie.factor>=1.5)coach.push({soort:"serie",tekst:"Je grootste series: in beurten waarin \u201c"+topSerie.label+"\u201d goed ging maak je gemiddeld "+topSerie.gem.toFixed(1).replace(".",",")+" caramboles, "+topSerie.factor.toFixed(1).replace(".",",")+"× je gemiddelde ("+topSerie.aantal+" beurten)."});
+  if(topSerie&&topSerie.factor>=1.5)coach.push({soort:"serie",tekst:"Je grootste series: in beurten waarin \u201c"+topSerie.label+"\u201d goed ging maak je gemiddeld "+topSerie.gem.toFixed(1).replace(".",",")+" caramboles, "+topSerie.factor.toFixed(1).replace(".",",")+"× je gemiddelde in die partijen ("+topSerie.aantal+" beurten)."});
   let grootste=null;
   omstandigheden.forEach(function(o){
     if(o.titel==="Na de vorige beurt")return;
@@ -535,7 +558,7 @@ function berekenInzicht(partijen,discipline){
   const beter=trend.filter(function(x){return x.verandering<=-0.3;}).sort(function(a,b){return a.verandering-b.verandering;})[0];
   if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
 
-  return{aantalBeurten:n,basis:basis,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
+  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
     profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
     metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};
 }

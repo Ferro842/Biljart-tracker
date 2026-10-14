@@ -316,8 +316,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const gemGem=filtN>0?(filtTot/filtN).toFixed(2):"—";
   // Drempels schuiven mee met je huidige gemiddelde: eerste drempel is het hoogste 0,5-veelvoud
   // op of onder je gemiddelde, daarna telkens +0,5.
-  const eersteDrempel=Math.floor((niveau.effectiefGemiddelde||0)/0.5)*0.5;
-  const drempD1=eersteDrempel,drempD2=eersteDrempel+0.5,drempD3=eersteDrempel+1.0,drempD4=eersteDrempel+1.5;
+  const stapC=gemStap(discipline);
+  const rondC=function(x){return Math.round(x*1000)/1000;};
+  const eersteDrempel=rondC(Math.floor((niveau.effectiefGemiddelde||0)/stapC)*stapC);
+  const drempD1=eersteDrempel,drempD2=rondC(eersteDrempel+stapC),drempD3=rondC(eersteDrempel+2*stapC),drempD4=rondC(eersteDrempel+3*stapC);
   const b15=Math.round(filt.filter(p=>p.gem>=drempD1).length/Math.max(filt.length,1)*100);
   const b20=Math.round(filt.filter(p=>p.gem>=drempD2).length/Math.max(filt.length,1)*100);
   const b25=Math.round(filt.filter(p=>p.gem>=drempD3).length/Math.max(filt.length,1)*100);
@@ -415,6 +417,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   },[sel,discipline]);
 
   const poedelHerstel=useMemo(()=>{
+    const herstelMin=beurtDrempels(discipline).opbouwMin;
     let tilt=0,klein=0,sterk=0,totaalPoedels=0,geenVolgende=0;
     sel.forEach(p=>{
       const bs=p.beurten;
@@ -424,13 +427,13 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
           const next=bs[i+1];
           if(!next){geenVolgende++;return;}
           if(next.caramboles===0)tilt++;
-          else if(next.caramboles>=5)sterk++;
+          else if(next.caramboles>=herstelMin)sterk++;
           else klein++;
         }
       });
     });
-    return{tilt,klein,sterk,totaalPoedels,basis:totaalPoedels-geenVolgende};
-  },[sel]);
+    return{tilt,klein,sterk,totaalPoedels,basis:totaalPoedels-geenVolgende,herstelMin};
+  },[sel,discipline]);
 
   const kaart=(label,waarde,sub,kleur=GOUD)=>(
     <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
@@ -610,7 +613,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             {[[drempD1,b15,"#5a8a50"],[drempD2,b20,GOUD],[drempD3,b25,"#e8a84c"],[drempD4,b30,ROOD]].map(([d,pct,k])=>(
               <div key={d} style={{marginBottom:14}}>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-                  <span style={{fontSize:14,color:WITD}}>Boven {d}</span>
+                  <span style={{fontSize:14,color:WITD}}>Boven {gemDrempelTekst(d,stapC)}</span>
                   <span style={{fontSize:18,fontWeight:"bold",color:k}}>{pct}%</span>
                 </div>
                 <DashBalk pct={pct} kleur={k}/>
@@ -708,7 +711,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
                 <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:10}}>
                   {kaart("Opnieuw poedel",Math.round(poedelHerstel.tilt/poedelHerstel.basis*100)+"%",poedelHerstel.tilt+"x",ROOD)}
                   {kaart("Klein herstel",Math.round(poedelHerstel.klein/poedelHerstel.basis*100)+"%",poedelHerstel.klein+"x",GOUD)}
-                  {kaart("Sterk herstel",Math.round(poedelHerstel.sterk/poedelHerstel.basis*100)+"%",poedelHerstel.sterk+"x (5+)",GRNT)}
+                  {kaart("Sterk herstel",Math.round(poedelHerstel.sterk/poedelHerstel.basis*100)+"%",poedelHerstel.sterk+"x ("+poedelHerstel.herstelMin+"+)",GRNT)}
                 </div>
                 <div style={{fontSize:12,color:WITD}}>Gebaseerd op {poedelHerstel.basis} poedels ({poedelHerstel.totaalPoedels} totaal in selectie)</div>
               </>

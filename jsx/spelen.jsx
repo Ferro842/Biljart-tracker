@@ -105,7 +105,7 @@ function InvoerScherm({spel}){
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 2fr",gap:6}}>
           <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GRNT,lineHeight:1}}>{stL?stL.opbouw5:0}x</div>
-            <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw 5+</div>
+            <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw {dInv.opbouwMin}+</div>
             <div style={{fontSize:13,color:GRNT,marginTop:1}}>{opbouwPct}%</div>
           </div>
           <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
@@ -172,12 +172,13 @@ function InvoerScherm({spel}){
           if(stL){
             const gemNu=parseFloat(stL.gemPerBeurt);
             const basisNu=huidigeRecords.totaalGem!==null?huidigeRecords.totaalGem:0;
-            const drempel1Nu=Math.floor(basisNu/0.5)*0.5+0.5;
-            const drempel2Nu=drempel1Nu+0.5;
+            const stapNu=gemStap(huidigeDiscipline);
+            const drempel1Nu=gemDrempelBoven(basisNu,stapNu);
+            const drempel2Nu=Math.round((drempel1Nu+stapNu)*1000)/1000;
             if(gemNu<drempel2Nu){
               const drempel=gemNu<drempel1Nu?drempel1Nu:drempel2Nu;
               const afstand=drempel-gemNu;
-              if(afstand<0.5)hints.push("⭐ Nog "+afstand.toFixed(2)+" tot gemiddelde "+drempel.toFixed(1).replace(".",","));
+              if(afstand<stapNu)hints.push("⭐ Nog "+afstand.toFixed(2)+" tot gemiddelde "+gemDrempelTekst(drempel,stapNu));
             }
             if(huidigeRecords.allTimeBestGem>0){
               const afstandRecord=huidigeRecords.allTimeBestGem-gemNu;

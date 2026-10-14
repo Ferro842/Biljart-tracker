@@ -20,6 +20,18 @@ function histogramBuckets(discipline){
   return[["0 (poedel)",0,0],["1-2",1,2],["3-4",3,4],["5-7",5,7],["8-9",8,9],["10+",10,Infinity]]; // libre, kader38, kader47
 }
 
+// Stapgrootte van de meeschuivende gemiddelde-drempels (⭐-badge, hint tijdens het spelen, Consistentie in
+// Dash): ongeveer een kwart van een gangbaar gemiddelde in die discipline.
+function gemStap(discipline){
+  if(discipline==="driebanden")return 0.1;
+  if(discipline==="bandstoten"||discipline==="kader57"||discipline==="kader71")return 0.25;
+  return 0.5; // libre, kader38, kader47
+}
+// Eerstvolgende drempel boven `basis` in stappen van `stap` (afgerond tegen rekenfoutjes als 0,30000000004)
+function gemDrempelBoven(basis,stap){return Math.round((Math.floor(basis/stap)*stap+stap)*1000)/1000;}
+// Drempel als tekst met komma: 1 decimaal bij stappen van 0,5, anders 2 (0,40 / 1,25)
+function gemDrempelTekst(v,stap){return(stap<0.5?v.toFixed(2):v.toFixed(1)).replace(".",",");}
+
 function stat(beurten,discipline){
   if(!beurten||!beurten.length)return null;
   const d=beurtDrempels(discipline);
@@ -95,10 +107,10 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
     p.beurten.forEach(function(b,i){
       if(b.caramboles===0){
         const next=p.beurten[i+1];
-        if(next&&next.caramboles>=5)herstelDetails.push("na poedel volgde "+next.caramboles+" car");
+        if(next&&next.caramboles>=d.opbouwMin)herstelDetails.push("na poedel volgde "+next.caramboles+" car");
       }
     });
-    if(herstelDetails.length>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelDetails.length,punten:herstelDetails.length*15,categorie:"Mentaliteit",detail:herstelDetails.join(" · ")+" (drempel: 5+ car direct na een poedel)"});
+    if(herstelDetails.length>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelDetails.length,punten:herstelDetails.length*15,categorie:"Mentaliteit",detail:herstelDetails.join(" · ")+" (drempel: "+d.opbouwMin+"+ car direct na een poedel)"});
 
     const venster=vensterSlice(p.datum);
     const vensterCar=venster.reduce(function(a,w){return a+w.tot;},0);
@@ -117,12 +129,13 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
     }
 
     const basis=totaalGemTotDan!==null?totaalGemTotDan:0;
-    const drempel1=Math.floor(basis/0.5)*0.5+0.5;
-    const drempel2=drempel1+0.5;
+    const stap=gemStap(discipline);
+    const drempel1=gemDrempelBoven(basis,stap);
+    const drempel2=Math.round((drempel1+stap)*1000)/1000;
     if(gem>=drempel2){
-      badges.push({label:"Gemiddelde boven "+drempel2.toFixed(1).replace(".",","),emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel2.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
+      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel2,stap),emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel2.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
     }else if(gem>=drempel1){
-      badges.push({label:"Gemiddelde boven "+drempel1.toFixed(1).replace(".",","),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel1.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
+      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel1,stap),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel1.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
     }
 
     const vensterBestGem=verwerkt.length?Math.max.apply(null,verwerkt.map(function(w){return w.gem;})):0;

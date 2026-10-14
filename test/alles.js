@@ -1,5 +1,7 @@
 // Draait alle browsertests (rondgang, tijdlijn, statstab, spelen, vensters, datatab) achter elkaar op de geladen app en zet daarna test/testdata.json terug.
 // Vooraf: testdata in localStorage en de pagina (her)laden. Liefst op telefoonformaat (375 breed).
+// Na afloop direct herladen: de app heeft dan nog de geïmporteerde testback-up in het geheugen en zou
+// die bij de volgende klik over de teruggezette testdata heen opslaan.
 // Draaien: await eval(await fetch("/test/alles.js").then(r=>r.text()))
 (async function(){
   const laad=async function(naam){return eval(await fetch("/test/"+naam+"?"+Date.now()).then(function(r){return r.text();}));};

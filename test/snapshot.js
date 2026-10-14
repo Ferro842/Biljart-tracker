@@ -3,7 +3,7 @@
 // de referentie-hash hieronder: na een puur technische wijziging moet de uitkomst exact gelijk zijn.
 // Alleen bij een bewuste wijziging in de berekeningen mag REFERENTIE worden bijgewerkt.
 // Snel draaien: await eval(await fetch("/test/snapshot.js").then(r=>r.text()))
-const REFERENTIE="b7883ea45f248ef4";
+const REFERENTIE="0c83392bd3d23f03"; // 2026-10-14: herstel-na-poedel en ⭐-stappen per discipline (libre en kader38/47 ongewijzigd)
 (function(){
   const data=JSON.parse(localStorage.getItem("biljart-tracker-v2"));
   const uit={aantalPartijen:data.partijen.length,tafelsNaMigratie:data.partijen.map(function(p){return p.tafel;}).join(""),disciplines:{}};

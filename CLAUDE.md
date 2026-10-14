@@ -54,6 +54,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 - Badge-drempels per discipline uit `beurtDrempels()`/`histogramBuckets()`; nooit libre-waarden hardcoden.
   Kleur van een beurt: `beurtKleur()`. Kleur van een gemiddelde: `gemGrenzen()`/`gemKleur()` (groen vanaf je
   volgende klasse, goud binnen je huidige klasse, rood daaronder).
+- Meeschuivende gemiddelde-drempels (⭐-badge, hint tijdens spelen, Consistentie) gaan in stappen van
+  `gemStap()`: 0,5 (libre, kader 38/47), 0,25 (bandstoten, kader 57/71), 0,1 (driebanden).
+- "Sterk herstel na poedel" = `opbouwMin` of meer caramboles direct na een poedel.
 - Elke `PUNTEN_PER_DROP` (1000) badge-punten schrapt de slechtste partij uit het gemiddelde.
   **"Je gemiddelde" is overal het gemiddelde zonder die geschrapte partijen**; leg dat uit met `gemUitleg()`.
   Waar alle partijen meetellen, zeg dat er expliciet bij.
@@ -81,7 +84,9 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.
-- `js/*.js` kan ook in Node: `node --check` en de functies laden via `eval` van constanten + berekeningen.
+- Zonder browser: `node test/snapshot-node.js` geeft dezelfde hash als `snapshot.js`; met `--details` de volledige
+  uitkomst (handig om voor en na een rekenwijziging per discipline te vergelijken).
+- Na `alles.js` direct herladen, anders schrijft de app de geïmporteerde testback-up terug over de testdata.
 - iOS: `npm run build && npx cap sync ios`, daarna bouwen voor de simulator of `npm run ios` (opent Xcode).
 
 ## Bekende eigenaardigheden
@@ -94,10 +99,6 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ## Open punten
 
-- De ⭐-badge ("Gemiddelde boven …") en de Consistentie-drempels in Dash werken in stappen van 0,5; voor
-  driebanden (gemiddeldes rond 0,4) is dat te grof.
-- "Sterk herstel na poedel": `berekenPrestaties` en de Dash-patronen gebruiken vast 5 car, de catalogus,
-  live-toast en hint gebruiken `opbouwMin`.
 - `PartijRij` en `LogPartijRij` hebben dubbele notitie/verwijder-code; scroll-noodoplossing in `StatsTab`
   is sinds stap 10 overbodig.
 - Offline-cache voor de website (service worker) is nog niet gebouwd.

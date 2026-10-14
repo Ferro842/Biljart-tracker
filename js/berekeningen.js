@@ -452,10 +452,21 @@ function berekenInzicht(partijen,discipline){
   const gemistLabels=GEMIST.map(function(o){return o.label;}),goedLabels=GOED.map(function(o){return o.label;});
   const technieken=gemistLabels.filter(function(l){return goedLabels.indexOf(l)!==-1;});
   const beurten=[];
+  // Volgorde op de avond: partijen op dezelfde speelavond (na middernacht telt nog als de avond ervoor),
+  // alleen voor avonden met 2 of meer partijen (clubavonden); een losse partij zegt hier niets over.
+  const avondVan=function(p){const t=new Date(new Date(p.datum).getTime()-6*3600e3);return t.getFullYear()+"-"+t.getMonth()+"-"+t.getDate();};
+  const avonden={};
+  (partijen||[]).forEach(function(p,pi){(avonden[avondVan(p)]=avonden[avondVan(p)]||[]).push(pi);});
+  const avondNr={};
+  Object.keys(avonden).forEach(function(k){
+    const lijst=avonden[k];
+    if(lijst.length<2)return;
+    lijst.slice().sort(function(a,b){return new Date(partijen[a].datum)-new Date(partijen[b].datum);}).forEach(function(pi,i){avondNr[pi]=i+1;});
+  });
   (partijen||[]).forEach(function(p,pi){
     const live=isLiveIngevoerd(p);
     (p.beurten||[]).forEach(function(b,bi){
-      beurten.push({live:live,car:b.caramboles,gemist:b.gemist||[],goed:b.goed||[],pi:pi,bi:bi,tafel:p.tafel||"230",
+      beurten.push({live:live,avondNr:avondNr[pi]||null,car:b.caramboles,gemist:b.gemist||[],goed:b.goed||[],pi:pi,bi:bi,tafel:p.tafel||"230",
         tijd:b.tijd||p.datum,oudeAcquit:bi===0&&p.tafel==="230"&&new Date(p.datum).getTime()<new Date(ACQUIT_AANVULLING_TOT).getTime(),vorige:bi>0?p.beurten[bi-1].caramboles:null});
     });
   });
@@ -545,6 +556,8 @@ function berekenInzicht(partijen,discipline){
     groep("Tafel",function(b){return b.tafel;},Object.keys(TAFELS),function(k){return tafelLabel(k);}),
     groep("Tijdstip",function(b){if(!b.live||!b.tijd)return null;const u=uur(b);if(u===null)return null;return u<21?"vroeg":u<22?"21":u<23?"22":"laat";},
       ["vroeg","21","22","laat"],function(k){return{vroeg:"vóór 21u",21:"21–22u",22:"22–23u",laat:"na 23u"}[k];}),
+    groep("Partij van de avond",function(b){return b.avondNr===null?null:b.avondNr>=3?"3":String(b.avondNr);},["1","2","3"],
+      function(k){return k==="3"?"3e partij of later":k+"e partij";}),
     groep("Fase in de partij",function(b){return b.bi<3?"a":b.bi<10?"b":b.bi<20?"c":"d";},["a","b","c","d"],
       function(k){return{a:"beurt 1–3",b:"beurt 4–10",c:"beurt 11–20",d:"beurt 21+"}[k];}),
     groep("Na de vorige beurt",function(b){return b.vorige===null?null:b.vorige===0?"p":b.vorige<d.opbouwMin?"k":"s";},["p","k","s"],
@@ -567,16 +580,19 @@ function berekenInzicht(partijen,discipline){
   if(werkpunt)coach.push({soort:"werk",tekst:werkpunt.label+(werkpunt.gebruik>=15?" speel je vaak":" komt voor")+" ("+werkpunt.gebruik+"×), maar lukt minder vaak dan je andere technieken: "+werkpunt.goed+" van de "+werkpunt.gebruik+" keer goed ("+Math.round(werkpunt.pct*100)+"%). Daar valt het meest te winnen."});
   const topSerie=seriemakers.filter(function(x){return x.aantal>=10;})[0];
   if(topSerie&&topSerie.factor>=1.5)coach.push({soort:"serie",tekst:"Je grootste series: in beurten waarin \u201c"+topSerie.label+"\u201d goed ging maak je gemiddeld "+topSerie.gem.toFixed(1).replace(".",",")+" caramboles, "+topSerie.factor.toFixed(1).replace(".",",")+"× je gemiddelde in die partijen ("+topSerie.aantal+" beurten)."});
-  let grootste=null;
+  // De (hoogstens drie) omstandigheden met het grootste verschil tussen beste en slechtste groep
+  const opvallend=[];
   omstandigheden.forEach(function(o){
     if(o.titel==="Na de vorige beurt")return;
     const r=o.rijen.filter(function(x){return x.aantal>=50;});
     if(r.length<2)return;
     const hoog=r.reduce(function(a,b){return b.gem>a.gem?b:a;}),laag=r.reduce(function(a,b){return b.gem<a.gem?b:a;});
     const spreiding=laag.gem>0?(hoog.gem-laag.gem)/laag.gem:0;
-    if(spreiding>=0.15&&(!grootste||spreiding>grootste.spreiding))grootste={titel:o.titel,hoog:hoog,laag:laag,spreiding:spreiding};
+    if(spreiding>=0.15)opvallend.push({titel:o.titel,hoog:hoog,laag:laag,spreiding:spreiding});
   });
-  if(grootste)coach.push({soort:"omstandigheid",tekst:grootste.titel+": "+grootste.hoog.label+" speel je "+Math.round(grootste.spreiding*100)+"% beter dan "+grootste.laag.label+" ("+grootste.hoog.gem.toFixed(2).replace(".",",")+" tegen "+grootste.laag.gem.toFixed(2).replace(".",",")+")."});
+  opvallend.sort(function(a,b){return b.spreiding-a.spreiding;}).slice(0,3).forEach(function(x){
+    coach.push({soort:"omstandigheid",tekst:x.titel+": "+x.hoog.label+" speel je "+Math.round(x.spreiding*100)+"% beter dan "+x.laag.label+" ("+x.hoog.gem.toFixed(2).replace(".",",")+" tegen "+x.laag.gem.toFixed(2).replace(".",",")+")."});
+  });
   const beter=trend.filter(function(x){return x.verandering<=-0.3;}).sort(function(a,b){return a.verandering-b.verandering;})[0];
   if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
 

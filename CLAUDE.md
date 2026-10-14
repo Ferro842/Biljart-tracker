@@ -70,6 +70,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   met minstens `INZICHT_DEKKING` (25%) beurten met een opmerking; tafel/fase gebruiken alle partijen.
   Tijdstip alleen partijen die live zijn ingevoerd (`isLiveIngevoerd`: mediaan ≥ 30 s tussen beurten); de
   partijen in het Woutje (2,10) worden vaak thuis nagetypt. Omstandigheden vergelijken binnen hun eigen groep.
+  Partij 1–29 (apr–jul 2026) zijn op 3 juli in één keer ingeladen: geen tijd per beurt, rond tijdstip.
+  "Partij van de avond" (1e/2e/3e) werkt wel voor alle avonden met 2+ partijen (clubavonden op de 2,30).
 - Elke `PUNTEN_PER_DROP` (1000) badge-punten schrapt de slechtste partij uit het gemiddelde.
   **"Je gemiddelde" is overal het gemiddelde zonder die geschrapte partijen**; leg dat uit met `gemUitleg()`.
   Waar alle partijen meetellen, zeg dat er expliciet bij.

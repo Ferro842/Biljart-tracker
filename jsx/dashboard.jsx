@@ -454,8 +454,8 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     inzicht:"Wat je opmerkingen en omstandigheden zeggen over je spel: je sterkste techniek en grootste werkpunt (op slagingspercentage, niet op aantal missers), wat grote series oplevert, waardoor series eindigen, hoe tafel, tijdstip en fase in de partij uitpakken, en of je werkpunten minder vaak voorkomen."
   };
   const btn=(k,l)=>(
-    <button onClick={function(){if(uitlegModus){setUitlegSectie(k);}else{setTab(k);}}} style={{flex:"1 0 auto",padding:"10px 9px",whiteSpace:"nowrap",background:tab===k&&!uitlegModus?"#1c2c1c":"none",
-      border:"none",color:tab===k&&!uitlegModus?GOUD:(uitlegModus?"#7fd8e0":WITD),fontSize:13,cursor:"pointer",fontFamily:"Georgia,serif",
+    <button onClick={function(){if(uitlegModus){setUitlegSectie(k);}else{setTab(k);}}} style={{flex:"1 1 auto",padding:"10px 4px",whiteSpace:"nowrap",background:tab===k&&!uitlegModus?"#1c2c1c":"none",
+      border:"none",color:tab===k&&!uitlegModus?GOUD:(uitlegModus?"#7fd8e0":WITD),fontSize:12.5,cursor:"pointer",fontFamily:"Georgia,serif",
       borderBottom:tab===k&&!uitlegModus?`2px solid ${GOUD}`:"2px solid transparent"}}>
       {l}
     </button>
@@ -476,11 +476,11 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         </button>
       </div>
 
-      {/* Tabs (horizontaal scrollbaar op smalle schermen) */}
+      {/* Tabs: passen naast elkaar op een telefoon; scrollen alleen als vangnet op heel smalle schermen */}
       <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"#152015",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
         {btn("inzicht","✨ Inzicht")}
         {btn("trend","Trend")}
-        {btn("consist","Consistentie")}
+        {btn("consist","Constant")}
         {btn("patronen","Patronen")}
         {btn("vergelijk","Vergelijk")}
         {spel&&btn("punten","Punten")}

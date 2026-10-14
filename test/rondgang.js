@@ -18,7 +18,7 @@
     await klik(disc,disc);
     for(const tab of ["Spelen","Stats","Log","Data"])await klik(tab,disc+"/"+tab);
     await klik("Dash",disc+"/Dash");
-    for(const sub of ["✨ Inzicht","Trend","Consistentie","Patronen","Vergelijk","Punten"])await klik(sub,disc+"/Dash/"+sub);
+    for(const sub of ["✨ Inzicht","Trend","Constant","Patronen","Vergelijk","Punten"])await klik(sub,disc+"/Dash/"+sub);
   }
   // Kader-variant via de kiezer
   await klik("Kader","Kader-kiezer");

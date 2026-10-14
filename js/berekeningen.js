@@ -566,7 +566,7 @@ function berekenHoogsteSeries(partijen,discipline){
   partijen.forEach(function(p,pi){
     (p.beurten||[]).forEach(function(b,bi){
       alle.push({car:b.caramboles,tafel:p.tafel||"230",datum:p.datum,nr:p.nr||pi+1,beurt:bi+1,beurten:p.beurten.length,
-        goed:(b.goed||[]).filter(function(l){return l!=="Acquit"||bi>0;}),gemist:b.gemist||[]});
+        goed:(b.goed||[]).slice(),gemist:b.gemist||[]});
     });
   });
   if(!alle.length)return null;
@@ -587,9 +587,9 @@ function berekenHoogsteSeries(partijen,discipline){
       // Beurt van de hoogste serie (de eerste als hij vaker voorkwam), met de opmerkingen van die beurt
       return{nr:p.nr||pi+1,datum:p.datum,tafel:p.tafel||"230",max:max,groot:c.filter(function(x){return x>=d.sterkMin;}).length,n:c.length,
         gem:c.length?c.reduce(function(s,x){return s+x;},0)/c.length:0,beurt:bi+1,poedels:c.filter(function(x){return x===0;}).length,keer:c.filter(function(x){return x===max;}).length,
-        goed:(b.goed||[]).filter(function(l){return l!=="Acquit"||bi>0;}),gemist:b.gemist||[],
+        goed:(b.goed||[]).slice(),gemist:b.gemist||[],
         // Alle grote series (vanaf `vanaf`) in deze partij, hoogste eerst: er kunnen er meer in één partij zitten
-        series:(p.beurten||[]).map(function(x,j){return{car:x.caramboles,beurt:j+1,goed:(x.goed||[]).filter(function(l){return l!=="Acquit"||j>0;}),gemist:x.gemist||[]};})
+        series:(p.beurten||[]).map(function(x,j){return{car:x.caramboles,beurt:j+1,goed:(x.goed||[]).slice(),gemist:x.gemist||[]};})
           .filter(function(x){return x.car>=vanaf;}).sort(function(a,b){return b.car-a.car||a.beurt-b.beurt;})};
     }).filter(function(x){return x.tafel===k&&x.n>0;});
     const record=alle.filter(function(b){return b.tafel===k;}).sort(function(a,b){return b.car-a.car||new Date(b.datum)-new Date(a.datum);})[0];

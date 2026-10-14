@@ -136,7 +136,9 @@ function InzichtPaneel({partijen,discipline}){
                           <div key={p.nr} onClick={function(){setStaaf(gekozen?null:{tafel:x.tafel,nr:p.nr});}}
                             style={{display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",flexShrink:0}}>
                             <div style={{display:"flex",alignItems:"flex-end",gap:2,height:76,padding:"0 3px",borderRadius:"4px 4px 0 0",
-                              background:gekozen?"rgba(255,255,255,0.16)":"rgba(255,255,255,0.05)",outline:gekozen?"1px solid "+WIT:"none"}}>
+                              background:gekozen?"rgba(255,255,255,0.16)":"rgba(255,255,255,0.05)",
+                              // Rand binnen het vlakje (altijd 1px, anders transparant): een outline valt buiten en wordt door het scrollvak afgeknipt
+                              border:"1px solid "+(gekozen?WIT:"transparent"),borderBottom:"none"}}>
                               {staven.map(function(s){
                                 const isRecord=x.record&&p.nr===x.record.nr&&s.beurt===x.record.beurt;
                                 return(

@@ -386,13 +386,13 @@ function InzichtPaneel({partijen,discipline}){
               );
             })}
             {/* Wat als je acquit beter gaat? */}
-            {pd.acquit.some(function(a){return a.stoten>=10;})&&<div style={{marginBottom:12}}>
+            {pd.acquit.some(function(a){return a.stoten>=5;})&&<div style={{marginBottom:12}}>
               <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,margin:"4px 0 3px"}}>Wat als je acquit beter gaat?</div>
               <div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:8,lineHeight:1.4}}>Kies hoe vaak je acquit lukt en hoeveel je er dan van maakt; je ziet meteen je gemiddelde op die tafel. Eén acquit per partij, dus het effect is per partij klein maar telt over een seizoen op.</div>
-              {pd.acquit.filter(function(a){return a.stoten>0&&a.stoten<10;}).map(function(a){
-                return <div key={a.tafel} style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:6}}>Op de {tafelLabel(a.tafel)} heb je de acquit nog maar {a.stoten} keer aangevinkt; vanaf 10 komt die tafel erbij.</div>;
+              {pd.acquit.filter(function(a){return a.stoten>0&&a.stoten<5;}).map(function(a){
+                return <div key={a.tafel} style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:6}}>Op de {tafelLabel(a.tafel)} heb je de acquit nog maar {a.stoten} keer aangevinkt; vanaf 5 komt die tafel erbij.</div>;
               })}
-              {pd.acquit.filter(function(a){return a.stoten>=10;}).map(function(a){
+              {pd.acquit.filter(function(a){return a.stoten>=5;}).map(function(a){
                 const keuze=acqKeuze[a.tafel]||{};
                 const kans=keuze.kans!=null?keuze.kans:a.kans;
                 // Zolang je niets kiest, rekenen met je echte gemiddelde bij een gelukte acquit (dan klopt "nu" precies)
@@ -409,6 +409,9 @@ function InzichtPaneel({partijen,discipline}){
                       Nu: lukt in <strong style={{color:WIT}}>{a.gelukt} van de {a.stoten}</strong> ({pctTekst(a.kans)}); dan maak je er gemiddeld <strong style={{color:WIT}}>{komma(a.gemBijLukken,1)}</strong>.
                       Je andere beurten: {pctTekst(a.anderKans)} raak, gemiddeld {komma(a.anderGem,1)} als je scoort.
                     </div>
+                    {a.stoten<15&&<div style={{fontSize:11,color:GOUDL,lineHeight:1.4,marginBottom:6}}>
+                      ⚠️ Nog maar {a.stoten} acquits aangevinkt op deze tafel, dus een ruwe schatting. Vink bij elke partij de acquit aan (Goed of Gemist), dan wordt dit steeds betrouwbaarder.
+                    </div>}
                     <div style={{display:"flex",flexWrap:"wrap",gap:5,alignItems:"center",marginBottom:6}}>
                       <span style={{fontSize:11,color:WITD,width:62}}>Lukt in</span>
                       {chip(keuze.kans==null,"nu "+pctTekst(a.kans),function(){zet({kans:null});})}

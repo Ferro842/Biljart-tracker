@@ -88,7 +88,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   Je poedels (`berekenPoedels`, ook als `inz.poedels`): per tafel percentage en aantal per partij (grafiek zoals bij
   hoogste series, aantikken = beurten, langste reeks, redenen), beste partij (laagste %, alleen partijen van 15+
   beurten), langste reeks, laatste 10 tegenover ervoor (oordeel bij ±2 procentpunt, vanaf 6 partijen) en
-  `redenen` (Gemist-labels bij poedels).
+  `redenen` (Gemist-labels bij poedels). Wat als: per partij poedels aantikken en omzetten naar N caramboles (nieuw
+  partijgemiddelde); per tafel `acquit` (beurten met label Acquit): kans en caramboles bij lukken kiezen → nieuw
+  gemiddelde. Pas vanaf 10 aangevinkte acquits per tafel; zonder keuze rekent het met de echte waarden (nu = ±0).
   Poedel na poedel per tafel (`poedel.perTafel`) en vergeleken met "na een score", niet met de gewone
   poedelkans: over alle tafels samen geeft de moeilijkere tafel een vals "poedels komen in reeksen".
 - Niveau volgt je **vorm**: gemiddelde van je laatste `vormVenster` partijen (Stats; 10/20/30/"alles", standaard

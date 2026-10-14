@@ -623,7 +623,9 @@ function berekenPoedels(partijen,discipline){
     c.forEach(function(x,j){if(x===0){run++;if(run>lang){lang=run;langVan=j+2-run;}}else run=0;});
     const redenen={};
     bt.forEach(function(b){if(b.caramboles===0)(b.gemist||[]).forEach(function(l){redenen[l]=(redenen[l]||0)+1;});});
+    const isAcq=function(b){return(b.goed||[]).indexOf("Acquit")!==-1||(b.gemist||[]).indexOf("Acquit")!==-1;};
     return{nr:p.nr||pi+1,datum:p.datum,tafel:p.tafel||"230",n:c.length,poedels:nul.length,pct:c.length?nul.length/c.length:0,
+      totCar:c.reduce(function(s,x){return s+x;},0),acquitPoedels:nul.filter(function(j){return isAcq(bt[j-1]);}),
       beurten:nul,langste:lang,langsteVan:langVan,gem:c.length?c.reduce(function(s,x){return s+x;},0)/c.length:0,
       redenen:Object.keys(redenen).map(function(k){return{label:k,aantal:redenen[k]};}).sort(function(a,b){return b.aantal-a.aantal;})};
   }).filter(function(x){return x.n>0;});
@@ -652,7 +654,22 @@ function berekenPoedels(partijen,discipline){
     if((b.gemist||[]).length)metReden++;
     (b.gemist||[]).forEach(function(l){redenen[l]=(redenen[l]||0)+1;});
   });});
-  return{perTafel:perTafel,totaal:totaal,metReden:metReden,
+  // Acquit per tafel (beurten met "Acquit" bij Goed of Gemist): hoe vaak lukt hij en hoeveel maak je er dan
+  // van, tegenover je andere beurten. Voor de "wat als"-berekening in de kaart.
+  const acquit=tafels.map(function(k){
+    const ps=partijen.filter(function(p){return(p.tafel||"230")===k&&(p.beurten||[]).length;});
+    let stoten=0,gelukt=0,acqCar=0,car=0,beurten=0,anderN=0,anderRaak=0,anderCar=0;const waarden=[];
+    ps.forEach(function(p){p.beurten.forEach(function(b){
+      car+=b.caramboles;beurten++;
+      if((b.goed||[]).indexOf("Acquit")!==-1||(b.gemist||[]).indexOf("Acquit")!==-1){
+        stoten++;if(b.caramboles>0){gelukt++;acqCar+=b.caramboles;waarden.push(b.caramboles);}
+      }else{anderN++;if(b.caramboles>0){anderRaak++;anderCar+=b.caramboles;}}
+    });});
+    return{tafel:k,partijen:ps.length,stoten:stoten,gelukt:gelukt,kans:stoten?gelukt/stoten:0,gemBijLukken:gelukt?acqCar/gelukt:0,
+      waarden:waarden.sort(function(a,b){return a-b;}),acqCar:acqCar,car:car,beurten:beurten,gem:beurten?car/beurten:0,
+      anderKans:anderN?anderRaak/anderN:0,anderGem:anderRaak?anderCar/anderRaak:0};
+  });
+  return{perTafel:perTafel,totaal:totaal,metReden:metReden,acquit:acquit,
     redenen:Object.keys(redenen).map(function(k){return{label:k,aantal:redenen[k]};}).sort(function(a,b){return b.aantal-a.aantal;})};
 }
 

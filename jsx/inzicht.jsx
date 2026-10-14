@@ -22,6 +22,11 @@ function InzichtPaneel({partijen,discipline}){
   const [staaf,setStaaf]=useState(null);
   // Aangetikte partij in de poedelgrafiek: {tafel,nr}
   const [poedelStaaf,setPoedelStaaf]=useState(null);
+  // Wat als: omgezette poedels in de gekozen partij (beurtnummers) en hoeveel caramboles elk dan oplevert;
+  // per tafel de gekozen acquit-kans en caramboles bij een gelukte acquit
+  const [watAls,setWatAls]=useState({sleutel:null,beurten:[]});
+  const [watAlsCar,setWatAlsCar]=useState(null);
+  const [acqKeuze,setAcqKeuze]=useState({});
   // Grafieken hoogste series scrollen zijwaarts; bij openen naar rechts (je nieuwste partijen)
   const grafiekRefs=useRef({});
   useEffect(function(){
@@ -315,10 +320,50 @@ function InzichtPaneel({partijen,discipline}){
                         <strong style={{fontSize:15,color:kleur(gekozenP)}}>{gekozenP.poedels} poedels</strong> van de {gekozenP.n} beurten ({pctTekst(gekozenP.pct)})
                         {gekozenP.langste>1?" · langste reeks "+gekozenP.langste+" op rij":""}
                       </div>
-                      {gekozenP.beurten.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:3,marginTop:5}}>
-                        <span style={{fontSize:11,color:WITD,marginRight:2}}>In beurt:</span>
-                        {gekozenP.beurten.map(function(b){return <span key={b} style={{fontSize:11,color:WIT,background:"rgba(224,85,85,0.25)",borderRadius:3,padding:"0 4px"}}>{b}</span>;})}
-                      </div>}
+                      {gekozenP.beurten.length>0&&(function(){
+                        // Wat als: tik poedels aan die je wel had gemaakt
+                        const sleutel=x.tafel+"-"+gekozenP.nr;
+                        const aan=watAls.sleutel===sleutel?watAls.beurten:[];
+                        const acq=pd.acquit.find(function(a){return a.tafel===x.tafel;});
+                        const standaard=Math.max(1,Math.round(acq&&acq.anderGem?acq.anderGem:2));
+                        const v=watAlsCar||standaard;
+                        const wissel=function(b){
+                          const nieuw=aan.indexOf(b)!==-1?aan.filter(function(y){return y!==b;}):aan.concat([b]);
+                          setWatAls({sleutel:sleutel,beurten:nieuw});
+                        };
+                        const nieuwGem=(gekozenP.totCar+aan.length*v)/gekozenP.n;
+                        const knop=function(tekst,klik,uit){return <button onClick={klik} disabled={uit} style={{width:26,height:26,borderRadius:13,border:"1px solid "+GOUD,background:"none",color:GOUD,fontSize:15,lineHeight:1,cursor:uit?"default":"pointer",opacity:uit?0.35:1,fontFamily:"inherit",padding:0}}>{tekst}</button>;};
+                        return(
+                          <div style={{marginTop:6}}>
+                            <div style={{fontSize:11,color:WITD,marginBottom:4}}>Poedels in beurt (tik aan: wat als je die wel had gemaakt?{gekozenP.acquitPoedels.length?" A = acquit":""}):</div>
+                            <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
+                              {gekozenP.beurten.map(function(b){
+                                const isAan=aan.indexOf(b)!==-1,isAcq=gekozenP.acquitPoedels.indexOf(b)!==-1;
+                                return <button key={b} onClick={function(){wissel(b);}} style={{minWidth:26,fontSize:12,padding:"2px 5px",borderRadius:4,cursor:"pointer",fontFamily:"inherit",
+                                  border:"1px solid "+(isAan?GRNT:"transparent"),background:isAan?"rgba(76,175,80,0.25)":"rgba(224,85,85,0.25)",color:WIT}}>
+                                  {b}{isAcq?" A":""}{isAan?" → "+v:""}</button>;
+                              })}
+                            </div>
+                            {aan.length>0&&<div style={{marginTop:8,background:"rgba(76,175,80,0.08)",border:"1px solid rgba(76,175,80,0.35)",borderRadius:6,padding:"7px 9px"}}>
+                              <div style={{display:"flex",alignItems:"center",gap:8,fontSize:12,color:WITD,flexWrap:"wrap"}}>
+                                <span>Elke omgezette poedel wordt</span>
+                                {knop("−",function(){setWatAlsCar(Math.max(1,v-1));},v<=1)}
+                                <strong style={{fontSize:16,color:WIT,minWidth:18,textAlign:"center"}}>{v}</strong>
+                                {knop("+",function(){setWatAlsCar(Math.min(30,v+1));},v>=30)}
+                                <span>caramboles</span>
+                              </div>
+                              <div style={{fontSize:13,color:WIT,marginTop:6}}>
+                                Gemiddelde deze partij: {komma(gekozenP.gem,dec)} → <strong style={{fontSize:16,color:GRNT}}>{komma(nieuwGem,dec)}</strong>
+                                <span style={{color:GRNT}}> (+{komma(nieuwGem-gekozenP.gem,dec)})</span>
+                              </div>
+                              <div style={{fontSize:11,color:WITD,marginTop:2}}>
+                                {aan.length} poedel{aan.length>1?"s":""} minder ({gekozenP.poedels} → {gekozenP.poedels-aan.length}), {gekozenP.totCar} → {gekozenP.totCar+aan.length*v} caramboles in {gekozenP.n} beurten.
+                                <span onClick={function(){setWatAls({sleutel:null,beurten:[]});}} style={{color:GOUD,cursor:"pointer",marginLeft:6}}>Wissen</span>
+                              </div>
+                            </div>}
+                          </div>
+                        );
+                      })()}
                       <div style={{fontSize:11,lineHeight:1.4,marginTop:5,color:gekozenP.redenen.length?ROOD:WITD,opacity:gekozenP.redenen.length?1:0.7}}>
                         {gekozenP.redenen.length?"✗ "+gekozenP.redenen.map(function(r){return r.label+(r.aantal>1?" ×"+r.aantal:"");}).join(", "):"geen opmerkingen bij deze poedels"}
                       </div>
@@ -340,6 +385,51 @@ function InzichtPaneel({partijen,discipline}){
                 </div>
               );
             })}
+            {/* Wat als je acquit beter gaat? */}
+            {pd.acquit.some(function(a){return a.stoten>=10;})&&<div style={{marginBottom:12}}>
+              <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,margin:"4px 0 3px"}}>Wat als je acquit beter gaat?</div>
+              <div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:8,lineHeight:1.4}}>Kies hoe vaak je acquit lukt en hoeveel je er dan van maakt; je ziet meteen je gemiddelde op die tafel. Eén acquit per partij, dus het effect is per partij klein maar telt over een seizoen op.</div>
+              {pd.acquit.filter(function(a){return a.stoten>0&&a.stoten<10;}).map(function(a){
+                return <div key={a.tafel} style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:6}}>Op de {tafelLabel(a.tafel)} heb je de acquit nog maar {a.stoten} keer aangevinkt; vanaf 10 komt die tafel erbij.</div>;
+              })}
+              {pd.acquit.filter(function(a){return a.stoten>=10;}).map(function(a){
+                const keuze=acqKeuze[a.tafel]||{};
+                const kans=keuze.kans!=null?keuze.kans:a.kans;
+                // Zolang je niets kiest, rekenen met je echte gemiddelde bij een gelukte acquit (dan klopt "nu" precies)
+                const echt=a.gemBijLukken||a.anderGem||1,v=keuze.car!=null?keuze.car:Math.max(1,Math.round(echt));
+                const reken=keuze.car!=null?keuze.car:echt;
+                const zet=function(w){setAcqKeuze(Object.assign({},acqKeuze,{[a.tafel]:Object.assign({kans:keuze.kans!=null?keuze.kans:null,car:keuze.car!=null?keuze.car:null},w)}));};
+                const extra=kans*a.stoten*reken-a.acqCar,nieuw=(a.car+extra)/a.beurten;
+                const chip=function(aan,tekst,klik){return <button key={tekst} onClick={klik} style={{padding:"3px 8px",background:aan?"#2d4a1e":"none",border:"1px solid "+(aan?GOUD:KBDR),borderRadius:5,color:aan?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>{tekst}</button>;};
+                const knop=function(tekst,klik,uit){return <button onClick={klik} disabled={uit} style={{width:26,height:26,borderRadius:13,border:"1px solid "+GOUD,background:"none",color:GOUD,fontSize:15,lineHeight:1,cursor:uit?"default":"pointer",opacity:uit?0.35:1,fontFamily:"inherit",padding:0}}>{tekst}</button>;};
+                return(
+                  <div key={a.tafel} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px",marginBottom:8}}>
+                    <div style={{fontSize:13,color:WIT,fontWeight:"bold",marginBottom:4}}>{pd.acquit.length>1?tafelLabel(a.tafel):"Acquit"}</div>
+                    <div style={{fontSize:12,color:WITD,lineHeight:1.5,marginBottom:6}}>
+                      Nu: lukt in <strong style={{color:WIT}}>{a.gelukt} van de {a.stoten}</strong> ({pctTekst(a.kans)}); dan maak je er gemiddeld <strong style={{color:WIT}}>{komma(a.gemBijLukken,1)}</strong>.
+                      Je andere beurten: {pctTekst(a.anderKans)} raak, gemiddeld {komma(a.anderGem,1)} als je scoort.
+                    </div>
+                    <div style={{display:"flex",flexWrap:"wrap",gap:5,alignItems:"center",marginBottom:6}}>
+                      <span style={{fontSize:11,color:WITD,width:62}}>Lukt in</span>
+                      {chip(keuze.kans==null,"nu "+pctTekst(a.kans),function(){zet({kans:null});})}
+                      {[0.5,0.6,0.75,1].filter(function(k){return Math.abs(k-a.kans)>0.01;}).map(function(k){return chip(keuze.kans===k,pctTekst(k),function(){zet({kans:k});});})}
+                    </div>
+                    <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:8}}>
+                      <span style={{fontSize:11,color:WITD,width:62}}>Je maakt dan</span>
+                      {knop("−",function(){zet({car:Math.max(1,v-1)});},v<=1)}
+                      <strong style={{fontSize:16,color:WIT,minWidth:18,textAlign:"center"}}>{keuze.car!=null?v:komma(echt,1)}</strong>
+                      {knop("+",function(){zet({car:Math.min(30,v+1)});},v>=30)}
+                      <span style={{fontSize:11,color:WITD}}>caramboles{keuze.car==null?" (nu)":""}</span>
+                    </div>
+                    <div style={{fontSize:13,color:WIT}}>
+                      Gemiddelde: {komma(a.gem,dec)} → <strong style={{fontSize:16,color:nieuw>=a.gem?GRNT:ROOD}}>{komma(nieuw,dec)}</strong>
+                      <span style={{color:nieuw>=a.gem?GRNT:ROOD}}> ({Math.abs(nieuw-a.gem)<0.005?"±":nieuw>=a.gem?"+":"−"}{komma(Math.abs(nieuw-a.gem),dec)})</span>
+                    </div>
+                    <div style={{fontSize:11,color:WITD,marginTop:2}}>Dat is {Math.abs(extra)<0.05?"±":extra>=0?"+":"−"}{komma(Math.abs(extra/Math.max(1,a.partijen)),1)} caramboles per partij ({a.partijen} partijen).</div>
+                  </div>
+                );
+              })}
+            </div>}
             {/* Waardoor je poedelt */}
             {pd.redenen.length>0&&<div>
               <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,margin:"4px 0 3px"}}>Waardoor je poedelt</div>

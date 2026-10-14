@@ -607,6 +607,55 @@ function berekenHoogsteSeries(partijen,discipline){
   return{perAantal:perAantal,vanaf:vanaf,perTafel:perTafel,grootMin:d.sterkMin};
 }
 
+// Je poedels: per tafel per partij aantal en percentage poedels (in welke beurten, langste reeks op rij, de
+// opmerkingen bij die poedels), je beste partij (laagste percentage) en je langste poedelreeks, en of het de
+// goede kant op gaat: je laatste 10 partijen (bij minder dan 20 de laatste helft) tegenover die ervoor.
+// Minder poedels is beter; oordeel bij minstens 6 partijen, "stabiel" bij minder dan 2 procentpunt verschil
+// (ongeveer een halve poedel per partij). Beste partij alleen uit partijen van minstens 15 beurten (als die er zijn).
+// `redenen`: wat er bij je poedels is aangevinkt (Gemist), over alle tafels, hoogste eerst.
+function berekenPoedels(partijen,discipline){
+  partijen=partijen||[];
+  const lijst=partijen.map(function(p,pi){
+    const bt=p.beurten||[],c=bt.map(function(b){return b.caramboles;});
+    const nul=[];c.forEach(function(x,j){if(x===0)nul.push(j+1);});
+    // Langste reeks poedels op rij
+    let lang=0,langVan=0,run=0;
+    c.forEach(function(x,j){if(x===0){run++;if(run>lang){lang=run;langVan=j+2-run;}}else run=0;});
+    const redenen={};
+    bt.forEach(function(b){if(b.caramboles===0)(b.gemist||[]).forEach(function(l){redenen[l]=(redenen[l]||0)+1;});});
+    return{nr:p.nr||pi+1,datum:p.datum,tafel:p.tafel||"230",n:c.length,poedels:nul.length,pct:c.length?nul.length/c.length:0,
+      beurten:nul,langste:lang,langsteVan:langVan,gem:c.length?c.reduce(function(s,x){return s+x;},0)/c.length:0,
+      redenen:Object.keys(redenen).map(function(k){return{label:k,aantal:redenen[k]};}).sort(function(a,b){return b.aantal-a.aantal;})};
+  }).filter(function(x){return x.n>0;});
+  if(!lijst.length)return null;
+  const tafels=Object.keys(TAFELS).filter(function(k){return lijst.some(function(x){return x.tafel===k;});});
+  const meet=function(x){
+    const n=x.reduce(function(s,y){return s+y.n;},0),p=x.reduce(function(s,y){return s+y.poedels;},0);
+    return{partijen:x.length,pct:n?p/n:0,perPartij:x.length?p/x.length:0};
+  };
+  const perTafel=tafels.map(function(k){
+    const pt=lijst.filter(function(x){return x.tafel===k;});
+    const aantal=Math.min(10,Math.floor(pt.length/2));
+    const voor=meet(pt.slice(0,pt.length-aantal)),na=meet(pt.slice(pt.length-aantal)),alle=meet(pt);
+    let oordeel=null;
+    if(pt.length>=6){const v=na.pct-voor.pct;oordeel=v<=-0.02?"beter":v>=0.02?"minder":"stabiel";}
+    // Beste partij = laagste percentage; bij gelijke stand de recentste
+    const lang=pt.filter(function(x){return x.n>=15;});
+    const beste=(lang.length?lang:pt).slice().sort(function(a,b){return a.pct-b.pct||new Date(b.datum)-new Date(a.datum);})[0];
+    const langste=pt.slice().sort(function(a,b){return b.langste-a.langste||new Date(b.datum)-new Date(a.datum);})[0];
+    return{tafel:k,partijen:pt,aantal:aantal,voor:voor,na:na,alle:alle,oordeel:oordeel,beste:beste,langste:langste};
+  });
+  const redenen={};let metReden=0,totaal=0;
+  lijst.forEach(function(x){totaal+=x.poedels;});
+  partijen.forEach(function(p){(p.beurten||[]).forEach(function(b){
+    if(b.caramboles!==0)return;
+    if((b.gemist||[]).length)metReden++;
+    (b.gemist||[]).forEach(function(l){redenen[l]=(redenen[l]||0)+1;});
+  });});
+  return{perTafel:perTafel,totaal:totaal,metReden:metReden,
+    redenen:Object.keys(redenen).map(function(k){return{label:k,aantal:redenen[k]};}).sort(function(a,b){return b.aantal-a.aantal;})};
+}
+
 function berekenInzicht(partijen,discipline){
   const d=beurtDrempels(discipline);
   const gemistLabels=GEMIST.map(function(o){return o.label;}),goedLabels=GOED.map(function(o){return o.label;});
@@ -801,6 +850,15 @@ function berekenInzicht(partijen,discipline){
       coach.push({soort:"hoogste",tekst:"Hoogste serie"+waar+": record "+x.record.car+" ("+fmtDatum(x.record.datum)+"). Je laatste "+x.aantal+" partijen gemiddeld "+k1(x.na.hoogste)+", ervoor "+k1(x.voor.hoogste)+": "+richting+"."});
     });
   }
+  // Poedels per tafel: gaat het de goede kant op (minder poedels)?
+  const pd=berekenPoedels(partijen,discipline);
+  if(pd){
+    pd.perTafel.filter(function(x){return x.oordeel;}).forEach(function(x){
+      const waar=pd.perTafel.length>1?" op de "+tafelLabel(x.tafel):"";
+      const richting={beter:"dat gaat de goede kant op",stabiel:"dat blijft gelijk",minder:"daar is nog wat nodig"}[x.oordeel];
+      coach.push({soort:"poedeltrend",tekst:"Poedels"+waar+": je laatste "+x.aantal+" partijen "+pc(x.na.pct)+" ("+k1(x.na.perPartij)+" per partij), ervoor "+pc(x.voor.pct)+" ("+k1(x.voor.perPartij)+"): "+richting+"."});
+    });
+  }
   if(sterkste)coach.push({soort:"sterk",tekst:"Je sterkste techniek is "+sterkste.label+": "+sterkste.goed+" van de "+sterkste.gebruik+" keer goed ("+Math.round(sterkste.pct*100)+"%, tegen gemiddeld "+Math.round(refPct*100)+"% over al je technieken)."});
   if(werkpunt)coach.push({soort:"werk",tekst:werkpunt.label+(werkpunt.gebruik>=15?" speel je vaak":" komt voor")+" ("+werkpunt.gebruik+"×), maar lukt minder vaak dan je andere technieken: "+werkpunt.goed+" van de "+werkpunt.gebruik+" keer goed ("+Math.round(werkpunt.pct*100)+"%). Daar valt het meest te winnen."});
   const topSerie=seriemakers.filter(function(x){return x.aantal>=10;})[0];
@@ -836,10 +894,10 @@ function berekenInzicht(partijen,discipline){
   if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
 
   // Volgorde in de samenvatting: eerst poedels en series (waar je gemiddelde vandaan komt), dan technieken
-  const volgorde={vorm:0,hoogste:1,poedel:2,motor:3,serie:4,sterk:5,werk:6,mentaal:7,trend:8,omstandigheid:9};
-  const plek=function(c){return c.soort in volgorde?volgorde[c.soort]:10;}; // let op: vorm heeft plek 0
+  const volgorde={vorm:0,hoogste:1,poedeltrend:2,poedel:3,motor:4,serie:5,sterk:6,werk:7,mentaal:8,trend:9,omstandigheid:10};
+  const plek=function(c){return c.soort in volgorde?volgorde[c.soort]:11;}; // let op: vorm heeft plek 0
   coach.sort(function(a,b){return plek(a)-plek(b);});
-  return{aantalBeurten:n,hoogste:hs,basis:basis,basisTag:basisTag,dekking:dekking,series:series,helftLabels:helftLabels,motor:motor,poedel:poedel,
+  return{aantalBeurten:n,hoogste:hs,poedels:pd,basis:basis,basisTag:basisTag,dekking:dekking,series:series,helftLabels:helftLabels,motor:motor,poedel:poedel,
     acquitPartijen:beurten.filter(isAcquitBeurt).length,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
     profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
     metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};

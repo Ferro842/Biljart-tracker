@@ -20,6 +20,8 @@ function InzichtPaneel({partijen,discipline}){
   const [serieAantal,setSerieAantal]=useState(null);
   // Aangetikt staafje in de grafiek hoogste serie per partij: {tafel,nr}
   const [staaf,setStaaf]=useState(null);
+  // Aangetikte partij in de poedelgrafiek: {tafel,nr}
+  const [poedelStaaf,setPoedelStaaf]=useState(null);
   // Grafieken hoogste series scrollen zijwaarts; bij openen naar rechts (je nieuwste partijen)
   const grafiekRefs=useRef({});
   useEffect(function(){
@@ -36,7 +38,7 @@ function InzichtPaneel({partijen,discipline}){
   if(!inz)return <div style={{fontSize:14,color:WITD,padding:"8px 0"}}>Nog geen beurten in deze selectie.</div>;
   const dec=discipline==="driebanden"?3:2;
   const pctTekst=function(x){return Math.round(x*100)+"%";};
-  const icoon={vorm:"📊",hoogste:"🏆",poedel:"⭕",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
+  const icoon={vorm:"📊",hoogste:"🏆",poedeltrend:"⭕",poedel:"⭕",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
   const spelZinnen=inz.coach.filter(function(c){return c.soort!=="omstandigheid";});
   const omstZinnen=inz.coach.filter(function(c){return c.soort==="omstandigheid";});
   const zin=function(c,i,lijst){
@@ -252,6 +254,108 @@ function InzichtPaneel({partijen,discipline}){
                 </div>
               );
             })()}
+          </InzichtKaart>
+        );
+      })()}
+
+      {/* Je poedels: percentage en aantal per partij, per tafel; gaat het de goede kant op */}
+      {inz.poedels&&(function(){
+        const pd=inz.poedels;
+        const oordeelStijl={beter:["✅ Gaat de goede kant op",GRNT],stabiel:["➖ Blijft gelijk",GOUD],minder:["⚠️ Heeft nog wat nodig",ROOD]};
+        const maxPct=Math.max(0.01,...pd.perTafel.map(function(x){return Math.max(...x.partijen.map(function(p){return p.pct;}));}));
+        const maxReden=Math.max(1,...pd.redenen.map(function(x){return x.aantal;}));
+        return(
+          <InzichtKaart titel="Je poedels" rand={ROOD}
+            uitleg="Met een poedel maak je in die beurt niets. Per tafel je poedels per partij, in procenten van je beurten (hoogte) en in aantal (getal). Lager is beter.">
+            {pd.perTafel.map(function(x){
+              const o=x.oordeel?oordeelStijl[x.oordeel]:null;
+              const kleur=function(p){return p.pct<=x.alle.pct-0.05?GRNT:p.pct>=x.alle.pct+0.05?ROOD:GOUD;};
+              const gekozenP=poedelStaaf&&poedelStaaf.tafel===x.tafel?x.partijen.find(function(y){return y.nr===poedelStaaf.nr;}):null;
+              return(
+                <div key={x.tafel} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px",marginBottom:10}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6,gap:8}}>
+                    <span style={{fontSize:14,color:WIT,fontWeight:"bold"}}>{pd.perTafel.length>1?tafelLabel(x.tafel):"Alle partijen"}</span>
+                    <span style={{fontSize:12,color:o?o[1]:WITD,fontWeight:o?"bold":"normal",textAlign:"right"}}>{o?o[0]:"Nog te weinig partijen voor een oordeel"}</span>
+                  </div>
+                  <div style={{display:"flex",alignItems:"baseline",gap:8,marginBottom:4}}>
+                    <span style={{fontSize:28,fontWeight:"bold",color:ROOD,lineHeight:1,whiteSpace:"nowrap",flexShrink:0}}><span style={{fontSize:22}}>⭕</span> {pctTekst(x.alle.pct)}</span>
+                    <span style={{fontSize:12,color:WITD,flex:1,minWidth:0}}>van je beurten · {k1(x.alle.perPartij)} per partij ({x.partijen.length} partijen)</span>
+                  </div>
+                  <div style={{fontSize:12,color:WITD,marginBottom:8,lineHeight:1.5}}>
+                    Beste partij: <strong style={{color:GRNT}}>{x.beste.poedels} poedels</strong> van {x.beste.n} ({pctTekst(x.beste.pct)}) · p{x.beste.nr}, {fmtDatum(x.beste.datum)}
+                    {x.langste.langste>1&&<><br/>Langste reeks: <strong style={{color:ROOD}}>{x.langste.langste} poedels op rij</strong> · p{x.langste.nr}, beurt {x.langste.langsteVan}–{x.langste.langsteVan+x.langste.langste-1}</>}
+                  </div>
+                  <div style={{fontSize:11,color:WITD,marginBottom:4}}>Per partij (scroll naar links voor eerdere, tik voor details):</div>
+                  <div ref={function(el){grafiekRefs.current["poedel"+(x.tafel||"alle")]=el;}} style={{overflowX:"auto",WebkitOverflowScrolling:"touch",paddingBottom:4}}>
+                    <div style={{display:"flex",alignItems:"flex-end",gap:4,width:"max-content",minWidth:"100%"}}>
+                      {x.partijen.map(function(p,i){
+                        const recent=i>=x.partijen.length-x.aantal,gekozen=gekozenP===p,zwak=!gekozen&&!recent;
+                        return(
+                          <div key={p.nr} onClick={function(){setPoedelStaaf(gekozen?null:{tafel:x.tafel,nr:p.nr});}}
+                            style={{display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",flexShrink:0}}>
+                            <div style={{width:21,height:70,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",padding:"0 2px",borderRadius:"4px 4px 0 0",
+                              background:gekozen?"rgba(255,255,255,0.16)":"rgba(255,255,255,0.05)",border:"1px solid "+(gekozen?WIT:"transparent"),borderBottom:"none"}}>
+                              <span style={{fontSize:9,color:zwak?WITD:WIT,opacity:zwak?0.6:1,marginBottom:1}}>{p.poedels}</span>
+                              <div style={{width:"100%",height:Math.max(2,p.pct/maxPct*50),background:kleur(p),opacity:zwak?0.35:1,borderRadius:"2px 2px 0 0"}}/>
+                            </div>
+                            <div style={{fontSize:8,color:gekozen?WIT:WITD,opacity:zwak?0.6:1,marginTop:2}}>p{p.nr}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div style={{height:1,background:"rgba(255,255,255,0.15)",marginBottom:8}}/>
+                  {gekozenP&&(
+                    <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 9px",marginBottom:8}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",gap:8}}>
+                        <span style={{fontSize:12,color:WIT}}>p{gekozenP.nr} · {fmtDatum(gekozenP.datum)} · gemiddelde {komma(gekozenP.gem,dec)}</span>
+                        <span onClick={function(){setPoedelStaaf(null);}} style={{fontSize:14,color:WITD,cursor:"pointer",padding:"0 2px"}}>✕</span>
+                      </div>
+                      <div style={{fontSize:12,color:WITD,marginTop:2}}>
+                        <strong style={{fontSize:15,color:kleur(gekozenP)}}>{gekozenP.poedels} poedels</strong> van de {gekozenP.n} beurten ({pctTekst(gekozenP.pct)})
+                        {gekozenP.langste>1?" · langste reeks "+gekozenP.langste+" op rij":""}
+                      </div>
+                      {gekozenP.beurten.length>0&&<div style={{display:"flex",flexWrap:"wrap",gap:3,marginTop:5}}>
+                        <span style={{fontSize:11,color:WITD,marginRight:2}}>In beurt:</span>
+                        {gekozenP.beurten.map(function(b){return <span key={b} style={{fontSize:11,color:WIT,background:"rgba(224,85,85,0.25)",borderRadius:3,padding:"0 4px"}}>{b}</span>;})}
+                      </div>}
+                      <div style={{fontSize:11,lineHeight:1.4,marginTop:5,color:gekozenP.redenen.length?ROOD:WITD,opacity:gekozenP.redenen.length?1:0.7}}>
+                        {gekozenP.redenen.length?"✗ "+gekozenP.redenen.map(function(r){return r.label+(r.aantal>1?" ×"+r.aantal:"");}).join(", "):"geen opmerkingen bij deze poedels"}
+                      </div>
+                    </div>
+                  )}
+                  {x.aantal>0&&x.voor.partijen>0&&<div style={{display:"grid",gridTemplateColumns:"1fr auto 1fr",gap:6,alignItems:"center",fontSize:12}}>
+                    <div style={{color:WITD,textAlign:"center"}}>
+                      <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:0.5}}>{x.voor.partijen} ervoor</div>
+                      <div><strong style={{fontSize:16,color:WIT}}>{pctTekst(x.voor.pct)}</strong> poedels</div>
+                      <div>{k1(x.voor.perPartij)} per partij</div>
+                    </div>
+                    <div style={{fontSize:16,color:o?o[1]:WITD}}>→</div>
+                    <div style={{color:WITD,textAlign:"center"}}>
+                      <div style={{fontSize:10,textTransform:"uppercase",letterSpacing:0.5}}>laatste {x.aantal}</div>
+                      <div><strong style={{fontSize:16,color:o?o[1]:WIT}}>{pctTekst(x.na.pct)}</strong> poedels</div>
+                      <div style={{color:o?o[1]:WITD}}>{k1(x.na.perPartij)} per partij</div>
+                    </div>
+                  </div>}
+                </div>
+              );
+            })}
+            {/* Waardoor je poedelt */}
+            {pd.redenen.length>0&&<div>
+              <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,margin:"4px 0 3px"}}>Waardoor je poedelt</div>
+              <div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:8}}>Bij {pd.metReden} van je {pd.totaal} poedels heb je aangevinkt wat er misging.</div>
+              {pd.redenen.slice(0,8).map(function(x){
+                return(
+                  <div key={x.label} style={{display:"flex",alignItems:"center",gap:8,fontSize:12,marginBottom:5}}>
+                    <span style={{width:110,color:WIT,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{x.label}</span>
+                    <span style={{flex:1,height:7,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}}>
+                      <span style={{display:"block",width:(x.aantal/maxReden*100)+"%",height:"100%",background:ROOD}}/>
+                    </span>
+                    <span style={{width:62,textAlign:"right",color:WITD}}>{x.aantal}× ({pctTekst(x.aantal/Math.max(1,pd.metReden))})</span>
+                  </div>
+                );
+              })}
+            </div>}
           </InzichtKaart>
         );
       })()}

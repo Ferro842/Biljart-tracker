@@ -433,20 +433,12 @@ function beurtKleur(v,discipline){
 // - Opmerkingen worden niet in elke partij bijgehouden (vaak wel of juist helemaal niet, en op de ene tafel
 //   meer dan op de andere). Alles wat op opmerkingen leunt gebruikt daarom alleen "bijgehouden" partijen:
 //   minstens INZICHT_DEKKING van de beurten heeft een opmerking. In andere partijen zegt het ontbreken van
-//   een opmerking niets. Omstandigheden (tafel, tijdstip, fase) gebruiken geen opmerkingen: alle partijen.
-// - Tijdstip zegt alleen iets bij partijen die tijdens het spelen zijn ingevoerd. Nagetypte partijen
-//   (bijv. 's avonds thuis) herken je aan beurten die vlak na elkaar zijn ingevoerd: mediaan minder dan
-//   INZICHT_LIVE_SEC seconden tussen twee beurten. Partijen zonder tijd per beurt tellen ook niet mee.
+//   een opmerking niets. Omstandigheden (tafel, avond, fase) gebruiken geen opmerkingen: alle partijen.
+// - Kloktijden worden bewust niet gebruikt: partijen worden soms later nagetypt (bijv. thuis na het Woutje)
+//   en de oudste partijen hebben geen tijd per beurt. De volgorde op de avond klopt wel altijd.
 const INZICHT_MIN=5;
 const INZICHT_DEKKING=0.25;
-const INZICHT_LIVE_SEC=30;
-// Is de partij tijdens het spelen ingevoerd? (genoeg beurten met tijd, en niet vlak na elkaar)
-function isLiveIngevoerd(p){
-  const t=(p.beurten||[]).map(function(b){return new Date(b.tijd).getTime();}).filter(function(x){return !isNaN(x);});
-  if(t.length<5)return false;
-  const tussen=t.slice(1).map(function(x,i){return(x-t[i])/1000;}).sort(function(a,b){return a-b;});
-  return tussen[Math.floor(tussen.length/2)]>=INZICHT_LIVE_SEC;
-}
+
 function berekenInzicht(partijen,discipline){
   const d=beurtDrempels(discipline);
   const gemistLabels=GEMIST.map(function(o){return o.label;}),goedLabels=GOED.map(function(o){return o.label;});
@@ -464,10 +456,9 @@ function berekenInzicht(partijen,discipline){
     lijst.slice().sort(function(a,b){return new Date(partijen[a].datum)-new Date(partijen[b].datum);}).forEach(function(pi,i){avondNr[pi]=i+1;});
   });
   (partijen||[]).forEach(function(p,pi){
-    const live=isLiveIngevoerd(p);
     (p.beurten||[]).forEach(function(b,bi){
-      beurten.push({live:live,avondNr:avondNr[pi]||null,car:b.caramboles,gemist:b.gemist||[],goed:b.goed||[],pi:pi,bi:bi,tafel:p.tafel||"230",
-        tijd:b.tijd||p.datum,oudeAcquit:bi===0&&p.tafel==="230"&&new Date(p.datum).getTime()<new Date(ACQUIT_AANVULLING_TOT).getTime(),vorige:bi>0?p.beurten[bi-1].caramboles:null});
+      beurten.push({avondNr:avondNr[pi]||null,car:b.caramboles,gemist:b.gemist||[],goed:b.goed||[],pi:pi,bi:bi,tafel:p.tafel||"230",
+        oudeAcquit:bi===0&&p.tafel==="230"&&new Date(p.datum).getTime()<new Date(ACQUIT_AANVULLING_TOT).getTime(),vorige:bi>0?p.beurten[bi-1].caramboles:null});
     });
   });
   const n=beurten.length;
@@ -541,8 +532,8 @@ function berekenInzicht(partijen,discipline){
   const groep=function(titel,sleutelVan,volgorde,naam){
     const g={};
     beurten.forEach(function(b){const k=sleutelVan(b);if(k===null)return;(g[k]=g[k]||[]).push(b);});
-    // Vergelijk met het gemiddelde van de beurten die in deze groep meetellen (bij Tijdstip alleen de live
-    // ingevoerde partijen), niet met het geheel
+    // Vergelijk met het gemiddelde van de beurten die in deze groep meetellen (bij Partij van de avond
+    // alleen clubavonden), niet met het geheel
     const mee=[].concat.apply([],Object.keys(g).map(function(k){return g[k];}));
     const ref=mee.length?som(mee)/mee.length:basis;
     const rijen=volgorde.filter(function(k){return g[k]&&g[k].length>=30;}).map(function(k){
@@ -551,11 +542,8 @@ function berekenInzicht(partijen,discipline){
     });
     return rijen.length>=2?{titel:titel,rijen:rijen,ref:ref,aantal:mee.length}:null;
   };
-  const uur=function(b){const u=new Date(b.tijd).getHours();return isNaN(u)?null:(u<6?24+u:u);};
   const omstandigheden=[
     groep("Tafel",function(b){return b.tafel;},Object.keys(TAFELS),function(k){return tafelLabel(k);}),
-    groep("Tijdstip",function(b){if(!b.live||!b.tijd)return null;const u=uur(b);if(u===null)return null;return u<21?"vroeg":u<22?"21":u<23?"22":"laat";},
-      ["vroeg","21","22","laat"],function(k){return{vroeg:"vóór 21u",21:"21–22u",22:"22–23u",laat:"na 23u"}[k];}),
     groep("Partij van de avond",function(b){return b.avondNr===null?null:b.avondNr>=3?"3":String(b.avondNr);},["1","2","3"],
       function(k){return k==="3"?"3e partij of later":k+"e partij";}),
     groep("Fase in de partij",function(b){return b.bi<3?"a":b.bi<10?"b":b.bi<20?"c":"d";},["a","b","c","d"],
@@ -596,8 +584,7 @@ function berekenInzicht(partijen,discipline){
   const beter=trend.filter(function(x){return x.verandering<=-0.3;}).sort(function(a,b){return a.verandering-b.verandering;})[0];
   if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
 
-  const livePartijen=(partijen||[]).filter(isLiveIngevoerd).length;
-  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,livePartijen:livePartijen,
+  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,
     acquitPartijen:beurten.filter(isAcquitBeurt).length,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
     profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
     metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};

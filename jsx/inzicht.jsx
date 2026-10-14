@@ -54,7 +54,7 @@ function InzichtPaneel({partijen,discipline}){
           (minstens {pctTekst(INZICHT_DEKKING)} van de beurten met een opmerking); alleen die tellen mee.
           {inz.dekking.perTafel.length>1&&(" Per tafel: "+inz.dekking.perTafel.map(function(x){return tafelLabel(x.tafel)+" "+x.bijgehouden+" van "+x.partijen;}).join(", ")+".")}
           {dekkingWaarschuwing&&<span style={{color:GOUDL}}> {dekkingWaarschuwing}</span>}
-          {" "}Tafel, tijdstip en fase gaan over al je partijen. Conclusies pas vanaf {INZICHT_MIN} voorbeelden.
+          {" "}Tafel, avond en fase gaan over al je partijen. Conclusies pas vanaf {INZICHT_MIN} voorbeelden.
         </div>
       </div>
 
@@ -135,7 +135,7 @@ function InzichtPaneel({partijen,discipline}){
 
       {/* Omstandigheden */}
       {inz.omstandigheden.length>0&&(
-        <InzichtKaart titel="Omstandigheden" uitleg={"Gemiddelde per beurt; ▲▼ tegenover het gemiddelde van de partijen die in dat blok meetellen. Partij van de avond: alleen avonden met 2 of meer partijen. Tijdstip alleen uit partijen die tijdens het spelen zijn ingevoerd ("+inz.livePartijen+" van de "+inz.dekking.partijen+"); nagetypte of later ingevoerde partijen tellen daar niet mee."}>
+        <InzichtKaart titel="Omstandigheden" uitleg={"Gemiddelde per beurt; ▲▼ tegenover het gemiddelde van de partijen die in dat blok meetellen. Partij van de avond: alleen avonden met 2 of meer partijen."}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {inz.omstandigheden.map(function(o){
               return(

@@ -99,5 +99,4 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ## Open punten
 
-- De scroll-noodoplossing bij "Alle data wissen" in `StatsTab` is sinds stap 10 overbodig.
 - Offline-cache voor de website (service worker) is nog niet gebouwd.

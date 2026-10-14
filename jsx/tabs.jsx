@@ -167,7 +167,6 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [confReset,setConfReset]=useState(false);
   const [deelResultaat,setDeelResultaat]=useState("");
-  const statsScrollRef=useRef(null);
 
   function deelApp(){
     // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link (zodra die
@@ -191,7 +190,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
   const allB=alleP.flatMap(function(p){return p.beurten;});
   const stA=stat(allB,huidigeDiscipline);
   return(
-    <div ref={statsScrollRef} style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Seizoen</div>
         {(function(){
@@ -290,20 +289,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
         {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} discipline={huidigeDiscipline} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
       </div>
-              {!confReset
+      {!confReset
         ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
-          onClick={function(e){
-            const el=statsScrollRef.current;
-            const y=el?el.scrollTop:0;
-            if(e.currentTarget&&e.currentTarget.blur)e.currentTarget.blur();
-            setConfReset(true);
-            const herstel=function(){if(el)el.scrollTop=y;};
-            requestAnimationFrame(function(){requestAnimationFrame(herstel);});
-            setTimeout(herstel,0);
-            setTimeout(herstel,50);
-            setTimeout(herstel,150);
-            setTimeout(herstel,300);
-          }}>Alle data wissen</button>
+          onClick={function(){setConfReset(true);}}>Alle data wissen</button>
         :<div style={{background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"12px 14px"}}>
           <div style={{fontSize:14,color:"#e06060",marginBottom:10}}>Weet je het zeker?</div>
           <div style={{display:"flex",gap:8}}>

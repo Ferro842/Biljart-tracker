@@ -253,6 +253,11 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
                 <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
                 <div style={{fontSize:11,color:WITD}}>vorm · {niveau.venster?"laatste "+niveau.aantalPartijen:"alle partijen"}</div>
+                <div style={{fontSize:10,color:spel&&niveau.aantalDrops>0?GOUD:WITD,marginTop:2}}>
+                  {!spel?"niets geschrapt · spelelement uit"
+                    :niveau.aantalDrops>0?"zonder je "+(niveau.aantalDrops===1?"slechtste":niveau.aantalDrops+" slechtste")+" · spelelement aan"
+                    :"nog niets geschrapt · spelelement aan"}
+                </div>
                 <div style={{fontSize:10,color:WITD,opacity:0.7}}>bepaalt je niveau</div>
               </div>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>

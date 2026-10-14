@@ -27,6 +27,27 @@ function migreerTafels(d){
 // In de iOS-app (Capacitor) staat de data in een bestand in de Library-map van de app: dat blijft
 // bewaard en gaat mee in iPhone-backups, anders dan de localStorage van de webview. localStorage wordt
 // daarnaast bijgehouden als extra kopie. De webversie gebruikt alleen localStorage.
+// In partijen op de 2,30 begint iedereen met de acquit: beurt 1 met caramboles = acquit gemaakt (bij Goed),
+// een poedel in beurt 1 = acquit gemist (bij Gemist). Wordt bij het laden met terugwerkende kracht ingevuld
+// en bij het afsluiten van een nieuwe partij. Alleen toevoegen, nooit iets weghalen; staat het er al, dan
+// verandert er niets. Geeft true terug als de partij is aangevuld.
+function vulAcquitAan(p){
+  if(!p||p.tafel!=="230"||!p.beurten||!p.beurten.length)return false;
+  const b=p.beurten[0];
+  const lijst=b.caramboles>0?"goed":"gemist";
+  const huidig=b[lijst]||[];
+  if(huidig.indexOf("Acquit")!==-1)return false;
+  const nieuw=Object.assign({},b);
+  nieuw[lijst]=huidig.concat(["Acquit"]);
+  p.beurten=[nieuw].concat(p.beurten.slice(1));
+  return true;
+}
+function migreerAcquit(d){
+  let changed=false;
+  (d.partijen||[]).forEach(function(p){if(vulAcquitAan(p))changed=true;});
+  return changed;
+}
+
 const DATA_BESTAND="biljart-data.json",DATA_TMP="biljart-data.tmp";
 function nativeFS(){return window.Capacitor.Plugins.Filesystem;}
 async function leesNative(pad){
@@ -55,6 +76,7 @@ async function laadData(){
     if(d){
       console.log("Geladen uit native bestand: "+d.partijen.length+" partijen");
       let changed=migreerTafels(d);
+      if(migreerAcquit(d))changed=true;
       if(d.onboardingGezien===undefined&&d.partijen.length>0){d.onboardingGezien=true;changed=true;}
       if(changed)await slaOp(d);
       return d;
@@ -79,6 +101,7 @@ async function laadWebData(){
       if(d&&d.partijen&&d.partijen.length>0){
         console.log("Geladen uit localStorage: "+d.partijen.length+" partijen");
         let changed=migreerTafels(d);
+        if(migreerAcquit(d))changed=true;
         if(d.onboardingGezien===undefined){d.onboardingGezien=true;changed=true;}
         if(changed)await slaOp(d);
         return d;
@@ -94,6 +117,7 @@ async function laadWebData(){
         if(d&&d.partijen&&d.partijen.length>0){
           console.log("Geladen uit window.storage: "+d.partijen.length+" partijen");
           let changed=migreerTafels(d);
+          if(migreerAcquit(d))changed=true;
           if(d.onboardingGezien===undefined){d.onboardingGezien=true;changed=true;}
           if(changed)await slaOp(d);
           return d;

@@ -65,6 +65,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData}){
       const overzicht=Object.keys(perDiscipline).map(function(d){return d+": "+perDiscipline[d];}).join(", ");
       if(!window.confirm("Gevonden: "+parsed.partijen.length+" partijen ("+overzicht+").\n\nDit vervangt ALLE huidige data ("+data.partijen.length+" partijen). Doorgaan?"))return;
       migreerTafels(parsed);
+      migreerAcquit(parsed);
       let maxId=0;
       parsed.partijen.forEach(function(p){
         maxId=Math.max(maxId,p.id||0);

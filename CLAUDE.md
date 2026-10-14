@@ -45,6 +45,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 - `lopendePartij` (optioneel): `{beurten,tafel,doel,doelType}` van een nog niet afgesloten partij; wordt bij
   elke wijziging bewaard, bij het laden teruggezet en bij afsluiten in dezelfde opslag verwijderd.
 - Partij zonder `discipline` = libre; zonder `tafel` wordt gemigreerd door `migreerTafels()`.
+- Op de 2,30 begint iedereen met de acquit: `vulAcquitAan()` zet in beurt 1 "Acquit" bij Goed (caramboles)
+  of Gemist (poedel). Met terugwerkende kracht via `migreerAcquit()` bij laden/importeren, en bij afsluiten.
+  Alleen toevoegen, idempotent. Telt niet mee voor "bijgehouden" in Inzicht.
 - Back-up: Data → Exporteer/Importeer (JSON). "Kopieer data" is alleen een leesbare tekstexport.
 
 ## Domein

@@ -452,8 +452,11 @@ function berekenInzicht(partijen,discipline){
   const som=function(a){return a.reduce(function(s,b){return s+b.car;},0);};
   const basis=som(beurten)/n;
 
-  // Welke partijen zijn bijgehouden? Alleen daarvan tellen de opmerkingen mee.
-  const heeftOpmerking=function(b){return b.gemist.length>0||b.goed.length>0;};
+  // Welke partijen zijn bijgehouden? Alleen daarvan tellen de opmerkingen mee. De acquit in beurt 1 op de
+  // 2,30 wordt automatisch ingevuld (vulAcquitAan) en telt daarom niet mee voor "bijgehouden".
+  const isAcquitBeurt=function(b){return b.bi===0&&b.tafel==="230";};
+  const eigen=function(lijst,b){return isAcquitBeurt(b)?lijst.filter(function(x){return x!=="Acquit";}):lijst;};
+  const heeftOpmerking=function(b){return eigen(b.gemist,b).length>0||eigen(b.goed,b).length>0;};
   const bijgehouden={},perTafel={};
   (partijen||[]).forEach(function(p,pi){
     const bs=beurten.filter(function(b){return b.pi===pi;});
@@ -466,13 +469,16 @@ function berekenInzicht(partijen,discipline){
   const bijgehoudenIdx=Object.keys(bijgehouden).map(Number).sort(function(a,b){return a-b;});
   const tagBeurten=beurten.filter(function(b){return bijgehouden[b.pi];});
   const basisTag=tagBeurten.length?som(tagBeurten)/tagBeurten.length:0;
+  // Acquit is op de 2,30 in elke partij bekend (beurt 1), ook als de partij verder niet bijgehouden is
+  const acquitExtra=beurten.filter(function(b){return isAcquitBeurt(b)&&!bijgehouden[b.pi];});
+  const bron=function(t){return t==="Acquit"?tagBeurten.concat(acquitExtra):tagBeurten;};
   const dekking={partijen:(partijen||[]).length,bijgehouden:bijgehoudenIdx.length,
     perTafel:Object.keys(perTafel).map(function(k){return perTafel[k];})};
 
   // 1. Speelprofiel per techniek: gebruik (goed+fout), slagingspercentage, gem. caramboles als het goed ging
   const profiel=technieken.map(function(t){
     let goed=0,fout=0,carGoed=0;
-    tagBeurten.forEach(function(b){
+    bron(t).forEach(function(b){
       if(b.goed.indexOf(t)!==-1){goed++;carGoed+=b.car;}
       if(b.gemist.indexOf(t)!==-1)fout++;
     });
@@ -489,7 +495,7 @@ function berekenInzicht(partijen,discipline){
 
   // 2. Seriemakers: wat je aanvinkte als het goed ging, en wat dat aan caramboles opleverde
   const seriemakers=goedLabels.map(function(t){
-    const met=tagBeurten.filter(function(b){return b.goed.indexOf(t)!==-1;});
+    const met=bron(t).filter(function(b){return b.goed.indexOf(t)!==-1;});
     return{label:t,aantal:met.length,gem:met.length?som(met)/met.length:0};
   }).filter(function(x){return x.aantal>=INZICHT_MIN;}).map(function(x){return Object.assign(x,{factor:basisTag>0?x.gem/basisTag:0});})
     .sort(function(a,b){return b.gem-a.gem;});
@@ -558,7 +564,8 @@ function berekenInzicht(partijen,discipline){
   const beter=trend.filter(function(x){return x.verandering<=-0.3;}).sort(function(a,b){return a.verandering-b.verandering;})[0];
   if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
 
-  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
+  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,
+    acquitPartijen:beurten.filter(isAcquitBeurt).length,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
     profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
     metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};
 }

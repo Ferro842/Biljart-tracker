@@ -85,6 +85,11 @@ function InzichtPaneel({partijen,discipline}){
             <span><span style={{color:"#b84a4a"}}>■</span> serie eindigde erdoor</span>
             <span style={{opacity:0.6}}>vaag = minder dan {INZICHT_MIN}×</span>
           </div>
+          {inz.acquitPartijen>0&&(
+            <div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:6}}>
+              Acquit: op de 2,30 is beurt 1 altijd de acquit ({inz.acquitPartijen} partijen). Caramboles in die beurt = gemaakt, poedel = gemist.
+            </div>
+          )}
         </InzichtKaart>
       )}
 

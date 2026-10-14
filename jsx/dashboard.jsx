@@ -219,11 +219,12 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
       </div>
       <div style={{display:"flex",gap:6,marginTop:6,alignItems:"center",fontSize:12,color:WITD}}>
         <span>Beste/zwakste reeks van</span>
+        {/* De gekozen lengte licht niet op zolang je een zelf gesleepte selectie hebt: die heeft een andere lengte */}
         {[10,25,50].map(function(n){
           return <button key={n} onClick={function(){
             setVensterLengte(n);
             if(selectie&&(selectie.bron==="beste"||selectie.bron==="zwakste"))zoekReeks(selectie.bron,n);
-          }} style={chip(vensterLengte===n)}>{n}</button>;
+          }} style={chip(vensterLengte===n&&!(selectie&&selectie.bron==="hand"))}>{n}</button>;
         })}
         <span>beurten</span>
       </div>

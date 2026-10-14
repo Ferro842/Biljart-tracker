@@ -1,7 +1,8 @@
 // Test van de beurtengrafiek in Dash > Trend (draai op telefoonformaat, met test/testdata.json):
 // nieuwe selectie slepen, rechterrand verlengen, linkerrand verkorten, midden verschuiven, ernaast
 // slepen scrolt zonder de selectie te veranderen, tik met
-// Selecteer uit wist de selectie, Beste springt mee bij een andere reekslengte.
+// Selecteer uit wist de selectie, Beste springt mee bij een andere reekslengte, en de lengteknop gaat
+// uit zodra je een Beste-selectie zelf versleept.
 // Draaien: await eval(await fetch("/test/tijdlijn.js").then(r=>r.text()))
 (async function(){
   const w=function(ms){return new Promise(function(r){setTimeout(r,ms);});};
@@ -47,7 +48,14 @@
   k("50").click();await w(300);uit.beste50=aantal();
   k("10").click();await w(300);uit.beste10=aantal();
   k("25").click();await w(200);
+  // Lengteknop licht op bij Beste, en gaat uit zodra je de selectie zelf versleept
+  const actieveLengte=function(){const b=["10","25","50"].map(function(n){return Array.from(document.querySelectorAll("button")).find(function(x){return x.textContent.trim()===n;});}).find(function(x){return x&&x.style.border.indexOf("201, 168, 76")!==-1;});return b?b.textContent.trim():null;};
+  uit.lengteBijBeste=actieveLengte();
+  k("✋").click();await w(150);
+  rd=randen();await sleep(rd[1],rd[1]+42);
+  uit.lengteNaSlepen=actieveLengte();
+  k("✋").click();await w(150);
   const goed=uit.nieuw>1&&uit.rechterRand>uit.nieuw&&uit.linkerRand<uit.rechterRand&&uit.verschuiven===uit.linkerRand&&uit.verschoven&&uit.scrolltNaast
-    &&uit.handvatjes===2&&uit.naTik===0&&uit.beste25===25&&uit.beste50===50&&uit.beste10===10;
+    &&uit.handvatjes===2&&uit.naTik===0&&uit.beste25===25&&uit.beste50===50&&uit.beste10===10&&uit.lengteBijBeste==="25"&&uit.lengteNaSlepen===null;
   return{goed:goed,details:uit};
 })()

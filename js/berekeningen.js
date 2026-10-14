@@ -421,3 +421,121 @@ function beurtKleur(v,discipline){
   const d=beurtDrempels(discipline);
   return v===0?"#e08055":v>=d.topMin?"#ff9f40":v>=d.sterkMin?GOUDL:v>=d.opbouwMin?GRNT:GOUD;
 }
+
+// ── INZICHT ──
+// Analyse van je speelstijl op basis van de opmerkingen per beurt en de omstandigheden. `partijen` zijn
+// partijen van één discipline met {beurten, tafel, datum, nr}. Uitgangspunten:
+// - Een techniek (staat in zowel GEMIST als GOED) wordt beoordeeld op slagingspercentage, niet op het
+//   aantal missers: wie een stoot vaak speelt, mist hem ook vaak (het Ronaldo-effect).
+// - Er wordt vaker aangevinkt wat misging dan wat goed ging, dus percentages worden met elkaar
+//   vergeleken (refPct), niet met 100%.
+// - Conclusies alleen bij genoeg voorbeelden (INZICHT_MIN).
+const INZICHT_MIN=5;
+function berekenInzicht(partijen,discipline){
+  const d=beurtDrempels(discipline);
+  const gemistLabels=GEMIST.map(function(o){return o.label;}),goedLabels=GOED.map(function(o){return o.label;});
+  const technieken=gemistLabels.filter(function(l){return goedLabels.indexOf(l)!==-1;});
+  const beurten=[];
+  (partijen||[]).forEach(function(p,pi){
+    (p.beurten||[]).forEach(function(b,bi){
+      beurten.push({car:b.caramboles,gemist:b.gemist||[],goed:b.goed||[],pi:pi,bi:bi,tafel:p.tafel||"230",
+        tijd:b.tijd||p.datum,vorige:bi>0?p.beurten[bi-1].caramboles:null});
+    });
+  });
+  const n=beurten.length;
+  if(!n)return null;
+  const som=function(a){return a.reduce(function(s,b){return s+b.car;},0);};
+  const basis=som(beurten)/n;
+
+  // 1. Speelprofiel per techniek: gebruik (goed+fout), slagingspercentage, gem. caramboles als het goed ging
+  const profiel=technieken.map(function(t){
+    let goed=0,fout=0,carGoed=0;
+    beurten.forEach(function(b){
+      if(b.goed.indexOf(t)!==-1){goed++;carGoed+=b.car;}
+      if(b.gemist.indexOf(t)!==-1)fout++;
+    });
+    return{label:t,goed:goed,fout:fout,gebruik:goed+fout,pct:goed+fout?goed/(goed+fout):0,gemGoed:goed?carGoed/goed:null};
+  }).filter(function(x){return x.gebruik>0;}).sort(function(a,b){return b.gebruik-a.gebruik;});
+  const totGoed=profiel.reduce(function(s,x){return s+x.goed;},0),totGebruik=profiel.reduce(function(s,x){return s+x.gebruik;},0);
+  const refPct=totGebruik?totGoed/totGebruik:0;
+  const genoeg=profiel.filter(function(x){return x.gebruik>=INZICHT_MIN;});
+  // Sterkste techniek/werkpunt: gewogen naar gebruik, dus "waar zit de meeste winst": vaak gespeeld én
+  // duidelijk beter (of slechter) dan je andere technieken.
+  const winst=function(x){return x.gebruik*(x.pct-refPct);};
+  const sterkste=genoeg.filter(function(x){return x.pct>refPct;}).sort(function(a,b){return winst(b)-winst(a);})[0]||null;
+  const werkpunt=genoeg.filter(function(x){return x.pct<refPct;}).sort(function(a,b){return winst(a)-winst(b);})[0]||null;
+
+  // 2. Seriemakers: wat je aanvinkte als het goed ging, en wat dat aan caramboles opleverde
+  const seriemakers=goedLabels.map(function(t){
+    const met=beurten.filter(function(b){return b.goed.indexOf(t)!==-1;});
+    return{label:t,aantal:met.length,gem:met.length?som(met)/met.length:0};
+  }).filter(function(x){return x.aantal>=INZICHT_MIN;}).map(function(x){return Object.assign(x,{factor:basis>0?x.gem/basis:0});})
+    .sort(function(a,b){return b.gem-a.gem;});
+
+  // 3. Seriestoppers: waardoor je series eindigden (alleen beschrijvend). Zelf getypte tekst = Overig.
+  const metOorzaak=beurten.filter(function(b){return b.gemist.length>0;});
+  const stopTel={};
+  metOorzaak.forEach(function(b){
+    b.gemist.forEach(function(t){
+      const k=gemistLabels.indexOf(t)!==-1?t:"Overig";
+      if(!stopTel[k])stopTel[k]={label:k,aantal:0,car:0,poedels:0,techniek:technieken.indexOf(k)!==-1};
+      stopTel[k].aantal++;stopTel[k].car+=b.car;if(b.car===0)stopTel[k].poedels++;
+    });
+  });
+  const seriestoppers=Object.keys(stopTel).map(function(k){const x=stopTel[k];
+    return Object.assign(x,{aandeel:x.aantal/metOorzaak.length,gem:x.car/x.aantal,poedelPct:x.poedels/x.aantal});})
+    .sort(function(a,b){return b.aantal-a.aantal;});
+
+  // 4. Omstandigheden: gemiddelde per groep t.o.v. het geheel (alleen groepen met genoeg beurten)
+  const groep=function(titel,sleutelVan,volgorde,naam){
+    const g={};
+    beurten.forEach(function(b){const k=sleutelVan(b);if(k===null)return;(g[k]=g[k]||[]).push(b);});
+    const rijen=volgorde.filter(function(k){return g[k]&&g[k].length>=30;}).map(function(k){
+      const gem=som(g[k])/g[k].length;
+      return{label:naam(k),aantal:g[k].length,gem:gem,verschil:basis>0?(gem-basis)/basis:0};
+    });
+    return rijen.length>=2?{titel:titel,rijen:rijen}:null;
+  };
+  const uur=function(b){const u=new Date(b.tijd).getHours();return isNaN(u)?null:(u<6?24+u:u);};
+  const omstandigheden=[
+    groep("Tafel",function(b){return b.tafel;},Object.keys(TAFELS),function(k){return tafelLabel(k);}),
+    groep("Tijdstip",function(b){const u=uur(b);if(u===null)return null;return u<21?"vroeg":u<22?"21":u<23?"22":"laat";},
+      ["vroeg","21","22","laat"],function(k){return{vroeg:"vóór 21u",21:"21–22u",22:"22–23u",laat:"na 23u"}[k];}),
+    groep("Fase in de partij",function(b){return b.bi<3?"a":b.bi<10?"b":b.bi<20?"c":"d";},["a","b","c","d"],
+      function(k){return{a:"beurt 1–3",b:"beurt 4–10",c:"beurt 11–20",d:"beurt 21+"}[k];}),
+    groep("Na de vorige beurt",function(b){return b.vorige===null?null:b.vorige===0?"p":b.vorige<d.opbouwMin?"k":"s";},["p","k","s"],
+      function(k){return{p:"na een poedel",k:"na 1–"+(d.opbouwMin-1)+" car",s:"na "+d.opbouwMin+"+ car"}[k];})
+  ].filter(Boolean);
+
+  // 5. Trend: komen oorzaken in de tweede helft van de partijen minder vaak voor? (per 100 beurten)
+  const helft=Math.floor((partijen||[]).length/2);
+  const eerste=beurten.filter(function(b){return b.pi<helft;}),tweede=beurten.filter(function(b){return b.pi>=helft;});
+  const trend=helft<2?[]:seriestoppers.filter(function(x){return x.label!=="Overig"&&x.aantal>=6;}).slice(0,6).map(function(x){
+    const tel=function(a){return a.filter(function(b){return b.gemist.indexOf(x.label)!==-1;}).length;};
+    const v=tel(eerste)/Math.max(1,eerste.length)*100,n2=tel(tweede)/Math.max(1,tweede.length)*100;
+    return{label:x.label,voor:v,na:n2,verandering:v>0?(n2-v)/v:0};
+  });
+
+  // 6. Coach: een paar zinnen, alleen bij genoeg voorbeelden
+  const coach=[];
+  if(sterkste)coach.push({soort:"sterk",tekst:"Je sterkste techniek is "+sterkste.label+": "+sterkste.goed+" van de "+sterkste.gebruik+" keer goed ("+Math.round(sterkste.pct*100)+"%, tegen gemiddeld "+Math.round(refPct*100)+"% over al je technieken)."});
+  if(werkpunt)coach.push({soort:"werk",tekst:werkpunt.label+(werkpunt.gebruik>=15?" speel je vaak":" komt voor")+" ("+werkpunt.gebruik+"×), maar lukt minder vaak dan je andere technieken: "+werkpunt.goed+" van de "+werkpunt.gebruik+" keer goed ("+Math.round(werkpunt.pct*100)+"%). Daar valt het meest te winnen."});
+  const topSerie=seriemakers.filter(function(x){return x.aantal>=10;})[0];
+  if(topSerie&&topSerie.factor>=1.5)coach.push({soort:"serie",tekst:"Je grootste series: in beurten waarin \u201c"+topSerie.label+"\u201d goed ging maak je gemiddeld "+topSerie.gem.toFixed(1).replace(".",",")+" caramboles, "+topSerie.factor.toFixed(1).replace(".",",")+"× je gemiddelde ("+topSerie.aantal+" beurten)."});
+  let grootste=null;
+  omstandigheden.forEach(function(o){
+    if(o.titel==="Na de vorige beurt")return;
+    const r=o.rijen.filter(function(x){return x.aantal>=50;});
+    if(r.length<2)return;
+    const hoog=r.reduce(function(a,b){return b.gem>a.gem?b:a;}),laag=r.reduce(function(a,b){return b.gem<a.gem?b:a;});
+    const spreiding=laag.gem>0?(hoog.gem-laag.gem)/laag.gem:0;
+    if(spreiding>=0.15&&(!grootste||spreiding>grootste.spreiding))grootste={titel:o.titel,hoog:hoog,laag:laag,spreiding:spreiding};
+  });
+  if(grootste)coach.push({soort:"omstandigheid",tekst:grootste.titel+": "+grootste.hoog.label+" speel je "+Math.round(grootste.spreiding*100)+"% beter dan "+grootste.laag.label+" ("+grootste.hoog.gem.toFixed(2).replace(".",",")+" tegen "+grootste.laag.gem.toFixed(2).replace(".",",")+")."});
+  const beter=trend.filter(function(x){return x.verandering<=-0.3;}).sort(function(a,b){return a.verandering-b.verandering;})[0];
+  if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
+
+  return{aantalBeurten:n,basis:basis,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
+    profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
+    metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};
+}

@@ -282,7 +282,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const [w5,setW5]=useState(true);
   const [trimL,setTrimL]=useState(0);
   const [trimH,setTrimH]=useState(0);
-  const [tab,setTab]=useState("trend");
+  const [tab,setTab]=useState("inzicht");
   const [tafelFilter,setTafelFilter]=useState("alle");
   const [niveauOpen,setNiveauOpen]=useState(false);
   const [badgeCatalogusOpen,setBadgeCatalogusOpen]=useState(false);
@@ -449,10 +449,11 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     consist:"Hoeveel procent van je partijen boven bepaalde gemiddelde-drempels uitkomt — die drempels schuiven automatisch mee met je eigen niveau, in stappen van 0,5. Plus je 5 beste en 5 slechtste partijen op een rij.",
     patronen:"Analyse van je opmerkingen (wat je vaak mist of juist goed doet), hoe je caramboles per beurt verdeeld zijn, en hoe je herstelt na een poedel.",
     vergelijk:"Vergelijkt de eerste met de tweede helft van je geselecteerde partijen (zie je progressie?), en toont je gemiddelde per maand naast elkaar.",
-    punten:"Je niveau, badge-punten, mijlpalen, en een overzicht van je best scorende partijen op badges."
+    punten:"Je niveau, badge-punten, mijlpalen, en een overzicht van je best scorende partijen op badges.",
+    inzicht:"Wat je opmerkingen en omstandigheden zeggen over je spel: je sterkste techniek en grootste werkpunt (op slagingspercentage, niet op aantal missers), wat grote series oplevert, waardoor series eindigen, hoe tafel, tijdstip en fase in de partij uitpakken, en of je werkpunten minder vaak voorkomen."
   };
   const btn=(k,l)=>(
-    <button onClick={function(){if(uitlegModus){setUitlegSectie(k);}else{setTab(k);}}} style={{flex:1,padding:"10px 0",background:tab===k&&!uitlegModus?"#1c2c1c":"none",
+    <button onClick={function(){if(uitlegModus){setUitlegSectie(k);}else{setTab(k);}}} style={{flex:"1 0 auto",padding:"10px 9px",whiteSpace:"nowrap",background:tab===k&&!uitlegModus?"#1c2c1c":"none",
       border:"none",color:tab===k&&!uitlegModus?GOUD:(uitlegModus?"#7fd8e0":WITD),fontSize:13,cursor:"pointer",fontFamily:"Georgia,serif",
       borderBottom:tab===k&&!uitlegModus?`2px solid ${GOUD}`:"2px solid transparent"}}>
       {l}
@@ -474,8 +475,9 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         </button>
       </div>
 
-      {/* Tabs */}
-      <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"#152015",flexShrink:0}}>
+      {/* Tabs (horizontaal scrollbaar op smalle schermen) */}
+      <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"#152015",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+        {btn("inzicht","✨ Inzicht")}
         {btn("trend","Trend")}
         {btn("consist","Consistentie")}
         {btn("patronen","Patronen")}
@@ -483,66 +485,66 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         {btn("punten","Punten")}
       </div>
 
-      {/* Partijselectie */}
-      <div style={{background:"#152015",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`,flexShrink:0}}>
-        <div style={{fontSize:12,color:WITD,marginBottom:5}}>
-          {geselecteerdeMaanden&&geselecteerdeMaanden.size>0
-            ?<>Selectie: {[...geselecteerdeMaanden].join(", ")} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
-            :<>Selectie: p{va+1}–p{tot+1} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
-          }
-        </div>
-        <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6}}>
-          <span style={{fontSize:12,color:WITD,minWidth:14}}>{va+1}</span>
-          <input type="range" min={0} max={Math.max(ST.length-1,0)} value={va}
-            onChange={e=>{setGeselecteerdeMaanden(null);setVa(Math.min(+e.target.value,tot-1));}}
-            style={{flex:1,accentColor:GOUD}}/>
-          <input type="range" min={0} max={Math.max(ST.length-1,0)} value={tot}
-            onChange={e=>{setGeselecteerdeMaanden(null);setTot(Math.max(+e.target.value,va+1));}}
-            style={{flex:1,accentColor:GOUD}}/>
-          <span style={{fontSize:12,color:WITD,minWidth:14}}>{tot+1}</span>
-        </div>
-        <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:2}}>
-          {[["Alles",0,Math.max(ST.length-1,0)]].concat(ST.length>10?[["Laatste 10",ST.length-10,ST.length-1]]:[]).map(([l,v,t])=>{
-            const actief=(!geselecteerdeMaanden||geselecteerdeMaanden.size===0)&&va===v&&tot===t;
-            return(
-              <button key={l} onClick={()=>{setGeselecteerdeMaanden(null);setVa(v);setTot(t);}}
-                style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
-                  borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+      {/* Selectie + inhoud scrollen samen, zodat het selectieblok op een telefoon wegscrolt */}
+      <div style={{flex:1,overflowY:"auto"}}>
+        {/* Partijselectie */}
+        <div style={{background:"#152015",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`}}>
+          <div style={{fontSize:12,color:WITD,marginBottom:5}}>
+            {geselecteerdeMaanden&&geselecteerdeMaanden.size>0
+              ?<>Selectie: {[...geselecteerdeMaanden].join(", ")} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
+              :<>Selectie: p{va+1}–p{tot+1} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
+            }
+          </div>
+          <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:6}}>
+            <span style={{fontSize:12,color:WITD,minWidth:14}}>{va+1}</span>
+            <input type="range" min={0} max={Math.max(ST.length-1,0)} value={va}
+              onChange={e=>{setGeselecteerdeMaanden(null);setVa(Math.min(+e.target.value,tot-1));}}
+              style={{flex:1,accentColor:GOUD}}/>
+            <input type="range" min={0} max={Math.max(ST.length-1,0)} value={tot}
+              onChange={e=>{setGeselecteerdeMaanden(null);setTot(Math.max(+e.target.value,va+1));}}
+              style={{flex:1,accentColor:GOUD}}/>
+            <span style={{fontSize:12,color:WITD,minWidth:14}}>{tot+1}</span>
+          </div>
+          <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:2}}>
+            {[["Alles",0,Math.max(ST.length-1,0)]].concat(ST.length>10?[["Laatste 10",ST.length-10,ST.length-1]]:[]).map(([l,v,t])=>{
+              const actief=(!geselecteerdeMaanden||geselecteerdeMaanden.size===0)&&va===v&&tot===t;
+              return(
+                <button key={l} onClick={()=>{setGeselecteerdeMaanden(null);setVa(v);setTot(t);}}
+                  style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
+                    borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+                  {l}
+                </button>
+              );
+            })}
+            {maandBlokken.map(b=>{
+              const actief=geselecteerdeMaanden?geselecteerdeMaanden.has(b.key):false;
+              return(
+                <button key={b.key} onClick={()=>{
+                  setGeselecteerdeMaanden(prev=>{
+                    const huidige=prev?new Set(prev):new Set();
+                    if(huidige.has(b.key))huidige.delete(b.key);
+                    else huidige.add(b.key);
+                    return huidige;
+                  });
+                }}
+                  style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
+                    borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+                  {b.key}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{display:"flex",gap:5,marginTop:6,overflowX:"auto",paddingBottom:2}}>
+            {[["alle","Alle tafels"]].concat(Object.keys(TAFELS).map(function(t){return[t,TAFELS[t].label];})).map(([k,l])=>(
+              <button key={k} onClick={()=>setTafelFilter(k)}
+                style={{flex:"0 0 auto",padding:"4px 12px",background:tafelFilter===k?"#2d4a1e":"none",border:`1px solid ${tafelFilter===k?GOUD:KBDR}`,
+                  borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
                 {l}
               </button>
-            );
-          })}
-          {maandBlokken.map(b=>{
-            const actief=geselecteerdeMaanden?geselecteerdeMaanden.has(b.key):false;
-            return(
-              <button key={b.key} onClick={()=>{
-                setGeselecteerdeMaanden(prev=>{
-                  const huidige=prev?new Set(prev):new Set();
-                  if(huidige.has(b.key))huidige.delete(b.key);
-                  else huidige.add(b.key);
-                  return huidige;
-                });
-              }}
-                style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
-                  borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
-                {b.key}
-              </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
-        <div style={{display:"flex",gap:5,marginTop:6,overflowX:"auto",paddingBottom:2}}>
-          {[["alle","Alle tafels"]].concat(Object.keys(TAFELS).map(function(t){return[t,TAFELS[t].label];})).map(([k,l])=>(
-            <button key={k} onClick={()=>setTafelFilter(k)}
-              style={{flex:"0 0 auto",padding:"4px 12px",background:tafelFilter===k?"#2d4a1e":"none",border:`1px solid ${tafelFilter===k?GOUD:KBDR}`,
-                borderRadius:5,color:tafelFilter===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
-              {l}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Content */}
-      <div style={{flex:1,overflowY:"auto",padding:"12px 14px"}}>
+        <div style={{padding:"12px 14px"}}>
 
         {/* TREND */}
         {tab==="trend"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
@@ -760,6 +762,9 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
           </div>
         </div>}
 
+        {/* INZICHT */}
+        {tab==="inzicht"&&<InzichtPaneel partijen={sel} discipline={discipline}/>}
+
         {/* PUNTEN */}
         {tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
           <NiveauKaart niveau={niveau} discipline={discipline} onClick={function(){setNiveauOpen(true);}}/>
@@ -815,6 +820,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
           <button onClick={function(){setBadgeCatalogusOpen(true);}} style={{width:"100%",padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:10,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>🎖️ Alle badges bekijken</button>
         </div>}
 
+        </div>
       </div>
       {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={discipline} onClose={function(){setNiveauOpen(false);}}/>}
       {badgeCatalogusOpen&&<BadgeCatalogus discipline={discipline} onClose={function(){setBadgeCatalogusOpen(false);}}/>}

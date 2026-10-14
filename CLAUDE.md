@@ -67,7 +67,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   aangevinkt wat misging, dus percentages worden met elkaar vergeleken (`refPct`). Conclusies pas vanaf
   `INZICHT_MIN` voorbeelden; zelf getypte opmerkingen tellen als "Overig".
   Opmerkingen worden niet in elke partij bijgehouden: alles wat op opmerkingen leunt gebruikt alleen partijen
-  met minstens `INZICHT_DEKKING` (25%) beurten met een opmerking; tafel/tijdstip/fase gebruiken alle partijen.
+  met minstens `INZICHT_DEKKING` (25%) beurten met een opmerking; tafel/fase gebruiken alle partijen.
+  Tijdstip alleen partijen die live zijn ingevoerd (`isLiveIngevoerd`: mediaan ≥ 30 s tussen beurten); de
+  partijen in het Woutje (2,10) worden vaak thuis nagetypt. Omstandigheden vergelijken binnen hun eigen groep.
 - Elke `PUNTEN_PER_DROP` (1000) badge-punten schrapt de slechtste partij uit het gemiddelde.
   **"Je gemiddelde" is overal het gemiddelde zonder die geschrapte partijen**; leg dat uit met `gemUitleg()`.
   Waar alle partijen meetellen, zeg dat er expliciet bij.

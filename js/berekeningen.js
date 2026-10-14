@@ -469,6 +469,81 @@ function beurtKleur(v,discipline){
 const INZICHT_MIN=5;
 const INZICHT_DEKKING=0.25;
 
+// Poedels en series van een rij beurten ({pi,car}): per seriegroep (histogramBuckets) aantal per partij,
+// caramboles per beurt en aandeel van je caramboles, plus de gemiddelde hoogste serie per partij.
+function seriesProfiel(a,groepen){
+  const som=function(x){return x.reduce(function(s,b){return s+b.car;},0);};
+  const hoogstePerPartij={};
+  a.forEach(function(b){hoogstePerPartij[b.pi]=Math.max(hoogstePerPartij[b.pi]||0,b.car);});
+  const hoog=Object.keys(hoogstePerPartij).map(function(k){return hoogstePerPartij[k];});
+  const np=Math.max(1,hoog.length),tot=som(a);
+  return{partijen:hoog.length,beurtenPP:a.length/np,gem:a.length?tot/a.length:0,
+    hoogste:hoog.length?hoog.reduce(function(s,x){return s+x;},0)/hoog.length:0,
+    groepen:groepen.map(function(g){
+      const x=a.filter(function(b){return b.car>=g[1]&&b.car<=g[2];});
+      return{label:g[1]===0?"poedel":g[0],van:g[1],perPartij:x.length/np,carPerBeurt:a.length?som(x)/a.length:0,carAandeel:tot>0?som(x)/tot:0};
+    })};
+}
+
+// Maanden (maandKey) waarin gespeeld is, in volgorde van datum
+function maandenVan(partijen){
+  const uit=[];
+  (partijen||[]).slice().sort(function(a,b){return new Date(a.datum)-new Date(b.datum);}).forEach(function(p){
+    const m=maandKey(p.datum);if(uit.indexOf(m)===-1)uit.push(m);
+  });
+  return uit;
+}
+
+// Twee groepen partijen naast elkaar in poedels en series, per tafel (over alle tafels samen zou een andere
+// verhouding tussen de tafels, bijv. vaker op de makkelijkere 2,10, als vooruitgang lijken). Groep a is
+// eerder/slechter, b is nu/beter. modus:
+//   "helften"    eerste tegenover tweede helft van alle partijen
+//   "laatste10"  per tafel je laatste 10 partijen (of de laatste helft bij minder dan 20) tegenover die ervoor
+//   "goedslecht" per tafel je slechtste derde tegenover je beste derde (op gemiddelde)
+//   "maand"      de maanden in opties.a tegenover die in opties.b (lijsten van maandKey; losse maanden zijn
+//                per tafel vaak te dun, daarom meerdere per kant)
+// bijdrage[i] = hoeveel groep i aan het verschil in gemiddelde bijdraagt (samen precies het verschil).
+// Per kant minstens 3 partijen en 50 beurten, anders staat de tafel in `teWeinig`.
+function vergelijkSeries(partijen,discipline,modus,opties){
+  partijen=partijen||[];opties=opties||{};
+  const groepen=histogramBuckets(discipline);
+  const tafelVan=function(p){return p.tafel||"230";};
+  const gemVan=function(pi){const b=partijen[pi].beurten||[];return b.length?b.reduce(function(s,x){return s+x.caramboles;},0)/b.length:0;};
+  const alle=partijen.map(function(p,pi){return pi;}).filter(function(pi){return(partijen[pi].beurten||[]).length>0;});
+  const tafels=Object.keys(TAFELS).filter(function(k){return alle.some(function(pi){return tafelVan(partijen[pi])===k;});});
+  const sets=tafels.length>1?tafels.map(function(k){return{tafel:k,pis:alle.filter(function(pi){return tafelVan(partijen[pi])===k;})};}):[{tafel:null,pis:alle}];
+  const helftP=Math.floor(partijen.length/2);
+  const beurtenVan=function(pis){
+    const uit=[];pis.forEach(function(pi){(partijen[pi].beurten||[]).forEach(function(b){uit.push({pi:pi,car:b.caramboles});});});return uit;
+  };
+  const vergelijkingen=[],teWeinig=[];
+  sets.forEach(function(s){
+    let a=[],b=[],labelA=null,labelB=null;
+    if(modus==="laatste10"){
+      const k=Math.min(10,Math.floor(s.pis.length/2));
+      a=s.pis.slice(0,s.pis.length-k);b=s.pis.slice(s.pis.length-k);
+      labelA=a.length===1?"de partij ervoor":"de "+a.length+" ervoor";labelB="laatste "+k;
+    }else if(modus==="goedslecht"){
+      const k=Math.floor(s.pis.length/3),gesorteerd=s.pis.slice().sort(function(x,y){return gemVan(x)-gemVan(y);});
+      a=gesorteerd.slice(0,k);b=gesorteerd.slice(gesorteerd.length-k);
+      labelA="slechtste "+k;labelB="beste "+k;
+    }else if(modus==="maand"){
+      const ma=opties.a||[],mb=(opties.b||[]).filter(function(m){return ma.indexOf(m)===-1;});
+      a=s.pis.filter(function(pi){return ma.indexOf(maandKey(partijen[pi].datum))!==-1;});
+      b=s.pis.filter(function(pi){return mb.indexOf(maandKey(partijen[pi].datum))!==-1;});
+      labelA=a.length+" partijen";labelB=b.length+" partijen";
+    }else{
+      a=s.pis.filter(function(pi){return pi<helftP;});b=s.pis.filter(function(pi){return pi>=helftP;});
+    }
+    const ea=beurtenVan(a),wa=beurtenVan(b);
+    if(a.length<3||b.length<3||ea.length<50||wa.length<50){teWeinig.push(s.tafel);return;}
+    const pe=seriesProfiel(ea,groepen),pw=seriesProfiel(wa,groepen);
+    vergelijkingen.push({tafel:s.tafel,e:pe,w:pw,labelA:labelA,labelB:labelB,
+      bijdrage:pe.groepen.map(function(g,i){return pw.groepen[i].carPerBeurt-g.carPerBeurt;})});
+  });
+  return{modus:modus,vergelijkingen:vergelijkingen,teWeinig:teWeinig};
+}
+
 function berekenInzicht(partijen,discipline){
   const d=beurtDrempels(discipline);
   const gemistLabels=GEMIST.map(function(o){return o.label;}),goedLabels=GOED.map(function(o){return o.label;});
@@ -600,35 +675,9 @@ function berekenInzicht(partijen,discipline){
   const reeks=function(van,tot){return"p"+nrVan(van)+"–p"+nrVan(tot);};
   const helftLabels=helftP>=2?{eerste:reeks(0,helftP-1),tweede:reeks(helftP,partijen.length-1)}:null;
   const groepen=histogramBuckets(discipline);
-  const seriesProfiel=function(a){
-    const hoogstePerPartij={};
-    a.forEach(function(b){hoogstePerPartij[b.pi]=Math.max(hoogstePerPartij[b.pi]||0,b.car);});
-    const hoog=Object.keys(hoogstePerPartij).map(function(k){return hoogstePerPartij[k];});
-    const np=Math.max(1,hoog.length),tot=som(a);
-    return{partijen:hoog.length,beurtenPP:a.length/np,gem:a.length?tot/a.length:0,
-      hoogste:hoog.length?hoog.reduce(function(s,x){return s+x;},0)/hoog.length:0,
-      groepen:groepen.map(function(g){
-        const x=a.filter(function(b){return b.car>=g[1]&&b.car<=g[2];});
-        return{label:g[1]===0?"poedel":g[0],van:g[1],perPartij:x.length/np,carPerBeurt:a.length?som(x)/a.length:0,carAandeel:tot>0?som(x)/tot:0};
-      })};
-  };
-  // Eerder tegenover nu (eerste/tweede helft van de partijen), per tafel: over alle tafels samen zou een
-  // andere verhouding tussen de tafels (bijv. vaker op de makkelijkere 2,10) als vooruitgang lijken.
-  // bijdrage[i] = hoeveel groep i aan het verschil in gemiddelde bijdraagt (samen precies het verschil).
-  const vergelijkingen=[];
-  if(helftLabels){
-    const tafelsInSel=Object.keys(TAFELS).filter(function(k){return beurten.some(function(b){return b.tafel===k;});});
-    const vergelijk=function(filter,tafel){
-      const ea=beurten.filter(function(b){return filter(b)&&b.pi<helftP;}),wa=beurten.filter(function(b){return filter(b)&&b.pi>=helftP;});
-      const pe=seriesProfiel(ea),pw=seriesProfiel(wa);
-      if(pe.partijen<3||pw.partijen<3||ea.length<50||wa.length<50)return;
-      vergelijkingen.push({tafel:tafel,e:pe,w:pw,bijdrage:pe.groepen.map(function(g,i){return pw.groepen[i].carPerBeurt-g.carPerBeurt;})});
-    };
-    if(tafelsInSel.length>1)tafelsInSel.forEach(function(k){vergelijk(function(b){return b.tafel===k;},k);});
-    else vergelijk(function(){return true;},null);
-  }
+  const vergelijkingen=helftLabels?vergelijkSeries(partijen,discipline,"helften").vergelijkingen:[];
   // Hefboom: wat levert één poedel minder op, en wat één grote serie (per partij van gemiddeld N beurten)
-  const nu=seriesProfiel(beurten);
+  const nu=seriesProfiel(beurten,groepen);
   const series={nu:nu,vergelijkingen:vergelijkingen,
     hefboom:{beurten:Math.max(1,Math.round(nu.beurtenPP)),klein:d.opbouwMin>1?2:1,groot:d.topMin}};
   // Motor: welk deel van je caramboles komt uit series vanaf opbouwMin
@@ -638,6 +687,20 @@ function berekenInzicht(partijen,discipline){
   const naPoedel=beurten.filter(function(b){return b.vorige===0;});
   const poedel={kans:beurten.filter(function(b){return b.car===0;}).length/n,
     naPoedel:naPoedel.length?naPoedel.filter(function(b){return b.car===0;}).length/naPoedel.length:null,aantal:naPoedel.length};
+  // Per tafel: kans op nog een poedel na een poedel tegenover na een score. Over alle tafels samen klopt dat
+  // niet (op de moeilijkere tafel maak je meer poedels, dus ook vaker twee op rij). `verwacht` = de kans als
+  // de beurten binnen een partij los van elkaar staan: op een mindere avond maak je gewoon meer poedels.
+  const poedelsInPartij={},beurtenInPartij={};
+  beurten.forEach(function(b){beurtenInPartij[b.pi]=(beurtenInPartij[b.pi]||0)+1;if(b.car===0)poedelsInPartij[b.pi]=(poedelsInPartij[b.pi]||0)+1;});
+  const poedelTafels=Object.keys(TAFELS).filter(function(k){return beurten.some(function(b){return b.tafel===k;});});
+  poedel.perTafel=(poedelTafels.length>1?poedelTafels:[null]).map(function(k){
+    const bij=beurten.filter(function(b){return(k===null||b.tafel===k)&&b.vorige!==null;});
+    const np=bij.filter(function(b){return b.vorige===0;}),ns=bij.filter(function(b){return b.vorige>0;});
+    if(np.length<20||ns.length<20)return null;
+    const verwacht=np.reduce(function(s,b){return s+((poedelsInPartij[b.pi]||0)-1)/Math.max(1,beurtenInPartij[b.pi]-1);},0)/np.length;
+    return{tafel:k,aantal:np.length,naPoedel:np.filter(function(b){return b.car===0;}).length/np.length,
+      naScore:ns.filter(function(b){return b.car===0;}).length/ns.length,verwacht:verwacht};
+  }).filter(Boolean);
 
   // 7. Coach: een paar zinnen, alleen bij genoeg voorbeelden
   const coach=[];
@@ -671,10 +734,18 @@ function berekenInzicht(partijen,discipline){
   const topSerie=seriemakers.filter(function(x){return x.aantal>=10;})[0];
   if(motor.carPct>=0.3&&motor.beurtPct<=0.25)coach.push({soort:"motor",tekst:"Je grote series zijn je motor: "+pc(motor.carPct)+" van je caramboles komt uit maar "+pc(motor.beurtPct)+" van je beurten (series van "+motor.drempel+" of meer)."});
   if(topSerie&&topSerie.factor>=1.5)coach.push({soort:"serie",tekst:"Je grootste series: in beurten waarin \u201c"+topSerie.label+"\u201d goed ging maak je gemiddeld "+topSerie.gem.toFixed(1).replace(".",",")+" caramboles, "+topSerie.factor.toFixed(1).replace(".",",")+"× je gemiddelde in die partijen ("+topSerie.aantal+" beurten)."});
-  if(poedel.naPoedel!==null&&poedel.aantal>=20){
-    const extra=poedel.naPoedel-poedel.kans;
-    if(extra<=0.05)coach.push({soort:"mentaal",tekst:"Een poedel brengt je niet van slag: daarna is je kans op nog een poedel "+pc(poedel.naPoedel)+", nauwelijks meer dan je gewone "+pc(poedel.kans)+"."});
-    else if(extra>=0.1)coach.push({soort:"mentaal",tekst:"Na een poedel raak je wat uit je ritme: de kans op nog een poedel is dan "+pc(poedel.naPoedel)+", tegen "+pc(poedel.kans)+" gewoonlijk."});
+  if(poedel.perTafel.length){
+    let avond=false;
+    const delen=poedel.perTafel.map(function(x){
+      const waar=x.tafel?"op de "+tafelLabel(x.tafel)+" ":"",verschil=x.naPoedel-x.naScore;
+      const cijfers=pc(x.naPoedel)+" kans op nog een poedel, na een score "+pc(x.naScore);
+      if(verschil<=-0.03)return waar+"herpak je je ("+cijfers+")";
+      if(verschil<0.05)return waar+"maakt het weinig uit ("+cijfers+")";
+      if(x.naPoedel-x.verwacht<0.03)avond=true;
+      return waar+"blijft een poedel wat hangen ("+cijfers+")";
+    });
+    coach.push({soort:"mentaal",tekst:"Na een poedel: "+delen.join("; ")+"."+
+      (avond?" Dat komt vooral doordat je op een mindere avond meer poedels maakt, niet door die ene poedel zelf.":"")});
   }
   // De (hoogstens drie) omstandigheden met het grootste verschil tussen beste en slechtste groep
   const opvallend=[];

@@ -25,7 +25,7 @@ Laadvolgorde in `index.html` (alles deelt de globale scope):
 | `jsx/onderdelen.jsx` | Eerste Babel-script: React-hooks, `Grafiek`, `OpmGrid`, `LogRij`, `PrestatieOverzicht`, `NiveauKaart`, `DashBalk`, `DashGrafiek` |
 | `jsx/vensters.jsx` | Overlays: `PartijSamenvatting`, `WelkomstFlow`, `SeizoenArchief`, `BadgeCatalogus`, `NiveauOverzicht` |
 | `jsx/partijrij.jsx` | `PartijRij` (Stats) en `LogPartijRij` (Log), met gedeelde `PartijLabels` en `PartijBeheer` |
-| `jsx/inzicht.jsx` | `InzichtPaneel`: Dash > ✨ Inzicht (coach-samenvatting, poedels en series, speelprofiel, seriemakers, seriestoppers, omstandigheden, trend) |
+| `jsx/inzicht.jsx` | `InzichtPaneel`: Dash > ✨ Inzicht (coach-samenvatting, poedels en series met vergelijken, speelprofiel, seriemakers, seriestoppers, omstandigheden, trend) |
 | `jsx/dashboard.jsx` | `BeurtenTijdlijn` (beurtengrafiek met selecteren, beste/zwakste reeks) en `Dashboard` |
 | `jsx/tabs.jsx` | `LogTab`, `DataTab` (AI-prompt, tekstexport, export/import), `StatsTab` |
 | `jsx/spelen.jsx` | `SetupScherm`, `InvoerScherm`, `GemistScherm`, `GoedScherm`; krijgen de spelstatus als object `spel` |
@@ -71,11 +71,14 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   Kloktijden bewust niet gebruiken: partijen in het Woutje (2,10) worden vaak thuis nagetypt, en partij 1–29
   (apr–jul 2026) zijn op 3 juli in één keer ingeladen (geen tijd per beurt, rond tijdstip). "Partij van de
   avond" (1e/2e/3e, avonden met 2+ partijen) klopt wel. Omstandigheden vergelijken binnen hun eigen groep.
-  Vorm wordt uitgelegd in **poedels en series** (`series` in `berekenInzicht`): per serie-groep
-  (`histogramBuckets`) aantal per partij en aandeel van je caramboles; eerder/nu per tafel (helften van de
-  partijen) met per groep het effect op je gemiddelde (verschil in caramboles per beurt); `hefboom` rekent voor
-  wat één poedel minder of één serie van `topMin` per partij oplevert. Niet "caramboles als je scoort" gebruiken:
-  dat zegt de speler niets.
+  Vorm wordt uitgelegd in **poedels en series** (`series` in `berekenInzicht`, profiel via `seriesProfiel`): per
+  serie-groep (`histogramBuckets`) aantal per partij en aandeel van je caramboles; `hefboom` rekent voor wat één
+  poedel minder of één serie van `topMin` per partij oplevert. Niet "caramboles als je scoort" gebruiken: dat zegt
+  de speler niets. Vergelijken gaat altijd per tafel via `vergelijkSeries(partijen,discipline,modus,opties)`:
+  `helften` (ook voor de coach), `laatste10`, `goedslecht` (slechtste/beste derde) en `maand` (meerdere maanden
+  per kant; losse maanden zijn per tafel te dun). Per kant minstens 3 partijen en 50 beurten.
+  Poedel na poedel per tafel (`poedel.perTafel`) en vergeleken met "na een score", niet met de gewone
+  poedelkans: over alle tafels samen geeft de moeilijkere tafel een vals "poedels komen in reeksen".
 - Niveau volgt je **vorm**: gemiddelde van je laatste `vormVenster` partijen (Stats; 10/20/30/"alles", standaard
   20). Met het spelelement aan valt per `PUNTEN_PER_DROP` (1000) punten verdiend in die partijen de slechtste
   partij binnen het venster weg, hoogstens `MAX_SCHRAP_AANDEEL` (1 op de 10). **Moyenne** = alle partijen,

@@ -16,6 +16,28 @@ function InzichtKaart({titel,uitleg,children,rand}){
 
 function InzichtPaneel({partijen,discipline}){
   const inz=useMemo(function(){return berekenInzicht(partijen,discipline);},[partijen,discipline]);
+  // Vergelijken in poedels en series: welke twee groepen partijen (zie vergelijkSeries)
+  const [vgModus,setVgModus]=useState("helften");
+  // Maanden per kant (meerdere mogelijk); standaard de eerste twee tegenover de laatste twee
+  const [vgMaand,setVgMaand]=useState(null);
+  const maanden=useMemo(function(){return maandenVan(partijen);},[partijen]);
+  const inSel=function(lijst){return lijst.filter(function(m){return maanden.indexOf(m)!==-1;});};
+  const helftM=Math.min(2,Math.floor(maanden.length/2));
+  const maandA=vgMaand?inSel(vgMaand.a):maanden.slice(0,helftM);
+  const maandB=vgMaand?inSel(vgMaand.b):maanden.slice(maanden.length-helftM);
+  const vg=useMemo(function(){return vergelijkSeries(partijen,discipline,vgModus,{a:maandA,b:maandB});},[partijen,discipline,vgModus,maandA.join(),maandB.join()]);
+  const wisselMaand=function(kant,m){
+    const a=maandA.slice(),b=maandB.slice(),deze=kant==="a"?a:b,andere=kant==="a"?b:a;
+    const i=deze.indexOf(m);
+    if(i!==-1)deze.splice(i,1);else{deze.push(m);const j=andere.indexOf(m);if(j!==-1)andere.splice(j,1);}
+    const sorteer=function(x){return x.sort(function(p,q){return maanden.indexOf(p)-maanden.indexOf(q);});};
+    setVgMaand({a:sorteer(a),b:sorteer(b)});
+  };
+  const maandTekst=function(lijst){
+    if(!lijst.length)return"…";
+    const jaar=lijst[lijst.length-1].split(" ")[1],zelfdeJaar=lijst.every(function(m){return m.split(" ")[1]===jaar;});
+    return zelfdeJaar?lijst.map(function(m){return m.split(" ")[0];}).join(" + ")+" "+jaar:lijst.join(" + ");
+  };
   if(!inz)return <div style={{fontSize:14,color:WITD,padding:"8px 0"}}>Nog geen beurten in deze selectie.</div>;
   const dec=discipline==="driebanden"?3:2;
   const pctTekst=function(x){return Math.round(x*100)+"%";};
@@ -116,44 +138,84 @@ function InzichtPaneel({partijen,discipline}){
           );
         })}
 
-        {/* Eerder tegenover nu, per tafel */}
-        {se.vergelijkingen.length>0&&inz.helftLabels&&(
-          <div style={{marginTop:14}}>
-            <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,marginBottom:6}}>Eerder tegenover nu · {inz.helftLabels.eerste} → {inz.helftLabels.tweede}</div>
-            {se.vergelijkingen.map(function(v){
-              return(
-                <div key={v.tafel||"alle"} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 10px",marginBottom:8}}>
-                  <div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:6}}>
-                    <span style={{color:WIT,fontWeight:"bold"}}>{v.tafel?tafelLabel(v.tafel):"Alle partijen"}</span>
-                    <span style={{color:WITD}}>gemiddelde {komma(v.e.gem,dec)} → <strong style={{color:v.w.gem>=v.e.gem?GRNT:ROOD}}>{komma(v.w.gem,dec)}</strong></span>
-                  </div>
-                  <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:2}}>
-                    <span style={{flex:1}}></span><span style={{width:84,textAlign:"right"}}>per partij</span><span style={{width:64,textAlign:"right"}}>effect</span>
-                  </div>
-                  {v.e.groepen.map(function(g,i){
-                    const w=v.w.groepen[i],eff=v.bijdrage[i];
-                    const beter=g.van===0?w.perPartij<g.perPartij-0.2:eff>0.02,slechter=g.van===0?w.perPartij>g.perPartij+0.2:eff<-0.02;
-                    return(
-                      <div key={g.label} style={{display:"flex",fontSize:12,padding:"2px 0"}}>
-                        <span style={{flex:1,color:WITD}}><span style={{color:kleurVan(i)}}>■</span> {groepNaam(g)}</span>
-                        <span style={{width:84,textAlign:"right",color:WIT}}>{k1(g.perPartij)} → {k1(w.perPartij)}</span>
-                        <span style={{width:64,textAlign:"right",color:beter?GRNT:slechter?ROOD:WITD}}>
-                          {g.van===0?(beter?"▼ minder":slechter?"▲ meer":"≈"):(Math.abs(eff)<0.005?"≈":(eff>0?"+":"−")+komma(Math.abs(eff),2))}
-                        </span>
-                      </div>
-                    );
-                  })}
-                  <div style={{display:"flex",fontSize:12,padding:"4px 0 0",marginTop:2,borderTop:"1px solid rgba(255,255,255,0.08)"}}>
-                    <span style={{flex:1,color:WITD}}>🔥 Hoogste serie</span>
-                    <span style={{width:84,textAlign:"right",color:WIT}}>{k1(v.e.hoogste)} → {k1(v.w.hoogste)}</span>
-                    <span style={{width:64}}></span>
-                  </div>
+        {/* Vergelijken, per tafel: eerder tegenover nu, laatste 10, goed tegenover slecht, per maand */}
+        {(function(){
+          const chip=function(aan,tekst,klik,key){
+            return <button key={key||tekst} onClick={klik} style={{flex:"0 0 auto",padding:"4px 10px",background:aan?"#2d4a1e":"none",border:"1px solid "+(aan?GOUD:KBDR),
+              borderRadius:5,color:aan?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>{tekst}</button>;
+          };
+          const kop={helften:inz.helftLabels?"Eerder tegenover nu · "+inz.helftLabels.eerste+" → "+inz.helftLabels.tweede:"Eerder tegenover nu",
+            laatste10:"Je laatste partijen tegenover die ervoor",goedslecht:"Je slechtste tegenover je beste partijen",
+            maand:maandTekst(maandA)+" → "+maandTekst(maandB)}[vgModus];
+          const uitleg={helften:null,laatste10:"Per tafel je laatste 10 partijen (bij minder dan 20 partijen de laatste helft) tegenover alles daarvoor.",
+            goedslecht:"Per tafel je slechtste derde tegenover je beste derde partijen (op gemiddelde): waar zit het verschil tussen een goede en een slechte partij?",
+            maand:"Tik per kant één of meer maanden aan. Per tafel zijn per kant minstens 3 partijen nodig; losse maanden zijn vaak te weinig."}[vgModus];
+          const maandRij=function(label,kant,lijst){
+            return(
+              <div style={{display:"flex",alignItems:"flex-start",gap:5,marginBottom:6}}>
+                <span style={{fontSize:11,color:WITD,width:34,flexShrink:0,paddingTop:5}}>{label}</span>
+                <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+                  {maanden.map(function(m){return chip(lijst.indexOf(m)!==-1,m,function(){wisselMaand(kant,m);},m);})}
                 </div>
-              );
-            })}
-            <div style={{fontSize:11,color:WITD,opacity:0.8}}>"Effect" is hoeveel die groep je gemiddelde omhoog (+) of omlaag (−) bracht; samen is dat precies het verschil. Minder poedels zie je terug als meer series.</div>
-          </div>
-        )}
+              </div>
+            );
+          };
+          return(
+            <div style={{marginTop:14}}>
+              <div style={{fontSize:11,color:WITD,marginBottom:5}}>Vergelijk:</div>
+              <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:8}}>
+                {[["helften","Eerder vs nu"],["laatste10","Recent vs ervoor"],["goedslecht","Goed vs slecht"],["maand","Per maand"]].map(function(x){
+                  return chip(vgModus===x[0],x[1],function(){setVgModus(x[0]);},x[0]);
+                })}
+              </div>
+              {vgModus==="maand"&&maanden.length>1&&<div style={{marginBottom:6}}>
+                {maandRij("Van",'a',maandA)}
+                {maandRij("Naar",'b',maandB)}
+              </div>}
+              <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,marginBottom:uitleg?3:6}}>{kop}</div>
+              {uitleg&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:6,lineHeight:1.4}}>{uitleg}</div>}
+              {vg.vergelijkingen.length===0&&<div style={{fontSize:12,color:WITD,padding:"6px 0"}}>
+                {vgModus==="maand"&&(!maandA.length||!maandB.length)?"Kies aan beide kanten minstens één maand.":"Te weinig partijen om zo te vergelijken (minstens 3 partijen per kant, per tafel)."}
+              </div>}
+              {vg.vergelijkingen.map(function(v){
+                return(
+                  <div key={v.tafel||"alle"} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 10px",marginBottom:8}}>
+                    <div style={{display:"flex",justifyContent:"space-between",fontSize:13,marginBottom:v.labelA?2:6}}>
+                      <span style={{color:WIT,fontWeight:"bold"}}>{v.tafel?tafelLabel(v.tafel):"Alle partijen"}</span>
+                      <span style={{color:WITD}}>gemiddelde {komma(v.e.gem,dec)} → <strong style={{color:v.w.gem>=v.e.gem?GRNT:ROOD}}>{komma(v.w.gem,dec)}</strong></span>
+                    </div>
+                    {v.labelA&&<div style={{fontSize:11,color:WITD,textAlign:"right",marginBottom:6}}>{v.labelA} → {v.labelB}</div>}
+                    <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:2}}>
+                      <span style={{flex:1}}></span><span style={{width:84,textAlign:"right"}}>per partij</span><span style={{width:64,textAlign:"right"}}>effect</span>
+                    </div>
+                    {v.e.groepen.map(function(g,i){
+                      const w=v.w.groepen[i],eff=v.bijdrage[i];
+                      const beter=g.van===0?w.perPartij<g.perPartij-0.2:eff>0.02,slechter=g.van===0?w.perPartij>g.perPartij+0.2:eff<-0.02;
+                      return(
+                        <div key={g.label} style={{display:"flex",fontSize:12,padding:"2px 0"}}>
+                          <span style={{flex:1,color:WITD}}><span style={{color:kleurVan(i)}}>■</span> {groepNaam(g)}</span>
+                          <span style={{width:84,textAlign:"right",color:WIT}}>{k1(g.perPartij)} → {k1(w.perPartij)}</span>
+                          <span style={{width:64,textAlign:"right",color:beter?GRNT:slechter?ROOD:WITD}}>
+                            {g.van===0?(beter?"▼ minder":slechter?"▲ meer":"≈"):(Math.abs(eff)<0.005?"≈":(eff>0?"+":"−")+komma(Math.abs(eff),2))}
+                          </span>
+                        </div>
+                      );
+                    })}
+                    <div style={{display:"flex",fontSize:12,padding:"4px 0 0",marginTop:2,borderTop:"1px solid rgba(255,255,255,0.08)"}}>
+                      <span style={{flex:1,color:WITD}}>🔥 Hoogste serie</span>
+                      <span style={{width:84,textAlign:"right",color:WIT}}>{k1(v.e.hoogste)} → {k1(v.w.hoogste)}</span>
+                      <span style={{width:64}}></span>
+                    </div>
+                  </div>
+                );
+              })}
+              {vg.vergelijkingen.length>0&&vg.teWeinig.filter(Boolean).length>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:6}}>
+                Te weinig partijen voor deze vergelijking op de {vg.teWeinig.filter(Boolean).map(tafelLabel).join(" en ")}.
+              </div>}
+              {vg.vergelijkingen.length>0&&<div style={{fontSize:11,color:WITD,opacity:0.8}}>"Effect" is hoeveel die groep je gemiddelde omhoog (+) of omlaag (−) bracht; samen is dat precies het verschil. Minder poedels zie je terug als meer series. "Per partij" hangt ook af van hoe lang de partijen waren.</div>}
+            </div>
+          );
+        })()}
 
         {/* Wat levert het op */}
         <div style={{marginTop:14,background:"rgba(201,168,76,0.08)",border:"1px solid "+KBDR,borderRadius:8,padding:"10px 12px"}}>
@@ -174,8 +236,16 @@ function InzichtPaneel({partijen,discipline}){
             <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>van je caramboles uit {pctTekst(inz.motor.beurtPct)} van je beurten ({inz.motor.drempel}+)</div>
           </div>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
-            <div style={{fontSize:18,fontWeight:"bold",color:inz.poedel.naPoedel!==null&&inz.poedel.naPoedel-inz.poedel.kans>=0.1?ROOD:GRNT}}>{inz.poedel.naPoedel===null?"—":pctTekst(inz.poedel.naPoedel)}</div>
-            <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>kans op poedel na een poedel (gewoonlijk {pctTekst(inz.poedel.kans)})</div>
+            <div style={{fontSize:10,color:WITD,lineHeight:1.3,marginBottom:3}}>kans op nog een poedel na een poedel</div>
+            {inz.poedel.perTafel.length===0&&<div style={{fontSize:18,fontWeight:"bold",color:WITD}}>—</div>}
+            {inz.poedel.perTafel.map(function(x){
+              const verschil=x.naPoedel-x.naScore;
+              return(
+                <div key={x.tafel||"alle"} style={{fontSize:12,color:WITD,lineHeight:1.4}}>
+                  {x.tafel?tafelLabel(x.tafel)+": ":""}<strong style={{fontSize:15,color:verschil>=0.05?ROOD:verschil<=-0.03?GRNT:GOUDL}}>{pctTekst(x.naPoedel)}</strong> <span style={{fontSize:10}}>(na score {pctTekst(x.naScore)})</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </InzichtKaart>

@@ -163,7 +163,8 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData}){
 
 // Stats-tab: seizoen, tijdvenster, totalen, alle partijen, data wissen en 'Over deze app'
 function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestatiesMap,tijdsvenster,setTijdsvenster,
-  seizoenAfsluiten,seizoensplitsingOngedaanMaken,openArchief,verwijderPartij,slaNotitieOp,resetAlles,setSpelelement}){
+  seizoenAfsluiten,seizoensplitsingOngedaanMaken,openArchief,verwijderPartij,slaNotitieOp,resetAlles,setSpelelement,
+  vormVenster,setVormVenster}){
   const spel=useContext(SpelContext);
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
@@ -199,7 +200,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           const seizoenen=data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}];
           const huidig=seizoenen[seizoenen.length-1];
           const afgesloten=seizoenen.filter(function(s){return s.eindDatum!==null;});
-          const huidigStats=berekenSeizoenStats(alleP,huidig,huidigeDiscipline,!spel);
+          const huidigStats=berekenSeizoenStats(alleP,huidig,huidigeDiscipline,!spel,{});
           return(
             <div>
               <div style={{fontSize:14,color:WIT,marginBottom:2}}>{huidig.naam} <span style={{fontSize:13,color:WITD}}>(sinds {huidig.startDatum?new Date(huidig.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"het begin"})</span></div>
@@ -242,12 +243,45 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           );
         })()}
       </div>
+      {/* Je niveau: vorm (laatste N partijen) naast de officiële moyenne, en de keuze voor N */}
+      {(function(){
+        const dec=huidigeDiscipline==="driebanden"?3:2;
+        return(
+          <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Je niveau</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:10}}>
+              <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
+                <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
+                <div style={{fontSize:11,color:WITD}}>vorm · {niveau.venster?"laatste "+niveau.aantalPartijen:"alle partijen"}</div>
+                <div style={{fontSize:10,color:WITD,opacity:0.7}}>bepaalt je niveau</div>
+              </div>
+              <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
+                <div style={{fontSize:22,fontWeight:"bold",color:WIT}}>{niveau.moyenne.toFixed(dec)}</div>
+                <div style={{fontSize:11,color:WITD}}>moyenne · alle {niveau.aantalPartijenTotaal}</div>
+                <div style={{fontSize:10,color:WITD,opacity:0.7}}>officieel, niets geschrapt</div>
+              </div>
+            </div>
+            <div style={{fontSize:12,color:WITD,marginBottom:6}}>Niveau op basis van je laatste:</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+              {[[10,"10"],[20,"20"],[30,"30"],["alles","Alle"]].map(function(x){
+                const actief=vormVenster===x[0];
+                return <button key={x[1]} onClick={function(){if(!actief)setVormVenster(x[0]);}}
+                  style={{padding:"8px 0",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+              })}
+            </div>
+            <div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:8,lineHeight:1.45}}>
+              Je vorm is het gemiddelde van je laatste partijen{spel?", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)":""}. Zo tellen oude partijen na verloop van tijd niet meer mee. 20 is een goede balans tussen rustig en actueel; je moyenne blijft altijd over al je partijen gaan.
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen */}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Spelelement</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-          Badges, punten en het schrappen van je slechtste partijen uit je gemiddelde (1 per {PUNTEN_PER_DROP} punten).
-          {spel?" Zet je het uit, dan zie je daar niets meer van en is je gemiddelde gewoon het gemiddelde van al je partijen.":" Staat uit: je gemiddelde is het gemiddelde van al je partijen. De punten worden op de achtergrond bijgehouden; zet je het weer aan, dan is alles direct terug."}
+          Badges, punten en het schrappen van je slechtste partijen uit je vorm (1 per {PUNTEN_PER_DROP} punten, hoogstens 1 op de 10 partijen).
+          {spel?" Zet je het uit, dan zie je daar niets meer van en is je vorm gewoon het gemiddelde van die partijen.":" Staat uit: je vorm is gewoon het gemiddelde van die partijen, niets geschrapt. De punten worden op de achtergrond bijgehouden; zet je het weer aan, dan is alles direct terug."}
         </div>
         <div style={{display:"flex",gap:6}}>
           {[[true,"🎖️ Aan"],[false,"Uit"]].map(function(x){
@@ -259,7 +293,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
       </div>
       {spel&&(<div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
-        <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je gemiddelde, je niveau en je 👑🏓-records blijven altijd all-time — een record blijft een record.</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je vorm en niveau (zie hierboven) en je 👑🏓-records hangen hier niet van af — een record blijft een record.</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:10}}>
           {[["1","1 mnd"],["2","2 mnd"],["3","3 mnd"],["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
             const v=arr[0],l=arr[1];
@@ -275,13 +309,13 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
               <div style={{fontSize:10,color:WITD,opacity:0.7}}>{huidigeRecords.vensterPartijen} partij{huidigeRecords.vensterPartijen===1?"":"en"} · {huidigeRecords.vensterBeurten} beurten</div>
             </div>
             <div style={{textAlign:"right"}}>
-              <div style={{fontSize:11,color:WITD}}>je gemiddelde (all-time)</div>
+              <div style={{fontSize:11,color:WITD}}>je vorm</div>
               <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
-              <div style={{fontSize:10,color:WITD,opacity:0.7}}>{alleP.length} partij{alleP.length===1?"":"en"}</div>
+              <div style={{fontSize:10,color:WITD,opacity:0.7}}>{niveau.aantalPartijen} partij{niveau.aantalPartijen===1?"":"en"}</div>
             </div>
           </div>
           {niveau.aantalDrops>0
-            ?<div style={{fontSize:10,color:GOUD,marginTop:6,textAlign:"center"}}>🏅 Je gemiddelde is {gemUitleg(niveau,huidigeDiscipline==="driebanden"?3:2)}</div>
+            ?<div style={{fontSize:10,color:GOUD,marginTop:6,textAlign:"center"}}>🏅 {vormUitleg(niveau,huidigeDiscipline==="driebanden"?3:2)}</div>
             :<div style={{fontSize:10,color:WITD,opacity:0.6,marginTop:6,textAlign:"center"}}>nog geen badge-drops verdiend</div>
           }
         </div>

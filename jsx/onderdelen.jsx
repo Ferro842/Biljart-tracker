@@ -157,7 +157,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</span>
             </div>
             <div style={{fontSize:12,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
-            {niveau.aantalDrops>0&&<div style={{fontSize:11,color:WITD,marginTop:2}}>Gemiddelde {gemUitleg(niveau,dec)}</div>}
+            {niveau.moyenne!==undefined&&<div style={{fontSize:11,color:WITD,marginTop:2}}>{vormUitleg(niveau,dec)}</div>}
           </div>
         </div>
         {niveau.volgende&&<div style={{marginTop:6}}>
@@ -181,9 +181,9 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           <div style={{fontSize:13,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
         </div>
         <div style={{marginLeft:"auto",textAlign:"right"}}>
-          <div style={{fontSize:12,color:WITD}}>gemiddelde</div>
+          <div style={{fontSize:12,color:WITD}}>vorm</div>
           <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
-          {niveau.aantalDrops>0&&<div style={{fontSize:11,color:WITD,maxWidth:160}}>{gemUitleg(niveau,dec)}</div>}
+          {niveau.moyenne!==undefined&&<div style={{fontSize:11,color:WITD,maxWidth:170}}>{vormUitleg(niveau,dec)}</div>}
         </div>
       </div>
       {niveau.volgende
@@ -199,7 +199,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
 
       {spel&&<div style={{marginTop:12,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-          <span style={{fontSize:13,color:WITD}}>🎖️ Badge-punten</span>
+          <span style={{fontSize:13,color:WITD}}>🎖️ {niveau.venster?"Punten in je laatste "+niveau.aantalPartijen+" partijen":"Badge-punten"}</span>
           <span style={{fontSize:14,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten} / {niveau.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
         </div>
         <DashBalk pct={(niveau.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
@@ -222,9 +222,14 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
             })}
           </div>
           :<div style={{marginTop:8,fontSize:12,color:WITD,opacity:0.75,textAlign:"center"}}>
-            Bij {PUNTEN_PER_DROP}pt: je slechtste partij schrappen uit je gemiddelde
+            Bij {PUNTEN_PER_DROP}pt: je slechtste partij schrappen uit je vorm
           </div>
         }
+        <div style={{marginTop:8,fontSize:11,color:WITD,opacity:0.75,textAlign:"center"}}>
+          {niveau.plafondBereikt
+            ?"Maximum bereikt: nooit meer dan 1 op de 10 partijen geschrapt ("+niveau.maxDrops+" van "+niveau.aantalPartijen+")."
+            :"Maximaal 1 op de 10 partijen kan geschrapt worden."}
+        </div>
       </div>}
 
       {spel&&niveau.volgendeKandidaatId&&(

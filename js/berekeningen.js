@@ -249,17 +249,36 @@ function categorieKleur(cat){
 //    Hun enige functie: elke 1000 punten ontgrendelt het schrappen van je eerstvolgende slechtste
 //    partij uit de gemiddelde-berekening (net als bij golf-handicaps) — zo krijgt goed spelen ook
 //    direct invloed op je gemiddelde, zonder dat een mindere partij ooit "aftrekt".
-// zonderDrops: spelelement uit, dan telt elke partij mee en wordt er niets geschrapt
-function berekenNiveauInfo(partijen,zonderDrops){
+// Niveau-informatie: je vorm (het gemiddelde waar je niveau op gebaseerd is), geschrapte partijen en punten.
+// - zonderDrops: spelelement uit, dan wordt er niets geschrapt.
+// - opties (de app geeft dit altijd mee):
+//     venster: aantal laatste partijen voor je vorm (null = alle partijen). Alleen de punten die je in die
+//              partijen verdiende tellen voor schrappen, en er wordt alleen binnen het venster geschrapt.
+//     plafond: nooit meer dan MAX_SCHRAP_AANDEEL van de partijen schrappen (1 op de 10).
+//   Zonder opties rekent het zoals vroeger (alle partijen, geen plafond); zo blijft de testreferentie geldig.
+// - moyenne: het officiële gemiddelde, altijd over al je partijen en zonder iets te schrappen.
+function berekenNiveauInfo(partijen,zonderDrops,opties){
   const discipline=(partijen&&partijen.length>0)?(partijen[0].discipline||"libre"):"libre";
+  const venster=opties&&opties.venster?opties.venster:null;
   // nr = partijnummer zoals in Stats en Log (positie binnen deze discipline), id = intern id
-  const geldige=(partijen||[]).map(function(p,i){return{p:p,nr:i+1,st:stat(p.beurten,discipline)};}).filter(function(x){return x.st;});
-  let car=0,beurt=0;
-  geldige.forEach(function(x){car+=x.st.totCar;beurt+=x.st.aantalBeurten;});
+  const alleGeldige=(partijen||[]).map(function(p,i){return{p:p,nr:i+1,st:stat(p.beurten,discipline)};}).filter(function(x){return x.st;});
+  const som=function(lijst){let c=0,b=0;lijst.forEach(function(x){c+=x.st.totCar;b+=x.st.aantalBeurten;});return{car:c,beurt:b};};
+  const alles=som(alleGeldige);
+  const moyenne=alles.beurt>0?alles.car/alles.beurt:0;
+  const geldige=venster?alleGeldige.slice(-venster):alleGeldige;
+  const s=som(geldige),car=s.car,beurt=s.beurt;
   const totaalGemiddelde=beurt>0?car/beurt:0;
-  const badgePunten=berekenPrestaties(partijen,null,discipline).reduce(function(a,r){return a+r.punten;},0);
+  // Punten worden over je hele geschiedenis berekend (records zijn records), maar bij een venster tellen
+  // alleen de punten die je in die partijen verdiende
+  const prestaties=berekenPrestaties(partijen,null,discipline);
+  const badgePuntenTotaal=prestaties.reduce(function(a,r){return a+r.punten;},0);
+  const inVenster=new Set(geldige.map(function(x){return x.p.id;}));
+  const badgePunten=venster?prestaties.filter(function(r){return inVenster.has(r.id);}).reduce(function(a,r){return a+r.punten;},0):badgePuntenTotaal;
 
-  const aantalDrops=zonderDrops?0:Math.floor(badgePunten/PUNTEN_PER_DROP);
+  const maxDrops=opties?Math.floor(geldige.length*MAX_SCHRAP_AANDEEL):Infinity;
+  const verdiend=Math.floor(badgePunten/PUNTEN_PER_DROP);
+  const aantalDrops=zonderDrops?0:Math.min(verdiend,maxDrops);
+  const plafondBereikt=!zonderDrops&&opties&&verdiend>=maxDrops;
   const gesorteerd=geldige.slice().sort(function(a,b){return parseFloat(a.st.gemPerBeurt)-parseFloat(b.st.gemPerBeurt);});
   const gedropt=gesorteerd.slice(0,aantalDrops);
   const gedropteIds=new Set(gedropt.map(function(x){return x.p.id;}));
@@ -271,7 +290,7 @@ function berekenNiveauInfo(partijen,zonderDrops){
     return{id:x.p.id,nr:x.nr,datum:x.p.datum,gem:parseFloat(x.st.gemPerBeurt)};
   });
 
-  const volgendeKandidaat=gesorteerd[aantalDrops]||null;
+  const volgendeKandidaat=plafondBereikt?null:(gesorteerd[aantalDrops]||null);
   const puntenTotVolgendeDrop=PUNTEN_PER_DROP-(badgePunten%PUNTEN_PER_DROP);
 
   return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,
@@ -279,14 +298,16 @@ function berekenNiveauInfo(partijen,zonderDrops){
     volgendeKandidaatId:volgendeKandidaat?volgendeKandidaat.p.id:null,
     volgendeKandidaatNr:volgendeKandidaat?volgendeKandidaat.nr:null,
     volgendeKandidaatGem:volgendeKandidaat?parseFloat(volgendeKandidaat.st.gemPerBeurt):null,
-    puntenTotVolgendeDrop:puntenTotVolgendeDrop};
+    puntenTotVolgendeDrop:puntenTotVolgendeDrop,
+    moyenne:moyenne,venster:venster,aantalPartijen:geldige.length,aantalPartijenTotaal:alleGeldige.length,
+    badgePuntenTotaal:badgePuntenTotaal,maxDrops:maxDrops,plafondBereikt:!!plafondBereikt};
 }
 // Simuleert, uitgaande van je recente vorm (laatste 5 partijen, beurt-gewogen gemiddelde), hoeveel
 // partijen je op dat niveau nog nodig hebt om je EFFECTIEVE gemiddelde over de volgende gemiddelde-
 // drempel te tillen. Blijft je recente vorm onder die drempel, dan kan het nooit lukken puur op dit
 // tempo — dat wordt dan ook zo teruggegeven i.p.v. een oneindig aantal partijen.
-function berekenVoorspelling(partijen,discipline,zonderDrops){
-  const info=berekenNiveauInfo(partijen,zonderDrops);
+function berekenVoorspelling(partijen,discipline,zonderDrops,opties){
+  const info=berekenNiveauInfo(partijen,zonderDrops,opties);
   const huidig=bepaalNiveau(info.effectiefGemiddelde,discipline);
   if(!huidig.volgende)return null;
 
@@ -314,7 +335,7 @@ function berekenVoorspelling(partijen,discipline,zonderDrops){
       rest-=v;
     }
     simPartijen=simPartijen.concat([{id:volgendId++,datum:new Date().toISOString(),tafel:"230",beurten:nieuweBeurten}]);
-    const simInfo=berekenNiveauInfo(simPartijen,zonderDrops);
+    const simInfo=berekenNiveauInfo(simPartijen,zonderDrops,opties);
     if(simInfo.effectiefGemiddelde>=huidig.volgende.gemDrempel){
       return{mogelijk:true,recenteVorm:recenteVorm,aantalPartijen:i};
     }
@@ -323,14 +344,14 @@ function berekenVoorspelling(partijen,discipline,zonderDrops){
 }
 // Berekent de eindstand van een afgesloten (of lopend) seizoen: elk seizoen wordt behandeld als een
 // eigen, verse geschiedenis (badge-punten en records tellen alleen partijen binnen dat seizoen mee).
-function berekenSeizoenStats(alleP,seizoen,discipline,zonderDrops){
+function berekenSeizoenStats(alleP,seizoen,discipline,zonderDrops,opties){
   const gefilterd=(alleP||[]).filter(function(p){
     const t=new Date(p.datum).getTime();
     const vanaf=seizoen.startDatum?new Date(seizoen.startDatum).getTime():-Infinity;
     const tot=seizoen.eindDatum?new Date(seizoen.eindDatum).getTime():Infinity;
     return t>=vanaf&&t<tot;
   });
-  const info=berekenNiveauInfo(gefilterd,zonderDrops);
+  const info=berekenNiveauInfo(gefilterd,zonderDrops,opties);
   const niveau=bepaalNiveau(info.effectiefGemiddelde,discipline);
   let aantalPartijen=0;
   gefilterd.forEach(function(p){if(stat(p.beurten))aantalPartijen++;});
@@ -400,6 +421,14 @@ function besteVenster(waarden,lengte,richting){
 
 // "Je gemiddelde" in de app is altijd het gemiddelde ZONDER de slechtste partijen die je met badge-punten
 // hebt weggespeeld (1 per PUNTEN_PER_DROP). Deze tekst legt dat uit, overal op dezelfde manier.
+// Uitleg bij je vorm (het getal waar je niveau op is gebaseerd), naast je officiële moyenne
+function vormUitleg(info,dec){
+  const k=function(x){return x.toFixed(dec).replace(".",",");};
+  let t=info.venster?"Vorm: je laatste "+info.aantalPartijen+" partijen":"Vorm: al je partijen";
+  if(info.aantalDrops)t+=", zonder de "+(info.aantalDrops===1?"slechtste":info.aantalDrops+" slechtste")+" daarvan (met: "+k(info.totaalGemiddelde)+")";
+  if(info.venster||info.aantalDrops)t+=". Moyenne (alle "+info.aantalPartijenTotaal+" partijen): "+k(info.moyenne);
+  return t+".";
+}
 function gemUitleg(info,dec,periode){
   if(!info.aantalDrops)return"alle partijen tellen mee";
   return"zonder je "+(info.aantalDrops===1?"slechtste partij":info.aantalDrops+" slechtste partijen")+(periode||"")+" (met alle partijen: "+info.totaalGemiddelde.toFixed(dec)+")";

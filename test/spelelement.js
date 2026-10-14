@@ -1,5 +1,6 @@
 // Test van de knop Spelelement (Stats): uit = geen badges, punten, Punten-tab of geschrapte partijen, en je
-// gemiddelde = alle partijen; een partij spelen geeft dan geen prestatiemelding. Weer aan = alles terug.
+// vorm = gewoon het gemiddelde van je laatste 20 partijen; een partij spelen geeft dan geen prestatiemelding.
+// Weer aan = alles terug.
 // Overschrijft de opslag; alles.js zet testdata terug.
 // Draaien: await eval(await fetch("/test/spelelement.js").then(r=>r.text()))
 (async function(){
@@ -13,7 +14,7 @@
   const uit={};
   kb("Libre").click();await w(150);k("Stats").click();await w(200);
   uit.aanVooraf=tekst().indexOf("Badge-punten")!==-1||tekst().indexOf("pt")!==-1;
-  const gemAan=(tekst().match(/je gemiddelde \(all-time\)(\d+\.\d+)/)||[])[1];
+  const gemAan=(tekst().match(/je vorm(\d+\.\d+)/)||[])[1];
   // Uitzetten
   k("Uit").click();await w(250);
   uit.opgeslagen=data().spelelement===false;
@@ -21,11 +22,13 @@
   uit.geenPuntenInStats=!/\d+pt/.test(t);
   uit.geenTijdvensterKaart=t.indexOf("Tijdvenster voor prestatie-drempels")===-1;
   uit.uitlegUit=t.indexOf("Staat uit")!==-1;
-  // Gemiddelde = alle partijen: de niveaukaart op Spelen toont dan het ruwe gemiddelde
-  const ruw=(t.match(/Gem\. alle partijen/)?(t.match(/(\d+\.\d+)Gem\. alle partijen/)||[])[1]:null);
+  // Vorm zonder schrappen = gewoon het gemiddelde van de laatste 20 libre-partijen
+  const libre=data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";}).slice(-20);
+  let c=0,n=0;libre.forEach(function(p){p.beurten.forEach(function(b){c+=b.caramboles;n++;});});
+  const ruw=(c/n).toFixed(2);
   k("Spelen").click();await w(200);
   const kaartGem=(tekst().match(/klasse(\d+\.\d+)/)||tekst().match(/Klasse \d(\d+\.\d+)/)||[])[1];
-  uit.gemiddeldeIsAllePartijen=!!ruw&&kaartGem===ruw;
+  uit.vormZonderSchrappen=!!ruw&&kaartGem===ruw;
   uit.geenDropTekst=tekst().indexOf("slechtste partij")===-1;
   // Dash: geen Punten-tab
   k("Dash").click();await w(250);
@@ -44,7 +47,7 @@
   uit.weerAan=data().spelelement===true&&/\d+pt/.test(tekst())&&tekst().indexOf("Tijdvenster voor prestatie-drempels")!==-1;
   k("Dash").click();await w(200);uit.puntenTabTerug=!!k("Punten");
   k("Spelen").click();await w(150);
-  uit.goed=uit.opgeslagen&&uit.geenPuntenInStats&&uit.geenTijdvensterKaart&&uit.uitlegUit&&uit.gemiddeldeIsAllePartijen&&uit.geenDropTekst
+  uit.goed=uit.opgeslagen&&uit.geenPuntenInStats&&uit.geenTijdvensterKaart&&uit.uitlegUit&&uit.vormZonderSchrappen&&uit.geenDropTekst
     &&uit.geenPuntenTab&&uit.geenPuntenBalk&&uit.geenToast&&uit.samenvattingZonderPunten&&uit.weerAan&&uit.puntenTabTerug;
   uit.gemAan=gemAan;uit.gemUit=ruw;
   return uit;

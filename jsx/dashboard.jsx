@@ -244,7 +244,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
             {(function(){
               const verschil=selStats.gemiddelde-basisGem;
               return <span style={{marginLeft:"auto",fontSize:13,fontWeight:"bold",color:verschil>=0?GRNT:ROOD}}>
-                {verschil>=0?"▲ +":"▼ "}{verschil.toFixed(dec)} <span style={{fontWeight:"normal",color:WITD,fontSize:11}}>t.o.v. je gemiddelde {basisGem.toFixed(dec)}</span>
+                {verschil>=0?"▲ +":"▼ "}{verschil.toFixed(dec)} <span style={{fontWeight:"normal",color:WITD,fontSize:11}}>t.o.v. je vorm {basisGem.toFixed(dec)}</span>
               </span>;
             })()}
           </div>

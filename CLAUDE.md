@@ -71,12 +71,16 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   Kloktijden bewust niet gebruiken: partijen in het Woutje (2,10) worden vaak thuis nagetypt, en partij 1–29
   (apr–jul 2026) zijn op 3 juli in één keer ingeladen (geen tijd per beurt, rond tijdstip). "Partij van de
   avond" (1e/2e/3e, avonden met 2+ partijen) klopt wel. Omstandigheden vergelijken binnen hun eigen groep.
-- Elke `PUNTEN_PER_DROP` (1000) badge-punten schrapt de slechtste partij uit het gemiddelde.
+- Niveau volgt je **vorm**: gemiddelde van je laatste `vormVenster` partijen (Stats; 10/20/30/"alles", standaard
+  20). Met het spelelement aan valt per `PUNTEN_PER_DROP` (1000) punten verdiend in die partijen de slechtste
+  partij binnen het venster weg, hoogstens `MAX_SCHRAP_AANDEEL` (1 op de 10). **Moyenne** = alle partijen,
+  niets geschrapt (officieel). `berekenNiveauInfo(partijen,zonderDrops,opties)`; zonder opties de oude
+  berekening (alle partijen, geen plafond), waar `test/snapshot.js` op rust. Teksten via `vormUitleg()`.
 - Spelelement aan/uit (Stats, `data.spelelement`, standaard aan; `SpelContext` in `jsx/onderdelen.jsx`). Uit =
   geen badges/punten/Punten-tab/prestatiemeldingen/badge-hints en geen geschrapte partijen
   (`berekenNiveauInfo(partijen,zonderDrops)`); punten worden op de achtergrond wel berekend.
-  **"Je gemiddelde" is overal het gemiddelde zonder die geschrapte partijen**; leg dat uit met `gemUitleg()`.
-  Waar alle partijen meetellen, zeg dat er expliciet bij.
+  Leg vorm en moyenne overal uit (`vormUitleg()`, voor seizoenen `gemUitleg()`); waar alle partijen
+  meetellen, zeg dat er expliciet bij.
 
 ## Harde regels
 
@@ -97,7 +101,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Testdata laden (in de browserconsole), daarna herladen:
   `localStorage.setItem("biljart-tracker-v2", JSON.stringify(await fetch("/test/testdata.json").then(r=>r.json())))`
 - Alle tests (liefst op telefoonformaat 375 breed): `await eval(await fetch("/test/alles.js").then(r=>r.text()))`
-  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `vensters`, `datatab`
+  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.

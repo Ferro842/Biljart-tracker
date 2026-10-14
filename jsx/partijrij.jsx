@@ -9,7 +9,7 @@ function PartijLabels({p,punten,gedropt}){
     <>
       {p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}
       {spel&&punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}
-      {gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}
+      {gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit je vorm</span>}
       {p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}
     </>
   );

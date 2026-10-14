@@ -91,7 +91,7 @@ function InvoerScherm({spel}){
       <div style={{padding:"10px 12px 6px",flexShrink:0}}>
         {spelAan&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
           <span style={{fontSize:12,color:WITD}}>🎖️ Deze partij: <strong style={{color:GOUD}}>{partijPunten}pt</strong></span>
-          <span style={{fontSize:12,color:WITD}}>Totaal: <strong style={{color:GOUD}}>{niveau.badgePunten+partijPunten}pt</strong></span>
+          <span style={{fontSize:12,color:WITD}}>Totaal: <strong style={{color:GOUD}}>{(niveau.badgePuntenTotaal!==undefined?niveau.badgePuntenTotaal:niveau.badgePunten)+partijPunten}pt</strong></span>
         </div>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
           {[["Gespeeld",lp.length,WIT],["Caramboles",stL?stL.totCar:0,GOUD],["Gem.",stL?stL.gemPerBeurt:"0.00",GOUDL],["Max",stL?stL.max:0,"#e8a84c"]].map(function(arr){

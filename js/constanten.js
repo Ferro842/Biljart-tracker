@@ -114,6 +114,7 @@ const DISCIPLINES={
 // knop die daarna een sub-keuze toont tussen de vier varianten.
 const HOOFDDISCIPLINES=["libre","driebanden","bandstoten"];
 const KADER_VARIANTEN=["kader38","kader47","kader57","kader71"];
+const MAX_SCHRAP_AANDEEL=0.1; // nooit meer dan 1 op de 10 partijen schrappen, hoeveel punten je ook hebt
 const PUNTEN_PER_DROP=1000; // elke 1000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
 
 // Officiële KNBB-tafelmaten voor carambole: café-biljart, kleine matchtafel, halve match, grote

@@ -53,18 +53,18 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
         {infoNa&&(
           <div style={{marginBottom:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-              <span style={{fontSize:12,color:WITD}}>📊 Je gemiddelde nu</span>
+              <span style={{fontSize:12,color:WITD}}>📊 Je vorm nu</span>
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{infoNa.effectiefGemiddelde.toFixed(dec)}</span>
             </div>
-            {infoNa.aantalDrops>0&&<div style={{fontSize:11,color:WITD,marginTop:-3,marginBottom:6}}>{gemUitleg(infoNa,dec)}</div>}
+            <div style={{fontSize:11,color:WITD,marginTop:-3,marginBottom:6}}>{vormUitleg(infoNa,dec)}</div>
             {spel&&<>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                <span style={{fontSize:12,color:WITD}}>🎖️ Badge-punten</span>
+                <span style={{fontSize:12,color:WITD}}>🎖️ {infoNa.venster?"Punten in je laatste "+infoNa.aantalPartijen+" partijen":"Badge-punten"}</span>
                 <span style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{infoNa.badgePunten} / {infoNa.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
               </div>
               <DashBalk pct={(infoNa.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
               <div style={{textAlign:"center",marginTop:6,fontSize:11,color:WITD,opacity:0.8}}>
-                Nog {infoNa.puntenTotVolgendeDrop}pt tot je volgende slechtste-partij-drop
+                {infoNa.plafondBereikt?"Maximum bereikt: nooit meer dan 1 op de 10 partijen geschrapt":"Nog "+infoNa.puntenTotVolgendeDrop+"pt tot je volgende slechtste-partij-drop"}
               </div>
             </>}
           </div>
@@ -116,7 +116,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
     },
     {
       titel:"Hoe niveau werkt",
-      body:"Je niveau is gebaseerd op je gemiddelde, met de officiële KNBB-klassegrenzen (van 5e klasse tot Ereklasse). Speel je goed, dan verdien je badges — genoeg badge-punten en je mag je slechtste partij laten schrappen uit je gemiddelde."
+      body:"Je niveau volgt je vorm: het gemiddelde van je laatste 20 partijen, met de officiële KNBB-klassegrenzen. Je moyenne over al je partijen zie je ernaast. Speel je goed, dan verdien je badges — genoeg badge-punten en je slechtste partij telt niet mee voor je vorm (hoogstens 1 op de 10)."
     },
     {
       titel:"Klaar om te beginnen!",
@@ -208,7 +208,7 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
         <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke afgesloten periode, met de eindstand van dat seizoen</div>
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
           {seizoenen.filter(function(s){return s.eindDatum!==null;}).slice().reverse().map(function(s){
-            const stats=berekenSeizoenStats(alleP,s,discipline,!spel);
+            const stats=berekenSeizoenStats(alleP,s,discipline,!spel,{});
             return(
               <div key={s.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid "+KBDR,borderRadius:10,padding:"10px 12px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>

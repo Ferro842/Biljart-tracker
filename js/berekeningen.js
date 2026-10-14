@@ -249,7 +249,8 @@ function categorieKleur(cat){
 //    Hun enige functie: elke 1000 punten ontgrendelt het schrappen van je eerstvolgende slechtste
 //    partij uit de gemiddelde-berekening (net als bij golf-handicaps) — zo krijgt goed spelen ook
 //    direct invloed op je gemiddelde, zonder dat een mindere partij ooit "aftrekt".
-function berekenNiveauInfo(partijen){
+// zonderDrops: spelelement uit, dan telt elke partij mee en wordt er niets geschrapt
+function berekenNiveauInfo(partijen,zonderDrops){
   const discipline=(partijen&&partijen.length>0)?(partijen[0].discipline||"libre"):"libre";
   // nr = partijnummer zoals in Stats en Log (positie binnen deze discipline), id = intern id
   const geldige=(partijen||[]).map(function(p,i){return{p:p,nr:i+1,st:stat(p.beurten,discipline)};}).filter(function(x){return x.st;});
@@ -258,7 +259,7 @@ function berekenNiveauInfo(partijen){
   const totaalGemiddelde=beurt>0?car/beurt:0;
   const badgePunten=berekenPrestaties(partijen,null,discipline).reduce(function(a,r){return a+r.punten;},0);
 
-  const aantalDrops=Math.floor(badgePunten/PUNTEN_PER_DROP);
+  const aantalDrops=zonderDrops?0:Math.floor(badgePunten/PUNTEN_PER_DROP);
   const gesorteerd=geldige.slice().sort(function(a,b){return parseFloat(a.st.gemPerBeurt)-parseFloat(b.st.gemPerBeurt);});
   const gedropt=gesorteerd.slice(0,aantalDrops);
   const gedropteIds=new Set(gedropt.map(function(x){return x.p.id;}));
@@ -284,8 +285,8 @@ function berekenNiveauInfo(partijen){
 // partijen je op dat niveau nog nodig hebt om je EFFECTIEVE gemiddelde over de volgende gemiddelde-
 // drempel te tillen. Blijft je recente vorm onder die drempel, dan kan het nooit lukken puur op dit
 // tempo — dat wordt dan ook zo teruggegeven i.p.v. een oneindig aantal partijen.
-function berekenVoorspelling(partijen,discipline){
-  const info=berekenNiveauInfo(partijen);
+function berekenVoorspelling(partijen,discipline,zonderDrops){
+  const info=berekenNiveauInfo(partijen,zonderDrops);
   const huidig=bepaalNiveau(info.effectiefGemiddelde,discipline);
   if(!huidig.volgende)return null;
 
@@ -313,7 +314,7 @@ function berekenVoorspelling(partijen,discipline){
       rest-=v;
     }
     simPartijen=simPartijen.concat([{id:volgendId++,datum:new Date().toISOString(),tafel:"230",beurten:nieuweBeurten}]);
-    const simInfo=berekenNiveauInfo(simPartijen);
+    const simInfo=berekenNiveauInfo(simPartijen,zonderDrops);
     if(simInfo.effectiefGemiddelde>=huidig.volgende.gemDrempel){
       return{mogelijk:true,recenteVorm:recenteVorm,aantalPartijen:i};
     }
@@ -322,14 +323,14 @@ function berekenVoorspelling(partijen,discipline){
 }
 // Berekent de eindstand van een afgesloten (of lopend) seizoen: elk seizoen wordt behandeld als een
 // eigen, verse geschiedenis (badge-punten en records tellen alleen partijen binnen dat seizoen mee).
-function berekenSeizoenStats(alleP,seizoen,discipline){
+function berekenSeizoenStats(alleP,seizoen,discipline,zonderDrops){
   const gefilterd=(alleP||[]).filter(function(p){
     const t=new Date(p.datum).getTime();
     const vanaf=seizoen.startDatum?new Date(seizoen.startDatum).getTime():-Infinity;
     const tot=seizoen.eindDatum?new Date(seizoen.eindDatum).getTime():Infinity;
     return t>=vanaf&&t<tot;
   });
-  const info=berekenNiveauInfo(gefilterd);
+  const info=berekenNiveauInfo(gefilterd,zonderDrops);
   const niveau=bepaalNiveau(info.effectiefGemiddelde,discipline);
   let aantalPartijen=0;
   gefilterd.forEach(function(p){if(stat(p.beurten))aantalPartijen++;});
@@ -570,11 +571,14 @@ function berekenInzicht(partijen,discipline){
       alsScoort:scorend.length?som(scorend)/scorend.length:0};
   };
   const helftP=Math.floor((partijen||[]).length/2);
+  const nrVan=function(pi){const p=partijen[pi];return p&&p.nr?p.nr:pi+1;};
+  const reeks=function(van,tot){return"p"+nrVan(van)+"–p"+nrVan(tot);};
+  const helftLabels=helftP>=2?{eerste:reeks(0,helftP-1),tweede:reeks(helftP,partijen.length-1)}:null;
   const opbouw={totaal:ontleed(beurten,"Alles"),
     perTafel:Object.keys(TAFELS).map(function(k){return ontleed(beurten.filter(function(b){return b.tafel===k;}),tafelLabel(k));})
       .filter(function(x){return x.aantal>=30;}),
-    eerste:helftP>=2?ontleed(beurten.filter(function(b){return b.pi<helftP;}),"Eerste helft"):null,
-    tweede:helftP>=2?ontleed(beurten.filter(function(b){return b.pi>=helftP;}),"Tweede helft"):null};
+    eerste:helftP>=2?ontleed(beurten.filter(function(b){return b.pi<helftP;}),helftLabels.eerste):null,
+    tweede:helftP>=2?ontleed(beurten.filter(function(b){return b.pi>=helftP;}),helftLabels.tweede):null};
   if(opbouw.perTafel.length<2)opbouw.perTafel=[];
   // Motor: welk deel van je caramboles komt uit series vanaf opbouwMin
   const groot=beurten.filter(function(b){return b.car>=d.opbouwMin;}),totCar=som(beurten);
@@ -593,16 +597,28 @@ function berekenInzicht(partijen,discipline){
   // 7. Coach: een paar zinnen, alleen bij genoeg voorbeelden
   const coach=[];
   const k2=function(x){return x.toFixed(2).replace(".",",");},pc=function(x){return Math.round(x*100)+"%";};
-  if(opbouw.eerste&&opbouw.tweede&&opbouw.eerste.gem>0){
-    const e=opbouw.eerste,w=opbouw.tweede,verschil=(w.gem-e.gem)/e.gem;
-    if(Math.abs(verschil)>=0.05){
+  // Vorm: eerste tegenover tweede helft van de partijen, per tafel. Over alle tafels samen zou een andere
+  // verhouding tussen de tafels (bijv. vaker op de makkelijkere 2,10) als vooruitgang lijken.
+  if(helftLabels){
+    const tafelsInSel=Object.keys(TAFELS).filter(function(k){return beurten.some(function(b){return b.tafel===k;});});
+    const zinnen=[];
+    const vergelijk=function(filter,waar){
+      const ps=function(van,tot){const s={};beurten.forEach(function(b){if(filter(b)&&b.pi>=van&&b.pi<tot)s[b.pi]=1;});return Object.keys(s).length;};
+      const ea=beurten.filter(function(b){return filter(b)&&b.pi<helftP;}),wa=beurten.filter(function(b){return filter(b)&&b.pi>=helftP;});
+      if(ps(0,helftP)<3||ps(helftP,Infinity)<3||ea.length<50||wa.length<50)return;
+      const e=ontleed(ea),w=ontleed(wa),verschil=e.gem>0?(w.gem-e.gem)/e.gem:0;
+      const jij=waar===null; // één tafel: "Je gaat…", meerdere: "Op de 2,30 ga je…"
+      if(Math.abs(verschil)<0.05){zinnen.push((jij?"Je bent":waar+" ben je")+" gelijk gebleven ("+k2(e.gem)+" → "+k2(w.gem)+").");return;}
       // Welke van de twee bouwstenen veranderde relatief het meest?
       const dScoor=e.scoorPct>0?(w.scoorPct-e.scoorPct)/e.scoorPct:0,dSerie=e.alsScoort>0?(w.alsScoort-e.alsScoort)/e.alsScoort:0;
-      const serieWint=Math.abs(dSerie)>=Math.abs(dScoor);
-      coach.push({soort:"vorm",tekst:(verschil>0?"Je gaat vooruit":"Je zakt wat terug")+" ("+k2(e.gem)+" → "+k2(w.gem)+"), vooral doordat "+
-        (serieWint?"je series "+(dSerie>0?"groter":"kleiner")+" worden: "+k2(e.alsScoort)+" → "+k2(w.alsScoort)+" caramboles als je scoort (je scoort in "+pc(e.scoorPct)+" → "+pc(w.scoorPct)+" van je beurten)."
-                  :"je "+(dScoor>0?"vaker":"minder vaak")+" scoort: in "+pc(e.scoorPct)+" → "+pc(w.scoorPct)+" van je beurten (als je scoort: "+k2(e.alsScoort)+" → "+k2(w.alsScoort)+" caramboles).")});
-    }
+      const reden=Math.abs(dSerie)>=Math.abs(dScoor)
+        ?"je series "+(dSerie>0?"groter":"kleiner")+" worden ("+k2(e.alsScoort)+" → "+k2(w.alsScoort)+" caramboles als je scoort)"
+        :"je "+(dScoor>0?"vaker":"minder vaak")+" scoort (in "+pc(e.scoorPct)+" → "+pc(w.scoorPct)+" van je beurten)";
+      zinnen.push((jij?(verschil>0?"Je gaat vooruit":"Je zakt wat terug"):waar+" "+(verschil>0?"ga je vooruit":"zak je wat terug"))+": "+k2(e.gem)+" → "+k2(w.gem)+", vooral doordat "+reden+".");
+    };
+    if(tafelsInSel.length>1)tafelsInSel.forEach(function(k){vergelijk(function(b){return b.tafel===k;},"Op de "+tafelLabel(k));});
+    else vergelijk(function(){return true;},null);
+    if(zinnen.length)coach.push({soort:"vorm",tekst:"Vorm ("+helftLabels.eerste+" tegenover "+helftLabels.tweede+", gemiddelde met alle partijen): "+zinnen.join(" ")});
   }
   if(sterkste)coach.push({soort:"sterk",tekst:"Je sterkste techniek is "+sterkste.label+": "+sterkste.goed+" van de "+sterkste.gebruik+" keer goed ("+Math.round(sterkste.pct*100)+"%, tegen gemiddeld "+Math.round(refPct*100)+"% over al je technieken)."});
   if(werkpunt)coach.push({soort:"werk",tekst:werkpunt.label+(werkpunt.gebruik>=15?" speel je vaak":" komt voor")+" ("+werkpunt.gebruik+"×), maar lukt minder vaak dan je andere technieken: "+werkpunt.goed+" van de "+werkpunt.gebruik+" keer goed ("+Math.round(werkpunt.pct*100)+"%). Daar valt het meest te winnen."});
@@ -630,7 +646,7 @@ function berekenInzicht(partijen,discipline){
   const beter=trend.filter(function(x){return x.verandering<=-0.3;}).sort(function(a,b){return a.verandering-b.verandering;})[0];
   if(beter)coach.push({soort:"trend",tekst:beter.label+" kost je minder series dan eerst: van "+beter.voor.toFixed(1).replace(".",",")+" naar "+beter.na.toFixed(1).replace(".",",")+" per 100 beurten."});
 
-  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,opbouw:opbouw,motor:motor,poedel:poedel,hoogsteSerie:hoogsteSerie,
+  return{aantalBeurten:n,basis:basis,basisTag:basisTag,dekking:dekking,opbouw:opbouw,helftLabels:helftLabels,motor:motor,poedel:poedel,hoogsteSerie:hoogsteSerie,
     acquitPartijen:beurten.filter(isAcquitBeurt).length,metOpmerking:beurten.filter(function(b){return b.gemist.length||b.goed.length;}).length,
     profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
     metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};

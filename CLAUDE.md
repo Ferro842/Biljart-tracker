@@ -72,6 +72,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   (apr–jul 2026) zijn op 3 juli in één keer ingeladen (geen tijd per beurt, rond tijdstip). "Partij van de
   avond" (1e/2e/3e, avonden met 2+ partijen) klopt wel. Omstandigheden vergelijken binnen hun eigen groep.
 - Elke `PUNTEN_PER_DROP` (1000) badge-punten schrapt de slechtste partij uit het gemiddelde.
+- Spelelement aan/uit (Stats, `data.spelelement`, standaard aan; `SpelContext` in `jsx/onderdelen.jsx`). Uit =
+  geen badges/punten/Punten-tab/prestatiemeldingen/badge-hints en geen geschrapte partijen
+  (`berekenNiveauInfo(partijen,zonderDrops)`); punten worden op de achtergrond wel berekend.
   **"Je gemiddelde" is overal het gemiddelde zonder die geschrapte partijen**; leg dat uit met `gemUitleg()`.
   Waar alle partijen meetellen, zeg dat er expliciet bij.
 
@@ -94,12 +97,13 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Testdata laden (in de browserconsole), daarna herladen:
   `localStorage.setItem("biljart-tracker-v2", JSON.stringify(await fetch("/test/testdata.json").then(r=>r.json())))`
 - Alle tests (liefst op telefoonformaat 375 breed): `await eval(await fetch("/test/alles.js").then(r=>r.text()))`
-  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `vensters`, `datatab`
+  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `vensters`, `datatab`
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.
 - Zonder browser: `node test/snapshot-node.js` geeft dezelfde hash als `snapshot.js`; met `--details` de volledige
   uitkomst (handig om voor en na een rekenwijziging per discipline te vergelijken).
+- Tests die tekst zoeken: gebruik `#root`, niet `document.body` (daarin staat ook de broncode van het Babel-script).
 - Na `alles.js` direct herladen, anders schrijft de app de geïmporteerde testback-up terug over de testdata.
 - Service worker: `node test/sw-node.js` (de ingebouwde browser ondersteunt geen service workers).
 - iOS: `npm run build && npx cap sync ios`, daarna bouwen voor de simulator of `npm run ios` (opent Xcode).

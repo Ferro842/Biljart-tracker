@@ -73,7 +73,7 @@ function InzichtPaneel({partijen,discipline}){
 
       {/* Opbouw van je gemiddelde */}
       <InzichtKaart titel="Waar komt je gemiddelde vandaan"
-        uitleg="Je gemiddelde is twee dingen: hoe vaak je in een beurt scoort, en hoeveel caramboles je dan maakt.">
+        uitleg="Je gemiddelde is twee dingen: hoe vaak je in een beurt scoort, en hoeveel caramboles je dan maakt. Hier tellen alle partijen mee, ook de geschrapte.">
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexWrap:"wrap",background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"12px 8px",marginBottom:12}}>
           <div style={{textAlign:"center"}}><div style={{fontSize:24,fontWeight:"bold",color:GRNT}}>{pctTekst(op.totaal.scoorPct)}</div><div style={{fontSize:11,color:WITD}}>van je beurten<br/>scoor je</div></div>
           <div style={{fontSize:20,color:WITD}}>×</div>

@@ -267,6 +267,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
 }
 
 function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
+  const spel=useContext(SpelContext); // spelelement uit: geen Punten-tab
   // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
   const ST=useMemo(()=>{
     return (partijen||[]).map(function(p,i){
@@ -482,7 +483,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         {btn("consist","Consistentie")}
         {btn("patronen","Patronen")}
         {btn("vergelijk","Vergelijk")}
-        {btn("punten","Punten")}
+        {spel&&btn("punten","Punten")}
       </div>
 
       {/* Selectie + inhoud scrollen samen, zodat het selectieblok op een telefoon wegscrolt */}
@@ -763,10 +764,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         </div>}
 
         {/* INZICHT */}
-        {tab==="inzicht"&&<InzichtPaneel partijen={sel} discipline={discipline}/>}
+        {(tab==="inzicht"||(!spel&&tab==="punten"))&&<InzichtPaneel partijen={sel} discipline={discipline}/>}
 
         {/* PUNTEN */}
-        {tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
+        {spel&&tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>
           <NiveauKaart niveau={niveau} discipline={discipline} onClick={function(){setNiveauOpen(true);}}/>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>

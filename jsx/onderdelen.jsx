@@ -2,7 +2,9 @@
 // beurtregel, prestatie-overzicht en niveaukaart. JSX: geladen via Babel (type="text/babel") als
 // eerste Babel-script, vóór de code in index.html. Alles hier is daarna overal beschikbaar.
 
-const {useState,useEffect,useRef,useMemo}=React;
+const {useState,useEffect,useRef,useMemo,useContext}=React;
+// Staat het spelelement (badges, punten, slechtste partijen schrappen) aan? Uit = niets daarvan tonen.
+const SpelContext=React.createContext(true);
 
 function Grafiek({beurten,discipline}){
   const opbouwMin=beurtDrempels(discipline||"libre").opbouwMin;
@@ -140,6 +142,7 @@ function PrestatieOverzicht({prestatie}){
 }
 
 function NiveauKaart({niveau,compact,discipline,onClick}){
+  const spel=useContext(SpelContext);
   const dec=discipline==="driebanden"?3:2;
   if(compact){
     return(
@@ -194,7 +197,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
         :<div style={{textAlign:"center",fontSize:13,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
       }
 
-      <div style={{marginTop:12,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
+      {spel&&<div style={{marginTop:12,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
           <span style={{fontSize:13,color:WITD}}>🎖️ Badge-punten</span>
           <span style={{fontSize:14,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten} / {niveau.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
@@ -222,9 +225,9 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
             Bij {PUNTEN_PER_DROP}pt: je slechtste partij schrappen uit je gemiddelde
           </div>
         }
-      </div>
+      </div>}
 
-      {niveau.volgendeKandidaatId&&(
+      {spel&&niveau.volgendeKandidaatId&&(
         <div style={{marginTop:8,textAlign:"center",fontSize:11,color:"#ff9f80"}}>
           🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatNr} (gem {niveau.volgendeKandidaatGem.toFixed(dec)})
         </div>

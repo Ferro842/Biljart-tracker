@@ -1,0 +1,51 @@
+// Test van de knop Spelelement (Stats): uit = geen badges, punten, Punten-tab of geschrapte partijen, en je
+// gemiddelde = alle partijen; een partij spelen geeft dan geen prestatiemelding. Weer aan = alles terug.
+// Overschrijft de opslag; alles.js zet testdata terug.
+// Draaien: await eval(await fetch("/test/spelelement.js").then(r=>r.text()))
+(async function(){
+  const w=function(ms){return new Promise(function(r){setTimeout(r,ms);});};
+  const k=function(t){return Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()===t;});};
+  const kb=function(t){return Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim().indexOf(t)===0;});};
+  // Alleen de app zelf (#root): document.body bevat ook de broncode van het inline Babel-script
+  const tekst=function(){return document.getElementById("root").textContent;};
+  const data=function(){return JSON.parse(localStorage.getItem("biljart-tracker-v2"));};
+  const sluit=function(){const o=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed";});if(o)o.click();};
+  const uit={};
+  kb("Libre").click();await w(150);k("Stats").click();await w(200);
+  uit.aanVooraf=tekst().indexOf("Badge-punten")!==-1||tekst().indexOf("pt")!==-1;
+  const gemAan=(tekst().match(/je gemiddelde \(all-time\)(\d+\.\d+)/)||[])[1];
+  // Uitzetten
+  k("Uit").click();await w(250);
+  uit.opgeslagen=data().spelelement===false;
+  const t=tekst();
+  uit.geenPuntenInStats=!/\d+pt/.test(t);
+  uit.geenTijdvensterKaart=t.indexOf("Tijdvenster voor prestatie-drempels")===-1;
+  uit.uitlegUit=t.indexOf("Staat uit")!==-1;
+  // Gemiddelde = alle partijen: de niveaukaart op Spelen toont dan het ruwe gemiddelde
+  const ruw=(t.match(/Gem\. alle partijen/)?(t.match(/(\d+\.\d+)Gem\. alle partijen/)||[])[1]:null);
+  k("Spelen").click();await w(200);
+  const kaartGem=(tekst().match(/klasse(\d+\.\d+)/)||tekst().match(/Klasse \d(\d+\.\d+)/)||[])[1];
+  uit.gemiddeldeIsAllePartijen=!!ruw&&kaartGem===ruw;
+  uit.geenDropTekst=tekst().indexOf("slechtste partij")===-1;
+  // Dash: geen Punten-tab
+  k("Dash").click();await w(250);
+  uit.geenPuntenTab=!k("Punten");
+  // Partij spelen: geen prestatiemelding en geen punten in de samenvatting
+  k("Spelen").click();await w(150);k("Start partij").click();await w(150);
+  uit.geenPuntenBalk=tekst().indexOf("Deze partij:")===-1;
+  for(let i=0;i<12;i++){k("+").click();await w(15);}
+  k("Noteer").click();await w(150);k("Volgende stap").click();await w(150);k("Beurt opslaan").click();await w(250);
+  uit.geenToast=tekst().indexOf("Prestatie behaald")===-1;
+  k("Afsluiten").click();await w(150);k("Opslaan").click();await w(300);
+  uit.samenvattingZonderPunten=tekst().indexOf("Partij afgesloten")!==-1&&tekst().indexOf("pt aan badges")===-1;
+  sluit();await w(150);
+  // Weer aanzetten
+  k("Stats").click();await w(200);k("🎖️ Aan").click();await w(250);
+  uit.weerAan=data().spelelement===true&&/\d+pt/.test(tekst())&&tekst().indexOf("Tijdvenster voor prestatie-drempels")!==-1;
+  k("Dash").click();await w(200);uit.puntenTabTerug=!!k("Punten");
+  k("Spelen").click();await w(150);
+  uit.goed=uit.opgeslagen&&uit.geenPuntenInStats&&uit.geenTijdvensterKaart&&uit.uitlegUit&&uit.gemiddeldeIsAllePartijen&&uit.geenDropTekst
+    &&uit.geenPuntenTab&&uit.geenPuntenBalk&&uit.geenToast&&uit.samenvattingZonderPunten&&uit.weerAan&&uit.puntenTabTerug;
+  uit.gemAan=gemAan;uit.gemUit=ruw;
+  return uit;
+})()

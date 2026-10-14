@@ -2,6 +2,7 @@
 // badgecatalogus en niveau-overzicht. JSX via Babel, geladen na jsx/onderdelen.jsx.
 
 function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,discipline,onClose}){
+  const spel=useContext(SpelContext);
   const punten=prestatie?prestatie.punten:0;
   const dec=discipline==="driebanden"?3:2;
   return(
@@ -25,7 +26,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
             </div>
           </div>
         )}
-        {nieuweDrop&&(
+        {spel&&nieuweDrop&&(
           <div style={{background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",borderRadius:14,padding:"14px",marginBottom:14,textAlign:"center",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",boxShadow:"0 0 30px "+GOUD+"aa"}}>
             <div style={{fontSize:28}}>🎉🥇🎉</div>
             <div style={{fontSize:15,fontWeight:"bold",color:G,marginTop:4}}>Slechtste-partij-drop ontgrendeld!</div>
@@ -48,7 +49,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
             <div style={{fontSize:11,color:WITD}}>hoogste beurt</div>
           </div>
         </div>
-        <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{st.aantalBeurten} beurten · {st.poedels}x poedel · <span style={{color:GOUD,fontWeight:"bold"}}>{punten}pt aan badges</span></div>
+        <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{st.aantalBeurten} beurten · {st.poedels}x poedel{spel&&<> · <span style={{color:GOUD,fontWeight:"bold"}}>{punten}pt aan badges</span></>}</div>
         {infoNa&&(
           <div style={{marginBottom:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
@@ -56,17 +57,19 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{infoNa.effectiefGemiddelde.toFixed(dec)}</span>
             </div>
             {infoNa.aantalDrops>0&&<div style={{fontSize:11,color:WITD,marginTop:-3,marginBottom:6}}>{gemUitleg(infoNa,dec)}</div>}
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-              <span style={{fontSize:12,color:WITD}}>🎖️ Badge-punten</span>
-              <span style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{infoNa.badgePunten} / {infoNa.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
-            </div>
-            <DashBalk pct={(infoNa.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
-            <div style={{textAlign:"center",marginTop:6,fontSize:11,color:WITD,opacity:0.8}}>
-              Nog {infoNa.puntenTotVolgendeDrop}pt tot je volgende slechtste-partij-drop
-            </div>
+            {spel&&<>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <span style={{fontSize:12,color:WITD}}>🎖️ Badge-punten</span>
+                <span style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{infoNa.badgePunten} / {infoNa.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
+              </div>
+              <DashBalk pct={(infoNa.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
+              <div style={{textAlign:"center",marginTop:6,fontSize:11,color:WITD,opacity:0.8}}>
+                Nog {infoNa.puntenTotVolgendeDrop}pt tot je volgende slechtste-partij-drop
+              </div>
+            </>}
           </div>
         )}
-        <PrestatieOverzicht prestatie={prestatie}/>
+        {spel&&<PrestatieOverzicht prestatie={prestatie}/>}
         <div onClick={onClose} style={{textAlign:"center",marginTop:16,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
       </div>
     </div>
@@ -197,6 +200,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
 }
 
 function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
+  const spel=useContext(SpelContext);
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
@@ -204,7 +208,7 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
         <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke afgesloten periode, met de eindstand van dat seizoen</div>
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
           {seizoenen.filter(function(s){return s.eindDatum!==null;}).slice().reverse().map(function(s){
-            const stats=berekenSeizoenStats(alleP,s,discipline);
+            const stats=berekenSeizoenStats(alleP,s,discipline,!spel);
             return(
               <div key={s.id} style={{background:"rgba(0,0,0,0.2)",border:"1px solid "+KBDR,borderRadius:10,padding:"10px 12px"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
@@ -219,7 +223,7 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
                   </div>
                 </div>
                 <div style={{fontSize:13,color:WITD}}>
-                  {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)} · {stats.badgePunten}pt · <span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
+                  {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)} · {spel&&<>{stats.badgePunten}pt · </>}<span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
                 </div>
                 {stats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:2}}>Gemiddelde {gemUitleg(stats,discipline==="driebanden"?3:2," van dit seizoen")}</div>}
               </div>

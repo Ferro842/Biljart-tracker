@@ -163,7 +163,8 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData}){
 
 // Stats-tab: seizoen, tijdvenster, totalen, alle partijen, data wissen en 'Over deze app'
 function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestatiesMap,tijdsvenster,setTijdsvenster,
-  seizoenAfsluiten,seizoensplitsingOngedaanMaken,openArchief,verwijderPartij,slaNotitieOp,resetAlles}){
+  seizoenAfsluiten,seizoensplitsingOngedaanMaken,openArchief,verwijderPartij,slaNotitieOp,resetAlles,setSpelelement}){
+  const spel=useContext(SpelContext);
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
   const [confReset,setConfReset]=useState(false);
@@ -198,7 +199,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           const seizoenen=data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}];
           const huidig=seizoenen[seizoenen.length-1];
           const afgesloten=seizoenen.filter(function(s){return s.eindDatum!==null;});
-          const huidigStats=berekenSeizoenStats(alleP,huidig,huidigeDiscipline);
+          const huidigStats=berekenSeizoenStats(alleP,huidig,huidigeDiscipline,!spel);
           return(
             <div>
               <div style={{fontSize:14,color:WIT,marginBottom:2}}>{huidig.naam} <span style={{fontSize:13,color:WITD}}>(sinds {huidig.startDatum?new Date(huidig.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"het begin"})</span></div>
@@ -241,7 +242,22 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           );
         })()}
       </div>
+      {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen */}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Spelelement</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
+          Badges, punten en het schrappen van je slechtste partijen uit je gemiddelde (1 per {PUNTEN_PER_DROP} punten).
+          {spel?" Zet je het uit, dan zie je daar niets meer van en is je gemiddelde gewoon het gemiddelde van al je partijen.":" Staat uit: je gemiddelde is het gemiddelde van al je partijen. De punten worden op de achtergrond bijgehouden; zet je het weer aan, dan is alles direct terug."}
+        </div>
+        <div style={{display:"flex",gap:6}}>
+          {[[true,"🎖️ Aan"],[false,"Uit"]].map(function(x){
+            const actief=spel===x[0];
+            return <button key={x[1]} onClick={function(){if(!actief)setSpelelement(x[0]);}}
+              style={{flex:1,padding:"9px 0",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+          })}
+        </div>
+      </div>
+      {spel&&(<div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
         <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je gemiddelde, je niveau en je 👑🏓-records blijven altijd all-time — een record blijft een record.</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:10}}>
@@ -270,6 +286,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           }
         </div>
       </div>
+      )}
       {stA&&(
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>

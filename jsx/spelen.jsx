@@ -67,6 +67,7 @@ function SetupScherm({spel}){
 
 // Spelen, tijdens de partij: tellers, caramboles invoeren, hints en grafiek van de lopende partij
 function InvoerScherm({spel}){
+  const spelAan=useContext(SpelContext);
   const {alleP,beurtNr,car,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,progPct,setBeurtNr,setCar,setFase,setInp,setLp,stL,tafel,tijdsvensterMaanden,totCarLp}=spel;
   const dInv=beurtDrempels(huidigeDiscipline);
   const s57=lp.filter(function(b){return b.caramboles>=dInv.opbouwMin&&b.caramboles<=dInv.opbouwMax;}).length;
@@ -88,10 +89,10 @@ function InvoerScherm({spel}){
         <div style={{height:3,background:GOUD,width:progPct+"%",transition:"width 0.3s"}}/>
       </div>
       <div style={{padding:"10px 12px 6px",flexShrink:0}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
+        {spelAan&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
           <span style={{fontSize:12,color:WITD}}>🎖️ Deze partij: <strong style={{color:GOUD}}>{partijPunten}pt</strong></span>
           <span style={{fontSize:12,color:WITD}}>Totaal: <strong style={{color:GOUD}}>{niveau.badgePunten+partijPunten}pt</strong></span>
-        </div>
+        </div>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
           {[["Gespeeld",lp.length,WIT],["Caramboles",stL?stL.totCar:0,GOUD],["Gem.",stL?stL.gemPerBeurt:"0.00",GOUDL],["Max",stL?stL.max:0,"#e8a84c"]].map(function(arr){
             return(
@@ -163,11 +164,11 @@ function InvoerScherm({spel}){
           }
           const hints=[];
           if(huidigeStreak>0&&huidigeStreak<8){
-            if(huidigeStreak<5)hints.push("⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(5-huidigeStreak)+" tot 15pt)");
-            else hints.push("⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(8-huidigeStreak)+" tot 25pt)");
+            if(huidigeStreak<5)hints.push(spelAan&&"⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(5-huidigeStreak)+" tot 15pt)");
+            else hints.push(spelAan&&"⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(8-huidigeStreak)+" tot 25pt)");
           }
           if(lp.length>0&&lp[lp.length-1].caramboles===0){
-            hints.push("💪 Volgende beurt "+dInv.opbouwMin+"+ car = sterk herstel (+15pt)");
+            hints.push(spelAan&&"💪 Volgende beurt "+dInv.opbouwMin+"+ car = sterk herstel (+15pt)");
           }
           if(stL){
             const gemNu=parseFloat(stL.gemPerBeurt);
@@ -178,7 +179,7 @@ function InvoerScherm({spel}){
             if(gemNu<drempel2Nu){
               const drempel=gemNu<drempel1Nu?drempel1Nu:drempel2Nu;
               const afstand=drempel-gemNu;
-              if(afstand<stapNu)hints.push("⭐ Nog "+afstand.toFixed(2)+" tot gemiddelde "+gemDrempelTekst(drempel,stapNu));
+              if(afstand<stapNu)hints.push(spelAan&&"⭐ Nog "+afstand.toFixed(2)+" tot gemiddelde "+gemDrempelTekst(drempel,stapNu));
             }
             if(huidigeRecords.allTimeBestGem>0){
               const afstandRecord=huidigeRecords.allTimeBestGem-gemNu;
@@ -201,10 +202,10 @@ function InvoerScherm({spel}){
           if(lp.length>=3){
             const poedelsNu=lp.filter(function(x){return x.caramboles===0;}).length;
             if(poedelsNu===0){
-              hints.push("🛡️ Nog 0 poedels in "+lp.length+" beurten, blijf dit volhouden voor +30pt");
+              hints.push(spelAan&&"🛡️ Nog 0 poedels in "+lp.length+" beurten, blijf dit volhouden voor +30pt");
             }else{
               const poedelPctNu=poedelsNu/lp.length*100;
-              if(poedelPctNu<20)hints.push("✅ "+Math.round(poedelPctNu)+"% poedels tot nu toe (drempel: <20%)");
+              if(poedelPctNu<20)hints.push(spelAan&&"✅ "+Math.round(poedelPctNu)+"% poedels tot nu toe (drempel: <20%)");
             }
           }
           if(lp.length>0&&huidigeRecords.allTimeMaxBeurt>0){
@@ -218,16 +219,17 @@ function InvoerScherm({spel}){
             const gemENu=eersteNu.reduce(function(a,b){return a+b.caramboles;},0)/eersteNu.length;
             const gemTNu=tweedeNu.reduce(function(a,b){return a+b.caramboles;},0)/tweedeNu.length;
             if(gemTNu>gemENu&&stL&&parseFloat(stL.gemPerBeurt)>huidigeRecords.totaalGem){
-              hints.push("📈 Tot nu toe op koers voor sterke afsluiting: 1e helft "+gemENu.toFixed(2)+" · 2e helft "+gemTNu.toFixed(2)+" (schatting, kan nog veranderen)");
+              hints.push(spelAan&&"📈 Tot nu toe op koers voor sterke afsluiting: 1e helft "+gemENu.toFixed(2)+" · 2e helft "+gemTNu.toFixed(2)+" (schatting, kan nog veranderen)");
             }
           }
           if(doel&&doelType==="caramboles"){
             if(totCarLp<doel)hints.push("🎯 Nog "+(doel-totCarLp)+" caramboles tot je doel");
           }
-          if(hints.length===0)return null;
+          const zichtbaar=hints.filter(Boolean); // badge-hints zijn false als het spelelement uit staat
+          if(zichtbaar.length===0)return null;
           return(
             <div style={{background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
-              {hints.map(function(h,i){return <div key={i} style={{fontSize:13,color:WITD,padding:"2px 0"}}>{h}</div>;})}
+              {zichtbaar.map(function(h,i){return <div key={i} style={{fontSize:13,color:WITD,padding:"2px 0"}}>{h}</div>;})}
             </div>
           );
         })()}

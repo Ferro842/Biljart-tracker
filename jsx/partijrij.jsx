@@ -4,10 +4,11 @@
 
 // Labels achter de datum van een partij: tafelmaat, badge-punten, geschrapt uit gemiddelde, notitie
 function PartijLabels({p,punten,gedropt}){
+  const spel=useContext(SpelContext);
   return(
     <>
       {p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}
-      {punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}
+      {spel&&punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}
       {gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit gemiddelde</span>}
       {p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}
     </>
@@ -51,6 +52,7 @@ function PartijBeheer({p,onNotitie,onVerwijder}){
 }
 
 function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
+  const spel=useContext(SpelContext);
   const [open,setOpen]=useState(false);
   const st=stat(p.beurten,discipline);
   if(!st)return null;
@@ -80,7 +82,7 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
               );
             })}
           </div>
-          <PrestatieOverzicht prestatie={prestatie}/>
+          {spel&&<PrestatieOverzicht prestatie={prestatie}/>}
           <PartijBeheer p={p} onNotitie={onNotitie} onVerwijder={onVerwijder}/>
         </div>
       )}
@@ -89,6 +91,7 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
 }
 
 function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
+  const spel=useContext(SpelContext);
   const [open,setOpen]=useState(false);
   const st=stat(p.beurten,discipline);
   const punten=prestatie?prestatie.punten:0;
@@ -104,7 +107,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie})
       </button>
       {open&&(
         <div style={{padding:"0 14px 12px"}}>
-          <PrestatieOverzicht prestatie={prestatie}/>
+          {spel&&<PrestatieOverzicht prestatie={prestatie}/>}
           {[].concat(p.beurten).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={p.beurten.length-i} discipline={discipline}/>;}) }
           <PartijBeheer p={p} onNotitie={onNotitie} onVerwijder={onVerwijder}/>
         </div>

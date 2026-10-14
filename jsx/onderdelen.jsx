@@ -211,7 +211,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
                     <span style={{fontSize:12,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
                   </div>
                   <div style={{fontSize:11,color:WITD,marginTop:2,textDecoration:"line-through",opacity:0.8}}>
-                    p{p.id} · gem {p.gem.toFixed(dec)}
+                    p{p.nr} · gem {p.gem.toFixed(dec)}
                   </div>
                   <div style={{fontSize:10,color:"#ff9f80",marginTop:1}}>telt niet mee</div>
                 </div>
@@ -226,7 +226,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
 
       {niveau.volgendeKandidaatId&&(
         <div style={{marginTop:8,textAlign:"center",fontSize:11,color:"#ff9f80"}}>
-          🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatId} (gem {niveau.volgendeKandidaatGem.toFixed(dec)})
+          🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatNr} (gem {niveau.volgendeKandidaatGem.toFixed(dec)})
         </div>
       )}
       {niveau.voorspelling&&niveau.volgende&&(

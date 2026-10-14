@@ -268,10 +268,10 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
 function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
   const ST=useMemo(()=>{
-    return (partijen||[]).map(function(p){
+    return (partijen||[]).map(function(p,i){
       const st=stat(p.beurten,discipline);
       if(!st)return null;
-      return{id:p.id,datum:p.datum,tafel:p.tafel||"230",tot:st.totCar,n:st.aantalBeurten,max:st.max,poedels:st.poedels,opbouw:st.opbouw5,gem:parseFloat(st.gemPerBeurt),beurten:p.beurten};
+      return{nr:i+1,id:p.id,datum:p.datum,tafel:p.tafel||"230",tot:st.totCar,n:st.aantalBeurten,max:st.max,poedels:st.poedels,opbouw:st.opbouw5,gem:parseFloat(st.gemPerBeurt),beurten:p.beurten};
     }).filter(Boolean);
   },[partijen,discipline]);
 
@@ -599,7 +599,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Alle beurten</span>
               <span style={{fontSize:12,color:WITD}}>{sel.length} partijen · {sel.reduce((a,p)=>a+p.n,0)} beurten</span>
             </div>
-            <BeurtenTijdlijn partijen={sel} nummers={sel.map(p=>ST.indexOf(p)+1)} discipline={discipline} niveau={niveau}/>
+            <BeurtenTijdlijn partijen={sel} nummers={sel.map(p=>p.nr)} discipline={discipline} niveau={niveau}/>
           </div>}
         </div>}
 
@@ -625,7 +625,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               <div style={{fontSize:13,color:GRNT,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Beste 5</div>
               {[...filt].sort((a,b)=>b.gem-a.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
-                  <span style={{fontSize:13,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
+                  <span style={{fontSize:13,color:WITD}}>p{p.nr} {fmtDatum(p.datum)}</span>
                   <span style={{fontSize:14,fontWeight:"bold",color:GRNT}}>{p.gem}</span>
                 </div>
               ))}
@@ -634,7 +634,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               <div style={{fontSize:13,color:ROOD,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Slechtste 5</div>
               {[...filt].sort((a,b)=>a.gem-b.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
-                  <span style={{fontSize:13,color:WITD}}>p{p.id} {fmtDatum(p.datum)}</span>
+                  <span style={{fontSize:13,color:WITD}}>p{p.nr} {fmtDatum(p.datum)}</span>
                   <span style={{fontSize:14,fontWeight:"bold",color:ROOD}}>{p.gem}</span>
                 </div>
               ))}
@@ -763,7 +763,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
             {kaart("Totaal",totaalPuntenSel,"punten",GOUD)}
             {kaart("Gem.",gemPuntenSel,"per partij",GOUDL)}
-            {kaart("Beste partij",top5Punten.length?top5Punten[0].punten:0,top5Punten.length?"p"+top5Punten[0].id:"—",GRNT)}
+            {kaart("Beste partij",top5Punten.length?top5Punten[0].punten:0,top5Punten.length?"p"+top5Punten[0].nr:"—",GRNT)}
           </div>
 
           <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
@@ -772,7 +772,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               ?<div style={{fontSize:14,color:WITD}}>Nog geen prestaties behaald in deze selectie.</div>
               :top5Punten.filter(p=>p.punten>0).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"5px 0",borderBottom:`1px solid ${KBDR}`}}>
-                  <span style={{fontSize:13,color:WITD}}>p{p.id} · {fmtDatum(p.datum)} <span style={{color:WITD,opacity:0.7}}>({p.badges.length} badges)</span></span>
+                  <span style={{fontSize:13,color:WITD}}>p{p.nr} · {fmtDatum(p.datum)} <span style={{color:WITD,opacity:0.7}}>({p.badges.length} badges)</span></span>
                   <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{p.punten}pt</span>
                 </div>
               ))

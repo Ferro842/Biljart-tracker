@@ -238,7 +238,8 @@ function categorieKleur(cat){
 //    direct invloed op je gemiddelde, zonder dat een mindere partij ooit "aftrekt".
 function berekenNiveauInfo(partijen){
   const discipline=(partijen&&partijen.length>0)?(partijen[0].discipline||"libre"):"libre";
-  const geldige=(partijen||[]).map(function(p){return{p:p,st:stat(p.beurten,discipline)};}).filter(function(x){return x.st;});
+  // nr = partijnummer zoals in Stats en Log (positie binnen deze discipline), id = intern id
+  const geldige=(partijen||[]).map(function(p,i){return{p:p,nr:i+1,st:stat(p.beurten,discipline)};}).filter(function(x){return x.st;});
   let car=0,beurt=0;
   geldige.forEach(function(x){car+=x.st.totCar;beurt+=x.st.aantalBeurten;});
   const totaalGemiddelde=beurt>0?car/beurt:0;
@@ -253,7 +254,7 @@ function berekenNiveauInfo(partijen){
   const effectiefGemiddelde=effBeurt>0?effCar/effBeurt:totaalGemiddelde;
 
   const gedroptePartijen=gedropt.map(function(x){
-    return{id:x.p.id,datum:x.p.datum,gem:parseFloat(x.st.gemPerBeurt)};
+    return{id:x.p.id,nr:x.nr,datum:x.p.datum,gem:parseFloat(x.st.gemPerBeurt)};
   });
 
   const volgendeKandidaat=gesorteerd[aantalDrops]||null;
@@ -262,6 +263,7 @@ function berekenNiveauInfo(partijen){
   return{totaalGemiddelde:totaalGemiddelde,effectiefGemiddelde:effectiefGemiddelde,badgePunten:badgePunten,
     aantalDrops:aantalDrops,gedropteIds:gedropteIds,gedroptePartijen:gedroptePartijen,
     volgendeKandidaatId:volgendeKandidaat?volgendeKandidaat.p.id:null,
+    volgendeKandidaatNr:volgendeKandidaat?volgendeKandidaat.nr:null,
     volgendeKandidaatGem:volgendeKandidaat?parseFloat(volgendeKandidaat.st.gemPerBeurt):null,
     puntenTotVolgendeDrop:puntenTotVolgendeDrop};
 }

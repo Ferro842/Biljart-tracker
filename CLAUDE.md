@@ -101,6 +101,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Zonder browser: `node test/snapshot-node.js` geeft dezelfde hash als `snapshot.js`; met `--details` de volledige
   uitkomst (handig om voor en na een rekenwijziging per discipline te vergelijken).
 - Na `alles.js` direct herladen, anders schrijft de app de geïmporteerde testback-up terug over de testdata.
+- Service worker: `node test/sw-node.js` (de ingebouwde browser ondersteunt geen service workers).
 - iOS: `npm run build && npx cap sync ios`, daarna bouwen voor de simulator of `npm run ios` (opent Xcode).
 
 ## Bekende eigenaardigheden
@@ -108,9 +109,10 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - iOS beginscherm-PWA heeft eigen opslag, los van Safari; een opnieuw toegevoegd icoon start leeg.
 - iOS legt het beginscherm-icoon eenmalig vast; het verandert niet bij een update.
 - GitHub Pages cachet ongeveer 10 minuten; daarom de `?v=`-versie in de script-tags.
-- De service worker cachet niets; de website heeft dus internet nodig (de iOS-app niet).
+- `sw.js` (website): eerst het netwerk, cache als terugval (offline of na 4 s). Nieuwe app-bestanden ook in
+  `VOORAF` in `sw.js` zetten; `node test/sw-node.js` controleert dat en test online/offline/traag.
 - Na een push: `npm run ios` en opnieuw installeren is nodig om de iOS-app bij te werken.
 
 ## Open punten
 
-- Offline-cache voor de website (service worker) is nog niet gebouwd.
+- (geen)

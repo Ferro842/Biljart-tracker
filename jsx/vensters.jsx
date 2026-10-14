@@ -77,7 +77,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
   const schermen=[
     {
       titel:"Zet de app op je beginscherm",
-      body:"Voor het beste gebruik installeer je de app als een normale app-icoon op je beginscherm — dat opent sneller dan steeds de link opzoeken, en voelt als een echte app. Internet blijft wel nodig om de app te openen.",
+      body:"Voor het beste gebruik installeer je de app als een normale app-icoon op je beginscherm — dat opent sneller dan steeds de link opzoeken, en voelt als een echte app. Na de eerste keer opent de app ook zonder internet.",
       installeer:true,
       alleenWeb:true
     },

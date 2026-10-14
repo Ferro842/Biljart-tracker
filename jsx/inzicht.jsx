@@ -19,7 +19,21 @@ function InzichtPaneel({partijen,discipline}){
   if(!inz)return <div style={{fontSize:14,color:WITD,padding:"8px 0"}}>Nog geen beurten in deze selectie.</div>;
   const dec=discipline==="driebanden"?3:2;
   const pctTekst=function(x){return Math.round(x*100)+"%";};
-  const icoon={sterk:"💪",werk:"🎯",serie:"🔥",omstandigheid:"🧭",trend:"📈"};
+  const icoon={vorm:"📊",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
+  const spelZinnen=inz.coach.filter(function(c){return c.soort!=="omstandigheid";});
+  const omstZinnen=inz.coach.filter(function(c){return c.soort==="omstandigheid";});
+  const zin=function(c,i,lijst){
+    return(
+      <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:i<lijst.length-1?10:0}}>
+        <span style={{fontSize:18,lineHeight:1.3,flexShrink:0}}>{icoon[c.soort]}</span>
+        <span style={{fontSize:14,color:WIT,lineHeight:1.45}}>{c.tekst}</span>
+      </div>
+    );
+  };
+  const kopje=function(t){return <div style={{fontSize:11,color:GOUDL,textTransform:"uppercase",letterSpacing:1,margin:"4px 0 8px",opacity:0.85}}>{t}</div>;};
+  const op=inz.opbouw;
+  const opbouwRijen=[op.totaal].concat(op.perTafel).concat(op.eerste&&op.tweede?[op.eerste,op.tweede]:[]);
+  const maxAlsScoort=Math.max(1,...opbouwRijen.map(function(x){return x.alsScoort;}));
   const maxGebruik=Math.max(1,...inz.profiel.map(function(x){return x.gebruik;}));
   const maxSerie=Math.max(1,...inz.seriemakers.map(function(x){return x.gem;}));
   const stoppers=inz.seriestoppers.filter(function(x){return x.aantal>=3;}).slice(0,6);
@@ -41,14 +55,13 @@ function InzichtPaneel({partijen,discipline}){
         <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Wat je data zegt</div>
         {inz.coach.length===0
           ?<div style={{fontSize:14,color:WITD,lineHeight:1.5}}>Nog te weinig opmerkingen in deze selectie voor duidelijke conclusies. Vink in een partij na elke beurt aan waardoor je serie eindigde en wat goed ging, dan vult dit zich vanzelf.</div>
-          :inz.coach.map(function(c,i){
-            return(
-              <div key={i} style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:i<inz.coach.length-1?10:0}}>
-                <span style={{fontSize:18,lineHeight:1.3,flexShrink:0}}>{icoon[c.soort]}</span>
-                <span style={{fontSize:14,color:WIT,lineHeight:1.45}}>{c.tekst}</span>
-              </div>
-            );
-          })}
+          :<>
+            {spelZinnen.length>0&&kopje("Je spel")}
+            {spelZinnen.map(zin)}
+            {omstZinnen.length>0&&<div style={{height:12}}/>}
+            {omstZinnen.length>0&&kopje("Omstandigheden")}
+            {omstZinnen.map(zin)}
+          </>}
         <div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:12,lineHeight:1.45,borderTop:"1px solid "+KBDR,paddingTop:8}}>
           📋 Technieken en series: {inz.dekking.bijgehouden} van je {inz.dekking.partijen} partijen bijgehouden
           (minstens {pctTekst(INZICHT_DEKKING)} van de beurten met een opmerking); alleen die tellen mee.
@@ -57,6 +70,57 @@ function InzichtPaneel({partijen,discipline}){
           {" "}Tafel, avond en fase gaan over al je partijen. Conclusies pas vanaf {INZICHT_MIN} voorbeelden.
         </div>
       </div>
+
+      {/* Opbouw van je gemiddelde */}
+      <InzichtKaart titel="Waar komt je gemiddelde vandaan"
+        uitleg="Je gemiddelde is twee dingen: hoe vaak je in een beurt scoort, en hoeveel caramboles je dan maakt.">
+        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexWrap:"wrap",background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"12px 8px",marginBottom:12}}>
+          <div style={{textAlign:"center"}}><div style={{fontSize:24,fontWeight:"bold",color:GRNT}}>{pctTekst(op.totaal.scoorPct)}</div><div style={{fontSize:11,color:WITD}}>van je beurten<br/>scoor je</div></div>
+          <div style={{fontSize:20,color:WITD}}>×</div>
+          <div style={{textAlign:"center"}}><div style={{fontSize:24,fontWeight:"bold",color:GOUDL}}>{komma(op.totaal.alsScoort,2)}</div><div style={{fontSize:11,color:WITD}}>caramboles<br/>als je scoort</div></div>
+          <div style={{fontSize:20,color:WITD}}>=</div>
+          <div style={{textAlign:"center"}}><div style={{fontSize:24,fontWeight:"bold",color:GOUD}}>{komma(op.totaal.gem,dec)}</div><div style={{fontSize:11,color:WITD}}>gemiddeld<br/>per beurt</div></div>
+        </div>
+        {opbouwRijen.length>1&&(
+          <div>
+            <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>
+              <span style={{width:84}}></span><span style={{flex:1}}>scoort</span><span style={{flex:1,paddingLeft:6}}>als je scoort</span><span style={{width:42,textAlign:"right"}}>gem</span>
+            </div>
+            {opbouwRijen.map(function(x,i){
+              const scheiding=(i===1&&op.perTafel.length>0)||(op.eerste&&x===op.eerste);
+              return(
+                <div key={x.label} style={{display:"flex",alignItems:"center",fontSize:12,padding:"5px 0",borderTop:scheiding?"1px solid "+KBDR:"none"}}>
+                  <span style={{width:84,color:WIT}}>{x.label}</span>
+                  <span style={{flex:1,display:"flex",alignItems:"center",gap:4}}>
+                    <span style={{flex:1,height:6,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}}><span style={{display:"block",width:(x.scoorPct*100)+"%",height:"100%",background:GRNT}}/></span>
+                    <span style={{width:30,color:WITD,textAlign:"right"}}>{pctTekst(x.scoorPct)}</span>
+                  </span>
+                  <span style={{flex:1,display:"flex",alignItems:"center",gap:4,paddingLeft:6}}>
+                    <span style={{flex:1,height:6,background:"rgba(255,255,255,0.08)",borderRadius:3,overflow:"hidden"}}><span style={{display:"block",width:(x.alsScoort/maxAlsScoort*100)+"%",height:"100%",background:GOUDL}}/></span>
+                    <span style={{width:30,color:WITD,textAlign:"right"}}>{komma(x.alsScoort,1)}</span>
+                  </span>
+                  <span style={{width:42,textAlign:"right",fontWeight:"bold",color:GOUD}}>{komma(x.gem,dec)}</span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {/* Motor, poedel en hoogste serie als drie kleine tegels */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginTop:12}}>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+            <div style={{fontSize:18,fontWeight:"bold",color:GOUDL}}>{pctTekst(inz.motor.carPct)}</div>
+            <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>van je caramboles uit {pctTekst(inz.motor.beurtPct)} van je beurten ({inz.motor.drempel}+)</div>
+          </div>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+            <div style={{fontSize:18,fontWeight:"bold",color:inz.poedel.naPoedel!==null&&inz.poedel.naPoedel-inz.poedel.kans>=0.1?ROOD:GRNT}}>{inz.poedel.naPoedel===null?"—":pctTekst(inz.poedel.naPoedel)}</div>
+            <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>kans op poedel na een poedel (gewoonlijk {pctTekst(inz.poedel.kans)})</div>
+          </div>
+          <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+            <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{inz.hoogsteSerie?komma(inz.hoogsteSerie.eerste,1)+" → "+komma(inz.hoogsteSerie.tweede,1):"—"}</div>
+            <div style={{fontSize:10,color:WITD,lineHeight:1.3}}>hoogste serie per partij, eerste → tweede helft</div>
+          </div>
+        </div>
+      </InzichtKaart>
 
       {/* Speelprofiel per techniek */}
       {inz.profiel.length>0&&(

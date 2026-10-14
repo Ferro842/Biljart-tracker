@@ -33,6 +33,9 @@ const GOED=[
 const SK="biljart-tracker-v2";
 // Openbare adressen van de app, o.a. voor "Deel deze app" vanuit de iOS-app. APP_STORE_URL invullen
 // zodra de app in de App Store staat (vorm: https://apps.apple.com/app/id1234567890).
+// Eenmalige aanvulling (14 okt 2026): in partijen op de 2,30 tot deze datum begon iedereen met de acquit,
+// dus beurt 1 is daar de acquit. Voor latere partijen geldt dat niet vanzelf (bijv. met z'n tweeën).
+const ACQUIT_AANVULLING_TOT="2026-10-15T00:00:00";
 const WEB_URL="https://ferro842.github.io/Biljart-tracker/";
 const APP_STORE_URL=null;
 

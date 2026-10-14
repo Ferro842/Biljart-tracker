@@ -444,7 +444,7 @@ function berekenInzicht(partijen,discipline){
   (partijen||[]).forEach(function(p,pi){
     (p.beurten||[]).forEach(function(b,bi){
       beurten.push({car:b.caramboles,gemist:b.gemist||[],goed:b.goed||[],pi:pi,bi:bi,tafel:p.tafel||"230",
-        tijd:b.tijd||p.datum,vorige:bi>0?p.beurten[bi-1].caramboles:null});
+        tijd:b.tijd||p.datum,oudeAcquit:bi===0&&p.tafel==="230"&&new Date(p.datum).getTime()<new Date(ACQUIT_AANVULLING_TOT).getTime(),vorige:bi>0?p.beurten[bi-1].caramboles:null});
     });
   });
   const n=beurten.length;
@@ -452,9 +452,9 @@ function berekenInzicht(partijen,discipline){
   const som=function(a){return a.reduce(function(s,b){return s+b.car;},0);};
   const basis=som(beurten)/n;
 
-  // Welke partijen zijn bijgehouden? Alleen daarvan tellen de opmerkingen mee. De acquit in beurt 1 op de
-  // 2,30 wordt automatisch ingevuld (vulAcquitAan) en telt daarom niet mee voor "bijgehouden".
-  const isAcquitBeurt=function(b){return b.bi===0&&b.tafel==="230";};
+  // Welke partijen zijn bijgehouden? Alleen daarvan tellen de opmerkingen mee. De acquit in beurt 1 van de
+  // oude 2,30-partijen is automatisch aangevuld (vulAcquitAan) en telt daarom niet mee voor "bijgehouden".
+  const isAcquitBeurt=function(b){return b.oudeAcquit;};
   const eigen=function(lijst,b){return isAcquitBeurt(b)?lijst.filter(function(x){return x!=="Acquit";}):lijst;};
   const heeftOpmerking=function(b){return eigen(b.gemist,b).length>0||eigen(b.goed,b).length>0;};
   const bijgehouden={},perTafel={};
@@ -469,7 +469,7 @@ function berekenInzicht(partijen,discipline){
   const bijgehoudenIdx=Object.keys(bijgehouden).map(Number).sort(function(a,b){return a-b;});
   const tagBeurten=beurten.filter(function(b){return bijgehouden[b.pi];});
   const basisTag=tagBeurten.length?som(tagBeurten)/tagBeurten.length:0;
-  // Acquit is op de 2,30 in elke partij bekend (beurt 1), ook als de partij verder niet bijgehouden is
+  // In die oude 2,30-partijen is de acquit (beurt 1) altijd bekend, ook als de partij verder niet bijgehouden is
   const acquitExtra=beurten.filter(function(b){return isAcquitBeurt(b)&&!bijgehouden[b.pi];});
   const bron=function(t){return t==="Acquit"?tagBeurten.concat(acquitExtra):tagBeurten;};
   const dekking={partijen:(partijen||[]).length,bijgehouden:bijgehoudenIdx.length,

@@ -87,7 +87,7 @@ function InzichtPaneel({partijen,discipline}){
           </div>
           {inz.acquitPartijen>0&&(
             <div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:6}}>
-              Acquit: op de 2,30 is beurt 1 altijd de acquit ({inz.acquitPartijen} partijen). Caramboles in die beurt = gemaakt, poedel = gemist.
+              Acquit: in je {inz.acquitPartijen} partijen op de 2,30 tot 14 oktober 2026 telt beurt 1 als acquit (caramboles = gemaakt, poedel = gemist). Daarna alleen als je hem zelf aanvinkt.
             </div>
           )}
         </InzichtKaart>

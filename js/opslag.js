@@ -27,12 +27,15 @@ function migreerTafels(d){
 // In de iOS-app (Capacitor) staat de data in een bestand in de Library-map van de app: dat blijft
 // bewaard en gaat mee in iPhone-backups, anders dan de localStorage van de webview. localStorage wordt
 // daarnaast bijgehouden als extra kopie. De webversie gebruikt alleen localStorage.
-// In partijen op de 2,30 begint iedereen met de acquit: beurt 1 met caramboles = acquit gemaakt (bij Goed),
-// een poedel in beurt 1 = acquit gemist (bij Gemist). Wordt bij het laden met terugwerkende kracht ingevuld
-// en bij het afsluiten van een nieuwe partij. Alleen toevoegen, nooit iets weghalen; staat het er al, dan
-// verandert er niets. Geeft true terug als de partij is aangevuld.
+// Eenmalige aanvulling met terugwerkende kracht: in partijen op de 2,30 van vóór ACQUIT_AANVULLING_TOT
+// begon iedereen met de acquit. Beurt 1 met caramboles = acquit gemaakt (bij Goed), een poedel = gemist
+// (bij Gemist). Latere partijen blijven ongemoeid. Alleen toevoegen, nooit iets weghalen; staat het er al,
+// dan verandert er niets. Geeft true terug als de partij is aangevuld.
+function isOudeAcquitPartij(p){
+  return !!p&&p.tafel==="230"&&new Date(p.datum).getTime()<new Date(ACQUIT_AANVULLING_TOT).getTime();
+}
 function vulAcquitAan(p){
-  if(!p||p.tafel!=="230"||!p.beurten||!p.beurten.length)return false;
+  if(!isOudeAcquitPartij(p)||!p.beurten||!p.beurten.length)return false;
   const b=p.beurten[0];
   const lijst=b.caramboles>0?"goed":"gemist";
   const huidig=b[lijst]||[];

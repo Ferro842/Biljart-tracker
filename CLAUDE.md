@@ -40,7 +40,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   extra kopie. Zonder bestand wordt eenmalig de localStorage-data overgezet.
 - Structuur: `{ partijen:[{id,datum,tafel,doel,doelType,discipline,beurten:[{id,caramboles,gemist[],goed[],tijd}],
   notitie?,...statvelden}], huidigeId, tijdsvenster, seizoenen, laatstGezienNiveauIndex, huidigeDiscipline,
-  onboardingGezien }`. `huidigeId` is één teller voor partijen én beurten.
+  onboardingGezien, lopendePartij? }`. `huidigeId` is één teller voor partijen én beurten.
+- `lopendePartij` (optioneel): `{beurten,tafel,doel,doelType}` van een nog niet afgesloten partij; wordt bij
+  elke wijziging bewaard, bij het laden teruggezet en bij afsluiten in dezelfde opslag verwijderd.
 - Partij zonder `discipline` = libre; zonder `tafel` wordt gemigreerd door `migreerTafels()`.
 - Back-up: Data → Exporteer/Importeer (JSON). "Kopieer data" is alleen een leesbare tekstexport.
 
@@ -96,8 +98,6 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
   driebanden (gemiddeldes rond 0,4) is dat te grof.
 - "Sterk herstel na poedel": `berekenPrestaties` en de Dash-patronen gebruiken vast 5 car, de catalogus,
   live-toast en hint gebruiken `opbouwMin`.
-- Dash toont op sommige plekken `p{id}` (intern id) in plaats van het partijnummer.
 - `PartijRij` en `LogPartijRij` hebben dubbele notitie/verwijder-code; scroll-noodoplossing in `StatsTab`
   is sinds stap 10 overbodig.
-- Een lopende partij staat alleen in React-state en gaat verloren als de app sluit.
 - Offline-cache voor de website (service worker) is nog niet gebouwd.

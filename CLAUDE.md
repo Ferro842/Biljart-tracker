@@ -82,7 +82,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   aantal (`perAantal`, aantikken in de kaart) met datum/partij/beurt/opmerkingen, record per tafel en per
   tafel laatste 10 partijen tegenover ervoor (gemiddelde hoogste serie en series vanaf `sterkMin` per partij);
   oordeel beter/stabiel/minder bij ±8%, pas vanaf 6 partijen op die tafel.
-  Grafiek: 1 staafje = 1 partij (hoogste serie in die partij); aantikken toont alle series vanaf `vanaf` in die partij (`series`), met beurt en opmerkingen; ×n boven het staafje = aantal.
+  Grafiek: per partij een groepje (eigen vlakje, label pNr) met al je series vanaf `vanaf` in volgorde van de
+  partij, zonder zo'n serie alleen de hoogste; scrollt zijwaarts en opent rechts (nieuwste). Aantikken toont
+  poedels en alle series van die partij (`series`) met beurt en opmerkingen.
   Poedel na poedel per tafel (`poedel.perTafel`) en vergeleken met "na een score", niet met de gewone
   poedelkans: over alle tafels samen geeft de moeilijkere tafel een vals "poedels komen in reeksen".
 - Niveau volgt je **vorm**: gemiddelde van je laatste `vormVenster` partijen (Stats; 10/20/30/"alles", standaard

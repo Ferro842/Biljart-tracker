@@ -20,6 +20,11 @@ function InzichtPaneel({partijen,discipline}){
   const [serieAantal,setSerieAantal]=useState(null);
   // Aangetikt staafje in de grafiek hoogste serie per partij: {tafel,nr}
   const [staaf,setStaaf]=useState(null);
+  // Grafieken hoogste series scrollen zijwaarts; bij openen naar rechts (je nieuwste partijen)
+  const grafiekRefs=useRef({});
+  useEffect(function(){
+    Object.keys(grafiekRefs.current).forEach(function(k){const el=grafiekRefs.current[k];if(el)el.scrollLeft=el.scrollWidth;});
+  },[partijen,discipline]);
   // Vergelijken in poedels en series: welke twee groepen partijen (zie vergelijkSeries)
   const [vgModus,setVgModus]=useState("helften");
   // "Vanaf": knip bij een zelf gekozen maand (standaard de maand die de partijen het eerlijkst in tweeën deelt)
@@ -105,7 +110,6 @@ function InzichtPaneel({partijen,discipline}){
             uitleg={"Per tafel je record en je hoogste serie per partij. Je laatste partijen (fel) tegenover die ervoor (vaag): gaat het de goede kant op? Grote series = "+hs.grootMin+" of meer."}>
             {hs.perTafel.map(function(x){
               const o=x.oordeel?oordeelStijl[x.oordeel]:null;
-              const metGetal=x.partijen.length<=30;
               return(
                 <div key={x.tafel} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"10px",marginBottom:10}}>
                   <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6,gap:8}}>
@@ -117,21 +121,38 @@ function InzichtPaneel({partijen,discipline}){
                     <span style={{fontSize:12,color:WITD}}>record · {fmtDatum(x.record.datum)} · p{x.record.nr}, beurt {x.record.beurt}</span>
                   </div>}
                   {/* Hoogste serie per partij */}
-                  <div style={{fontSize:11,color:WITD,marginBottom:2}}>Hoogste serie per partij (1 staafje = 1 partij, tik voor details):</div>
-                  <div style={{display:"flex",alignItems:"flex-end",gap:2,height:74,paddingTop:12}}>
-                    {x.partijen.map(function(p,i){
-                      const recent=i>=x.partijen.length-x.aantal,isRecord=x.record&&p.nr===x.record.nr&&p.max===x.record.car;
-                      const gekozen=staaf&&staaf.tafel===x.tafel&&staaf.nr===p.nr;
-                      return(
-                        <div key={p.nr} onClick={function(){setStaaf(gekozen?null:{tafel:x.tafel,nr:p.nr});}}
-                          style={{flex:1,minWidth:2,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%",cursor:"pointer"}}>
-                          {metGetal&&p.series.length>1&&<span style={{fontSize:7,color:GOUDL,opacity:gekozen||recent?1:0.6,lineHeight:1}}>×{p.series.length}</span>}
-                          {metGetal&&<span style={{fontSize:8,color:gekozen||recent?WIT:WITD,opacity:gekozen||recent?1:0.6,marginBottom:1,fontWeight:gekozen?"bold":"normal"}}>{p.max}</span>}
-                          <div style={{width:"100%",height:Math.max(2,p.max/hoogsteOoit*56),background:beurtKleur(p.max,discipline),opacity:gekozen||recent?1:0.35,
-                            borderRadius:"2px 2px 0 0",outline:gekozen?"2px solid "+WIT:isRecord?"1px solid "+WIT:"none"}}/>
-                        </div>
-                      );
-                    })}
+                  <div style={{fontSize:11,color:WITD,marginBottom:4,lineHeight:1.4}}>
+                    Per partij al je series van {hs.vanaf}+ (geen {hs.vanaf}+? dan je hoogste). Eén vlakje = één partij; scroll naar links voor eerdere partijen, tik voor details.
+                  </div>
+                  <div ref={function(el){grafiekRefs.current[x.tafel||"alle"]=el;}} style={{overflowX:"auto",WebkitOverflowScrolling:"touch",paddingBottom:4}}>
+                    <div style={{display:"flex",alignItems:"flex-end",gap:5,width:"max-content",minWidth:"100%"}}>
+                      {x.partijen.map(function(p,i){
+                        const recent=i>=x.partijen.length-x.aantal;
+                        const gekozen=staaf&&staaf.tafel===x.tafel&&staaf.nr===p.nr;
+                        // In volgorde van de partij; zonder grote serie alleen de hoogste
+                        const staven=p.series.length?p.series.slice().sort(function(a,b){return a.beurt-b.beurt;}):[{car:p.max,beurt:p.beurt}];
+                        const zwak=!gekozen&&!recent;
+                        return(
+                          <div key={p.nr} onClick={function(){setStaaf(gekozen?null:{tafel:x.tafel,nr:p.nr});}}
+                            style={{display:"flex",flexDirection:"column",alignItems:"center",cursor:"pointer",flexShrink:0}}>
+                            <div style={{display:"flex",alignItems:"flex-end",gap:2,height:76,padding:"0 3px",borderRadius:"4px 4px 0 0",
+                              background:gekozen?"rgba(255,255,255,0.16)":"rgba(255,255,255,0.05)",outline:gekozen?"1px solid "+WIT:"none"}}>
+                              {staven.map(function(s){
+                                const isRecord=x.record&&p.nr===x.record.nr&&s.beurt===x.record.beurt;
+                                return(
+                                  <div key={s.beurt} style={{width:13,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%"}}>
+                                    <span style={{fontSize:9,color:zwak?WITD:WIT,opacity:zwak?0.6:1,marginBottom:1,fontWeight:isRecord?"bold":"normal"}}>{s.car}</span>
+                                    <div style={{width:"100%",height:Math.max(2,s.car/hoogsteOoit*58),background:beurtKleur(s.car,discipline),opacity:zwak?0.35:1,
+                                      borderRadius:"2px 2px 0 0",boxShadow:isRecord?"0 0 0 1px "+WIT:"none"}}/>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                            <div style={{fontSize:8,color:gekozen?WIT:WITD,opacity:zwak?0.6:1,marginTop:2,whiteSpace:"nowrap"}}>p{p.nr}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                   <div style={{height:1,background:"rgba(255,255,255,0.15)",marginBottom:8}}/>
                   {(function(){
@@ -148,6 +169,9 @@ function InzichtPaneel({partijen,discipline}){
                           const rijen=p.series.length?p.series:[{car:p.max,beurt:p.beurt,goed:p.goed,gemist:p.gemist}];
                           return(
                             <>
+                              <div style={{fontSize:12,color:WITD,marginTop:2}}>
+                                <span style={{color:ROOD}}>⭕ {p.poedels} poedels</span> van de {p.n} beurten ({Math.round(p.poedels/Math.max(1,p.n)*100)}%)
+                              </div>
                               <div style={{fontSize:12,color:WITD,marginTop:2}}>
                                 {p.series.length>1?p.series.length+" series van "+hs.vanaf+" of meer in deze partij ("+p.n+" beurten):"
                                   :p.series.length===1?"1 serie van "+hs.vanaf+" of meer in deze partij ("+p.n+" beurten):"

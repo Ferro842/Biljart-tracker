@@ -586,7 +586,7 @@ function berekenHoogsteSeries(partijen,discipline){
       const max=c.length?Math.max.apply(null,c):0,bi=c.indexOf(max),b=(p.beurten||[])[bi]||{};
       // Beurt van de hoogste serie (de eerste als hij vaker voorkwam), met de opmerkingen van die beurt
       return{nr:p.nr||pi+1,datum:p.datum,tafel:p.tafel||"230",max:max,groot:c.filter(function(x){return x>=d.sterkMin;}).length,n:c.length,
-        gem:c.length?c.reduce(function(s,x){return s+x;},0)/c.length:0,beurt:bi+1,keer:c.filter(function(x){return x===max;}).length,
+        gem:c.length?c.reduce(function(s,x){return s+x;},0)/c.length:0,beurt:bi+1,poedels:c.filter(function(x){return x===0;}).length,keer:c.filter(function(x){return x===max;}).length,
         goed:(b.goed||[]).filter(function(l){return l!=="Acquit"||bi>0;}),gemist:b.gemist||[],
         // Alle grote series (vanaf `vanaf`) in deze partij, hoogste eerst: er kunnen er meer in één partij zitten
         series:(p.beurten||[]).map(function(x,j){return{car:x.caramboles,beurt:j+1,goed:(x.goed||[]).filter(function(l){return l!=="Acquit"||j>0;}),gemist:x.gemist||[]};})

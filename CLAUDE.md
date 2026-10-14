@@ -75,8 +75,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   serie-groep (`histogramBuckets`) aantal per partij en aandeel van je caramboles; `hefboom` rekent voor wat één
   poedel minder of één serie van `topMin` per partij oplevert. Niet "caramboles als je scoort" gebruiken: dat zegt
   de speler niets. Vergelijken gaat altijd per tafel via `vergelijkSeries(partijen,discipline,modus,opties)`:
-  `helften` (ook voor de coach), `laatste10`, `goedslecht` (slechtste/beste derde) en `maand` (meerdere maanden
-  per kant; losse maanden zijn per tafel te dun). Per kant minstens 3 partijen en 50 beurten.
+  `helften` (ook voor de coach), `laatste10`, `goedslecht` (slechtste/beste derde) en `vanaf` (alles vóór een
+  gekozen maand tegenover alles daarna; standaard `standaardVanaf`). Losse maanden vergelijken is bewust
+  weggelaten: per tafel te weinig partijen per maand. Per kant minstens 3 partijen en 50 beurten.
   Poedel na poedel per tafel (`poedel.perTafel`) en vergeleken met "na een score", niet met de gewone
   poedelkans: over alle tafels samen geeft de moeilijkere tafel een vals "poedels komen in reeksen".
 - Niveau volgt je **vorm**: gemiddelde van je laatste `vormVenster` partijen (Stats; 10/20/30/"alles", standaard

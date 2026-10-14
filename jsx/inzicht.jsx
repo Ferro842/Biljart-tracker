@@ -18,26 +18,12 @@ function InzichtPaneel({partijen,discipline}){
   const inz=useMemo(function(){return berekenInzicht(partijen,discipline);},[partijen,discipline]);
   // Vergelijken in poedels en series: welke twee groepen partijen (zie vergelijkSeries)
   const [vgModus,setVgModus]=useState("helften");
-  // Maanden per kant (meerdere mogelijk); standaard de eerste twee tegenover de laatste twee
-  const [vgMaand,setVgMaand]=useState(null);
+  // "Vanaf": knip bij een zelf gekozen maand (standaard de maand die de partijen het eerlijkst in tweeën deelt)
+  const [vgVanaf,setVgVanaf]=useState(null);
   const maanden=useMemo(function(){return maandenVan(partijen);},[partijen]);
-  const inSel=function(lijst){return lijst.filter(function(m){return maanden.indexOf(m)!==-1;});};
-  const helftM=Math.min(2,Math.floor(maanden.length/2));
-  const maandA=vgMaand?inSel(vgMaand.a):maanden.slice(0,helftM);
-  const maandB=vgMaand?inSel(vgMaand.b):maanden.slice(maanden.length-helftM);
-  const vg=useMemo(function(){return vergelijkSeries(partijen,discipline,vgModus,{a:maandA,b:maandB});},[partijen,discipline,vgModus,maandA.join(),maandB.join()]);
-  const wisselMaand=function(kant,m){
-    const a=maandA.slice(),b=maandB.slice(),deze=kant==="a"?a:b,andere=kant==="a"?b:a;
-    const i=deze.indexOf(m);
-    if(i!==-1)deze.splice(i,1);else{deze.push(m);const j=andere.indexOf(m);if(j!==-1)andere.splice(j,1);}
-    const sorteer=function(x){return x.sort(function(p,q){return maanden.indexOf(p)-maanden.indexOf(q);});};
-    setVgMaand({a:sorteer(a),b:sorteer(b)});
-  };
-  const maandTekst=function(lijst){
-    if(!lijst.length)return"…";
-    const jaar=lijst[lijst.length-1].split(" ")[1],zelfdeJaar=lijst.every(function(m){return m.split(" ")[1]===jaar;});
-    return zelfdeJaar?lijst.map(function(m){return m.split(" ")[0];}).join(" + ")+" "+jaar:lijst.join(" + ");
-  };
+  const vanaf=maanden.indexOf(vgVanaf)>0?vgVanaf:standaardVanaf(partijen);
+  const vg=useMemo(function(){return vergelijkSeries(partijen,discipline,vgModus,{vanaf:vanaf});},[partijen,discipline,vgModus,vanaf]);
+
   if(!inz)return <div style={{fontSize:14,color:WITD,padding:"8px 0"}}>Nog geen beurten in deze selectie.</div>;
   const dec=discipline==="driebanden"?3:2;
   const pctTekst=function(x){return Math.round(x*100)+"%";};
@@ -138,7 +124,7 @@ function InzichtPaneel({partijen,discipline}){
           );
         })}
 
-        {/* Vergelijken, per tafel: eerder tegenover nu, laatste 10, goed tegenover slecht, per maand */}
+        {/* Vergelijken, per tafel: eerder tegenover nu, laatste 10, goed tegenover slecht, vanaf een maand */}
         {(function(){
           const chip=function(aan,tekst,klik,key){
             return <button key={key||tekst} onClick={klik} style={{flex:"0 0 auto",padding:"4px 10px",background:aan?"#2d4a1e":"none",border:"1px solid "+(aan?GOUD:KBDR),
@@ -146,36 +132,25 @@ function InzichtPaneel({partijen,discipline}){
           };
           const kop={helften:inz.helftLabels?"Eerder tegenover nu · "+inz.helftLabels.eerste+" → "+inz.helftLabels.tweede:"Eerder tegenover nu",
             laatste10:"Je laatste partijen tegenover die ervoor",goedslecht:"Je slechtste tegenover je beste partijen",
-            maand:maandTekst(maandA)+" → "+maandTekst(maandB)}[vgModus];
+            vanaf:"Vóór "+vanaf+" → vanaf "+vanaf}[vgModus];
           const uitleg={helften:null,laatste10:"Per tafel je laatste 10 partijen (bij minder dan 20 partijen de laatste helft) tegenover alles daarvoor.",
             goedslecht:"Per tafel je slechtste derde tegenover je beste derde partijen (op gemiddelde): waar zit het verschil tussen een goede en een slechte partij?",
-            maand:"Tik per kant één of meer maanden aan. Per tafel zijn per kant minstens 3 partijen nodig; losse maanden zijn vaak te weinig."}[vgModus];
-          const maandRij=function(label,kant,lijst){
-            return(
-              <div style={{display:"flex",alignItems:"flex-start",gap:5,marginBottom:6}}>
-                <span style={{fontSize:11,color:WITD,width:34,flexShrink:0,paddingTop:5}}>{label}</span>
-                <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-                  {maanden.map(function(m){return chip(lijst.indexOf(m)!==-1,m,function(){wisselMaand(kant,m);},m);})}
-                </div>
-              </div>
-            );
-          };
+            vanaf:"Kies vanaf welke maand: alles daarvoor tegenover alles daarna, bijv. sinds de zomerstop of sinds je anders traint."}[vgModus];
           return(
             <div style={{marginTop:14}}>
               <div style={{fontSize:11,color:WITD,marginBottom:5}}>Vergelijk:</div>
               <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:8}}>
-                {[["helften","Eerder vs nu"],["laatste10","Recent vs ervoor"],["goedslecht","Goed vs slecht"],["maand","Per maand"]].map(function(x){
+                {[["helften","Eerder vs nu"],["laatste10","Recent vs ervoor"],["goedslecht","Goed vs slecht"],["vanaf","Vanaf"]].map(function(x){
                   return chip(vgModus===x[0],x[1],function(){setVgModus(x[0]);},x[0]);
                 })}
               </div>
-              {vgModus==="maand"&&maanden.length>1&&<div style={{marginBottom:6}}>
-                {maandRij("Van",'a',maandA)}
-                {maandRij("Naar",'b',maandB)}
+              {vgModus==="vanaf"&&maanden.length>1&&<div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:8}}>
+                {maanden.slice(1).map(function(m){return chip(m===vanaf,m,function(){setVgVanaf(m);},m);})}
               </div>}
               <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:0.5,marginBottom:uitleg?3:6}}>{kop}</div>
               {uitleg&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:6,lineHeight:1.4}}>{uitleg}</div>}
               {vg.vergelijkingen.length===0&&<div style={{fontSize:12,color:WITD,padding:"6px 0"}}>
-                {vgModus==="maand"&&(!maandA.length||!maandB.length)?"Kies aan beide kanten minstens één maand.":"Te weinig partijen om zo te vergelijken (minstens 3 partijen per kant, per tafel)."}
+                {"Te weinig partijen om zo te vergelijken (minstens 3 partijen per kant, per tafel)."}
               </div>}
               {vg.vergelijkingen.map(function(v){
                 return(
@@ -210,7 +185,7 @@ function InzichtPaneel({partijen,discipline}){
                 );
               })}
               {vg.vergelijkingen.length>0&&vg.teWeinig.filter(Boolean).length>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:6}}>
-                Te weinig partijen voor deze vergelijking op de {vg.teWeinig.filter(Boolean).map(tafelLabel).join(" en ")}.
+                Te weinig partijen voor deze vergelijking op de {vg.teWeinig.filter(Boolean).map(tafelLabel).join(", ").replace(/, ([^,]*)$/," en $1")}.
               </div>}
               {vg.vergelijkingen.length>0&&<div style={{fontSize:11,color:WITD,opacity:0.8}}>"Effect" is hoeveel die groep je gemiddelde omhoog (+) of omlaag (−) bracht; samen is dat precies het verschil. Minder poedels zie je terug als meer series. "Per partij" hangt ook af van hoe lang de partijen waren.</div>}
             </div>

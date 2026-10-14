@@ -494,14 +494,23 @@ function maandenVan(partijen){
   return uit;
 }
 
+// Standaardknip voor "vanaf": de maand (niet de eerste) waarbij de partijen het eerlijkst in tweeën vallen
+function standaardVanaf(partijen){
+  const maanden=maandenVan(partijen),tel=maanden.map(function(m){return(partijen||[]).filter(function(p){return maandKey(p.datum)===m;}).length;});
+  const tot=tel.reduce(function(s,x){return s+x;},0);
+  let beste=maanden[1]||maanden[0],verschil=Infinity,voor=tel[0]||0;
+  for(let i=1;i<maanden.length;i++){const v=Math.abs(tot-2*voor);if(v<verschil){verschil=v;beste=maanden[i];}voor+=tel[i];}
+  return beste;
+}
+
 // Twee groepen partijen naast elkaar in poedels en series, per tafel (over alle tafels samen zou een andere
 // verhouding tussen de tafels, bijv. vaker op de makkelijkere 2,10, als vooruitgang lijken). Groep a is
 // eerder/slechter, b is nu/beter. modus:
 //   "helften"    eerste tegenover tweede helft van alle partijen
 //   "laatste10"  per tafel je laatste 10 partijen (of de laatste helft bij minder dan 20) tegenover die ervoor
 //   "goedslecht" per tafel je slechtste derde tegenover je beste derde (op gemiddelde)
-//   "maand"      de maanden in opties.a tegenover die in opties.b (lijsten van maandKey; losse maanden zijn
-//                per tafel vaak te dun, daarom meerdere per kant)
+//   "vanaf"      alles vóór maand opties.vanaf tegenover alles vanaf die maand (maandKey); zonder keuze de
+//                maand die de partijen het eerlijkst in tweeën deelt (standaardVanaf)
 // bijdrage[i] = hoeveel groep i aan het verschil in gemiddelde bijdraagt (samen precies het verschil).
 // Per kant minstens 3 partijen en 50 beurten, anders staat de tafel in `teWeinig`.
 function vergelijkSeries(partijen,discipline,modus,opties){
@@ -527,11 +536,11 @@ function vergelijkSeries(partijen,discipline,modus,opties){
       const k=Math.floor(s.pis.length/3),gesorteerd=s.pis.slice().sort(function(x,y){return gemVan(x)-gemVan(y);});
       a=gesorteerd.slice(0,k);b=gesorteerd.slice(gesorteerd.length-k);
       labelA="slechtste "+k;labelB="beste "+k;
-    }else if(modus==="maand"){
-      const ma=opties.a||[],mb=(opties.b||[]).filter(function(m){return ma.indexOf(m)===-1;});
-      a=s.pis.filter(function(pi){return ma.indexOf(maandKey(partijen[pi].datum))!==-1;});
-      b=s.pis.filter(function(pi){return mb.indexOf(maandKey(partijen[pi].datum))!==-1;});
-      labelA=a.length+" partijen";labelB=b.length+" partijen";
+    }else if(modus==="vanaf"){
+      const maanden=maandenVan(partijen),grens=maanden.indexOf(opties.vanaf||standaardVanaf(partijen));
+      const voor=function(pi){return maanden.indexOf(maandKey(partijen[pi].datum))<grens;};
+      a=s.pis.filter(voor);b=s.pis.filter(function(pi){return!voor(pi);});
+      labelA=a.length+" ervoor";labelB=b.length+" vanaf";
     }else{
       a=s.pis.filter(function(pi){return pi<helftP;});b=s.pis.filter(function(pi){return pi>=helftP;});
     }

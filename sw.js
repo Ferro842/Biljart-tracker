@@ -15,7 +15,7 @@ var VOORAF = [
   "css/app.css",
   "vendor/react.production.min.js", "vendor/react-dom.production.min.js", "vendor/babel.min.js",
   "js/constanten.js", "js/berekeningen.js", "js/opslag.js",
-  "jsx/onderdelen.jsx", "jsx/vensters.jsx", "jsx/partijrij.jsx", "jsx/inzicht.jsx", "jsx/dashboard.jsx",
+  "jsx/onderdelen.jsx", "jsx/wauw.jsx", "jsx/vensters.jsx", "jsx/partijrij.jsx", "jsx/inzicht.jsx", "jsx/dashboard.jsx",
   "jsx/tabs.jsx", "jsx/spelen.jsx"
 ];
 

@@ -64,7 +64,7 @@ function maakOmgeving(){
   o.netwerk.ontbreekt.add("jsx/spelen.jsx");
   await o.event("install");
   const c=o.opslag.get("biljart-tracker-v1");
-  check("installeren bewaart de app-bestanden",c&&c.size===20,c&&c.size);
+  check("installeren bewaart de app-bestanden",c&&c.size===21,c&&c.size);
   check("installeren mislukt niet bij een ontbrekend bestand",true);
   o.netwerk.ontbreekt.clear();
 

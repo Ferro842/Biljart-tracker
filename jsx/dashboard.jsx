@@ -484,12 +484,13 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
         {!eenvoudig&&btn("patronen","Patronen")}
         {!eenvoudig&&btn("vergelijk","Vergelijk")}
         {spel&&btn("punten","Punten")}
+        {btn("kalender","Kalender")}
       </div>
 
       {/* Selectie + inhoud scrollen samen, zodat het selectieblok op een telefoon wegscrolt */}
       <div style={{flex:1,overflowY:"auto"}}>
-        {/* Partijselectie */}
-        <div style={{background:"var(--c-152015)",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`}}>
+        {/* Partijselectie (niet bij de kalender: die toont altijd de laatste 12 maanden) */}
+        <div style={{background:"var(--c-152015)",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`,display:tab==="kalender"?"none":"block"}}>
           <div style={{fontSize:12,color:WITD,marginBottom:5}}>
             {geselecteerdeMaanden&&geselecteerdeMaanden.size>0
               ?<>Selectie: {[...geselecteerdeMaanden].join(", ")} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
@@ -765,6 +766,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
 
         {/* INZICHT */}
         {(tab==="inzicht"||(!spel&&tab==="punten"))&&<InzichtPaneel partijen={sel} discipline={discipline}/>}
+        {tab==="kalender"&&<KalenderPaneel partijen={partijen} discipline={discipline}/>}
 
         {/* PUNTEN */}
         {spel&&tab==="punten"&&<div style={{display:"flex",flexDirection:"column",gap:10}}>

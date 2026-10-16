@@ -33,6 +33,7 @@ function PartijBeheer({p,onNotitie,onVerwijder}){
           )}
         </div>
       )}
+      <div style={{marginTop:8}}><DeelKaartKnop partij={p} discipline={p.discipline||"libre"} stijl={{fontSize:13,padding:"6px 10px"}}/></div>
       {onVerwijder&&(
         !confVerwijder
           ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}

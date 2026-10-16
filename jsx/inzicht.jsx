@@ -154,7 +154,7 @@ function InzichtPaneel({partijen,discipline}){
                                 return(
                                   <div key={s.beurt} style={{width:13,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",height:"100%"}}>
                                     <span style={{fontSize:9,color:zwak?WITD:WIT,opacity:zwak?0.6:1,marginBottom:1,fontWeight:isRecord?"bold":"normal"}}>{s.car}</span>
-                                    <div style={{width:"100%",height:Math.max(2,s.car/hoogsteOoit*58),background:beurtKleur(s.car,discipline),opacity:zwak?0.35:1,
+                                    <div className="staaf-groei" style={{width:"100%",height:Math.max(2,s.car/hoogsteOoit*58),background:beurtKleur(s.car,discipline),opacity:zwak?0.35:1,
                                       borderRadius:"2px 2px 0 0",boxShadow:isRecord?"0 0 0 1px "+WIT:"none"}}/>
                                   </div>
                                 );
@@ -304,7 +304,7 @@ function InzichtPaneel({partijen,discipline}){
                             <div style={{width:21,height:70,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",padding:"0 2px",borderRadius:"4px 4px 0 0",
                               background:gekozen?"rgba(255,255,255,0.16)":"rgba(255,255,255,0.05)",border:"1px solid "+(gekozen?WIT:"transparent"),borderBottom:"none"}}>
                               <span style={{fontSize:9,color:zwak?WITD:WIT,opacity:zwak?0.6:1,marginBottom:1}}>{p.poedels}</span>
-                              <div style={{width:"100%",height:Math.max(2,p.pct/maxPct*50),background:kleur(p),opacity:zwak?0.35:1,borderRadius:"2px 2px 0 0"}}/>
+                              <div className="staaf-groei" style={{width:"100%",height:Math.max(2,p.pct/maxPct*50),background:kleur(p),opacity:zwak?0.35:1,borderRadius:"2px 2px 0 0"}}/>
                             </div>
                             <div style={{fontSize:8,color:gekozen?WIT:WITD,opacity:zwak?0.6:1,marginTop:2}}>p{p.nr}</div>
                           </div>

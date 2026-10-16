@@ -12,6 +12,10 @@
   const seizoenenVoor=data().seizoenen.length;
   k("Seizoen afsluiten").click();await w(150);k("Ja, afsluiten").click();await w(200);
   uit.seizoenAfgesloten=data().seizoenen.length===seizoenenVoor+1;
+  // Na afsluiten opent "Je seizoen in beeld" vanzelf; sluiten
+  const sluitVerhaal=async function(){const s=document.querySelector('[aria-label="Sluiten"]');if(s)s.click();await w(200);};
+  uit.verhaalNaAfsluiten=document.body.innerText.indexOf("Jouw seizoen in beeld")!==-1||document.body.innerText.indexOf("Nog geen partijen in")!==-1;
+  await sluitVerhaal();
   k("Archief").click();await w(200);uit.archief=document.body.textContent.indexOf("Seizoensarchief")!==-1;sluit();await w(150);
   // Samenvoegen staat in het archiefvenster
   k("Archief").click();await w(200);k("Laatste seizoensgrens ongedaan maken").click();await w(150);k("Ja, samenvoegen").click();await w(250);
@@ -22,6 +26,7 @@
   const midden=new Date(libreP[libreP.length-1].datum); // laatste partij: zeker na het begin van het huidige seizoen
   const dag=midden.getFullYear()+"-"+("0"+(midden.getMonth()+1)).slice(-2)+"-"+("0"+midden.getDate()).slice(-2);
   k("Seizoen afsluiten").click();await w(150);zet(document.querySelector('input[type="date"]'),dag);await w(100);k("Ja, afsluiten").click();await w(250);
+  await sluitVerhaal();
   const nieuw=data().seizoenen[data().seizoenen.length-1],grens=new Date(midden.getFullYear(),midden.getMonth(),midden.getDate()).getTime();
   uit.grensInVerleden=data().seizoenen.length===seizoenenVoor+1&&new Date(nieuw.startDatum).getTime()===grens;
   k("Archief").click();await w(200);k("Laatste seizoensgrens ongedaan maken").click();await w(150);k("Ja, samenvoegen").click();await w(250);
@@ -35,6 +40,6 @@
   uit.libreBehouden=na.filter(function(p){return(p.discipline||"libre")==="libre";}).length===libreVoor;
   uit.bevestigingWeg=!k("Ja, wis alles")&&!!k("Alle data wissen");
   k("Libre").click();await w(150);
-  uit.goed=uit.seizoenAfgesloten&&uit.archief&&uit.samengevoegd&&uit.grensInVerleden&&uit.weerSamen&&uit.kaderGewist&&uit.libreBehouden&&uit.bevestigingWeg;
+  uit.goed=uit.verhaalNaAfsluiten&&uit.seizoenAfgesloten&&uit.archief&&uit.samengevoegd&&uit.grensInVerleden&&uit.weerSamen&&uit.kaderGewist&&uit.libreBehouden&&uit.bevestigingWeg;
   return uit;
 })()

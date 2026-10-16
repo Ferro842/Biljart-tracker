@@ -165,7 +165,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed}){
 // Stats-tab: je cijfers. Seizoen, je niveau (vorm en moyenne), totalen en alle partijen. Instellingen,
 // uitleg en back-up staan in de Info-tab.
 function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsluiten,seizoensplitsingOngedaanMaken,
-  openArchief,verwijderPartij,slaNotitieOp,vormVenster,setVormVenster}){
+  openArchief,verwijderPartij,slaNotitieOp,vormVenster,setVormVenster,openVerhaal,openDoel}){
   const spel=useContext(SpelContext);
   const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
@@ -227,6 +227,8 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                     onClick={openArchief}>Archief ({afgesloten.length})</button>
                 )}
               </div>
+              {!confSeizoenAfsluiten&&openVerhaal&&<button onClick={function(){openVerhaal(huidig);}}
+                style={{marginTop:8,width:"100%",padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WIT,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>🎬 Bekijk je seizoen tot nu toe</button>}
             </div>
           );
         })()}
@@ -254,7 +256,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
             )}
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:tafel==="alle"?10:6}}>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
-                <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{info.effectiefGemiddelde.toFixed(dec)}</div>
+                <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}><Telop waarde={info.effectiefGemiddelde} dec={dec}/></div>
                 <div style={{fontSize:11,color:WITD}}>vorm · {info.venster?"laatste "+info.aantalPartijen:"alle partijen"}{opTafel}</div>
                 <div style={{fontSize:10,color:spel&&info.aantalDrops>0?GOUD:WITD,marginTop:2}}>
                   {!spel?"niets geschrapt · spelelement uit"
@@ -264,7 +266,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                 <div style={{fontSize:10,color:niv.huidig.kleur,marginTop:2}}>{niv.huidig.emoji} {niv.huidig.naam} {niv.progressPct}%</div>
               </div>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
-                <div style={{fontSize:22,fontWeight:"bold",color:WIT}}>{info.moyenne.toFixed(dec)}</div>
+                <div style={{fontSize:22,fontWeight:"bold",color:WIT}}><Telop waarde={info.moyenne} dec={dec}/></div>
                 <div style={{fontSize:11,color:WITD}}>moyenne · alle {info.aantalPartijenTotaal}{opTafel}</div>
                 <div style={{fontSize:10,color:WITD,opacity:0.7}}>officieel, niets geschrapt</div>
               </div>
@@ -272,6 +274,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
             {tafel!=="alle"&&(
               <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>Alleen je partijen op de {tafelLabel(tafel)}. Je niveau bovenin de app gaat over alle tafels.</div>
             )}
+            {openDoel&&<button onClick={openDoel} style={{width:"100%",marginBottom:12,padding:10,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>
+              {data.doelen&&data.doelen[huidigeDiscipline]?"🎯 Je doel: "+data.doelen[huidigeDiscipline].waarde.toFixed(dec).replace(".",",")+(data.doelen[huidigeDiscipline].gehaald?" (gehaald!) · nieuw doel":" · wijzigen"):"🎯 Stel een doel"}
+            </button>}
             <div style={{fontSize:12,color:WITD,marginBottom:6}}>Niveau op basis van je laatste:</div>
             <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
               {[[10,"10"],[20,"20"],[30,"30"],["alles","Alle"]].map(function(x){
@@ -364,6 +369,19 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
             const actief=eenvoudig===x[0];
             return <button key={x[1]} onClick={function(){if(!actief)setWeergave("eenvoudig",x[0]);}}
               style={{flex:1,padding:"10px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+          })}
+        </div>
+      </div>
+
+      {/* Animaties en vieringen (optellende cijfers, groeiende balken, vallende balletjes) */}
+      <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Animaties en vieringen</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>Optellende cijfers, groeiende balken en een korte viering bij een topserie, record, hogere klasse of gehaald doel.</div>
+        <div style={{display:"flex",gap:6}}>
+          {[[true,"✨ Aan"],[false,"Uit"]].map(function(x){
+            const actief=(data.animaties!==false)===x[0];
+            return <button key={x[1]} onClick={function(){if(!actief)setWeergave("animaties",x[0]);}}
+              style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
           })}
         </div>
       </div>

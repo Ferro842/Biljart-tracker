@@ -314,7 +314,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
 function DashBalk({pct,kleur,hoogte=8}){
   return(
     <div style={{height:hoogte,background:"rgba(255,255,255,0.14)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:4,overflow:"hidden",boxSizing:"border-box"}}>
-      <div style={{height:"100%",width:Math.max(0,Math.min(100,pct))+"%",background:kleur,borderRadius:4,transition:"width 0.4s"}}/>
+      <div className="balk-groei" style={{height:"100%",width:Math.max(0,Math.min(100,pct))+"%",background:kleur,borderRadius:4,transition:"width 0.4s"}}/>
     </div>
   );
 }

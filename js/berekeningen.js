@@ -963,3 +963,40 @@ function controleerBriefje(beurten){
     return{nr:b.nr,car:b.car,totaal:b.totaal,eigenTotaal:som,verwacht:verwacht,klopt:verwacht===null||verwacht===b.car};
   });
 }
+
+// "Je seizoen in beeld": de feiten voor de verhaal-kaarten van één seizoen (alleen de huidige discipline).
+// Geeft null als er in dat seizoen nog geen partij is.
+function berekenSeizoenVerhaal(alleP,seizoen,discipline){
+  const vanaf=seizoen.startDatum?new Date(seizoen.startDatum).getTime():-Infinity;
+  const tot=seizoen.eindDatum?new Date(seizoen.eindDatum).getTime():Infinity;
+  const ps=(alleP||[]).filter(function(p){const t=new Date(p.datum).getTime();return t>=vanaf&&t<tot&&(p.beurten||[]).length;});
+  if(!ps.length)return null;
+  let car=0,beurten=0,poedels=0,hoogste={car:-1};
+  const perPartij=ps.map(function(p){
+    const c=p.beurten.map(function(b){return b.caramboles;});
+    const som=c.reduce(function(s,x){return s+x;},0);
+    car+=som;beurten+=c.length;poedels+=c.filter(function(x){return x===0;}).length;
+    c.forEach(function(x,i){if(x>hoogste.car||(x===hoogste.car&&new Date(p.datum)>new Date(hoogste.datum)))hoogste={car:x,datum:p.datum,tafel:p.tafel||"230",beurt:i+1};});
+    return{datum:p.datum,tafel:p.tafel||"230",gem:som/c.length,car:som,beurten:c.length,poedels:c.filter(function(x){return x===0;}).length};
+  });
+  const beste=perPartij.slice().sort(function(a,b){return b.gem-a.gem;})[0];
+  // Poedels per partij: eerste tegenover tweede helft van het seizoen (vanaf 4 partijen)
+  let poedelVerloop=null;
+  if(perPartij.length>=4){
+    const h=Math.floor(perPartij.length/2),gemP=function(x){return x.reduce(function(s,y){return s+y.poedels/y.beurten;},0)/x.length;};
+    const bpp=beurten/perPartij.length;
+    poedelVerloop={eerst:gemP(perPartij.slice(0,h))*bpp,nu:gemP(perPartij.slice(h))*bpp};
+  }
+  // Beste maand (minstens 2 partijen)
+  const maanden={};
+  perPartij.forEach(function(p){const k=maandKey(p.datum);(maanden[k]=maanden[k]||{car:0,beurten:0,n:0,naam:k});maanden[k].car+=p.car;maanden[k].beurten+=p.beurten;maanden[k].n++;});
+  const besteMaand=Object.keys(maanden).map(function(k){return maanden[k];}).filter(function(m){return m.n>=2;})
+    .map(function(m){return{naam:m.naam,gem:m.car/m.beurten,partijen:m.n};}).sort(function(a,b){return b.gem-a.gem;})[0]||null;
+  const gem=car/beurten;
+  const datums=ps.map(function(p){return new Date(p.datum).getTime();});
+  const dagen={};ps.forEach(function(p){dagen[new Date(p.datum).toDateString()]=1;});
+  return{seizoen:seizoen,partijen:ps.length,speeldagen:Object.keys(dagen).length,caramboles:car,beurten:beurten,gem:gem,
+    poedelsPerPartij:poedels/ps.length,hoogste:hoogste,beste:beste,poedelVerloop:poedelVerloop,besteMaand:besteMaand,
+    van:new Date(Math.min.apply(null,datums)).toISOString(),totDatum:new Date(Math.max.apply(null,datums)).toISOString(),
+    niveau:bepaalNiveau(gem,discipline).huidig};
+}

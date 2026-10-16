@@ -70,6 +70,9 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
           </div>
         )}
         {spel&&<PrestatieOverzicht prestatie={prestatie}/>}
+        <div onClick={function(e){e.stopPropagation();}} style={{display:"flex",justifyContent:"center",marginTop:14}}>
+          <DeelKaartKnop partij={partij} discipline={discipline} niveauNaam={infoNa?bepaalNiveau(infoNa.effectiefGemiddelde,discipline).huidig.naam:null} stijl={{padding:"11px 18px",fontSize:15}}/>
+        </div>
         <div onClick={onClose} style={{textAlign:"center",marginTop:16,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
       </div>
     </div>
@@ -251,6 +254,13 @@ function UitlegVenster({eenvoudig,onClose}){
     ["🏅","Je niveau",[
       "Je vorm is het gemiddelde van je laatste 20 partijen; daarop is je klasse gebaseerd (KNBB-grenzen).",
       "Je moyenne is het gemiddelde van al je partijen, zoals officieel."
+    ]],
+    ["✨","Extra",[
+      "📤 Deel als kaart: na het opslaan van een partij (en bij elke partij in Stats en Log) maak je er een mooie afbeelding van voor WhatsApp of de mail.",
+      "🎬 Je seizoen in beeld: Stats → Seizoen → Bekijk je seizoen (ook in het Archief). Tik rechts voor verder, links terug.",
+      "📅 Kalender: Dash → Kalender laat per dag zien wanneer je speelde, gekleurd naar je gemiddelde.",
+      "🎯 Doel: Stats → Je niveau → Stel een doel. De ring bovenaan Spelen laat zien hoe ver je bent.",
+      "🎉 Bij een topserie, record, hogere klasse of gehaald doel volgt een korte viering. Uitzetten kan bij Info → Weergave."
     ]],
     ["🔎","Weergave",[
       "Info → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen.",
@@ -531,7 +541,7 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   );
 }
 
-function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan}){
+function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan,onVerhaal}){
   const spel=useContext(SpelContext);
   // Samenvoegen staat hier (niet direct onder de knoppen in Stats), met bevestiging: minder kans op per ongeluk
   const [confOngedaan,setConfOngedaan]=useState(false);
@@ -561,6 +571,7 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan}){
                 <div style={{fontSize:13,color:WITD}}>
                   {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)} · {spel&&<>{stats.badgePunten}pt · </>}<span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
                 </div>
+                {onVerhaal&&<button onClick={function(){onVerhaal(s);}} style={{marginTop:8,padding:"6px 12px",background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>🎬 Bekijk dit seizoen</button>}
                 {stats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:2}}>Gemiddelde {gemUitleg(stats,discipline==="driebanden"?3:2," van dit seizoen")}</div>}
               </div>
             );

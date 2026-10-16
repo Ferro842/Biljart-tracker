@@ -411,7 +411,7 @@ function DoelRing({doel,vorm,discipline,onWijzig}){
       </svg>
       <div style={{flex:1,minWidth:0}}>
         <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>🎯 Doel {kommaGetal(doel.waarde,dec)}</div>
-        <div style={{fontSize:14,color:WIT,marginTop:2}}>Nu <b>{kommaGetal(vorm,dec)}</b> · {stand}</div>
+        <div style={{fontSize:14,color:WIT,marginTop:2}}>Nu <b>{kommaGetal(vorm,dec)}</b>{doel.start!=null&&!doel.gehaald?<span> · begon op {kommaGetal(doel.start,dec)}</span>:null} · {stand}</div>
       </div>
       <span style={{color:WITD,fontSize:18}}>›</span>
     </div>

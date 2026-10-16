@@ -21,6 +21,15 @@
   uit.doelOpgeslagen=!!(data().doelen&&data().doelen.libre&&data().doelen.libre.waarde>0);
   k("Spelen").click();await w(250);
   uit.doelRing=tekst().indexOf("Doel ")!==-1&&!!document.querySelector("#root svg circle");
+  // Net ingesteld: 0%, ook na het wisselen van de vorm-instelling (het begin rekent mee met dezelfde instelling)
+  const ringPct=function(){const t=Array.from(document.querySelectorAll("#root svg text")).find(function(x){return /%$/.test(x.textContent);});return t?t.textContent:null;};
+  const pctVoor=ringPct();
+  k("Stats").click();await w(250);const vv=Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="10";});
+  if(vv)vv.click();await w(250);
+  k("Spelen").click();await w(250);const pctNa=ringPct();
+  k("Stats").click();await w(250);const v20=Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="20";});
+  if(v20)v20.click();await w(250);k("Spelen").click();await w(250);
+  uit.doelStartVolgtVorm=pctVoor==="0%"&&pctNa==="0%"&&!!vv&&tekst().indexOf("begon op")!==-1;
   // Je seizoen in beeld: openen, doorbladeren, laatste kaart met delen, sluiten
   k("Stats").click();await w(250);kb("Bekijk je seizoen").click();await w(400);
   uit.verhaalOpen=tekst().indexOf("Jouw seizoen in beeld")!==-1;
@@ -64,7 +73,7 @@
   Array.from(kaartA.querySelectorAll("button")).find(function(b){return b.textContent.indexOf("Aan")!==-1;}).click();await w(250);
   uit.animatiesAan=data().animaties===true&&!document.documentElement.classList.contains("rustig");
   k("Spelen").click();await w(150);
-  uit.goed=uit.telop&&uit.doelVenster&&uit.doelOpgeslagen&&uit.doelRing&&uit.verhaalOpen&&uit.verhaalSlot&&uit.verhaalDicht&&uit.kalender&&uit.kalenderDag&&uit.kalenderOnderMaand
+  uit.goed=uit.telop&&uit.doelVenster&&uit.doelOpgeslagen&&uit.doelRing&&uit.doelStartVolgtVorm&&uit.verhaalOpen&&uit.verhaalSlot&&uit.verhaalDicht&&uit.kalender&&uit.kalenderDag&&uit.kalenderOnderMaand
     &&uit.kaart&&uit.viering&&uit.deelKnop&&uit.animatiesUit&&uit.animatiesAan;
   return uit;
 })()

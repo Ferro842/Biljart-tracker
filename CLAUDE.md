@@ -124,8 +124,10 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   Later eventueel: herkenning op de iPhone zelf (Apple Vision, eigen plugin) met hetzelfde controlescherm.
 - Wauw (17 okt 2026): vieringen bij topserie/record (in `noteer`), hogere klasse, beste partij ooit en gehaald doel
   (in `bewaarPartij`); `data.animaties===false` zet animaties en vieringen uit (klasse `rustig` op `<html>`).
-  Doel per discipline in `data.doelen[discipline]` = {waarde,datum,start,gehaald}; ring bovenaan Spelen (prop
-  `mijnDoel`; let op: `doel`/`setDoel` zijn het partijdoel). "Je seizoen in beeld" opent vanzelf na Seizoen afsluiten
+  Doel per discipline in `data.doelen[discipline]` = {waarde,datum,start,gehaald,gezet}; ring bovenaan Spelen (prop
+  `mijnDoel`; let op: `doel`/`setDoel` zijn het partijdoel). Het beginpunt rekent `mijnDoel` (index.html) steeds opnieuw uit
+  met de huidige vorm-instelling over de partijen van vóór `gezet`; de bewaarde `start` alleen als terugval. Anders springt
+  het percentage mee als je de vorm-instelling wisselt (gebeurde: begin over alle partijen, vorm over 10). "Je seizoen in beeld" opent vanzelf na Seizoen afsluiten
   (`berekenSeizoenVerhaal` in `js/berekeningen.js`). Partijkaart via "📤 Deel als kaart" (samenvatting, partijregels).
   Tests zetten `window.__testRustig=true` (alles.js), zodat `Telop` meteen eindwaarden toont.
 - Kop (logo, klasse, disciplines; `data-kop`) en tabbalk (`data-tabbalk`, sticky) komen uit `kopBlok(opties)` in

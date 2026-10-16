@@ -169,7 +169,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
   const spel=useContext(SpelContext);
   const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
-  const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
+  // Begindatum van het nieuwe seizoen bij afsluiten (jjjj-mm-dd, standaard vandaag)
+  const vandaagStr=(function(){const d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);})();
+  const [nieuwSeizoenVanaf,setNieuwSeizoenVanaf]=useState(vandaagStr);
   const allB=alleP.flatMap(function(p){return p.beurten;});
   const stA=stat(allB,huidigeDiscipline);
   return(
@@ -192,9 +194,29 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                     onClick={function(){setConfSeizoenAfsluiten(true);}}>Seizoen afsluiten</button>
                   :<div style={{flex:1,background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:6,padding:"7px 8px"}}>
                     <div style={{fontSize:13,color:GOUD,marginBottom:6}}>Huidig seizoen afsluiten en een nieuwe beginnen?</div>
+                    <label style={{display:"block",fontSize:12,color:WITD,marginBottom:8}}>Nieuw seizoen begint op
+                      <input type="date" value={nieuwSeizoenVanaf} max={vandaagStr} onChange={function(e){setNieuwSeizoenVanaf(e.target.value);}}
+                        style={{display:"block",width:"100%",boxSizing:"border-box",marginTop:4,padding:"8px 10px",borderRadius:6,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:15,fontFamily:"inherit",colorScheme:"dark",minHeight:40}}/>
+                      <span style={{display:"block",marginTop:4,lineHeight:1.4}}>Partijen vanaf die dag horen bij het nieuwe seizoen. Kies een eerdere datum om een grens achteraf te leggen.</span>
+                    </label>
+                    {(function(){
+                      // Een begindatum vóór de start van het huidige seizoen kan niet
+                      const start=huidig.startDatum?new Date(huidig.startDatum):null;
+                      const d=nieuwSeizoenVanaf.split("-").map(function(x){return parseInt(x,10);});
+                      const gekozen=new Date(d[0],d[1]-1,d[2],0,0,0);
+                      return start&&gekozen<=start?<div style={{fontSize:12,color:ROOD,marginBottom:6}}>Kies een datum na {start.toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"})}.</div>:null;
+                    })()}
                     <div style={{display:"flex",gap:6}}>
                       <button style={{flex:1,padding:6,background:"var(--c-2d4a1e)",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                        onClick={function(){seizoenAfsluiten();setConfSeizoenAfsluiten(false);}}>Ja, afsluiten</button>
+                        onClick={function(){
+                          const d=nieuwSeizoenVanaf.split("-").map(function(x){return parseInt(x,10);});
+                          const gekozen=new Date(d[0],d[1]-1,d[2],0,0,0);
+                          const start=huidig.startDatum?new Date(huidig.startDatum):null;
+                          if(isNaN(gekozen.getTime())||(start&&gekozen<=start))return;
+                          // Vandaag gekozen: het huidige moment (zoals altijd); anders het begin van die dag
+                          seizoenAfsluiten(nieuwSeizoenVanaf===vandaagStr?new Date().toISOString():gekozen.toISOString());
+                          setConfSeizoenAfsluiten(false);setNieuwSeizoenVanaf(vandaagStr);
+                        }}>Ja, afsluiten</button>
                       <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
                         onClick={function(){setConfSeizoenAfsluiten(false);}}>Annuleer</button>
                     </div>
@@ -205,20 +227,6 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                     onClick={openArchief}>Archief ({afgesloten.length})</button>
                 )}
               </div>
-              {afgesloten.length>0&&!confSeizoenAfsluiten&&(
-                !confSeizoenOngedaan
-                  ?<button style={{marginTop:8,padding:0,background:"none",border:"none",color:WITD,cursor:"pointer",fontSize:12,fontFamily:"inherit",textDecoration:"underline",opacity:0.7}}
-                    onClick={function(){setConfSeizoenOngedaan(true);}}>Laatste seizoensgrens ongedaan maken</button>
-                  :<div style={{marginTop:8,background:"var(--c-1a2e10)",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 8px"}}>
-                    <div style={{fontSize:13,color:WITD,marginBottom:6}}>{huidig.naam} en {afgesloten[afgesloten.length-1].naam} weer samenvoegen tot één lopend seizoen?</div>
-                    <div style={{display:"flex",gap:6}}>
-                      <button style={{flex:1,padding:6,background:"var(--c-2d4a1e)",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                        onClick={function(){seizoensplitsingOngedaanMaken();setConfSeizoenOngedaan(false);}}>Ja, samenvoegen</button>
-                      <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                        onClick={function(){setConfSeizoenOngedaan(false);}}>Annuleer</button>
-                    </div>
-                  </div>
-              )}
             </div>
           );
         })()}

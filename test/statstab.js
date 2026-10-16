@@ -13,8 +13,19 @@
   k("Seizoen afsluiten").click();await w(150);k("Ja, afsluiten").click();await w(200);
   uit.seizoenAfgesloten=data().seizoenen.length===seizoenenVoor+1;
   k("Archief").click();await w(200);uit.archief=document.body.textContent.indexOf("Seizoensarchief")!==-1;sluit();await w(150);
-  k("Laatste seizoensgrens ongedaan maken").click();await w(150);k("Ja, samenvoegen").click();await w(200);
-  uit.samengevoegd=data().seizoenen.length===seizoenenVoor;
+  // Samenvoegen staat in het archiefvenster
+  k("Archief").click();await w(200);k("Laatste seizoensgrens ongedaan maken").click();await w(150);k("Ja, samenvoegen").click();await w(250);
+  uit.samengevoegd=data().seizoenen.length===seizoenenVoor&&!k("Laatste seizoensgrens ongedaan maken");
+  // Afsluiten met een begindatum in het verleden: grens op die dag (00:00), daarna weer samenvoegen
+  const zet=function(el,v){Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set.call(el,v);el.dispatchEvent(new Event("input",{bubbles:true}));};
+  const libreP=data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";});
+  const midden=new Date(libreP[libreP.length-1].datum); // laatste partij: zeker na het begin van het huidige seizoen
+  const dag=midden.getFullYear()+"-"+("0"+(midden.getMonth()+1)).slice(-2)+"-"+("0"+midden.getDate()).slice(-2);
+  k("Seizoen afsluiten").click();await w(150);zet(document.querySelector('input[type="date"]'),dag);await w(100);k("Ja, afsluiten").click();await w(250);
+  const nieuw=data().seizoenen[data().seizoenen.length-1],grens=new Date(midden.getFullYear(),midden.getMonth(),midden.getDate()).getTime();
+  uit.grensInVerleden=data().seizoenen.length===seizoenenVoor+1&&new Date(nieuw.startDatum).getTime()===grens;
+  k("Archief").click();await w(200);k("Laatste seizoensgrens ongedaan maken").click();await w(150);k("Ja, samenvoegen").click();await w(250);
+  uit.weerSamen=data().seizoenen.length===seizoenenVoor;
   // Alle data wissen alleen voor Kader 71/2
   const libreVoor=data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";}).length;
   k("Kader").click();await w(150);k("Kader 71/2").click();await w(150);k("Info").click();await w(200);
@@ -24,6 +35,6 @@
   uit.libreBehouden=na.filter(function(p){return(p.discipline||"libre")==="libre";}).length===libreVoor;
   uit.bevestigingWeg=!k("Ja, wis alles")&&!!k("Alle data wissen");
   k("Libre").click();await w(150);
-  uit.goed=uit.seizoenAfgesloten&&uit.archief&&uit.samengevoegd&&uit.kaderGewist&&uit.libreBehouden&&uit.bevestigingWeg;
+  uit.goed=uit.seizoenAfgesloten&&uit.archief&&uit.samengevoegd&&uit.grensInVerleden&&uit.weerSamen&&uit.kaderGewist&&uit.libreBehouden&&uit.bevestigingWeg;
   return uit;
 })()

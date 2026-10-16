@@ -504,8 +504,12 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   );
 }
 
-function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
+function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan}){
   const spel=useContext(SpelContext);
+  // Samenvoegen staat hier (niet direct onder de knoppen in Stats), met bevestiging: minder kans op per ongeluk
+  const [confOngedaan,setConfOngedaan]=useState(false);
+  const afgesloten=seizoenen.filter(function(s){return s.eindDatum!==null;});
+  const huidig=seizoenen[seizoenen.length-1];
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"85vh",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
@@ -535,6 +539,15 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose}){
             );
           })}
         </div>
+        {onOngedaan&&afgesloten.length>0&&(!confOngedaan
+          ?<button onClick={function(){setConfOngedaan(true);}} style={{display:"block",margin:"14px auto 0",padding:"4px 0",background:"none",border:"none",color:WITD,cursor:"pointer",fontSize:12,fontFamily:"inherit",textDecoration:"underline",opacity:0.75}}>Laatste seizoensgrens ongedaan maken</button>
+          :<div style={{marginTop:12,background:"rgba(0,0,0,0.25)",border:"1px solid "+KBDR,borderRadius:8,padding:"9px 10px"}}>
+            <div style={{fontSize:13,color:WITD,marginBottom:8,lineHeight:1.4}}>{huidig.naam} en {afgesloten[afgesloten.length-1].naam} weer samenvoegen tot één lopend seizoen?</div>
+            <div style={{display:"flex",gap:6}}>
+              <button onClick={onOngedaan} style={{flex:1,padding:8,background:"var(--c-2d4a1e)",border:"none",borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>Ja, samenvoegen</button>
+              <button onClick={function(){setConfOngedaan(false);}} style={{flex:1,padding:8,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>Annuleer</button>
+            </div>
+          </div>)}
         <div onClick={onClose} style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
       </div>
     </div>

@@ -49,7 +49,10 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   met de acquit; `migreerAcquit()`/`vulAcquitAan()` zetten bij laden/importeren in beurt 1 "Acquit" bij Goed
   (caramboles) of Gemist (poedel). Alleen toevoegen, idempotent. Nieuwe partijen nooit automatisch (soms
   wordt de acquit als laatste beurt genomen). Telt niet mee voor "bijgehouden" in Inzicht.
-- Back-up: Data → Exporteer/Importeer (JSON). "Kopieer data" is alleen een leesbare tekstexport.
+- Seizoenen: `data.seizoenen` [{id,naam,startDatum,eindDatum}]. "Seizoen afsluiten" (Stats) vraagt de begindatum van
+  het nieuwe seizoen (standaard nu; eerder kan, bijv. om een grens te herstellen). "Laatste seizoensgrens ongedaan
+  maken" staat in het archiefvenster (niet direct onder de knoppen: was per ongeluk aan te tikken).
+- Back-up: Info → Exporteer/Importeer (JSON). "Kopieer data" is alleen een leesbare tekstexport.
 
 ## Domein
 

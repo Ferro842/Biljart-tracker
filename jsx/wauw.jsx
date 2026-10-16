@@ -156,7 +156,6 @@ function maakPartijKaart(partij,discipline,niveauNaam){
     rondRect(ctx,bx,gy+gh-30-h,breed,h,Math.min(8,bb*0.3));ctx.fill();
   });
   if(niveauNaam)tekst(ctx,niveauNaam,B/2,1200,40,GOUD,"center",true);
-  tekst(ctx,"ferro842.github.io/Biljart-tracker",B/2,1275,26,"rgba(245,240,232,0.55)","center");
   return c;
 }
 
@@ -207,7 +206,6 @@ function maakSeizoenKaart(v,discipline){
     rondRect(ctx,120,y,B-240,72,20);ctx.fillStyle="rgba(0,0,0,0.28)";ctx.fill();
     tekst(ctx,r[0],160,y+48,34,WITD);tekst(ctx,r[1],B-160,y+50,40,i===2?"#ff9f40":WIT,"right",true);
   });
-  tekst(ctx,"ferro842.github.io/Biljart-tracker",B/2,1275,26,"rgba(245,240,232,0.55)","center");
   return c;
 }
 

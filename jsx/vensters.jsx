@@ -414,7 +414,7 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
           {stapRegel(2,<span>Tik hieronder op <b>Kopieer de vraag</b>. Open je eigen AI-chat (bijvoorbeeld ChatGPT of Claude), voeg de foto toe, plak de vraag en verstuur.</span>)}
           {stapRegel(3,<span>Kopieer het antwoord, plak het in het vak hieronder en tik op <b>Inlezen</b>. Daarna controleer je alles voordat het wordt opgeslagen.</span>)}
           {knop(gekopieerd?"✓ Vraag gekopieerd":"📋 Kopieer de vraag",kopieerVraag,{width:"100%",marginTop:4,borderColor:GOUD,color:GOUD})}
-          <textarea value={tekst} onChange={function(e){setTekst(e.target.value);}} placeholder={"Plak hier het antwoord, bijvoorbeeld:\nSPELER: Ferro | TE MAKEN: 50\n1: – / 0\n2: 8 / 8\n…"}
+          <textarea value={tekst} onChange={function(e){setTekst(e.target.value);}} placeholder="Plak hier het antwoord"
             style={{width:"100%",minHeight:150,marginTop:12,padding:10,borderRadius:10,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:14,fontFamily:"Menlo,monospace",lineHeight:1.4,resize:"vertical"}}/>
           {fout&&<div style={{fontSize:13,color:ROOD,marginTop:6,lineHeight:1.4}}>{fout}</div>}
           <div style={{display:"flex",gap:8,marginTop:12}}>

@@ -28,10 +28,12 @@
   const libre=data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";}).slice(-20);
   let c=0,n=0;libre.forEach(function(p){p.beurten.forEach(function(b){c+=b.caramboles;n++;});});
   const ruw=(c/n).toFixed(2);
-  k("Spelen").click();await w(200);
-  const kaartGem=(tekst().match(/klasse(\d+\.\d+)/)||tekst().match(/Klasse \d(\d+\.\d+)/)||[])[1];
+  // Vorm in Stats (vakje "vorm · laatste ..."), direct uit de DOM
+  const vormVak=Array.from(document.querySelectorAll("#root div")).find(function(x){return x.children.length===0&&x.textContent.indexOf("vorm · ")===0;});
+  const kaartGem=vormVak&&vormVak.previousElementSibling?vormVak.previousElementSibling.textContent:null;
   uit.vormZonderSchrappen=!!ruw&&kaartGem===ruw;
-  uit.geenDropTekst=tekst().indexOf("slechtste partij")===-1;
+  uit.geenDropTekst=tekst().indexOf("slechtste")===-1;
+  k("Spelen").click();await w(200);
   // Dash: geen Punten-tab
   k("Dash").click();await w(250);
   uit.geenPuntenTab=!k("Punten");

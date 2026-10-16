@@ -3,7 +3,7 @@
 // schermen krijgen die als één object `spel` mee en halen er bovenaan uit wat ze nodig hebben.
 // JSX via Babel, na jsx/tabs.jsx.
 
-// Spelen, voor de start: niveau, tafelmaat, partijdoel en Start partij
+// Spelen, voor de start: tafelmaat, partijdoel en Start partij (je klasse staat rechtsboven in de kop)
 function SetupScherm({spel}){
   const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip}=spel;
   return(
@@ -20,15 +20,17 @@ function SetupScherm({spel}){
           </div>
         </div>
       )}
-      <div style={{textAlign:"center",color:GOUD,fontSize:15,fontWeight:"bold"}}>Nieuwe partij</div>
-      <NiveauKaart niveau={niveau} compact={true} discipline={huidigeDiscipline} onClick={function(){setNiveauOpen(true);}}/>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Tafelmaat</div>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+        {/* Eén rij van vier: zo past het hele scherm ook bij de grootste tekst */}
+        <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
           {Object.keys(TAFELS).map(function(t){
             return(
-              <button key={t} style={{padding:"9px 6px",background:tafel===t?"var(--c-2d4a1e)":"none",border:"1px solid "+(tafel===t?GOUD:KBDR),borderRadius:8,color:tafel===t?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
-                onClick={function(){setTafel(t);}}>{TAFELS[t].vol}</button>
+              <button key={t} style={{padding:"7px 2px",background:tafel===t?"var(--c-2d4a1e)":"none",border:"1px solid "+(tafel===t?GOUD:KBDR),borderRadius:8,color:tafel===t?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+                onClick={function(){setTafel(t);}}>
+                <div style={{fontSize:15,fontWeight:tafel===t?"bold":"normal"}}>{TAFELS[t].label}</div>
+                <div style={{fontSize:10,opacity:0.8}}>× {TAFELS[t].vol.split(" x ")[1]}</div>
+              </button>
             );
           })}
         </div>
@@ -45,7 +47,7 @@ function SetupScherm({spel}){
           <button className="plusmin-btn" style={{width:38,height:38,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:22,cursor:"pointer"}}
             onClick={function(){setDoel(function(n){return Math.max(5,n-5);});}}>-</button>
           <div style={{textAlign:"center",width:100}}>
-            <div style={{fontSize:36,fontWeight:"bold",color:WIT,lineHeight:1}}>{doel}</div>
+            <div style={{fontSize:32,fontWeight:"bold",color:WIT,lineHeight:1}}>{doel}</div>
             <div style={{fontSize:13,color:WITD,marginTop:2}}>{doelType==="beurten"?"beurten":"caramboles"}</div>
           </div>
           <button className="plusmin-btn" style={{width:38,height:38,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:22,cursor:"pointer"}}
@@ -69,12 +71,13 @@ function SetupScherm({spel}){
           </div>
         </div>
       )}
-      <button style={{padding:18,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
+      {/* Start partij blijft onderaan in beeld, ook als het scherm te klein is (bijv. iPhone SE met extra grote tekst) */}
+      <button style={{position:"sticky",bottom:0,zIndex:2,flexShrink:0,padding:18,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 -6px 14px "+G}}
         onClick={function(){setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");}}>
         Start partij
       </button>
       <button onClick={function(){setUitlegOpen(true);}}
-        style={{padding:"12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>
+        style={{padding:"8px",background:"none",border:"none",color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit",textDecoration:"underline",textUnderlineOffset:3}}>
         ℹ️ Zo werkt de app
       </button>
     </div>

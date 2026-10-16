@@ -174,3 +174,22 @@ const MIJLPALEN=[
   {type:"caramboles",aantal:10000,naam:"10.000 caramboles",emoji:"🔴"},
   {type:"caramboles",aantal:25000,naam:"25.000 caramboles",emoji:"🔴"}
 ];
+
+// Wedstrijdbriefje inlezen (Spelen → 📷): de vraag die de speler met een foto van het briefje naar zijn eigen
+// AI-chat (ChatGPT, Claude, ...) stuurt. Het antwoord heeft een vast formaat dat leesBriefje() leest; de app
+// zelf praat nooit met een AI.
+const BRIEFJE_PROMPT=[
+  "Dit is een foto van een carambole-wedstrijdbriefje. Lees voor elke speler zijn kolom uit.",
+  "Per beurt staan er twee getallen: links het aantal caramboles in die beurt, rechts het totaal na die beurt.",
+  "Een streepje, een lege beurt met een streep of een 0 betekent een poedel (0 caramboles; het totaal blijft gelijk).",
+  "Lees alle gespeelde beurten, ook de poedels, en stop na de laatste gespeelde beurt.",
+  "",
+  "Antwoord ALLEEN in precies dit formaat, zonder uitleg, één blok per speler:",
+  "",
+  "SPELER: <naam> | TE MAKEN: <getal>",
+  "1: <caramboles> / <totaal>",
+  "2: <caramboles> / <totaal>",
+  "(enzovoort, één regel per beurt)",
+  "",
+  "DATUM: <dd-mm-jjjj als die op het briefje staat, anders leeg laten>"
+].join("\n");

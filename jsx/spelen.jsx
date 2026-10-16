@@ -5,7 +5,7 @@
 
 // Spelen, voor de start: tafelmaat, partijdoel en Start partij (je klasse staat rechtsboven in de kop)
 function SetupScherm({spel}){
-  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip}=spel;
+  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip}=spel;
   return(
     <div style={{flex:1,display:"flex",flexDirection:"column",padding:"10px 14px",gap:7,overflowY:"auto"}}>
       {weergaveTip&&(
@@ -75,6 +75,10 @@ function SetupScherm({spel}){
       <button style={{position:"sticky",bottom:0,zIndex:2,flexShrink:0,padding:18,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 -6px 14px "+G}}
         onClick={function(){setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");}}>
         Start partij
+      </button>
+      <button onClick={function(){setBriefjeOpen(true);}}
+        style={{padding:"11px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>
+        📷 Partij van een wedstrijdbriefje
       </button>
       <button onClick={function(){setUitlegOpen(true);}}
         style={{padding:"8px",background:"none",border:"none",color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit",textDecoration:"underline",textUnderlineOffset:3}}>

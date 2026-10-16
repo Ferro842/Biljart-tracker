@@ -231,7 +231,8 @@ function UitlegVenster({eenvoudig,onClose}){
       "Kies de tafel en het doel (aantal beurten of caramboles) en tik op Start partij.",
       "Per beurt: zet je caramboles met + en − (of typ ze) en tik op Noteer.",
       "Vergist? Tik op terug; de laatste beurt wordt weggehaald.",
-      "Klaar: tik rechtsboven op Afsluiten en dan op Opslaan. Stop je tussendoor, dan onthoudt de app de partij."
+      "Klaar: tik rechtsboven op Afsluiten en dan op Opslaan. Stop je tussendoor, dan onthoudt de app de partij.",
+      "Op papier gespeeld? Tik op 📷 Partij van een wedstrijdbriefje: je eigen AI-chat leest de foto, jij controleert de beurten en slaat op."
     ]],
     ["✍️","Opmerkingen (mag, hoeft niet)",[
       "Na Noteer kun je aanvinken waardoor je serie eindigde en wat er goed ging.",
@@ -281,6 +282,177 @@ function UitlegVenster({eenvoudig,onClose}){
           );
         })}
         <button className="plusmin-btn" onClick={onClose} style={{width:"100%",padding:13,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>Sluiten</button>
+      </div>
+    </div>
+  );
+}
+
+// Partij van een wedstrijdbriefje (Spelen → 📷): de speler stuurt een foto met BRIEFJE_PROMPT naar zijn eigen
+// AI-chat en plakt het antwoord hier. leesBriefje() leest het, controleerBriefje() vergelijkt elke beurt met de
+// lopende totalen op het briefje. In het controlescherm kies je je kolom, verbeter je cijfers en vul je datum,
+// tafel en doel aan; pas bij Opslaan komt de partij erbij (via onOpslaan).
+function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
+  const [stap,setStap]=useState("plakken");
+  const [tekst,setTekst]=useState("");
+  const [fout,setFout]=useState("");
+  const [gekopieerd,setGekopieerd]=useState(false);
+  const [gelezen,setGelezen]=useState(null);
+  const [spelerIdx,setSpelerIdx]=useState(0);
+  const [beurten,setBeurten]=useState([]); // per beurt {nr,car,totaal}
+  const vandaag=new Date();
+  const tweeCijfers=function(n){return("0"+n).slice(-2);};
+  const [datum,setDatum]=useState(vandaag.getFullYear()+"-"+tweeCijfers(vandaag.getMonth()+1)+"-"+tweeCijfers(vandaag.getDate()));
+  const [tafel,setTafel]=useState(tafelStandaard||"230");
+  const [doel,setDoel]=useState("");
+
+  function kopieerVraag(){
+    const klaar=function(){setGekopieerd(true);setTimeout(function(){setGekopieerd(false);},2500);};
+    const oud=function(){
+      const el=document.createElement("textarea");el.value=BRIEFJE_PROMPT;el.setAttribute("readonly","");
+      el.style.position="absolute";el.style.left="-9999px";document.body.appendChild(el);el.select();
+      try{document.execCommand("copy");}catch(e){}document.body.removeChild(el);klaar();
+    };
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(BRIEFJE_PROMPT).then(klaar).catch(oud);else oud();
+  }
+  function kiesSpeler(r,i){
+    const s=r.spelers[i];
+    setSpelerIdx(i);
+    setBeurten(s.beurten.map(function(b){return{nr:b.nr,car:b.car,totaal:b.totaal};}));
+    setDoel(s.teMaken?String(s.teMaken):"");
+  }
+  function inlezen(){
+    const r=leesBriefje(tekst);
+    if(!r){setFout("Ik kan hier geen beurten in vinden. Plak het hele antwoord van je AI-chat, met de regels \"SPELER:\" en \"1: … / …\".");return;}
+    setFout("");setGelezen(r);kiesSpeler(r,0);
+    if(r.datum&&r.datum.jaar>2000)setDatum(r.datum.jaar+"-"+tweeCijfers(r.datum.maand)+"-"+tweeCijfers(r.datum.dag));
+    setStap("controle");
+  }
+  const zetCar=function(i,v){setBeurten(beurten.map(function(b,j){return j===i?Object.assign({},b,{car:Math.max(0,v)}):b;}));};
+
+  const controle=controleerBriefje(beurten);
+  const afwijkend=controle.filter(function(c){return!c.klopt;});
+  const totaal=beurten.reduce(function(s,b){return s+b.car;},0);
+  const hoogste=beurten.reduce(function(m,b){return Math.max(m,b.car);},0);
+  const dec=discipline==="driebanden"?3:2;
+  const gem=beurten.length?(totaal/beurten.length).toFixed(dec).replace(".",","):"–";
+  const doelGetal=parseInt(doel,10);
+
+  function opslaan(){
+    const d=datum.split("-").map(function(x){return parseInt(x,10);});
+    const iso=new Date(d[0],d[1]-1,d[2],20,0,0).toISOString();
+    onOpslaan({beurten:beurten.map(function(b){return b.car;}),datum:iso,tafel:tafel,
+      doel:doelGetal>0?doelGetal:beurten.length,doelType:doelGetal>0?"caramboles":"beurten"});
+  }
+
+  const knop=function(tekst,klik,stijl){return <button onClick={klik} style={Object.assign({padding:"11px 12px",borderRadius:10,border:"1px solid "+KBDR,background:"none",color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit"},stijl||{})}>{tekst}</button>;};
+  const goud={background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",color:G,fontWeight:"bold"};
+  const kopje=function(t){return <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:1,margin:"14px 0 6px"}}>{t}</div>;};
+  const stapRegel=function(nr,t){return(
+    <div style={{display:"flex",gap:10,marginBottom:8,alignItems:"flex-start"}}>
+      <span style={{flexShrink:0,width:24,height:24,borderRadius:"50%",border:"1.5px solid "+GOUD,color:GOUD,fontSize:13,fontWeight:"bold",textAlign:"center",lineHeight:"21px"}}>{nr}</span>
+      <span style={{fontSize:14,color:WIT,lineHeight:1.45}}>{t}</span>
+    </div>
+  );};
+
+  return(
+    <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:300,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"18px 12px",overflowY:"auto"}}>
+      <div style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,padding:"16px 14px",maxWidth:440,width:"100%"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,gap:8}}>
+          <div style={{fontSize:19,fontWeight:"bold",color:GOUD}}>📷 Partij van een briefje</div>
+          <button onClick={onClose} aria-label="Sluiten" style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:16,padding:"4px 12px",cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+        </div>
+
+        {stap==="plakken"&&<>
+          {stapRegel(1,"Maak een foto van het wedstrijdbriefje, zo recht en scherp mogelijk.")}
+          {stapRegel(2,<span>Tik hieronder op <b>Kopieer de vraag</b>. Open je eigen AI-chat (bijvoorbeeld ChatGPT of Claude), voeg de foto toe, plak de vraag en verstuur.</span>)}
+          {stapRegel(3,<span>Kopieer het antwoord, plak het in het vak hieronder en tik op <b>Inlezen</b>. Daarna controleer je alles voordat het wordt opgeslagen.</span>)}
+          {knop(gekopieerd?"✓ Vraag gekopieerd":"📋 Kopieer de vraag",kopieerVraag,{width:"100%",marginTop:4,borderColor:GOUD,color:GOUD})}
+          <textarea value={tekst} onChange={function(e){setTekst(e.target.value);}} placeholder={"Plak hier het antwoord, bijvoorbeeld:\nSPELER: Ferro | TE MAKEN: 50\n1: – / 0\n2: 8 / 8\n…"}
+            style={{width:"100%",minHeight:150,marginTop:12,padding:10,borderRadius:10,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:14,fontFamily:"Menlo,monospace",lineHeight:1.4,resize:"vertical"}}/>
+          {fout&&<div style={{fontSize:13,color:ROOD,marginTop:6,lineHeight:1.4}}>{fout}</div>}
+          <div style={{display:"flex",gap:8,marginTop:12}}>
+            {knop("Annuleer",onClose,{flex:1})}
+            {knop("Inlezen",inlezen,Object.assign({flex:2},goud,tekst.trim()?{}:{opacity:0.5}))}
+          </div>
+          <div style={{fontSize:11,color:WITD,opacity:0.75,marginTop:10,lineHeight:1.4}}>De app stuurt zelf niets naar internet; de foto gaat alleen naar je eigen AI-chat.</div>
+        </>}
+
+        {stap==="controle"&&gelezen&&<>
+          {gelezen.spelers.length>1&&<>
+            {kopje("Welke kolom is van jou?")}
+            <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+              {gelezen.spelers.map(function(s,i){const aan=i===spelerIdx;return(
+                <button key={i} onClick={function(){kiesSpeler(gelezen,i);}} style={{flex:1,minWidth:110,padding:"9px 8px",borderRadius:10,cursor:"pointer",fontFamily:"inherit",fontSize:15,
+                  background:aan?"linear-gradient(180deg,var(--c-2d4a1e),var(--c-1e3a1e))":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WIT,fontWeight:aan?"bold":"normal"}}>
+                  {s.naam}<div style={{fontSize:11,color:WITD,fontWeight:"normal"}}>{s.beurten.length} beurten{s.teMaken?" · te maken "+s.teMaken:""}</div>
+                </button>);})}
+            </div>
+          </>}
+
+          {/* Samenvatting en controle */}
+          <div style={{marginTop:12,background:"rgba(0,0,0,0.25)",borderRadius:10,padding:"10px 12px",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:4,textAlign:"center"}}>
+            {[["car.",totaal],["beurten",beurten.length],["gem.",gem],["hoogste",hoogste]].map(function(x){return(
+              <div key={x[0]}><div style={{fontSize:18,fontWeight:"bold",color:WIT}}>{x[1]}</div><div style={{fontSize:11,color:WITD}}>{x[0]}</div></div>);})}
+          </div>
+          <div style={{marginTop:8,fontSize:13,lineHeight:1.4,color:afwijkend.length?GOUDL:GRNT}}>
+            {afwijkend.length
+              ?"⚠️ "+afwijkend.length+" beurt"+(afwijkend.length>1?"en wijken":" wijkt")+" af van de totalen op het briefje. Controleer "+(afwijkend.length>1?"ze":"hem")+" met de foto, of tik op het voorstel."
+              :"✓ Alle beurten kloppen met de totalen op het briefje."}
+          </div>
+
+          {kopje("Beurten")}
+          <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,padding:"0 4px 4px"}}>
+            <span style={{width:34}}>beurt</span><span style={{flex:1,textAlign:"center"}}>caramboles</span><span style={{width:60,textAlign:"right"}}>briefje</span><span style={{width:74}}></span>
+          </div>
+          <div style={{border:"1px solid "+KBDR,borderRadius:10,overflow:"hidden"}}>
+            {controle.map(function(c,i){
+              const rond={width:30,height:30,borderRadius:"50%",border:"1.5px solid "+GOUD,background:"none",color:GOUD,fontSize:17,lineHeight:"26px",padding:0,cursor:"pointer",fontFamily:"inherit"};
+              return(
+                <div key={c.nr} style={{display:"flex",alignItems:"center",padding:"6px 8px",gap:4,background:c.klopt?(i%2?"rgba(255,255,255,0.03)":"none"):"rgba(224,85,85,0.16)",borderTop:i?"1px solid rgba(255,255,255,0.05)":"none"}}>
+                  <span style={{width:30,fontSize:13,color:WITD}}>{c.nr}</span>
+                  <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
+                    <button onClick={function(){zetCar(i,c.car-1);}} style={rond} aria-label="min">−</button>
+                    <span style={{width:28,textAlign:"center",fontSize:18,fontWeight:"bold",color:c.car===0?WITD:beurtKleur(c.car,discipline)}}>{c.car===0?"–":c.car}</span>
+                    <button onClick={function(){zetCar(i,c.car+1);}} style={rond} aria-label="plus">+</button>
+                  </div>
+                  <span style={{width:56,textAlign:"right",fontSize:13,color:WITD}}>{c.totaal===null?"":c.totaal}</span>
+                  <span style={{width:74,textAlign:"right"}}>
+                    {c.klopt?<span style={{color:GRNT,fontSize:14}}>✓</span>
+                      :<button onClick={function(){zetCar(i,c.verwacht);}} style={{fontSize:12,padding:"4px 6px",borderRadius:6,border:"1px solid "+GOUDL,background:"none",color:GOUDL,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>→ {c.verwacht}</button>}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{display:"flex",gap:8,marginTop:8}}>
+            {knop("+ beurt",function(){setBeurten(beurten.concat([{nr:beurten.length+1,car:0,totaal:null}]));},{flex:1,fontSize:14,padding:"8px"})}
+            {knop("− laatste beurt",function(){if(beurten.length>1)setBeurten(beurten.slice(0,-1));},{flex:1,fontSize:14,padding:"8px",opacity:beurten.length>1?1:0.4})}
+          </div>
+
+          {kopje("Partij")}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+            <label style={{fontSize:12,color:WITD}}>Datum
+              <input type="date" value={datum} onChange={function(e){setDatum(e.target.value);}}
+                style={{display:"block",width:"100%",marginTop:4,padding:"9px 8px",borderRadius:8,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:15,fontFamily:"inherit",colorScheme:"dark"}}/>
+            </label>
+            <label style={{fontSize:12,color:WITD}}>Te maken caramboles
+              <input type="number" inputMode="numeric" value={doel} placeholder="—" onChange={function(e){setDoel(e.target.value.replace(/[^0-9]/g,""));}}
+                style={{display:"block",width:"100%",marginTop:4,padding:"9px 8px",borderRadius:8,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:15,fontFamily:"inherit"}}/>
+            </label>
+          </div>
+          <div style={{fontSize:12,color:WITD,margin:"10px 0 4px"}}>Tafel</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+            {Object.keys(TAFELS).map(function(k){const aan=k===tafel;return(
+              <button key={k} onClick={function(){setTafel(k);}} style={{padding:"8px 2px",borderRadius:8,cursor:"pointer",fontFamily:"inherit",fontSize:15,
+                background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WITD,fontWeight:aan?"bold":"normal"}}>{TAFELS[k].label}</button>);})}
+          </div>
+          <div style={{fontSize:12,color:WITD,marginTop:8}}>Discipline: <span style={{color:WIT}}>{DISCIPLINES[discipline].naam}</span> (de discipline die nu bovenaan gekozen is)</div>
+
+          <div style={{display:"flex",gap:8,marginTop:16}}>
+            {knop("Terug",function(){setStap("plakken");},{flex:1})}
+            {knop(afwijkend.length?"Toch opslaan":"Partij opslaan",opslaan,Object.assign({flex:2},goud))}
+          </div>
+        </>}
       </div>
     </div>
   );

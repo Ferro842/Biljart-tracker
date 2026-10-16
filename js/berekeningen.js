@@ -919,3 +919,45 @@ function berekenInzicht(partijen,discipline){
     profiel:profiel,refPct:refPct,sterkste:sterkste,werkpunt:werkpunt,seriemakers:seriemakers,seriestoppers:seriestoppers,
     metOorzaak:metOorzaak.length,omstandigheden:omstandigheden,trend:trend,coach:coach};
 }
+
+// Leest het antwoord van een AI-chat op BRIEFJE_PROMPT (zie js/constanten.js). Ruimhartig: andere scheiders,
+// streepjes voor poedels, ontbrekende totalen en extra tekst mogen. Geeft {spelers:[{naam,teMaken,beurten:
+// [{nr,car,totaal}]}],datum} of null als er niets bruikbaars in staat. Totaal is null als het ontbreekt.
+function leesBriefje(tekst){
+  const spelers=[];let huidig=null,datum=null;
+  String(tekst||"").split(/\r?\n/).forEach(function(regel){
+    const r=regel.replace(/[*_`#>]/g,"").trim();
+    if(!r)return;
+    const sp=r.match(/^speler\s*[:\-]\s*([^|]*?)\s*(?:\|\s*te\s*maken\s*[:\-]?\s*(\d+))?\s*$/i);
+    if(sp){huidig={naam:sp[1].trim()||("Speler "+(spelers.length+1)),teMaken:sp[2]?parseInt(sp[2],10):null,beurten:[]};spelers.push(huidig);return;}
+    const dt=r.match(/^datum\s*[:\-]\s*(\d{1,2})[-./](\d{1,2})[-./](\d{2,4})/i);
+    if(dt){const j=parseInt(dt[3],10);datum={dag:parseInt(dt[1],10),maand:parseInt(dt[2],10),jaar:j<100?2000+j:j};return;}
+    const b=r.match(/^(\d{1,2})\s*[:.)\-]\s*(\d{1,3}|[-–—]|x|poedel)?\s*(?:[\/|;,]\s*(\d{1,4}|[-–—]))?/i);
+    if(b&&huidig){
+      const car=b[2]&&/^\d+$/.test(b[2])?parseInt(b[2],10):0;
+      const totaal=b[3]&&/^\d+$/.test(b[3])?parseInt(b[3],10):null;
+      huidig.beurten.push({nr:parseInt(b[1],10),car:car,totaal:totaal});
+    }
+  });
+  const bruikbaar=spelers.filter(function(s){return s.beurten.length>0;});
+  if(!bruikbaar.length)return null;
+  // Beurten op volgorde en zonder dubbele nummers; ontbrekende tussenbeurten worden poedels
+  bruikbaar.forEach(function(s){
+    const perNr={};s.beurten.forEach(function(b){perNr[b.nr]=b;});
+    const max=Math.max.apply(null,s.beurten.map(function(b){return b.nr;}));
+    s.beurten=[];for(let i=1;i<=max;i++)s.beurten.push(perNr[i]||{nr:i,car:0,totaal:null});
+  });
+  return{spelers:bruikbaar,datum:datum};
+}
+
+// Controle tegen de lopende totalen op het briefje. Per beurt wat het briefje verwacht (totaal min het vorige
+// bekende totaal); alleen een beurt die daarvan afwijkt is fout, niet alle beurten erna. Plus het eigen totaal.
+function controleerBriefje(beurten){
+  let som=0,vorigBriefje=0;
+  return beurten.map(function(b){
+    som+=b.car;
+    const verwacht=b.totaal!==null?b.totaal-vorigBriefje:null;
+    if(b.totaal!==null)vorigBriefje=b.totaal;
+    return{nr:b.nr,car:b.car,totaal:b.totaal,eigenTotaal:som,verwacht:verwacht,klopt:verwacht===null||verwacht===b.car};
+  });
+}

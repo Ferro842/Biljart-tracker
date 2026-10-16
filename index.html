@@ -24,23 +24,23 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-16.11">
+<link rel="stylesheet" href="css/app.css?v=2026-10-16.12">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-16.11"></script>
-<script src="js/berekeningen.js?v=2026-10-16.11"></script>
-<script src="js/opslag.js?v=2026-10-16.11"></script>
-<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-16.11"></script>
-<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-16.11"></script>
-<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-16.11"></script>
-<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-16.11"></script>
-<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-16.11"></script>
-<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-16.11"></script>
-<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-16.11"></script>
+<script src="js/constanten.js?v=2026-10-16.12"></script>
+<script src="js/berekeningen.js?v=2026-10-16.12"></script>
+<script src="js/opslag.js?v=2026-10-16.12"></script>
+<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-16.12"></script>
+<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-16.12"></script>
+<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-16.12"></script>
+<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-16.12"></script>
+<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-16.12"></script>
+<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-16.12"></script>
+<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-16.12"></script>
 <script type="text/babel">
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-16.11";
+const APP_VERSIE="2026-10-16.12";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -64,6 +64,7 @@ function BiljartTracker(){
   const [toastGroep,setToastGroep]=useState(null);
   const [niveauOpen,setNiveauOpen]=useState(false);
   const [uitlegOpen,setUitlegOpen]=useState(false); // "Zo werkt de app"
+  const [briefjeOpen,setBriefjeOpen]=useState(false); // partij van een wedstrijdbriefje inlezen
   // Kop en disciplinebalk schuiven weg als je in een tabblad omlaag scrolt (meer ruimte om te lezen) en komen
   // terug zodra je omhoog scrolt of bovenaan staat. Per tab of discipline weer zichtbaar.
   const [kopWeg,setKopWeg]=useState(false);
@@ -230,25 +231,44 @@ function BiljartTracker(){
     setCar(0);setInp("0");setBeurtNr(function(n){return n+1;});setSel(new Set());setAndersGemist("");setAndersGoed("");setFase("invoer");
   }
 
-  function sluit(){
-    if(!lp.length){setConfPartij(false);return;}
-    const st=stat(lp,huidigeDiscipline);
-    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp},st);
-    const nieuweAlleP=data.partijen.concat([p]).filter(function(x){return(x.discipline||"libre")===huidigeDiscipline;});
-    const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden,huidigeDiscipline);
+  // Slaat een complete partij op (ook een ingelezen wedstrijdbriefje): op datumvolgorde tussen de partijen, met
+  // prestaties, niveau en de samenvatting. Partijen moeten op datum staan: vorm, nummers en grafieken gaan daarvan uit.
+  function bewaarPartij(p,opties){
+    const pos=data.partijen.findIndex(function(x){return new Date(x.datum)>new Date(p.datum);});
+    const nieuwePartijen=pos===-1?data.partijen.concat([p]):data.partijen.slice(0,pos).concat([p],data.partijen.slice(pos));
+    const disc=p.discipline||"libre";
+    const nieuweAlleP=nieuwePartijen.filter(function(x){return(x.discipline||"libre")===disc;});
+    const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden,disc);
     const prestatie=resultaten.find(function(r){return r.id===p.id;});
     const infoVoor=berekenNiveauInfo(alleP,!spelAan,niveauOpties);
     const infoNa=berekenNiveauInfo(nieuweAlleP,!spelAan,niveauOpties);
     const nieuweDrop=spelAan&&infoNa.aantalDrops>infoVoor.aantalDrops?infoNa.gedroptePartijen[infoNa.gedroptePartijen.length-1]:null;
-    const niveauVoor=bepaalNiveau(infoVoor.effectiefGemiddelde,huidigeDiscipline);
-    const niveauNa=bepaalNiveau(infoNa.effectiefGemiddelde,huidigeDiscipline);
+    const niveauVoor=bepaalNiveau(infoVoor.effectiefGemiddelde,disc);
+    const niveauNa=bepaalNiveau(infoNa.effectiefGemiddelde,disc);
     const niveauOmhoog=niveauNa.index>niveauVoor.index?{van:niveauVoor.huidig,naar:niveauNa.huidig}:null;
-    const nd=Object.assign({},data,{partijen:data.partijen.concat([p]),huidigeId:data.huidigeId+1,laatstGezienNiveauIndex:niveauNa.index});
-    delete nd.lopendePartij; // in dezelfde opslag weg, zodat de partij nooit dubbel terugkomt
+    const nd=Object.assign({},data,{partijen:nieuwePartijen,huidigeId:Math.max(data.huidigeId,p.id)+1,laatstGezienNiveauIndex:niveauNa.index});
+    if(opties&&opties.lopendeWeg)delete nd.lopendePartij; // in dezelfde opslag weg, zodat de partij nooit dubbel terugkomt
     setData(nd);slaOp(nd);
-    setPartijSamenvatting({partij:p,st:st,prestatie:prestatie,infoNa:infoNa,nieuweDrop:nieuweDrop,niveauOmhoog:niveauOmhoog});
+    setPartijSamenvatting({partij:p,st:stat(p.beurten,disc),prestatie:prestatie,infoNa:infoNa,nieuweDrop:nieuweDrop,niveauOmhoog:niveauOmhoog});
+  }
+
+  function sluit(){
+    if(!lp.length){setConfPartij(false);return;}
+    const st=stat(lp,huidigeDiscipline);
+    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp},st);
+    bewaarPartij(p,{lopendeWeg:true});
     setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());
     setConfPartij(false);setFase("setup");
+  }
+
+  // Wedstrijdbriefje (📷 op Spelen): beurten met nieuwe ids, zonder opmerkingen
+  function bewaarBriefje(inv){
+    let id=data.huidigeId;
+    const beurten=inv.beurten.map(function(c){return{id:id++,caramboles:c,gemist:[],goed:[],tijd:inv.datum};});
+    const st=stat(beurten,huidigeDiscipline);
+    const p=Object.assign({id:id,datum:inv.datum,tafel:inv.tafel,doel:inv.doel,doelType:inv.doelType,discipline:huidigeDiscipline,beurten:beurten,bron:"briefje"},st);
+    bewaarPartij(p);
+    setBriefjeOpen(false);
   }
 
   function resetAlles(){
@@ -342,7 +362,7 @@ function BiljartTracker(){
   }
 
   // Alles wat de Spelen-schermen (jsx/spelen.jsx) nodig hebben
-  const spel={alleP,andersGemist,andersGoed,beurtNr,car,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,eenvoudig,progPct,sel,setAndersGemist,setAndersGoed,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,stL,weergaveTip,zieWeergaveTip,tafel,tijdsvensterMaanden,toggle,totCarLp};
+  const spel={alleP,andersGemist,andersGoed,beurtNr,car,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,eenvoudig,progPct,sel,setAndersGemist,setAndersGoed,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,stL,weergaveTip,zieWeergaveTip,tafel,tijdsvensterMaanden,toggle,totCarLp};
 
   // Disciplinekeuze: segment in de keuzebalk (gekozen = gouden rand, lichte verhoging)
   const groot=tekstgrootte!=="normaal";
@@ -410,6 +430,7 @@ function BiljartTracker(){
       {!data.onboardingGezien&&<WelkomstFlow stap={onboardingStap} setStap={setOnboardingStap} discipline={huidigeDiscipline} wisselDiscipline={wisselDiscipline} onKlaar={sluitOnboarding}
         tekstgrootte={tekstgrootte} eenvoudig={eenvoudig} setWeergave={setWeergave}/>}
 
+      {briefjeOpen&&<BriefjeImport discipline={huidigeDiscipline} tafelStandaard={tafel} onOpslaan={bewaarBriefje} onClose={function(){setBriefjeOpen(false);}}/>}
       {uitlegOpen&&<UitlegVenster eenvoudig={eenvoudig} onClose={function(){setUitlegOpen(false);}}/>}
 
       {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={huidigeDiscipline} onClose={function(){setNiveauOpen(false);}}/>}

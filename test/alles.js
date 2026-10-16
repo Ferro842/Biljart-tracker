@@ -1,4 +1,4 @@
-// Draait alle browsertests (rondgang, tijdlijn, statstab, spelen, partijrij, spelelement, niveau, vensters, datatab, weergave) achter elkaar op de geladen app en zet daarna test/testdata.json terug.
+// Draait alle browsertests (rondgang, tijdlijn, statstab, spelen, partijrij, spelelement, niveau, vensters, datatab, weergave, briefje) achter elkaar op de geladen app en zet daarna test/testdata.json terug.
 // Vooraf: testdata in localStorage en de pagina (her)laden. Liefst op telefoonformaat (375 breed).
 // Na afloop direct herladen: de app heeft dan nog de geïmporteerde testback-up in het geheugen en zou
 // die bij de volgende klik over de teruggezette testdata heen opslaan.
@@ -16,10 +16,11 @@
   uit.vensters=await laad("vensters.js");
   uit.datatab=await laad("datatab.js");
   uit.weergave=await laad("weergave.js");
+  uit.briefje=await laad("briefje.js");
   const d=await fetch("/test/testdata.json").then(function(r){return r.json();});
   localStorage.setItem("biljart-tracker-v2",JSON.stringify(d));
   const v=uit.vensters;
   uit.allesGoed=uit.rondgang.fouten.length===0&&uit.rondgang.berekeningenGelijk&&uit.tijdlijn.goed
-    &&v.niveauOverzicht&&v.badgeCatalogus&&v.seizoensArchief&&v.partijSamenvatting&&uit.datatab.goed&&uit.statstab.goed&&uit.spelen.goed&&uit.partijrij.goed&&uit.spelelement.goed&&uit.niveau.goed&&uit.weergave.goed;
+    &&v.niveauOverzicht&&v.badgeCatalogus&&v.seizoensArchief&&v.partijSamenvatting&&uit.datatab.goed&&uit.statstab.goed&&uit.spelen.goed&&uit.partijrij.goed&&uit.spelelement.goed&&uit.niveau.goed&&uit.weergave.goed&&uit.briefje.goed;
   return uit;
 })()

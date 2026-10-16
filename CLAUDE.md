@@ -112,6 +112,11 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   bijgehouden partij). Uitleg voor gebruikers: `UitlegVenster` ("ℹ️ Zo werkt de app", onder Start partij en in
   bovenaan Info); bij nieuwe functies daar ook bijwerken. Schuifbalken in flex:
   `minWidth:0`, anders steken ze uit bij grote tekst.
+- Wedstrijdbriefje (📷 op Spelen, `BriefjeImport` in `jsx/vensters.jsx`): de speler stuurt een foto met
+  `BRIEFJE_PROMPT` naar zijn eigen AI-chat en plakt het antwoord; `leesBriefje()` leest het (ruimhartig),
+  `controleerBriefje()` markeert alleen beurten die afwijken van de lopende totalen (met voorstel). Opslaan via
+  `bewaarPartij()` (ook gebruikt door `sluit()`): op datumvolgorde ingevoegd, `bron:"briefje"`, geen opmerkingen.
+  Later eventueel: herkenning op de iPhone zelf (Apple Vision, eigen plugin) met hetzelfde controlescherm.
 - Kop en disciplinebalk (samen in één blok met `data-kop`, inklappen via grid-rijen 1fr→0fr, geen max-height) schuiven weg
   bij omlaag scrollen in een tabblad (`kopWeg`, `volgScroll` als native
   capture-luisteraar op het inhoudvak: React geeft scroll van onderliggende vakken niet door) en komen terug bij
@@ -145,7 +150,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Testdata laden (in de browserconsole), daarna herladen:
   `localStorage.setItem("biljart-tracker-v2", JSON.stringify(await fetch("/test/testdata.json").then(r=>r.json())))`
 - Alle tests (liefst op telefoonformaat 375 breed): `await eval(await fetch("/test/alles.js").then(r=>r.text()))`
-  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`, `weergave`
+  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`, `weergave`, `briefje`
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.

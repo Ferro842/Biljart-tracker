@@ -468,20 +468,14 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   return(
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:G,fontFamily:"Georgia,serif",color:WIT}}>
 
-      {/* Header */}
-      <div style={{background:"linear-gradient(135deg,var(--c-0d1f0d),var(--c-182e14))",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
-        <div>
-          <div style={{fontSize:15,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Dashboard</div>
-          <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Analyse & trends · {ST.length} partijen</div>
-        </div>
-        <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}}
-          style={{padding:"6px 12px",background:uitlegModus?"var(--c-2d4a1e)":"none",border:"1px solid "+(uitlegModus?GOUD:KBDR),borderRadius:8,color:uitlegModus?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",flexShrink:0}}>
-          {uitlegModus?"✕ Sluit uitleg":"❓ Uitleg"}
-        </button>
-      </div>
 
       {/* Tabs: passen naast elkaar op een telefoon; scrollen alleen als vangnet op heel smalle schermen */}
       <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+        {/* Uitleg per onderdeel (vooraan, zodat hij ook bij grote tekst in beeld is; de oude kopbalk is weg voor meer leesruimte) */}
+        <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}} aria-label="Uitleg"
+          style={{flex:"0 0 auto",padding:"8px 10px",margin:"4px 2px 4px 6px",background:uitlegModus?"var(--c-2d4a1e)":"none",border:"1px solid "+(uitlegModus?GOUD:KBDR),borderRadius:8,color:uitlegModus?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
+          {uitlegModus?"✕":"❓"}
+        </button>
         {btn("inzicht","✨ Inzicht")}
         {btn("trend","Trend")}
         {!eenvoudig&&btn("consist","Constant")}

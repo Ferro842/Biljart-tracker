@@ -112,6 +112,10 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   bijgehouden partij). Uitleg voor gebruikers: `UitlegVenster` ("ℹ️ Zo werkt de app", onder Start partij en in
   bovenaan Info); bij nieuwe functies daar ook bijwerken. Schuifbalken in flex:
   `minWidth:0`, anders steken ze uit bij grote tekst.
+- Kop en disciplinebalk schuiven weg bij omlaag scrollen in een tabblad (`kopWeg`, `volgScroll` als native
+  capture-luisteraar op het inhoudvak: React geeft scroll van onderliggende vakken niet door) en komen terug bij
+  omhoog scrollen, bovenaan, of bij wissel van tab/discipline. Tijdens de overgang (450 ms) en onderaan negeren,
+  anders flikkert het. Dash heeft geen eigen kopbalk meer; ❓ Uitleg staat vooraan in de Dash-tabrij.
 - ⭐-drempels (badges) gaan altijd over al je eerdere partijen (`tijdsvensterMaanden` = null); de instelling
   "Tijdvenster voor prestatie-drempels" is vervallen (16 okt 2026; op echte data vrijwel geen verschil met de laatste
   20 partijen). `berekenPrestaties` accepteert nog maanden voor de snapshot-test.

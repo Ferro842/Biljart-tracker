@@ -35,6 +35,14 @@
   uit.spelelementLos=tekst().indexOf("Spelelement")!==-1&&data().spelelement!==false;
   k("Dash").click();await w(300);
   uit.dashTabs=!!k("Trend")&&!k("Constant")&&!k("Patronen")&&!k("Vergelijk")&&!!k("Punten");
+  // Kop en disciplines schuiven weg bij omlaag scrollen en komen terug bij omhoog
+  const kopWeg=function(){return document.querySelector(".app").firstElementChild.style.maxHeight==="0px";};
+  const sc=Array.from(document.querySelectorAll("#root div")).filter(function(d){return getComputedStyle(d).overflowY==="auto"&&d.scrollHeight>d.clientHeight+50;})[0];
+  if(sc){
+    sc.scrollTop=300;sc.dispatchEvent(new Event("scroll"));await w(550);const weg=kopWeg();
+    sc.scrollTop=150;sc.dispatchEvent(new Event("scroll"));await w(550);
+    uit.kopSchuift=weg&&!kopWeg();
+  }else uit.kopSchuift=false;
   k("Spelen").click();await w(200);(k("Start partij")||k("Doorgaan")).click();await w(200);
   const voor=(data().lopendePartij||{beurten:[]}).beurten.length;
   k("+").click();await w(30);k("+").click();await w(30);k("Noteer").click();await w(300);
@@ -58,6 +66,6 @@
   uit.uitleg=tekst().indexOf("Zo werkt de app")!==-1&&tekst().indexOf("+ opmerking")!==-1&&tekst().indexOf("Info → Exporteer")!==-1;
   k("Sluiten").click();await w(200);
   uit.uitlegDicht=tekst().indexOf("Een partij spelen")===-1;
-  uit.goed=uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
+  uit.goed=uit.kopSchuift&&uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
   return uit;
 })()

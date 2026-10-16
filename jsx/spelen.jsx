@@ -5,7 +5,7 @@
 
 // Spelen, voor de start: niveau, tafelmaat, partijdoel en Start partij
 function SetupScherm({spel}){
-  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,tafel,totCarLp}=spel;
+  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,tafel,totCarLp}=spel;
   return(
     <div style={{flex:1,display:"flex",flexDirection:"column",padding:"10px 14px",gap:7,overflowY:"auto"}}>
       <div style={{textAlign:"center",color:GOUD,fontSize:15,fontWeight:"bold"}}>Nieuwe partij</div>
@@ -61,6 +61,10 @@ function SetupScherm({spel}){
         onClick={function(){setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");}}>
         Start partij
       </button>
+      <button onClick={function(){setUitlegOpen(true);}}
+        style={{padding:"12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>
+        ℹ️ Zo werkt de app
+      </button>
     </div>
   );
 }
@@ -68,7 +72,9 @@ function SetupScherm({spel}){
 // Spelen, tijdens de partij: tellers, caramboles invoeren, hints en grafiek van de lopende partij
 function InvoerScherm({spel}){
   const spelAan=useContext(SpelContext);
-  const {alleP,beurtNr,car,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,progPct,setBeurtNr,setCar,setFase,setInp,setLp,stL,tafel,tijdsvensterMaanden,totCarLp}=spel;
+  const {alleP,beurtNr,car,doel,doelType,eenvoudig,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,progPct,setBeurtNr,setCar,setFase,setInp,setLp,stL,tafel,tijdsvensterMaanden,totCarLp}=spel;
+  // Eenvoudige modus: Noteer slaat de beurt meteen op, zonder de stap met opmerkingen
+  const volgende=function(){if(eenvoudig)noteer();else setFase("gemist");};
   const dInv=beurtDrempels(huidigeDiscipline);
   const s57=lp.filter(function(b){return b.caramboles>=dInv.opbouwMin&&b.caramboles<=dInv.opbouwMax;}).length;
   const s89=lp.filter(function(b){return b.caramboles>=dInv.sterkMin&&b.caramboles<=dInv.sterkMax;}).length;
@@ -138,7 +144,7 @@ function InvoerScherm({spel}){
             <input ref={inputRef} type="number" inputMode="numeric" pattern="[0-9]*" value={inp}
               onChange={function(e){const v=e.target.value;if(v===""||v==="-"){setInp(v);return;}const n=parseInt(v);if(!isNaN(n)&&n>=0){setCar(n);setInp(String(n));};}}
               onFocus={function(e){e.target.select();}}
-              onKeyDown={function(e){if(e.key==="Enter")setFase("gemist");}}
+              onKeyDown={function(e){if(e.key==="Enter")volgende();}}
               style={{width:86,fontSize:48,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:"3px solid "+(car>=dInv.opbouwMin?GRNT:GOUD),textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:3}}
             />
             <div style={{fontSize:13,color:car>=dInv.opbouwMin?GRNT:GOUD,marginTop:4,height:18,lineHeight:"18px"}}>
@@ -150,7 +156,10 @@ function InvoerScherm({spel}){
         </div>
         <div style={{display:"flex",gap:8,marginTop:10}}>
           <button className="plusmin-btn" style={{flex:1,padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
-            onClick={function(){setFase("gemist");}}>Noteer</button>
+            onClick={volgende}>Noteer</button>
+          {/* Eenvoudige modus: wil je bij deze beurt toch iets aanvinken, dan via de gewone opmerkingen-stap */}
+          {eenvoudig&&<button style={{padding:"14px 11px",background:"none",border:"1px solid "+GOUD,borderRadius:12,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}
+            onClick={function(){setFase("gemist");}}>+ opmerking</button>}
           <button style={{padding:"14px 13px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}
             onClick={function(){if(lp.length){setLp(function(p){return p.slice(0,-1);});setBeurtNr(function(n){return Math.max(1,n-1);});}else{setFase("setup");}}}>terug</button>
         </div>

@@ -99,9 +99,18 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   niets geschrapt (officieel). `berekenNiveauInfo(partijen,zonderDrops,opties)`; zonder opties de oude
   berekening (alle partijen, geen plafond), waar `test/snapshot.js` op rust. Teksten via `vormUitleg()`.
 - Laken-kleur per discipline: libre groen, driebanden blauw, bandstoten grijs, kader rood. Alle groentinten zijn
-  CSS-variabelen `--c-<hex>` (standaard in `css/app.css`); `zetThema()` in `js/constanten.js` rekent ze om
+  CSS-variabelen `--c-<hex>` (standaard in `css/app.css`); `zetThema()` in `js/constanten.js` rekent ze om (met het kader-keuzemenu open al rood)
   (`themaVan`/`themaKleur`). Nieuwe groentint? Toevoegen aan `THEMA_KLEUREN` en `:root` en als `var(--c-..)` gebruiken;
-  in SVG alleen via `style={{fill/stroke}}`. GOUD/WIT/ROOD/GRNT blijven vast.
+  in SVG alleen via `style={{fill/stroke}}`. GOUD/WIT/ROOD/GRNT blijven vast. Het logo in de kop is de SVG-component `Logo`
+  (`jsx/onderdelen.jsx`), laken via `--c-3f8a3a`/`--c-1d4a1d`; `logo.png` blijft voor favicon en offline-cache.
+- Weergave (Stats → Weergave, ook het eerste welkomstscherm): `data.tekstgrootte` normaal/groot/extra (`TEKSTGROOTTES`,
+  CSS `zoom` op `.app` met hoogte `calc(100vh / zoom)`; bij groter geen ondertitel in de kop en tijdens een partij
+  geen klasse-knop) en `data.eenvoudig` (`EenvoudigContext`): Noteer slaat direct op zonder opmerkingen-stap,
+  spelelement uit, Dash alleen Inzicht en Trend, Inzicht zonder de uitgebreide kaarten. Knop "+ opmerking" naast
+  Noteer geeft toch de opmerkingen-stap; de opmerkingenkaarten in Inzicht verschijnen dan vanzelf (vanaf één
+  bijgehouden partij). Uitleg voor gebruikers: `UitlegVenster` ("ℹ️ Zo werkt de app", onder Start partij en in
+  Stats → Weergave); bij nieuwe functies daar ook bijwerken. Schuifbalken in flex:
+  `minWidth:0`, anders steken ze uit bij grote tekst.
 - Spelelement aan/uit (Stats, `data.spelelement`, standaard aan; `SpelContext` in `jsx/onderdelen.jsx`). Uit =
   geen badges/punten/Punten-tab/prestatiemeldingen/badge-hints en geen geschrapte partijen
   (`berekenNiveauInfo(partijen,zonderDrops)`); punten worden op de achtergrond wel berekend.
@@ -127,7 +136,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Testdata laden (in de browserconsole), daarna herladen:
   `localStorage.setItem("biljart-tracker-v2", JSON.stringify(await fetch("/test/testdata.json").then(r=>r.json())))`
 - Alle tests (liefst op telefoonformaat 375 breed): `await eval(await fetch("/test/alles.js").then(r=>r.text()))`
-  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`
+  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`, `weergave`
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.

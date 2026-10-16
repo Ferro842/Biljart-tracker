@@ -76,8 +76,13 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
   );
 }
 
-function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
+function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgrootte,eenvoudig,setWeergave}){
   const schermen=[
+    {
+      titel:"Welkom! Hoe wil je het zien?",
+      body:"Kies de tekstgrootte die prettig leest; je ziet het meteen. Eenvoudige modus houdt alleen het belangrijkste over: per beurt je caramboles en Noteer. Je kunt dit later altijd wijzigen bij Stats → Weergave.",
+      weergave:true
+    },
     {
       titel:"Zet de app op je beginscherm",
       body:"Voor het beste gebruik installeer je de app als een normale app-icoon op je beginscherm — dat opent sneller dan steeds de link opzoeken, en voelt als een echte app. Na de eerste keer opent de app ook zonder internet.",
@@ -120,7 +125,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
     },
     {
       titel:"Klaar om te beginnen!",
-      body:"Dat is het zo'n beetje — de rest ontdek je vanzelf tijdens het spelen. Veel plezier!"
+      body:"Dat is het zo'n beetje — de rest ontdek je vanzelf tijdens het spelen. Kom je er niet uit? Onder Start partij staat altijd ℹ️ Zo werkt de app. Veel plezier!"
     }
   ].filter(function(s){return IS_NATIVE?!s.alleenWeb:!s.alleenApp;});
   const s=schermen[stap];
@@ -168,6 +173,26 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
             )}
           </div>
         )}
+        {s.weergave&&(
+          <div style={{marginBottom:16}}>
+            <div style={{fontSize:13,color:WIT,marginBottom:6}}>Tekstgrootte</div>
+            <div style={{display:"flex",gap:6,marginBottom:12}}>
+              {TEKSTGROOTTES.map(function(x){
+                const actief=tekstgrootte===x[0];
+                return <button key={x[0]} onClick={function(){setWeergave("tekstgrootte",x[0]);}}
+                  style={{flex:1,padding:"10px 2px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:12+(x[2]-1)*20,cursor:"pointer",fontFamily:"inherit"}}>{x[1]}</button>;
+              })}
+            </div>
+            <div style={{fontSize:13,color:WIT,marginBottom:6}}>Eenvoudige modus</div>
+            <div style={{display:"flex",gap:6}}>
+              {[[false,"Alles laten zien"],[true,"Eenvoudig"]].map(function(x){
+                const actief=eenvoudig===x[0];
+                return <button key={x[1]} onClick={function(){setWeergave("eenvoudig",x[0]);}}
+                  style={{flex:1,padding:"10px 2px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>{x[1]}</button>;
+              })}
+            </div>
+          </div>
+        )}
         {s.lijst&&(
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"12px 12px",marginBottom:16,fontSize:13,color:WITD,lineHeight:1.5}}>
             {s.lijst.map(function(r,i){
@@ -194,6 +219,65 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar}){
             {laatste?"Eerste partij starten":"Volgende"}
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// "Zo werkt de app": vaste uitleg in gewone taal, altijd te openen (onder Start partij en in Stats > Weergave)
+function UitlegVenster({eenvoudig,onClose}){
+  const blokken=[
+    ["🎱","Een partij spelen",[
+      "Kies de tafel en het doel (aantal beurten of caramboles) en tik op Start partij.",
+      "Per beurt: zet je caramboles met + en − (of typ ze) en tik op Noteer.",
+      "Vergist? Tik op terug; de laatste beurt wordt weggehaald.",
+      "Klaar: tik rechtsboven op Afsluiten en dan op Opslaan. Stop je tussendoor, dan onthoudt de app de partij."
+    ]],
+    ["✍️","Opmerkingen (mag, hoeft niet)",[
+      "Na Noteer kun je aanvinken waardoor je serie eindigde en wat er goed ging.",
+      eenvoudig
+        ?"Je staat in de eenvoudige modus: die stap wordt overgeslagen. Wil je bij een beurt toch iets aanvinken, tik dan op + opmerking in plaats van Noteer."
+        :"In de eenvoudige modus wordt die stap overgeslagen; daar tik je + opmerking als je bij een beurt toch iets wilt aanvinken.",
+      "Je hoeft niet altijd opmerkingen te zetten. Een partij telt als bijgehouden als ongeveer een kwart van de beurten een opmerking heeft. Alleen die partijen gebruikt Dash → Inzicht voor je technieken; hoe vaker je het doet, hoe meer de app je kan vertellen."
+    ]],
+    ["📊","Waar vind je wat",[
+      "Spelen: een partij invoeren.",
+      "Stats: je niveau, al je partijen en de instellingen (Weergave).",
+      "Dash: Inzicht (wat je data zegt, je hoogste series, je poedels) en grafieken.",
+      "Log: elke partij beurt voor beurt terugkijken.",
+      "Data: back-up maken en terugzetten."
+    ]],
+    ["🏅","Je niveau",[
+      "Je vorm is het gemiddelde van je laatste 20 partijen; daarop is je klasse gebaseerd (KNBB-grenzen).",
+      "Je moyenne is het gemiddelde van al je partijen, zoals officieel."
+    ]],
+    ["🔎","Weergave",[
+      "Stats → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen.",
+      "Eenvoudige modus: alleen caramboles en Noteer, geen badges en punten, en in Dash alleen het belangrijkste."
+    ]],
+    ["💾","Je gegevens",[
+      "Alles staat alleen op dit toestel. Maak af en toe een back-up: Data → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail.",
+      "Nieuwe telefoon of opnieuw installeren? Data → Importeer zet de back-up terug."
+    ]]
+  ];
+  return(
+    <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:300,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"20px 14px",overflowY:"auto"}}>
+      <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,padding:"18px 16px",maxWidth:420,width:"100%"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+          <div style={{fontSize:20,fontWeight:"bold",color:GOUD}}>ℹ️ Zo werkt de app</div>
+          <button onClick={onClose} style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:16,padding:"4px 12px",cursor:"pointer",fontFamily:"inherit"}}>✕</button>
+        </div>
+        {blokken.map(function(b){
+          return(
+            <div key={b[1]} style={{background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px",marginBottom:10}}>
+              <div style={{fontSize:16,color:GOUD,fontWeight:"bold",marginBottom:6}}>{b[0]} {b[1]}</div>
+              {b[2].map(function(r,i){
+                return <div key={i} style={{fontSize:15,color:WIT,lineHeight:1.5,marginBottom:i<b[2].length-1?6:0,paddingLeft:12,position:"relative"}}><span style={{position:"absolute",left:0,color:GOUD}}>•</span>{r}</div>;
+              })}
+            </div>
+          );
+        })}
+        <button className="plusmin-btn" onClick={onClose} style={{width:"100%",padding:13,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>Sluiten</button>
       </div>
     </div>
   );

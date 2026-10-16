@@ -5,6 +5,67 @@
 const {useState,useEffect,useRef,useMemo,useContext}=React;
 // Staat het spelelement (badges, punten, slechtste partijen schrappen) aan? Uit = niets daarvan tonen.
 const SpelContext=React.createContext(true);
+// Eenvoudige modus (Stats > Weergave): spelen zonder opmerkingen-stap, geen spelelement, minder Dash-onderdelen
+const EenvoudigContext=React.createContext(false);
+
+// Logo in de kop: laken (kleur van de discipline via --c-3f8a3a/--c-1d4a1d), twee gekruiste keus en drie
+// ballen met glimlicht en schaduw. SVG met kleuren via style (var() werkt niet in SVG-attributen).
+function Logo({maat=44}){
+  const bal=function(x,y,kleur,id){
+    return(
+      <g>
+        <ellipse cx={x+1.5} cy={y+8} rx={8} ry={2.6} style={{fill:"rgba(0,0,0,0.35)"}}/>
+        <circle cx={x} cy={y} r={8.5} style={{fill:"url(#"+id+")"}}/>
+        <circle cx={x-2.8} cy={y-3} r={2.2} style={{fill:"rgba(255,255,255,0.85)"}}/>
+      </g>
+    );
+  };
+  const balKleur=function(id,licht,donker){
+    return(
+      <radialGradient id={id} cx="35%" cy="30%" r="75%">
+        <stop offset="0%" style={{stopColor:licht}}/><stop offset="100%" style={{stopColor:donker}}/>
+      </radialGradient>
+    );
+  };
+  // Keu: dun lichtgekleurd hout naar de tip, donker handvat met een goud ringetje
+  const keu=function(x1,y1,x2,y2){
+    const mx=x1+(x2-x1)*0.3,my=y1+(y2-y1)*0.3;
+    return(
+      <g style={{strokeLinecap:"round"}}>
+        <line x1={x1} y1={y1} x2={x2} y2={y2} style={{stroke:"rgba(0,0,0,0.3)",strokeWidth:5.5}} transform="translate(1.5,2)"/>
+        <line x1={mx} y1={my} x2={x2} y2={y2} style={{stroke:"url(#lg-hout)",strokeWidth:3.2}}/>
+        <line x1={x1} y1={y1} x2={mx} y2={my} style={{stroke:"#2b1a10",strokeWidth:5.2}}/>
+        <line x1={mx-(x2-x1)*0.015} y1={my-(y2-y1)*0.015} x2={mx+(x2-x1)*0.015} y2={my+(y2-y1)*0.015} style={{stroke:GOUD,strokeWidth:5.4}}/>
+        <line x1={x2-(x2-x1)*0.03} y1={y2-(y2-y1)*0.03} x2={x2} y2={y2} style={{stroke:"#f5f0e8",strokeWidth:3.2}}/>
+      </g>
+    );
+  };
+  return(
+    <svg width={maat} height={maat} viewBox="0 0 100 100" style={{flexShrink:0,display:"block"}} aria-label="Biljart Tracker">
+      <defs>
+        <radialGradient id="lg-laken" cx="50%" cy="42%" r="70%">
+          <stop offset="0%" style={{stopColor:"var(--c-3f8a3a)"}}/><stop offset="100%" style={{stopColor:"var(--c-1d4a1d)"}}/>
+        </radialGradient>
+        <linearGradient id="lg-glans" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" style={{stopColor:"rgba(255,255,255,0.22)"}}/><stop offset="45%" style={{stopColor:"rgba(255,255,255,0)"}}/>
+        </linearGradient>
+        <linearGradient id="lg-hout" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" style={{stopColor:"#8a5a2b"}}/><stop offset="100%" style={{stopColor:"#f0d39a"}}/>
+        </linearGradient>
+        {balKleur("lg-rood","#ff7a6b","#a3120b")}
+        {balKleur("lg-wit","#ffffff","#cfc9bc")}
+        {balKleur("lg-geel","#ffe58a","#d18a00")}
+      </defs>
+      <rect x="2" y="2" width="96" height="96" rx="22" style={{fill:"url(#lg-laken)",stroke:GOUD,strokeWidth:2.5,strokeOpacity:0.8}}/>
+      {keu(14,88,86,16)}
+      {keu(86,88,14,16)}
+      {bal(50,26,"rood","lg-rood")}
+      {bal(25,50,"wit","lg-wit")}
+      {bal(75,50,"geel","lg-geel")}
+      <rect x="2" y="2" width="96" height="96" rx="22" style={{fill:"url(#lg-glans)"}}/>
+    </svg>
+  );
+}
 
 function Grafiek({beurten,discipline}){
   const opbouwMin=beurtDrempels(discipline||"libre").opbouwMin;

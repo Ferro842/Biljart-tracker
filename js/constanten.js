@@ -6,9 +6,13 @@
 // css/app.css). zetThema() zet ze om naar blauw (driebanden), grijs (bandstoten) of rood (kader); libre blijft
 // groen. Goud, wit en de signaalkleuren ROOD/GRNT blijven overal gelijk. In SVG var() alleen via style={{}}.
 const THEMA_KLEUREN=["1a2e1a","22341f","3a5c35","2d4a1e","0d1f0d","1e3a1e","182e14","152015","1a3019","1a2e10",
-  "1c3019","2a4a1e","5a7a55","1c2c1c","1c2e18","24401f","132613","1a3a1a","2a3d20","2d4a22"];
-const G="var(--c-1a2e1a)",GOUD="#c9a84c",GOUDL="#e8c96a",WIT="#f5f0e8",WITD="#d4cfc5";
+  "1c3019","2a4a1e","5a7a55","1c2c1c","1c2e18","24401f","132613","1a3a1a","2a3d20","2d4a22",
+  "3f8a3a","1d4a1d"]; // laatste twee: het laken in het logo (licht midden, donkere rand)
+const G="var(--c-1a2e1a)",GOUD="#c9a84c",GOUDL="#e8c96a",WIT="#f5f0e8",WITD="#e3ded4"; // WITD lichter voor beter contrast (was #d4cfc5)
 const KBG="var(--c-22341f)",KBDR="var(--c-3a5c35)",ROOD="#e05555",GRNT="#4caf50";
+// Tekstgrootte (Stats > Weergave): vergroot de hele app inclusief knoppen via CSS zoom op .app
+const TEKSTGROOTTES=[["normaal","Normaal",1],["groot","Groot",1.15],["extra","Extra groot",1.3]];
+function tekstZoom(k){const x=TEKSTGROOTTES.find(function(t){return t[0]===k;});return x?x[2]:1;}
 // Tint (graden), verzadiging- en lichtheidsfactor per laken; null = groen zoals de kleuren zelf
 function themaVan(discipline){
   if(discipline==="driebanden")return{tint:212,verz:1.35,licht:1.08};       // biljartblauw

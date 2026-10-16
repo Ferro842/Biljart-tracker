@@ -16,7 +16,9 @@
   uit.aanVooraf=tekst().indexOf("Badge-punten")!==-1||tekst().indexOf("pt")!==-1;
   const gemAan=(tekst().match(/je vorm(\d+\.\d+)/)||[])[1];
   // Uitzetten
-  k("Uit").click();await w(250);
+  // De knop "Uit" in de kaart Spelelement (Weergave heeft ook een "Uit")
+  const kaart=Array.from(document.querySelectorAll("#root div")).find(function(d){return d.textContent==="Spelelement";}).parentElement;
+  Array.from(kaart.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="Uit";}).click();await w(250);
   uit.opgeslagen=data().spelelement===false;
   const t=tekst();
   uit.geenPuntenInStats=!/\d+pt/.test(t);

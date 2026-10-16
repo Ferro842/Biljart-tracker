@@ -268,6 +268,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
 
 function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const spel=useContext(SpelContext); // spelelement uit: geen Punten-tab
+  const eenvoudig=useContext(EenvoudigContext); // eenvoudige modus: alleen Inzicht en Trend
   // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
   const ST=useMemo(()=>{
     return (partijen||[]).map(function(p,i){
@@ -483,9 +484,9 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
         {btn("inzicht","✨ Inzicht")}
         {btn("trend","Trend")}
-        {btn("consist","Constant")}
-        {btn("patronen","Patronen")}
-        {btn("vergelijk","Vergelijk")}
+        {!eenvoudig&&btn("consist","Constant")}
+        {!eenvoudig&&btn("patronen","Patronen")}
+        {!eenvoudig&&btn("vergelijk","Vergelijk")}
         {spel&&btn("punten","Punten")}
       </div>
 
@@ -503,10 +504,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             <span style={{fontSize:12,color:WITD,minWidth:14}}>{va+1}</span>
             <input type="range" min={0} max={Math.max(ST.length-1,0)} value={va}
               onChange={e=>{setGeselecteerdeMaanden(null);setVa(Math.min(+e.target.value,tot-1));}}
-              style={{flex:1,accentColor:GOUD}}/>
+              style={{flex:1,minWidth:0,accentColor:GOUD}}/>
             <input type="range" min={0} max={Math.max(ST.length-1,0)} value={tot}
               onChange={e=>{setGeselecteerdeMaanden(null);setTot(Math.max(+e.target.value,va+1));}}
-              style={{flex:1,accentColor:GOUD}}/>
+              style={{flex:1,minWidth:0,accentColor:GOUD}}/>
             <span style={{fontSize:12,color:WITD,minWidth:14}}>{tot+1}</span>
           </div>
           <div style={{display:"flex",gap:5,overflowX:"auto",paddingBottom:2}}>

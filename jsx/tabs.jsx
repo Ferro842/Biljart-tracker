@@ -164,8 +164,9 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData}){
 // Stats-tab: seizoen, tijdvenster, totalen, alle partijen, data wissen en 'Over deze app'
 function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestatiesMap,tijdsvenster,setTijdsvenster,
   seizoenAfsluiten,seizoensplitsingOngedaanMaken,openArchief,verwijderPartij,slaNotitieOp,resetAlles,setSpelelement,
-  vormVenster,setVormVenster}){
+  vormVenster,setVormVenster,setWeergave,openUitleg}){
   const spel=useContext(SpelContext);
+  const eenvoudig=useContext(EenvoudigContext);
   const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
@@ -300,8 +301,33 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
         );
       })()}
 
-      {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen */}
-      <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+      {/* Weergave: tekstgrootte en eenvoudige modus (voor wie het groter en rustiger wil) */}
+      <div style={{background:KBG,border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Weergave</div>
+        <button onClick={openUitleg} style={{width:"100%",padding:"10px",marginBottom:12,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>ℹ️ Zo werkt de app</button>
+        <div style={{fontSize:14,color:WIT,marginBottom:6}}>Tekstgrootte</div>
+        <div style={{display:"flex",gap:6,marginBottom:12}}>
+          {TEKSTGROOTTES.map(function(x){
+            const actief=(data.tekstgrootte||"normaal")===x[0];
+            return <button key={x[0]} onClick={function(){setWeergave("tekstgrootte",x[0]);}}
+              style={{flex:1,padding:"10px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12+(x[2]-1)*20}}>{x[1]}</button>;
+          })}
+        </div>
+        <div style={{fontSize:14,color:WIT,marginBottom:4}}>Eenvoudige modus</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:8,lineHeight:1.5}}>
+          Alleen het belangrijkste: per beurt je caramboles invullen en Noteer, zonder de stap met opmerkingen. Wil je bij een beurt toch iets aanvinken, tik dan + opmerking. Geen badges en punten, en in Dash alleen Inzicht en Trend.
+        </div>
+        <div style={{display:"flex",gap:6}}>
+          {[[true,"Aan"],[false,"Uit"]].map(function(x){
+            const actief=eenvoudig===x[0];
+            return <button key={x[1]} onClick={function(){if(!actief)setWeergave("eenvoudig",x[0]);}}
+              style={{flex:1,padding:"10px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+          })}
+        </div>
+      </div>
+
+      {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen (niet in eenvoudige modus) */}
+      {!eenvoudig&&<div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Spelelement</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
           Badges, punten en het schrappen van je slechtste partijen uit je vorm (1 per {PUNTEN_PER_DROP} punten, hoogstens 1 op de 10 partijen).
@@ -314,7 +340,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
               style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
           })}
         </div>
-      </div>
+      </div>}
       {spel&&(<div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
         <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je vorm en niveau (zie hierboven) en je 👑🏓-records hangen hier niet van af — een record blijft een record.</div>

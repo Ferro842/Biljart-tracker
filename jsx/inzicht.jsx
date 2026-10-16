@@ -16,6 +16,7 @@ function InzichtKaart({titel,uitleg,children,rand}){
 
 function InzichtPaneel({partijen,discipline}){
   const inz=useMemo(function(){return berekenInzicht(partijen,discipline);},[partijen,discipline]);
+  const eenvoudig=useContext(EenvoudigContext);
   // Hoogste series: welk aantal caramboles is opengeklapt (null = het hoogste)
   const [serieAantal,setSerieAantal]=useState(null);
   // Aangetikt staafje in de grafiek hoogste serie per partij: {tafel,nr}
@@ -42,6 +43,8 @@ function InzichtPaneel({partijen,discipline}){
 
   if(!inz)return <div style={{fontSize:14,color:WITD,padding:"8px 0"}}>Nog geen beurten in deze selectie.</div>;
   const dec=discipline==="driebanden"?3:2;
+  // Kaarten over opmerkingen: altijd, behalve in eenvoudige modus zonder één bijgehouden partij
+  const metOpm=!eenvoudig||inz.dekking.bijgehouden>0;
   const pctTekst=function(x){return Math.round(x*100)+"%";};
   const icoon={vorm:"📊",hoogste:"🏆",poedeltrend:"⭕",poedel:"⭕",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
   const spelZinnen=inz.coach.filter(function(c){return c.soort!=="omstandigheid";});
@@ -453,6 +456,9 @@ function InzichtPaneel({partijen,discipline}){
         );
       })()}
 
+      {/* Eenvoudige modus: alleen de samenvatting, je hoogste series en je poedels. De kaarten over opmerkingen
+          komen er vanzelf bij zodra je in een partij opmerkingen hebt bijgehouden (+ opmerking bij Noteer). */}
+      {!eenvoudig&&<>
       {/* Poedels en series: waar je gemiddelde vandaan komt */}
       <InzichtKaart titel="Poedels en series"
         uitleg="Elke beurt eindigt met een misser. Je gemiddelde gaat alleen omhoog door minder poedels en grotere series. Hier tellen alle partijen mee, ook de geschrapte.">
@@ -587,9 +593,10 @@ function InzichtPaneel({partijen,discipline}){
           </div>
         </div>
       </InzichtKaart>
+      </>}
 
       {/* Speelprofiel per techniek */}
-      {inz.profiel.length>0&&(
+      {metOpm&&inz.profiel.length>0&&(
         <InzichtKaart titel="Je speelprofiel per techniek"
           uitleg={"Lengte = hoe vaak de techniek voorkwam, groen = ging goed, rood = serie eindigde erdoor. Een lange rode balk betekent niet dat je er slecht in bent: misschien speel je hem gewoon veel. Kijk naar het percentage; gemiddeld over al je technieken is dat "+pctTekst(inz.refPct)+"."}>
           {inz.profiel.map(function(x){
@@ -624,7 +631,7 @@ function InzichtPaneel({partijen,discipline}){
       )}
 
       {/* Seriemakers */}
-      {inz.seriemakers.length>0&&(
+      {metOpm&&inz.seriemakers.length>0&&(
         <InzichtKaart titel="Wat levert grote series op"
           uitleg={"Gemiddeld aantal caramboles in beurten waarin dit goed ging, tegenover je gemiddelde van "+komma(inz.basisTag,dec)+" per beurt in de bijgehouden partijen."}>
           {inz.seriemakers.map(function(x){
@@ -644,7 +651,7 @@ function InzichtPaneel({partijen,discipline}){
       )}
 
       {/* Seriestoppers */}
-      {stoppers.length>0&&(
+      {metOpm&&stoppers.length>0&&(
         <InzichtKaart titel="Waardoor eindigden je series"
           uitleg={"Van de "+inz.metOorzaak+" beurten waarbij je aanvinkte waardoor de serie eindigde. Beschrijvend, geen oordeel."}>
           {stoppers.map(function(x){
@@ -664,7 +671,7 @@ function InzichtPaneel({partijen,discipline}){
       )}
 
       {/* Omstandigheden */}
-      {inz.omstandigheden.length>0&&(
+      {!eenvoudig&&inz.omstandigheden.length>0&&(
         <InzichtKaart titel="Omstandigheden" uitleg={"Gemiddelde per beurt; ▲▼ tegenover het gemiddelde van de partijen die in dat blok meetellen. Partij van de avond: alleen avonden met 2 of meer partijen."}>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
             {inz.omstandigheden.map(function(o){
@@ -688,7 +695,7 @@ function InzichtPaneel({partijen,discipline}){
       )}
 
       {/* Trend van seriestoppers */}
-      {inz.trend.length>0&&(
+      {metOpm&&inz.trend.length>0&&(
         <InzichtKaart titel="Werk je je werkpunten weg?"
           uitleg="Hoe vaak een oorzaak je serie beëindigde, per 100 beurten: eerste helft van je bijgehouden partijen tegenover de tweede helft. Ben je anders gaan aanvinken, dan zie je dat hier ook terug.">
           {inz.trend.map(function(x){

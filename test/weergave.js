@@ -36,7 +36,7 @@
   k("Dash").click();await w(300);
   uit.dashTabs=!!k("Trend")&&!k("Constant")&&!k("Patronen")&&!k("Vergelijk")&&!!k("Punten");
   // Kop en disciplines schuiven weg bij omlaag scrollen en komen terug bij omhoog
-  const kopWeg=function(){return document.querySelector(".app").firstElementChild.style.maxHeight==="0px";};
+  const kopWeg=function(){const k=document.querySelector("[data-kop]");return!!k&&k.getAttribute("data-kop")==="weg";};
   const sc=Array.from(document.querySelectorAll("#root div")).filter(function(d){return getComputedStyle(d).overflowY==="auto"&&d.scrollHeight>d.clientHeight+50;})[0];
   if(sc){
     sc.scrollTop=300;sc.dispatchEvent(new Event("scroll"));await w(550);const weg=kopWeg();

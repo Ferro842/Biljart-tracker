@@ -473,8 +473,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
         {/* Uitleg per onderdeel (vooraan, zodat hij ook bij grote tekst in beeld is; de oude kopbalk is weg voor meer leesruimte) */}
         <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}} aria-label="Uitleg"
-          style={{flex:"0 0 auto",padding:"8px 10px",margin:"4px 2px 4px 6px",background:uitlegModus?"var(--c-2d4a1e)":"none",border:"1px solid "+(uitlegModus?GOUD:KBDR),borderRadius:8,color:uitlegModus?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
-          {uitlegModus?"✕":"❓"}
+          style={{flex:"0 0 auto",alignSelf:"center",width:30,height:30,margin:"0 4px 0 10px",padding:0,borderRadius:"50%",
+            background:uitlegModus?GOUD:"transparent",border:"1.5px solid "+GOUD,color:uitlegModus?G:GOUD,
+            fontSize:16,fontWeight:"bold",lineHeight:"27px",textAlign:"center",cursor:"pointer",fontFamily:"Georgia,serif"}}>
+          {uitlegModus?"✕":"?"}
         </button>
         {btn("inzicht","✨ Inzicht")}
         {btn("trend","Trend")}

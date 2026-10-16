@@ -112,7 +112,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   bijgehouden partij). Uitleg voor gebruikers: `UitlegVenster` ("ℹ️ Zo werkt de app", onder Start partij en in
   bovenaan Info); bij nieuwe functies daar ook bijwerken. Schuifbalken in flex:
   `minWidth:0`, anders steken ze uit bij grote tekst.
-- Kop en disciplinebalk schuiven weg bij omlaag scrollen in een tabblad (`kopWeg`, `volgScroll` als native
+- Kop en disciplinebalk (samen in één blok met `data-kop`, inklappen via grid-rijen 1fr→0fr, geen max-height) schuiven weg
+  bij omlaag scrollen in een tabblad (`kopWeg`, `volgScroll` als native
   capture-luisteraar op het inhoudvak: React geeft scroll van onderliggende vakken niet door) en komen terug bij
   omhoog scrollen, bovenaan, of bij wissel van tab/discipline. Tijdens de overgang (450 ms) en onderaan negeren,
   anders flikkert het. Dash heeft geen eigen kopbalk meer; ❓ Uitleg staat vooraan in de Dash-tabrij.

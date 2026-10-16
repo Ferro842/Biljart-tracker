@@ -51,6 +51,32 @@ function migreerAcquit(d){
   return changed;
 }
 
+// Herstel (16 okt 2026): een ingelezen wedstrijdbriefje kon door een tijdelijk verschil tussen bestanden
+// (nieuw controlescherm, oud index.html uit de cache) beurten opslaan met een object {car,gemist,goed} op de
+// plek van het getal caramboles ("[object Object]" in de app). Haal het getal en de opmerkingen eruit en
+// reken de partij opnieuw door. Acquit staat in Goed bij caramboles, anders in Gemist. Geeft true bij herstel.
+function herstelBeurten(d){
+  let changed=false;
+  (d.partijen||[]).forEach(function(p){
+    let kapot=false;
+    const beurten=(p.beurten||[]).map(function(b){
+      if(!b||typeof b.caramboles!=="object"||b.caramboles===null)return b;
+      kapot=true;
+      const o=b.caramboles,car=Math.max(0,parseInt(o.car,10)||0);
+      const samen=function(a,c){const uit=[];(a||[]).concat(c||[]).forEach(function(l){if(typeof l==="string"&&uit.indexOf(l)===-1)uit.push(l);});return uit;};
+      let gemist=samen(b.gemist,o.gemist),goed=car>0?samen(b.goed,o.goed):[];
+      if(gemist.indexOf("Acquit")!==-1&&goed.indexOf("Acquit")!==-1){if(car>0)gemist=gemist.filter(function(l){return l!=="Acquit";});else goed=goed.filter(function(l){return l!=="Acquit";});}
+      return Object.assign({},b,{caramboles:car,gemist:gemist,goed:goed});
+    });
+    if(!kapot)return;
+    p.beurten=beurten;
+    const st=typeof stat==="function"?stat(beurten,p.discipline||"libre"):null;
+    if(st)Object.assign(p,st);
+    changed=true;
+  });
+  return changed;
+}
+
 const DATA_BESTAND="biljart-data.json",DATA_TMP="biljart-data.tmp";
 function nativeFS(){return window.Capacitor.Plugins.Filesystem;}
 async function leesNative(pad){
@@ -79,6 +105,7 @@ async function laadData(){
     if(d){
       console.log("Geladen uit native bestand: "+d.partijen.length+" partijen");
       let changed=migreerTafels(d);
+      if(herstelBeurten(d))changed=true;
       if(migreerAcquit(d))changed=true;
       if(d.onboardingGezien===undefined&&d.partijen.length>0){d.onboardingGezien=true;changed=true;}
       if(changed)await slaOp(d);
@@ -104,7 +131,8 @@ async function laadWebData(){
       if(d&&d.partijen&&d.partijen.length>0){
         console.log("Geladen uit localStorage: "+d.partijen.length+" partijen");
         let changed=migreerTafels(d);
-        if(migreerAcquit(d))changed=true;
+        if(herstelBeurten(d))changed=true;
+      if(migreerAcquit(d))changed=true;
         if(d.onboardingGezien===undefined){d.onboardingGezien=true;changed=true;}
         if(changed)await slaOp(d);
         return d;
@@ -120,7 +148,8 @@ async function laadWebData(){
         if(d&&d.partijen&&d.partijen.length>0){
           console.log("Geladen uit window.storage: "+d.partijen.length+" partijen");
           let changed=migreerTafels(d);
-          if(migreerAcquit(d))changed=true;
+          if(herstelBeurten(d))changed=true;
+      if(migreerAcquit(d))changed=true;
           if(d.onboardingGezien===undefined){d.onboardingGezien=true;changed=true;}
           if(changed)await slaOp(d);
           return d;

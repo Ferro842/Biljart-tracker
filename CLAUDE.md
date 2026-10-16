@@ -167,6 +167,10 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - iOS beginscherm-PWA heeft eigen opslag, los van Safari; een opnieuw toegevoegd icoon start leeg.
 - iOS legt het beginscherm-icoon eenmalig vast; het verandert niet bij een update.
 - GitHub Pages cachet ongeveer 10 minuten; daarom de `?v=`-versie in de script-tags.
+  Let op: GitHub Pages negeert `?v=`; vlak na een push kan een telefoon een oud `index.html` met nieuwe `jsx`-bestanden
+  combineren. Verandert de vorm van gegevens tussen bestanden (props, callbacks), laat de ontvangende kant dan ook de
+  oude vorm accepteren. (16 okt 2026: briefje-beurten als object op de plek van het getal; hersteld met
+  `herstelBeurten()` in `js/opslag.js`, die bij laden en importeren draait.)
 - `sw.js` (website): eerst het netwerk, cache als terugval (offline of na 4 s). Nieuwe app-bestanden ook in
   `VOORAF` in `sw.js` zetten; `node test/sw-node.js` controleert dat en test online/offline/traag.
 - Na een push: `npm run ios` en opnieuw installeren is nodig om de iOS-app bij te werken.

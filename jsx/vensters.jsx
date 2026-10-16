@@ -355,7 +355,7 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   const hoogste=beurten.reduce(function(m,b){return Math.max(m,b.car);},0);
   const dec=discipline==="driebanden"?3:2;
   const gem=beurten.length?(totaal/beurten.length).toFixed(dec).replace(".",","):"–";
-  const doelGetal=parseInt(doel,10);
+  const doelGetal=parseInt(doel,10); // te maken caramboles van het briefje (niet zichtbaar; wordt als doel bewaard)
 
   function opslaan(){
     const d=datum.split("-").map(function(x){return parseInt(x,10);});
@@ -473,16 +473,10 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
           </div>
 
           {kopje("Partij")}
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-            <label style={{fontSize:12,color:WITD}}>Datum
-              <input type="date" value={datum} onChange={function(e){setDatum(e.target.value);}}
-                style={{display:"block",width:"100%",marginTop:4,padding:"9px 8px",borderRadius:8,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:15,fontFamily:"inherit",colorScheme:"dark"}}/>
-            </label>
-            <label style={{fontSize:12,color:WITD}}>Te maken caramboles
-              <input type="number" inputMode="numeric" value={doel} placeholder="—" onChange={function(e){setDoel(e.target.value.replace(/[^0-9]/g,""));}}
-                style={{display:"block",width:"100%",marginTop:4,padding:"9px 8px",borderRadius:8,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:15,fontFamily:"inherit"}}/>
-            </label>
-          </div>
+          <label style={{display:"block",fontSize:12,color:WITD}}>Datum
+            <input type="date" value={datum} onChange={function(e){setDatum(e.target.value);}}
+              style={{display:"block",width:"100%",boxSizing:"border-box",marginTop:4,padding:"10px 10px",borderRadius:8,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:16,fontFamily:"inherit",colorScheme:"dark",minHeight:44}}/>
+          </label>
           <div style={{fontSize:12,color:WITD,margin:"10px 0 4px"}}>Tafel</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
             {Object.keys(TAFELS).map(function(k){const aan=k===tafel;return(

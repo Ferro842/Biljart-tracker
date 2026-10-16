@@ -40,8 +40,9 @@
   const sc=Array.from(document.querySelectorAll("#root div")).filter(function(d){return getComputedStyle(d).overflowY==="auto"&&d.scrollHeight>d.clientHeight+50;})[0];
   if(sc){
     sc.scrollTop=300;sc.dispatchEvent(new Event("scroll"));await w(550);const weg=kopWeg();
-    sc.scrollTop=150;sc.dispatchEvent(new Event("scroll"));await w(550);
-    uit.kopSchuift=weg&&!kopWeg();
+    sc.scrollTop=150;sc.dispatchEvent(new Event("scroll"));await w(550);const blijftWeg=kopWeg();
+    sc.scrollTop=0;sc.dispatchEvent(new Event("scroll"));await w(550);
+    uit.kopSchuift=weg&&blijftWeg&&!kopWeg(); // weg bij omlaag, blijft weg bij een stukje omhoog, terug bovenaan
   }else uit.kopSchuift=false;
   k("Spelen").click();await w(200);(k("Start partij")||k("Doorgaan")).click();await w(200);
   const voor=(data().lopendePartij||{beurten:[]}).beurten.length;

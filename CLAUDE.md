@@ -123,8 +123,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   Later eventueel: herkenning op de iPhone zelf (Apple Vision, eigen plugin) met hetzelfde controlescherm.
 - Kop en disciplinebalk (samen in één blok met `data-kop`, inklappen via grid-rijen 1fr→0fr, geen max-height) schuiven weg
   bij omlaag scrollen in een tabblad (`kopWeg`, `volgScroll` als native
-  capture-luisteraar op het inhoudvak: React geeft scroll van onderliggende vakken niet door) en komen terug bij
-  omhoog scrollen, bovenaan, of bij wissel van tab/discipline. Tijdens de overgang (450 ms) en onderaan negeren,
+  capture-luisteraar op het inhoudvak: React geeft scroll van onderliggende vakken niet door) en komen pas terug
+  helemaal bovenaan of bij wissel van tab/discipline (niet bij een stukje omhoog: dat voelde onrustig). Tijdens de overgang (450 ms) en onderaan negeren,
   anders flikkert het. Dash heeft geen eigen kopbalk meer; ❓ Uitleg staat vooraan in de Dash-tabrij.
 - ⭐-drempels (badges) gaan altijd over al je eerdere partijen (`tijdsvensterMaanden` = null); de instelling
   "Tijdvenster voor prestatie-drempels" is vervallen (16 okt 2026; op echte data vrijwel geen verschil met de laatste

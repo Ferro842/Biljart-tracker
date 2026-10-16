@@ -324,7 +324,8 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
     setAcquit(i===0?"eerste":"laatste");
     // Beide spelers maken evenveel beurten: mist jouw kolom de laatste beurt(en) (vaak alleen een streepje op het
     // briefje), dan aanvullen met poedels tot het aantal van de tegenstander
-    const meeste=Math.max.apply(null,r.spelers.map(function(x){return x.beurten.length;}));
+    // ... en tot het aantal beurten dat de AI-chat opgaf (BEURTEN:), als dat meer is
+    const meeste=Math.max.apply(null,r.spelers.map(function(x){return x.beurten.length;}).concat([r.aantalBeurten||0]));
     const eigen=s.beurten.map(function(b){return{nr:b.nr,car:b.car,totaal:b.totaal,gemist:[],goed:[]};});
     const laatsteTotaal=eigen.reduce(function(t,b){return b.totaal!==null?b.totaal:t;},null);
     for(let n=eigen.length+1;n<=meeste;n++)eigen.push({nr:n,car:0,totaal:laatsteTotaal,gemist:[],goed:[],aangevuld:true});
@@ -339,6 +340,14 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
     if(r.datum&&r.datum.jaar>2000)setDatum(r.datum.jaar+"-"+tweeCijfers(r.datum.maand)+"-"+tweeCijfers(r.datum.dag));
     setStap("controle");
   }
+  // Aantal beurten zelf zetten (snelknoppen 20/25/30): aanvullen met poedels of de laatste weghalen
+  const zetAantal=function(n){
+    if(n<1)return;
+    if(n<beurten.length){setBeurten(beurten.slice(0,n));return;}
+    const extra=[];const laatste=beurten.reduce(function(t,b){return b.totaal!==null?b.totaal:t;},null);
+    for(let i=beurten.length+1;i<=n;i++)extra.push({nr:i,car:0,totaal:laatste,gemist:[],goed:[]});
+    setBeurten(beurten.concat(extra));
+  };
   const zetCar=function(i,v){setBeurten(beurten.map(function(b,j){return j===i?Object.assign({},b,{car:Math.max(0,v)}):b;}));};
   // Opmerkingen met de acquit erbij: in de acquitbeurt "Acquit" bij Goed (caramboles) of Gemist (poedel)
   const acquitIdx=acquit==="eerste"?0:acquit==="laatste"?beurten.length-1:-1;
@@ -428,6 +437,13 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
               :"✓ Alle beurten kloppen met de totalen op het briefje."}
           </div>
 
+          {/* Aantal beurten: telt de AI-chat een streep in de laatste beurt niet mee, dan hier met één tik goedzetten */}
+          <div style={{marginTop:10,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+            <span style={{fontSize:13,color:WIT,marginRight:2}}>Aantal beurten: <b style={{color:GOUD}}>{beurten.length}</b></span>
+            {[20,25,30].map(function(n){const aan=beurten.length===n;return(
+              <button key={n} onClick={function(){zetAantal(n);}} style={{padding:"5px 10px",borderRadius:8,cursor:"pointer",fontFamily:"inherit",fontSize:14,
+                background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WITD,fontWeight:aan?"bold":"normal"}}>{n}</button>);})}
+          </div>
           {kopje("Beurten")}
           {aangevuld>0&&<div style={{fontSize:12,color:GOUDL,marginBottom:6,lineHeight:1.4}}>
             ℹ️ {aangevuld===1?"De laatste beurt ontbrak":"De laatste "+aangevuld+" beurten ontbraken"} in je kolom; aangevuld als poedel tot {beurten.length} beurten, evenveel als je tegenstander. Klopt dat niet, haal {aangevuld===1?"hem":"ze"} weg met "− laatste beurt".

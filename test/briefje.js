@@ -33,6 +33,12 @@
   Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.indexOf("Klos")!==-1;}).click();await w(100);
   k("Klaar").click();await w(150);
   uit.opmerkingZichtbaar=tekst().indexOf("✗ Klos")!==-1;
+  // Snelknop aantal beurten: 20 vult aan met poedels; daarna terug naar 5 met "− laatste beurt"
+  k("20").click();await w(200);
+  uit.aantalKnop=tekst().indexOf("Aantal beurten: 20")!==-1;
+  for(let i=0;i<15;i++){k("− laatste beurt").click();await w(40);}
+  await w(150);uit.aantalTerug=tekst().indexOf("Aantal beurten: 5")!==-1;
+  uit.beurtenRegel=leesBriefje("SPELER: A\n1: 2/2\nBEURTEN: 25").aantalBeurten===25&&BRIEFJE_PROMPT.indexOf("BEURTEN:")!==-1;
   const datumVeld=document.querySelector('input[type="date"]');
   uit.datumGelezen=datumVeld&&datumVeld.value==="2026-05-15";
   const voor=data().partijen.length;
@@ -49,6 +55,6 @@
   uit.lopendeOngemoeid=JSON.stringify(d.lopendePartij||null)===lopendVoor;
   uit.samenvatting=tekst().indexOf("Partij afgesloten")!==-1;
   const o=Array.from(document.querySelectorAll("div")).find(function(x){return x.style.position==="fixed";});if(o)o.click();await w(150);
-  uit.goed=uit.aangevuld&&uit.acquitLaatste&&uit.opmerkingZichtbaar&&uit.acquitOpgeslagen&&uit.opmerkingOpgeslagen&&uit.vraag&&uit.controlescherm&&uit.afwijkingGevonden&&uit.naVoorstel&&uit.datumGelezen&&uit.opgeslagen&&uit.opVolgorde&&uit.middenIn&&uit.uniekeIds&&uit.lopendeOngemoeid&&uit.samenvatting;
+  uit.goed=uit.aantalKnop&&uit.aantalTerug&&uit.beurtenRegel&&uit.aangevuld&&uit.acquitLaatste&&uit.opmerkingZichtbaar&&uit.acquitOpgeslagen&&uit.opmerkingOpgeslagen&&uit.vraag&&uit.controlescherm&&uit.afwijkingGevonden&&uit.naVoorstel&&uit.datumGelezen&&uit.opgeslagen&&uit.opVolgorde&&uit.middenIn&&uit.uniekeIds&&uit.lopendeOngemoeid&&uit.samenvatting;
   return uit;
 })()

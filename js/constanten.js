@@ -181,6 +181,9 @@ const MIJLPALEN=[
 const BRIEFJE_PROMPT=[
   "Dit is een foto van een carambole-wedstrijdbriefje. Lees voor elke speler zijn kolom uit, in de volgorde van links naar rechts op het briefje.",
   "Per beurt staan er twee getallen: links het aantal caramboles in die beurt, rechts het totaal na die beurt.",
+  "Elke genummerde rij is een beurt. Een streep (—), haakje of ander teken zonder getal in een rij is een poedel en telt WEL als beurt,",
+  "ook in de laatste rij. Het einde van de partij is de laatste rij met een teken, vaak gevolgd door een afsluitstreep.",
+  "Beide spelers hebben in een partij meestal evenveel beurten (bijvoorbeeld 25 bij een partij op beurten).",
   "Een streepje, een lege beurt met een streep of een 0 betekent een poedel (0 caramboles; het totaal blijft gelijk).",
   "Lees alle gespeelde beurten, ook de poedels, en stop na de laatste gespeelde beurt. Neem ook poedels aan het eind mee:",
   "beide spelers hebben meestal evenveel beurten, ook als de laatste beurt alleen een streepje of haakje is.",
@@ -193,5 +196,6 @@ const BRIEFJE_PROMPT=[
   "2: <caramboles> / <totaal>",
   "(enzovoort, één regel per beurt)",
   "",
+  "BEURTEN: <het aantal beurten van de partij: tel de rijen tot en met de laatste beurt met een getal of teken>",
   "DATUM: <dd-mm-jjjj als die op het briefje staat, anders leeg laten>"
 ].join("\n");

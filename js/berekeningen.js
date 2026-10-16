@@ -924,12 +924,14 @@ function berekenInzicht(partijen,discipline){
 // streepjes voor poedels, ontbrekende totalen en extra tekst mogen. Geeft {spelers:[{naam,teMaken,beurten:
 // [{nr,car,totaal}]}],datum} of null als er niets bruikbaars in staat. Totaal is null als het ontbreekt.
 function leesBriefje(tekst){
-  const spelers=[];let huidig=null,datum=null;
+  const spelers=[];let huidig=null,datum=null,aantalBeurten=null;
   String(tekst||"").split(/\r?\n/).forEach(function(regel){
     const r=regel.replace(/[*_`#>]/g,"").trim();
     if(!r)return;
     const sp=r.match(/^speler\s*[:\-]\s*([^|]*?)\s*(?:\|\s*te\s*maken\s*[:\-]?\s*(\d+))?\s*$/i);
     if(sp){huidig={naam:sp[1].trim()||("Speler "+(spelers.length+1)),teMaken:sp[2]?parseInt(sp[2],10):null,beurten:[]};spelers.push(huidig);return;}
+    const ab=r.match(/^beurten\s*[:\-]\s*(\d{1,3})/i);
+    if(ab){aantalBeurten=parseInt(ab[1],10);return;}
     const dt=r.match(/^datum\s*[:\-]\s*(\d{1,2})[-./](\d{1,2})[-./](\d{2,4})/i);
     if(dt){const j=parseInt(dt[3],10);datum={dag:parseInt(dt[1],10),maand:parseInt(dt[2],10),jaar:j<100?2000+j:j};return;}
     const b=r.match(/^(\d{1,2})\s*[:.)\-]\s*(\d{1,3}|[-–—]|x|poedel)?\s*(?:[\/|;,]\s*(\d{1,4}|[-–—]))?/i);
@@ -947,7 +949,7 @@ function leesBriefje(tekst){
     const max=Math.max.apply(null,s.beurten.map(function(b){return b.nr;}));
     s.beurten=[];for(let i=1;i<=max;i++)s.beurten.push(perNr[i]||{nr:i,car:0,totaal:null});
   });
-  return{spelers:bruikbaar,datum:datum};
+  return{spelers:bruikbaar,datum:datum,aantalBeurten:aantalBeurten};
 }
 
 // Controle tegen de lopende totalen op het briefje. Per beurt wat het briefje verwacht (totaal min het vorige

@@ -192,7 +192,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                 {!confSeizoenAfsluiten
                   ?<button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
                     onClick={function(){setConfSeizoenAfsluiten(true);}}>Seizoen afsluiten</button>
-                  :<div style={{flex:1,background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:6,padding:"7px 8px"}}>
+                  :<div style={{flex:1,minWidth:0,background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:6,padding:"7px 8px"}}>
                     <div style={{fontSize:13,color:GOUD,marginBottom:6}}>Huidig seizoen afsluiten en een nieuwe beginnen?</div>
                     <label style={{display:"block",fontSize:12,color:WITD,marginBottom:8}}>Nieuw seizoen begint op
                       <input type="date" value={nieuwSeizoenVanaf} max={vandaagStr} onChange={function(e){setNieuwSeizoenVanaf(e.target.value);}}

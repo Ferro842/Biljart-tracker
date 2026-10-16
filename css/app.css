@@ -22,3 +22,6 @@ input[type=number]{-moz-appearance:textfield}
 .seg-tekst::after{content:attr(data-tekst);font-weight:bold;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
 /* Heel smalle schermen (bijv. iPhone SE 1e generatie): iets kleiner, zodat alle vier de namen passen */
 @media (max-width:350px){.seg-knop{font-size:12px!important;padding-left:3px!important;padding-right:3px!important;letter-spacing:0!important}}
+/* Datumvelden: iOS geeft ze een vaste minimale breedte; zo passen ze altijd in hun vak */
+input[type=date]{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%;box-sizing:border-box;text-align:left}
+input[type=date]::-webkit-date-and-time-value{text-align:left}

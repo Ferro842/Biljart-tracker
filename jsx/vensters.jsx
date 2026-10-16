@@ -302,6 +302,7 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   // Acquit: links begon met de acquit (beurt 1), rechts heeft hem als laatste beurt. "geen" = niet aanvullen.
   const [acquit,setAcquit]=useState("eerste");
   const [openBeurt,setOpenBeurt]=useState(null); // beurt waarvan de opmerkingen open staan
+  const [aangevuld,setAangevuld]=useState(0); // aantal beurten aangevuld tot het aantal van de tegenstander
   const vandaag=new Date();
   const tweeCijfers=function(n){return("0"+n).slice(-2);};
   const [datum,setDatum]=useState(vandaag.getFullYear()+"-"+tweeCijfers(vandaag.getMonth()+1)+"-"+tweeCijfers(vandaag.getDate()));
@@ -321,7 +322,14 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
     const s=r.spelers[i];
     setSpelerIdx(i);setOpenBeurt(null);
     setAcquit(i===0?"eerste":"laatste");
-    setBeurten(s.beurten.map(function(b){return{nr:b.nr,car:b.car,totaal:b.totaal,gemist:[],goed:[]};}));
+    // Beide spelers maken evenveel beurten: mist jouw kolom de laatste beurt(en) (vaak alleen een streepje op het
+    // briefje), dan aanvullen met poedels tot het aantal van de tegenstander
+    const meeste=Math.max.apply(null,r.spelers.map(function(x){return x.beurten.length;}));
+    const eigen=s.beurten.map(function(b){return{nr:b.nr,car:b.car,totaal:b.totaal,gemist:[],goed:[]};});
+    const laatsteTotaal=eigen.reduce(function(t,b){return b.totaal!==null?b.totaal:t;},null);
+    for(let n=eigen.length+1;n<=meeste;n++)eigen.push({nr:n,car:0,totaal:laatsteTotaal,gemist:[],goed:[],aangevuld:true});
+    setAangevuld(meeste-s.beurten.length);
+    setBeurten(eigen);
     setDoel(s.teMaken?String(s.teMaken):"");
   }
   function inlezen(){
@@ -421,6 +429,9 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
           </div>
 
           {kopje("Beurten")}
+          {aangevuld>0&&<div style={{fontSize:12,color:GOUDL,marginBottom:6,lineHeight:1.4}}>
+            ℹ️ {aangevuld===1?"De laatste beurt ontbrak":"De laatste "+aangevuld+" beurten ontbraken"} in je kolom; aangevuld als poedel tot {beurten.length} beurten, evenveel als je tegenstander. Klopt dat niet, haal {aangevuld===1?"hem":"ze"} weg met "− laatste beurt".
+          </div>}
           <div style={{fontSize:12,color:WITD,marginBottom:6,lineHeight:1.4}}>Tik op een beurtnummer (✎) om opmerkingen toe te voegen, net als tijdens het spelen.</div>
           <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,padding:"0 4px 4px"}}>
             <span style={{width:44}}>beurt</span><span style={{flex:1,textAlign:"center"}}>caramboles</span><span style={{width:44,textAlign:"right"}}>briefje</span><span style={{width:62}}></span>

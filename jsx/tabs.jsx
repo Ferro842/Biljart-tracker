@@ -3,8 +3,10 @@
 
 // Log-tab: lopende partij en alle partijen beurt voor beurt
 function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij,slaNotitieOp}){
+  const kopBlok=useContext(KopContext);
   return(
-    <div className="scrollvak" style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div className="scrollvak" style={{overflowY:"auto",padding:kopBlok?"0 14px 12px":"12px 14px",height:"100%"}}>
+      {kopBlok&&kopBlok({rand:14,onder:12})}
       {lp.length>0&&(
         <div style={{background:KBG,border:"2px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:10}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Lopende partij</div>
@@ -166,6 +168,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed}){
 // uitleg en back-up staan in de Info-tab.
 function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsluiten,seizoensplitsingOngedaanMaken,
   openArchief,verwijderPartij,slaNotitieOp,vormVenster,setVormVenster,openVerhaal,openDoel}){
+  const kopBlok=useContext(KopContext);
   const spel=useContext(SpelContext);
   const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
@@ -175,7 +178,8 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
   const allB=alleP.flatMap(function(p){return p.beurten;});
   const stA=stat(allB,huidigeDiscipline);
   return(
-    <div className="scrollvak" style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div className="scrollvak" style={{overflowY:"auto",padding:kopBlok?"0 14px 12px":"12px 14px",height:"100%"}}>
+      {kopBlok&&kopBlok({rand:14,onder:12})}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Seizoen</div>
         {(function(){
@@ -318,6 +322,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
 
 // Info-tab: uitleg, weergave en instellingen, back-up en gegevens, alles wissen en 'Over deze app'
 function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,setWeergave,openUitleg,vervangData}){
+  const kopBlok=useContext(KopContext);
   const spel=useContext(SpelContext);
   const eenvoudig=useContext(EenvoudigContext);
   const [confReset,setConfReset]=useState(false);
@@ -344,7 +349,8 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
 
   const kop=function(t){return <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUDL,margin:"18px 2px 8px"}}>{t}</div>;};
   return(
-    <div className="scrollvak" style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div className="scrollvak" style={{overflowY:"auto",padding:kopBlok?"0 14px 12px":"12px 14px",height:"100%"}}>
+      {kopBlok&&kopBlok({rand:14,onder:12})}
       <button onClick={openUitleg} style={{width:"100%",padding:"16px",marginBottom:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>
         ℹ️ Zo werkt de app
       </button>

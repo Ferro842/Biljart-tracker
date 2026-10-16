@@ -6,8 +6,10 @@
 // Spelen, voor de start: tafelmaat, partijdoel en Start partij (je klasse staat rechtsboven in de kop)
 function SetupScherm({spel}){
   const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip,mijnDoel,openDoel}=spel;
+  const kopBlok=useContext(KopContext);
   return(
-    <div className="scrollvak" style={{flex:1,display:"flex",flexDirection:"column",padding:"10px 14px",gap:7,overflowY:"auto"}}>
+    <div className="scrollvak" style={{flex:1,display:"flex",flexDirection:"column",padding:kopBlok?"0 14px 10px":"10px 14px",gap:7,overflowY:"auto"}}>
+      {kopBlok&&kopBlok({rand:14,onder:3,gap:7})}
       {weergaveTip&&(
         <div style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
           <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>🔎 Nieuw: kies zelf hoe je de app ziet</div>

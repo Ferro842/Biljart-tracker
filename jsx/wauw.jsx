@@ -303,6 +303,20 @@ function SeizoenVerhaal({seizoen,alleP,discipline,onClose}){
 // ── Speelkalender: per dag een vakje, gekleurd naar je gemiddelde die dag ──
 function KalenderPaneel({partijen,discipline}){
   const [gekozen,setGekozen]=useState(null);
+  // Aantal maanden naast elkaar (gemeten), zodat de details direct onder de rij van de aangetikte maand komen
+  const [kolommen,setKolommen]=useState(2);
+  const rasterRef=useRef(null),detailRef=useRef(null);
+  useEffect(function(){
+    const el=rasterRef.current;if(!el)return;
+    const meet=function(){setKolommen(Math.max(1,Math.floor((el.clientWidth+12)/(150+12))));};
+    meet();
+    if(typeof ResizeObserver==="undefined")return;
+    const ro=new ResizeObserver(meet);ro.observe(el);return function(){ro.disconnect();};
+  },[]);
+  // Valt de details-kaart onder de rand van het scherm, dan schuift hij net in beeld
+  useEffect(function(){
+    if(gekozen&&detailRef.current&&detailRef.current.scrollIntoView)detailRef.current.scrollIntoView({block:"nearest",behavior:rustig()?"auto":"smooth"});
+  },[gekozen]);
   const dec=discipline==="driebanden"?3:2;
   const perDag=useMemo(function(){
     const m={};
@@ -322,28 +336,32 @@ function KalenderPaneel({partijen,discipline}){
   const MND=["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
   const speeldagen=Object.keys(perDag).filter(function(k){const p=k.split("-").map(Number);return new Date(p[0],p[1],p[2])>=maanden[0];}).length;
   const sel=gekozen?perDag[gekozen]:null;
+  // Details van de gekozen dag: als hele rij direct onder de rij met die maand
+  const detail=sel&&(
+    <div key="detail" ref={detailRef} data-kalender-detail="" style={{gridColumn:"1 / -1",background:"rgba(201,168,76,0.08)",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 12px",scrollMarginTop:120,scrollMarginBottom:12}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+        <span style={{fontSize:14,color:GOUD,fontWeight:"bold"}}>{new Date(sel.partijen[0].datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span>
+        <span onClick={function(){setGekozen(null);}} style={{color:WITD,cursor:"pointer",fontSize:16}}>✕</span>
+      </div>
+      {sel.partijen.map(function(p,j){
+        const bt=p.beurten.map(function(b){return b.caramboles;}),c=bt.reduce(function(s,x){return s+x;},0);
+        return <div key={j} style={{fontSize:13,color:WIT,padding:"3px 0",borderTop:j?"1px solid rgba(255,255,255,0.06)":"none"}}>
+          {tafelLabel(p.tafel||"230")} · <b style={{color:gemKleur(c/bt.length,grenzen)}}>{kommaGetal(c/bt.length,dec)}</b> · {c} car. in {bt.length} beurten · hoogste {Math.max.apply(null,bt)}
+        </div>;
+      })}
+    </div>
+  );
+  const rijen=maanden.slice().reverse();
+  const gekozenMaand=gekozen?rijen.findIndex(function(m){const p=gekozen.split("-").map(Number);return m.getFullYear()===p[0]&&m.getMonth()===p[1];}):-1;
+  const naRij=gekozenMaand<0?-1:Math.min(rijen.length-1,Math.floor(gekozenMaand/kolommen)*kolommen+kolommen-1);
   return(
     <div>
       <div style={{fontSize:13,color:WITD,lineHeight:1.5,marginBottom:10}}>
         <b style={{color:WIT}}>{speeldagen}</b> speeldag{speeldagen===1?"":"en"} in de laatste 12 maanden. Kleur = je gemiddelde die dag:
         <span style={{color:GRNT}}> ■ goed</span><span style={{color:GOUD}}> ■ gemiddeld</span><span style={{color:ROOD}}> ■ minder</span>. Tik op een dag voor de partijen.
       </div>
-      {sel&&(
-        <div style={{background:"rgba(201,168,76,0.08)",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 12px",marginBottom:12}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-            <span style={{fontSize:14,color:GOUD,fontWeight:"bold"}}>{new Date(sel.partijen[0].datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span>
-            <span onClick={function(){setGekozen(null);}} style={{color:WITD,cursor:"pointer",fontSize:16}}>✕</span>
-          </div>
-          {sel.partijen.map(function(p,j){
-            const bt=p.beurten.map(function(b){return b.caramboles;}),c=bt.reduce(function(s,x){return s+x;},0);
-            return <div key={j} style={{fontSize:13,color:WIT,padding:"3px 0",borderTop:j?"1px solid rgba(255,255,255,0.06)":"none"}}>
-              {tafelLabel(p.tafel||"230")} · <b style={{color:gemKleur(c/bt.length,grenzen)}}>{kommaGetal(c/bt.length,dec)}</b> · {c} car. in {bt.length} beurten · hoogste {Math.max.apply(null,bt)}
-            </div>;
-          })}
-        </div>
-      )}
-      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:12}}>
-        {maanden.slice().reverse().map(function(m){
+      <div ref={rasterRef} style={{display:"grid",gridTemplateColumns:"repeat("+kolommen+",minmax(0,1fr))",gap:12}}>
+        {rijen.map(function(m,mi){
           const dagen=new Date(m.getFullYear(),m.getMonth()+1,0).getDate(),begin=(m.getDay()+6)%7;
           const cellen=[];
           for(let i=0;i<begin;i++)cellen.push(<div key={"l"+i}/>);
@@ -354,7 +372,7 @@ function KalenderPaneel({partijen,discipline}){
               style={{aspectRatio:"1",borderRadius:3,cursor:info?"pointer":"default",background:info?kleur:"rgba(255,255,255,0.06)",
                 opacity:info?1:1,boxShadow:aan?"0 0 0 2px "+WIT:"none",display:"flex",alignItems:"center",justifyContent:"center",fontSize:8,color:info?"rgba(0,0,0,0.6)":"rgba(255,255,255,0.25)"}}>{info&&info.partijen.length>1?info.partijen.length:""}</div>);
           }
-          return(
+          return[(
             <div key={m.getTime()} style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"8px 9px"}}>
               <div style={{fontSize:12,color:GOUD,marginBottom:5,textTransform:"capitalize"}}>{MND[m.getMonth()]} {m.getFullYear()}</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:2}}>
@@ -362,7 +380,7 @@ function KalenderPaneel({partijen,discipline}){
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2}}>{cellen}</div>
             </div>
-          );
+          ),mi===naRij?detail:null];
         })}
       </div>
     </div>

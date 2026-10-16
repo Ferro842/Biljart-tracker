@@ -24,24 +24,24 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-17.3">
+<link rel="stylesheet" href="css/app.css?v=2026-10-17.4">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-17.3"></script>
-<script src="js/berekeningen.js?v=2026-10-17.3"></script>
-<script src="js/opslag.js?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/wauw.jsx?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-17.3"></script>
-<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-17.3"></script>
+<script src="js/constanten.js?v=2026-10-17.4"></script>
+<script src="js/berekeningen.js?v=2026-10-17.4"></script>
+<script src="js/opslag.js?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/wauw.jsx?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-17.4"></script>
+<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-17.4"></script>
 <script type="text/babel">
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-17.3";
+const APP_VERSIE="2026-10-17.4";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -68,34 +68,6 @@ function BiljartTracker(){
   const [briefjeOpen,setBriefjeOpen]=useState(false); // partij van een wedstrijdbriefje inlezen
   const [verhaalSeizoen,setVerhaalSeizoen]=useState(null); // "Je seizoen in beeld" open voor dit seizoen
   const [doelOpen,setDoelOpen]=useState(false); // doel instellen
-  // Kop en disciplinebalk schuiven weg als je in een tabblad omlaag scrolt (meer ruimte om te lezen) en komen
-  // pas terug als je weer helemaal bovenaan bent. Per tab of discipline weer zichtbaar.
-  const [kopWeg,setKopWeg]=useState(false);
-  const kopWegRef=useRef(false);kopWegRef.current=kopWeg;
-  const scrollPos=useRef(new WeakMap());
-  const kopGewisseld=useRef(0);
-  const inhoudRef=useRef(null);
-  function volgScroll(e){
-    const kopWeg=kopWegRef.current;
-    const el=e.target;if(!el||typeof el.scrollTop!=="number")return;
-    // Vegen geeft veel kleine scrollstapjes: meten vanaf een ankerpunt (het hoogste/laagste punt sinds de
-    // laatste wissel) in plaats van per stapje.
-    const nu=el.scrollTop;
-    let anker=scrollPos.current.has(el)?scrollPos.current.get(el):0; // nieuw vak: begint bovenaan
-    // Tijdens het in/uitschuiven verandert de hoogte van het leesvak; onderaan schuift de browser dan zelf
-    // terug. Die bewegingen negeren, anders flikkert de kop heen en weer.
-    if(Date.now()-kopGewisseld.current<450){scrollPos.current.set(el,nu);return;}
-    const wissel=function(weg){kopGewisseld.current=Date.now();scrollPos.current.set(el,nu);setKopWeg(weg);};
-    if(nu<30){if(kopWeg)wissel(false);else scrollPos.current.set(el,nu);return;}
-    // Weg na 40 px omlaag; terug pas helemaal bovenaan (hierboven) of bij een ander tabblad, zodat heen en weer
-    // scrollen tijdens het lezen de kop niet steeds even terughaalt
-    // Alleen wegschuiven als er onder je nog genoeg te lezen is: het leesvak wordt dan zo hoog als de kop groter.
-    // Vlak boven de onderkant zou de browser het beeld terug moeten zetten (leeg vlak, haperen), dus daar blijft hij.
-    if(!kopWeg){anker=Math.min(anker,nu);
-      const kop=document.querySelector("[data-kop]"),kopH=kop?kop.offsetHeight:0;
-      if(nu-anker>40&&el.scrollHeight-el.clientHeight-nu>kopH+120)return wissel(true);}
-    scrollPos.current.set(el,anker);
-  }
   const [partijSamenvatting,setPartijSamenvatting]=useState(null);
   const [niveauUpInfo,setNiveauUpInfo]=useState(null);
 
@@ -178,14 +150,6 @@ function BiljartTracker(){
   // Animaties en vieringen uit (Info → Weergave): klasse "rustig" op <html>
   const animatiesAan=!(data&&data.animaties===false);
   useEffect(function(){document.documentElement.classList.toggle("rustig",!animatiesAan);},[animatiesAan]);
-  useEffect(function(){setKopWeg(false);},[tab,huidigeDiscplineVoorLading]);
-  // Scrollen in de tabbladen volgen. React geeft scroll van onderliggende vakken niet door (geen bubbling),
-  // dus een gewone luisteraar in de capture-fase op het inhoudvak.
-  useEffect(function(){
-    const el=inhoudRef.current;if(!el)return;
-    el.addEventListener("scroll",volgScroll,true);
-    return function(){el.removeEventListener("scroll",volgScroll,true);};
-  },[!!data]);
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
 
   const huidigeDiscipline=huidigeDiscplineVoorLading;
@@ -417,58 +381,76 @@ function BiljartTracker(){
       boxShadow:actief?"inset 0 0 0 1px "+GOUD+", 0 2px 6px rgba(0,0,0,0.35)":"none",
       transition:"background 160ms ease, color 160ms ease, box-shadow 160ms ease"};
   };
+  // Kop (logo, klasse, disciplines) en tabbalk. Staan bovenaan in het scrollvak van elk tabblad (via KopContext), zodat
+  // de kop gewoon met je vinger meeschuift en vanzelf terugkomt als je weer bovenaan bent; de tabbalk blijft plakken
+  // (sticky), met daaronder eventueel een eigen rij van het tabblad (extra, bijv. de Dash-tabs). Tijdens een partij
+  // staat alles vast bovenaan (Afsluiten moet altijd bereikbaar zijn). rand: zijpadding van het scrollvak (negatief
+  // teruggezet), onder: ruimte onder de tabbalk, gap: flex-gap van het vak (geen strook tussen kop en tabbalk).
+  const inSpel=tab==="spelen"&&fase!=="setup";
+  const kopBlok=function(opties){
+    const o=opties||{},zij=o.rand?{marginLeft:-o.rand,marginRight:-o.rand}:null;
+    return(
+      <React.Fragment>
+        <div data-kop="" style={Object.assign({flexShrink:0,marginBottom:-(o.gap||0)},zij)}>
+          <div style={{background:"linear-gradient(135deg,var(--c-0d1f0d),var(--c-1a2e1a))",borderBottom:"2px solid "+GOUD,padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,flex:1,minWidth:0}}>
+              <Logo maat={44}/>
+              <div style={{minWidth:0}}>
+                <div style={{fontSize:16,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Tracker</div>
+                {/* Bij grotere tekst is er geen ruimte voor de ondertitel */}
+                {tekstgrootte==="normaal"&&<div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole - Serie registratie</div>}
+              </div>
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
+              {/* Bij grotere tekst tijdens een partij wijkt de klasse voor de knop Afsluiten */}
+              {!(tekstgrootte!=="normaal"&&fase!=="setup"&&lp.length>0)&&<button onClick={function(){setNiveauOpen(true);}} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,0.25)",border:"1px solid "+niveau.huidig.kleur,borderRadius:20,padding:"4px 10px 4px 6px",cursor:"pointer",fontFamily:"inherit"}}>
+                <span style={{fontSize:14}}>{niveau.huidig.emoji}</span>
+                <span style={{fontSize:13,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
+              </button>}
+              {fase!=="setup"&&lp.length>0&&(
+                <button style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,padding:"5px 10px",fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
+                  onClick={function(){setConfPartij(true);}}>Afsluiten</button>
+              )}
+            </div>
+          </div>
+              {/* Disciplines als één afgeronde keuzebalk (segmenten). Normaal één rij met ruimte; bij grotere tekst twee
+                  compacte rijen van twee, anders worden de namen te krap. */}
+              <div style={{padding:groot?"6px 10px 7px":"9px 12px 10px",background:"var(--c-152015)",borderBottom:"1px solid "+KBDR}}>
+                <div style={Object.assign({gap:3,padding:3,background:"rgba(0,0,0,0.28)",border:"1px solid "+KBDR,borderRadius:12},
+                  groot?{display:"grid",gridTemplateColumns:"1fr 1fr"}:{display:"flex"})}>
+                  {HOOFDDISCIPLINES.map(function(d){
+                    const actief=huidigeDiscipline===d&&!kaderKiezerOpen; // met het kader-menu open staat Kader al aan
+                    return <button key={d} className="seg-knop" onClick={function(){wisselDiscipline(d);}} style={segment(actief)}>{segmentTekst(DISCIPLINES[d].naam)}</button>;
+                  })}
+                  {(function(){
+                    const kaderGekozen=KADER_VARIANTEN.indexOf(huidigeDiscipline)!==-1;
+                    return <button className="seg-knop" onClick={function(){setKaderKiezerOpen(true);}} style={segment(kaderGekozen||kaderKiezerOpen)}>
+                      {segmentTekst(kaderGekozen?DISCIPLINES[huidigeDiscipline].naam:"Kader")}
+                    </button>;
+                  })()}
+                </div>
+              </div>
+        </div>
+        <div data-tabbalk="" style={Object.assign({position:"sticky",top:0,zIndex:4,flexShrink:0,marginBottom:o.onder||0},zij)}>
+        <div style={{display:"flex",borderBottom:"1px solid "+KBDR,background:"var(--c-152015)",flexShrink:0}}>
+          {[["spelen","Spelen"],["stats","Stats"],["dash","Dash"],["log","Log"],["info","Info"]].map(function(arr){
+            return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:tab===arr[0]?"var(--c-1c2c1c)":"none",border:"none",color:tab===arr[0]?GOUD:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===arr[0]?"2px solid "+GOUD:"2px solid transparent"}}
+              onClick={function(){setTab(arr[0]);}}>{arr[1]}</button>;
+          })}
+        </div>
+          {o.extra}
+        </div>
+      </React.Fragment>
+    );
+  };
+
   return(
+    <KopContext.Provider value={inSpel?null:kopBlok}>
     <SpelContext.Provider value={spelAan}>
     <EenvoudigContext.Provider value={eenvoudig}>
     <div className="app" style={tekstZoom(tekstgrootte)!==1?{zoom:tekstZoom(tekstgrootte),"--zoom":tekstZoom(tekstgrootte),height:"calc(100vh / "+tekstZoom(tekstgrootte)+")"}:null}>
-      {/* Kop en disciplines: klappen samen soepel in bij omlaag scrollen (grid-rijen 1fr -> 0fr animeert naar de
-          echte hoogte, met lichte vervaging en verschuiving) en komen terug bij omhoog scrollen */}
-      <div data-kop={kopWeg?"weg":"zichtbaar"} style={{display:"grid",gridTemplateRows:kopWeg?"0fr":"1fr",flexShrink:0,
-        transition:"grid-template-rows 340ms cubic-bezier(0.32,0.72,0,1)"}}>
-        <div style={{minHeight:0,overflow:"hidden"}}>
-          <div style={{opacity:kopWeg?0:1,transform:kopWeg?"translateY(-10px)":"none",
-            transition:"opacity 240ms ease, transform 340ms cubic-bezier(0.32,0.72,0,1)"}}>
-        <div style={{background:"linear-gradient(135deg,var(--c-0d1f0d),var(--c-1a2e1a))",borderBottom:"2px solid "+GOUD,padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,flex:1,minWidth:0}}>
-            <Logo maat={44}/>
-            <div style={{minWidth:0}}>
-              <div style={{fontSize:16,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Tracker</div>
-              {/* Bij grotere tekst is er geen ruimte voor de ondertitel */}
-              {tekstgrootte==="normaal"&&<div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Carambole - Serie registratie</div>}
-            </div>
-          </div>
-          <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
-            {/* Bij grotere tekst tijdens een partij wijkt de klasse voor de knop Afsluiten */}
-            {!(tekstgrootte!=="normaal"&&fase!=="setup"&&lp.length>0)&&<button onClick={function(){setNiveauOpen(true);}} style={{display:"flex",alignItems:"center",gap:4,background:"rgba(0,0,0,0.25)",border:"1px solid "+niveau.huidig.kleur,borderRadius:20,padding:"4px 10px 4px 6px",cursor:"pointer",fontFamily:"inherit"}}>
-              <span style={{fontSize:14}}>{niveau.huidig.emoji}</span>
-              <span style={{fontSize:13,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
-            </button>}
-            {fase!=="setup"&&lp.length>0&&(
-              <button style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,padding:"5px 10px",fontSize:13,cursor:"pointer",fontFamily:"inherit"}}
-                onClick={function(){setConfPartij(true);}}>Afsluiten</button>
-            )}
-          </div>
-        </div>
-            {/* Disciplines als één afgeronde keuzebalk (segmenten). Normaal één rij met ruimte; bij grotere tekst twee
-                compacte rijen van twee, anders worden de namen te krap. */}
-            <div style={{padding:groot?"6px 10px 7px":"9px 12px 10px",background:"var(--c-152015)",borderBottom:"1px solid "+KBDR}}>
-              <div style={Object.assign({gap:3,padding:3,background:"rgba(0,0,0,0.28)",border:"1px solid "+KBDR,borderRadius:12},
-                groot?{display:"grid",gridTemplateColumns:"1fr 1fr"}:{display:"flex"})}>
-                {HOOFDDISCIPLINES.map(function(d){
-                  const actief=huidigeDiscipline===d&&!kaderKiezerOpen; // met het kader-menu open staat Kader al aan
-                  return <button key={d} className="seg-knop" onClick={function(){wisselDiscipline(d);}} style={segment(actief)}>{segmentTekst(DISCIPLINES[d].naam)}</button>;
-                })}
-                {(function(){
-                  const kaderGekozen=KADER_VARIANTEN.indexOf(huidigeDiscipline)!==-1;
-                  return <button className="seg-knop" onClick={function(){setKaderKiezerOpen(true);}} style={segment(kaderGekozen||kaderKiezerOpen)}>
-                    {segmentTekst(kaderGekozen?DISCIPLINES[huidigeDiscipline].naam:"Kader")}
-                  </button>;
-                })()}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Kop en tabbalk: tijdens een partij vast bovenaan; anders bovenaan in het scrollvak van elk tabblad (KopContext) */}
+      {inSpel&&kopBlok()}
 
       {!data.onboardingGezien&&<WelkomstFlow stap={onboardingStap} setStap={setOnboardingStap} discipline={huidigeDiscipline} wisselDiscipline={wisselDiscipline} onKlaar={sluitOnboarding}
         tekstgrootte={tekstgrootte} eenvoudig={eenvoudig} setWeergave={setWeergave}/>}
@@ -571,14 +553,7 @@ function BiljartTracker(){
         </div>
       )}
 
-      <div style={{display:"flex",borderBottom:"1px solid "+KBDR,background:"var(--c-152015)",flexShrink:0}}>
-        {[["spelen","Spelen"],["stats","Stats"],["dash","Dash"],["log","Log"],["info","Info"]].map(function(arr){
-          return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:tab===arr[0]?"var(--c-1c2c1c)":"none",border:"none",color:tab===arr[0]?GOUD:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===arr[0]?"2px solid "+GOUD:"2px solid transparent"}}
-            onClick={function(){setTab(arr[0]);}}>{arr[1]}</button>;
-        })}
-      </div>
-
-      <div ref={inhoudRef} style={{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}}>
+      <div style={{flex:1,overflow:"hidden",display:"flex",flexDirection:"column"}}>
         {tab==="spelen"&&(
           <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
             {fase==="setup"&&<SetupScherm spel={spel}/>}
@@ -601,6 +576,7 @@ function BiljartTracker(){
     </div>
     </EenvoudigContext.Provider>
     </SpelContext.Provider>
+    </KopContext.Provider>
   );
 }
 

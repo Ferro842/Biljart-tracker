@@ -35,20 +35,20 @@
   uit.spelelementLos=tekst().indexOf("Spelelement")!==-1&&data().spelelement!==false;
   k("Dash").click();await w(300);
   uit.dashTabs=!!k("Trend")&&!k("Constant")&&!k("Patronen")&&!k("Vergelijk")&&!!k("Punten");
-  // Kop en disciplines schuiven weg bij omlaag scrollen en komen terug bij omhoog
-  const kopWeg=function(){const k=document.querySelector("[data-kop]");return!!k&&k.getAttribute("data-kop")==="weg";};
-  // Het scrollvak van Dash; tijdelijk verlengd, zodat de test niet afhangt van hoeveel er toevallig in staat
+  // Kop schuift mee met de inhoud (bovenaan in het scrollvak); tabbalk en Dash-tabs plakken bovenaan
   const sc=Array.from(document.querySelectorAll("#root .scrollvak")).filter(function(d){return d.clientHeight>0;})[0];
   const vulling=document.createElement("div");vulling.style.height="1500px";
   if(sc){sc.appendChild(vulling);
-    sc.scrollTop=300;sc.dispatchEvent(new Event("scroll"));await w(550);const weg=kopWeg();
-    sc.scrollTop=150;sc.dispatchEvent(new Event("scroll"));await w(550);const blijftWeg=kopWeg();
-    sc.scrollTop=0;sc.dispatchEvent(new Event("scroll"));await w(550);
-    // Vlak boven de onderkant blijft de kop staan (anders springt het beeld en blijft er even een leeg vlak)
-    sc.scrollTop=sc.scrollHeight;sc.dispatchEvent(new Event("scroll"));await w(550);const onderaanZichtbaar=!kopWeg();
-    sc.scrollTop=0;sc.dispatchEvent(new Event("scroll"));await w(550);
+    const kopEl=sc.querySelector("[data-kop]"),tb=sc.querySelector("[data-tabbalk]");
+    const top=function(el){return el.getBoundingClientRect().top-sc.getBoundingClientRect().top;};
+    const kopH=kopEl?kopEl.offsetHeight:0;
+    sc.scrollTop=kopH+300;await w(150);
+    const weg=!!kopEl&&kopEl.getBoundingClientRect().bottom<=sc.getBoundingClientRect().top+1,plakt=!!tb&&Math.abs(top(tb))<1;
+    const dashTabsPlakken=!!tb&&!!k("Trend")&&tb.contains(k("Trend"));
+    sc.scrollTop=0;await w(150);
+    const terug=!!kopEl&&Math.abs(top(kopEl))<1;
     vulling.remove();
-    uit.kopSchuift=weg&&blijftWeg&&onderaanZichtbaar&&!kopWeg(); // weg bij omlaag, blijft weg bij een stukje omhoog, terug bovenaan
+    uit.kopSchuift=weg&&plakt&&dashTabsPlakken&&terug;
   }else uit.kopSchuift=false;
   k("Spelen").click();await w(200);(k("Start partij")||k("Doorgaan")).click();await w(200);
   const voor=(data().lopendePartij||{beurten:[]}).beurten.length;

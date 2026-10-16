@@ -270,6 +270,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
 function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const spel=useContext(SpelContext); // spelelement uit: geen Punten-tab
   const eenvoudig=useContext(EenvoudigContext); // eenvoudige modus: alleen Inzicht en Trend
+  const kopBlok=useContext(KopContext); // kop schuift mee in het scrollvak (index.html)
   // ST wordt live afgeleid van de echte partijen (inclusief nieuwe partijen en comments)
   const ST=useMemo(()=>{
     return (partijen||[]).map(function(p,i){
@@ -466,30 +467,34 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     </button>
   );
 
+  // Tabs: lopen door op een tweede regel als ze niet naast elkaar passen (grote tekst, smal scherm)
+  const tabRij=(
+    <div style={{display:"flex",flexWrap:"wrap",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0}}>
+      {/* Uitleg per onderdeel (vooraan, zodat hij ook bij grote tekst in beeld is; de oude kopbalk is weg voor meer leesruimte) */}
+      <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}} aria-label="Uitleg"
+        style={{flex:"0 0 auto",alignSelf:"center",width:30,height:30,margin:"0 4px 0 10px",padding:0,borderRadius:"50%",
+          background:uitlegModus?GOUD:"transparent",border:"1.5px solid "+GOUD,color:uitlegModus?G:GOUD,
+          fontSize:16,fontWeight:"bold",lineHeight:"27px",textAlign:"center",cursor:"pointer",fontFamily:"Georgia,serif"}}>
+        {uitlegModus?"✕":"?"}
+      </button>
+      {btn("inzicht","✨ Inzicht")}
+      {btn("trend","Trend")}
+      {!eenvoudig&&btn("consist","Constant")}
+      {!eenvoudig&&btn("patronen","Patronen")}
+      {!eenvoudig&&btn("vergelijk","Vergelijk")}
+      {spel&&btn("punten","Punten")}
+      {btn("kalender","Kalender")}
+    </div>
+  );
+
   return(
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:G,fontFamily:"Georgia,serif",color:WIT}}>
 
 
-      {/* Tabs: lopen door op een tweede regel als ze niet naast elkaar passen (grote tekst, smal scherm) */}
-      <div style={{display:"flex",flexWrap:"wrap",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0}}>
-        {/* Uitleg per onderdeel (vooraan, zodat hij ook bij grote tekst in beeld is; de oude kopbalk is weg voor meer leesruimte) */}
-        <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}} aria-label="Uitleg"
-          style={{flex:"0 0 auto",alignSelf:"center",width:30,height:30,margin:"0 4px 0 10px",padding:0,borderRadius:"50%",
-            background:uitlegModus?GOUD:"transparent",border:"1.5px solid "+GOUD,color:uitlegModus?G:GOUD,
-            fontSize:16,fontWeight:"bold",lineHeight:"27px",textAlign:"center",cursor:"pointer",fontFamily:"Georgia,serif"}}>
-          {uitlegModus?"✕":"?"}
-        </button>
-        {btn("inzicht","✨ Inzicht")}
-        {btn("trend","Trend")}
-        {!eenvoudig&&btn("consist","Constant")}
-        {!eenvoudig&&btn("patronen","Patronen")}
-        {!eenvoudig&&btn("vergelijk","Vergelijk")}
-        {spel&&btn("punten","Punten")}
-        {btn("kalender","Kalender")}
-      </div>
-
       {/* Selectie + inhoud scrollen samen, zodat het selectieblok op een telefoon wegscrolt */}
       <div className="scrollvak" style={{flex:1,overflowY:"auto"}}>
+        {/* Kop schuift mee met de inhoud; tabbalk en Dash-tabs plakken bovenaan (zie kopBlok in index.html) */}
+        {kopBlok?kopBlok({extra:tabRij}):tabRij}
         {/* Partijselectie (niet bij de kalender: die toont altijd de laatste 12 maanden) */}
         <div style={{background:"var(--c-152015)",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`,display:tab==="kalender"?"none":"block"}}>
           <div style={{fontSize:12,color:WITD,marginBottom:5}}>

@@ -35,6 +35,13 @@
   uit.kalender=!!dag&&tekst().indexOf("speeldag")!==-1;
   if(dag){dag.click();await w(200);}
   uit.kalenderDag=tekst().indexOf("car. in")!==-1;
+  // De details staan direct onder de rij met de aangetikte maand (niet bovenaan)
+  const det=document.querySelector("[data-kalender-detail]");
+  if(det&&dag){
+    let maand=dag;while(maand&&maand.parentElement!==det.parentElement)maand=maand.parentElement;
+    const mr=maand.getBoundingClientRect(),dr=det.getBoundingClientRect();
+    uit.kalenderOnderMaand=dr.top>=mr.bottom-1&&dr.top-mr.bottom<30;
+  }else uit.kalenderOnderMaand=false;
   // Partijkaart
   const p=data().partijen.find(function(x){return(x.discipline||"libre")==="libre";});
   const c=maakPartijKaart(p,"libre","3e klasse");
@@ -57,7 +64,7 @@
   Array.from(kaartA.querySelectorAll("button")).find(function(b){return b.textContent.indexOf("Aan")!==-1;}).click();await w(250);
   uit.animatiesAan=data().animaties===true&&!document.documentElement.classList.contains("rustig");
   k("Spelen").click();await w(150);
-  uit.goed=uit.telop&&uit.doelVenster&&uit.doelOpgeslagen&&uit.doelRing&&uit.verhaalOpen&&uit.verhaalSlot&&uit.verhaalDicht&&uit.kalender&&uit.kalenderDag
+  uit.goed=uit.telop&&uit.doelVenster&&uit.doelOpgeslagen&&uit.doelRing&&uit.verhaalOpen&&uit.verhaalSlot&&uit.verhaalDicht&&uit.kalender&&uit.kalenderDag&&uit.kalenderOnderMaand
     &&uit.kaart&&uit.viering&&uit.deelKnop&&uit.animatiesUit&&uit.animatiesAan;
   return uit;
 })()

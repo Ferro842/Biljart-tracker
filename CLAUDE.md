@@ -128,12 +128,13 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   `mijnDoel`; let op: `doel`/`setDoel` zijn het partijdoel). "Je seizoen in beeld" opent vanzelf na Seizoen afsluiten
   (`berekenSeizoenVerhaal` in `js/berekeningen.js`). Partijkaart via "📤 Deel als kaart" (samenvatting, partijregels).
   Tests zetten `window.__testRustig=true` (alles.js), zodat `Telop` meteen eindwaarden toont.
-- Kop en disciplinebalk (samen in één blok met `data-kop`, inklappen via grid-rijen 1fr→0fr, geen max-height) schuiven weg
-  bij omlaag scrollen in een tabblad (`kopWeg`, `volgScroll` als native
-  capture-luisteraar op het inhoudvak: React geeft scroll van onderliggende vakken niet door) en komen pas terug
-  helemaal bovenaan of bij wissel van tab/discipline (niet bij een stukje omhoog: dat voelde onrustig). Tijdens de overgang (450 ms) en onderaan negeren,
-  anders flikkert het. Alleen wegschuiven als er onder je meer dan kophoogte + 120 px te scrollen is: vlak boven de
-  onderkant gaf het wegschuiven op iOS een leeg vlak en haperen (Dash → Trend).
+- Kop (logo, klasse, disciplines; `data-kop`) en tabbalk (`data-tabbalk`, sticky) komen uit `kopBlok(opties)` in
+  `index.html` en staan bovenaan in het scrollvak van elk tabblad (`useContext(KopContext)`), zodat de kop gewoon met je
+  vinger meeschuift en vanzelf terugkomt bovenaan. Geen animatie of scroll-luisteraar (het oude inklappen voelde houterig:
+  de inhoud sprong los van je vinger). Opties: `rand` (zijpadding van het vak, negatief teruggezet), `onder` (ruimte
+  onder de tabbalk), `extra` (rij die mee plakt, bijv. de Dash-tabs). Tijdens een partij (`inSpel`) is KopContext null en
+  staat de kop vast bovenaan (Afsluiten altijd bereikbaar). Nieuw tabblad? Zelf `kopBlok` bovenaan het scrollvak zetten.
+- Kalender (Dash): details van een dag als hele rij direct onder de rij met die maand (`kolommen` gemeten).
 - Hoofdschermen hebben `className="scrollvak"` (`css/app.css`): een onzichtbaar streepje 1 px hoger dan het vak, zodat ze
   op iOS altijd meeveren aan de rand, ook als alles past. Nieuw scrollend hoofdscherm? Ook `scrollvak` geven.
 - Dash-tabrij loopt door op een tweede regel (`flexWrap`) als de tabs niet naast elkaar passen.

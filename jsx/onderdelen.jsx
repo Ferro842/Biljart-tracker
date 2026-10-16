@@ -7,6 +7,9 @@ const {useState,useEffect,useRef,useMemo,useContext}=React;
 const SpelContext=React.createContext(true);
 // Eenvoudige modus (Info > Weergave): spelen zonder opmerkingen-stap, geen spelelement, minder Dash-onderdelen
 const EenvoudigContext=React.createContext(false);
+// Kop en tabbalk (index.html, kopBlok): elk tabblad zet die bovenaan zijn eigen scrollvak, zodat de kop meeschuift
+// met de inhoud. null = de kop staat vast bovenaan (tijdens een partij).
+const KopContext=React.createContext(null);
 
 // Logo in de kop: laken (kleur van de discipline via --c-3f8a3a/--c-1d4a1d), twee gekruiste keus en drie
 // ballen met glimlicht en schaduw. SVG met kleuren via style (var() werkt niet in SVG-attributen).

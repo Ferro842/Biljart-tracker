@@ -17,3 +17,8 @@ input[type=number]{-moz-appearance:textfield}
 @keyframes badgePopIn{0%{opacity:0;transform:scale(0.7) translateY(10px);}60%{opacity:1;transform:scale(1.04) translateY(0);}100%{opacity:1;transform:scale(1) translateY(0);}}
 .plusmin-btn{transition:background-color 0.08s,transform 0.08s;-webkit-tap-highlight-color:transparent;}
 .plusmin-btn:active{background-color:#e8c96a!important;color:var(--c-1a2e1a)!important;transform:scale(0.92);}
+/* Disciplinekeuze: een onzichtbare vette kopie houdt de breedte vast, zodat er bij wisselen niets verspringt */
+.seg-tekst{display:inline-flex;flex-direction:column;align-items:center}
+.seg-tekst::after{content:attr(data-tekst);font-weight:bold;height:0;overflow:hidden;visibility:hidden;pointer-events:none}
+/* Heel smalle schermen (bijv. iPhone SE 1e generatie): iets kleiner, zodat alle vier de namen passen */
+@media (max-width:350px){.seg-knop{font-size:12px!important;padding-left:3px!important;padding-right:3px!important;letter-spacing:0!important}}

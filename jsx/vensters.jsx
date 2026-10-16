@@ -298,7 +298,10 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   const [gekopieerd,setGekopieerd]=useState(false);
   const [gelezen,setGelezen]=useState(null);
   const [spelerIdx,setSpelerIdx]=useState(0);
-  const [beurten,setBeurten]=useState([]); // per beurt {nr,car,totaal}
+  const [beurten,setBeurten]=useState([]); // per beurt {nr,car,totaal,gemist,goed}
+  // Acquit: links begon met de acquit (beurt 1), rechts heeft hem als laatste beurt. "geen" = niet aanvullen.
+  const [acquit,setAcquit]=useState("eerste");
+  const [openBeurt,setOpenBeurt]=useState(null); // beurt waarvan de opmerkingen open staan
   const vandaag=new Date();
   const tweeCijfers=function(n){return("0"+n).slice(-2);};
   const [datum,setDatum]=useState(vandaag.getFullYear()+"-"+tweeCijfers(vandaag.getMonth()+1)+"-"+tweeCijfers(vandaag.getDate()));
@@ -316,8 +319,9 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   }
   function kiesSpeler(r,i){
     const s=r.spelers[i];
-    setSpelerIdx(i);
-    setBeurten(s.beurten.map(function(b){return{nr:b.nr,car:b.car,totaal:b.totaal};}));
+    setSpelerIdx(i);setOpenBeurt(null);
+    setAcquit(i===0?"eerste":"laatste");
+    setBeurten(s.beurten.map(function(b){return{nr:b.nr,car:b.car,totaal:b.totaal,gemist:[],goed:[]};}));
     setDoel(s.teMaken?String(s.teMaken):"");
   }
   function inlezen(){
@@ -328,6 +332,22 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
     setStap("controle");
   }
   const zetCar=function(i,v){setBeurten(beurten.map(function(b,j){return j===i?Object.assign({},b,{car:Math.max(0,v)}):b;}));};
+  // Opmerkingen met de acquit erbij: in de acquitbeurt "Acquit" bij Goed (caramboles) of Gemist (poedel)
+  const acquitIdx=acquit==="eerste"?0:acquit==="laatste"?beurten.length-1:-1;
+  const metAcquit=beurten.map(function(b,i){
+    const gemist=(b.gemist||[]).filter(function(l){return l!=="Acquit";}),goed=(b.goed||[]).filter(function(l){return l!=="Acquit";});
+    if(i===acquitIdx){if(b.car>0)goed.unshift("Acquit");else gemist.unshift("Acquit");}
+    return Object.assign({},b,{gemist:gemist,goed:b.car>0?goed:[]});
+  });
+  // Opmerkingen kiezen met hetzelfde raster als tijdens het spelen (sleutels G__/P__)
+  const wisselOpm=function(i,sleutel){
+    const veld=sleutel.indexOf("G__")===0?"gemist":"goed",label=sleutel.slice(3);
+    setBeurten(beurten.map(function(b,j){
+      if(j!==i)return b;
+      const lijst=b[veld]||[];
+      return Object.assign({},b,{[veld]:lijst.indexOf(label)!==-1?lijst.filter(function(l){return l!==label;}):lijst.concat([label])});
+    }));
+  };
 
   const controle=controleerBriefje(beurten);
   const afwijkend=controle.filter(function(c){return!c.klopt;});
@@ -340,7 +360,7 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   function opslaan(){
     const d=datum.split("-").map(function(x){return parseInt(x,10);});
     const iso=new Date(d[0],d[1]-1,d[2],20,0,0).toISOString();
-    onOpslaan({beurten:beurten.map(function(b){return b.car;}),datum:iso,tafel:tafel,
+    onOpslaan({beurten:metAcquit.map(function(b){return{car:b.car,gemist:b.gemist,goed:b.goed};}),datum:iso,tafel:tafel,
       doel:doelGetal>0?doelGetal:beurten.length,doelType:doelGetal>0?"caramboles":"beurten"});
   }
 
@@ -401,25 +421,48 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
           </div>
 
           {kopje("Beurten")}
+          <div style={{fontSize:12,color:WITD,marginBottom:6,lineHeight:1.4}}>Tik op een beurtnummer (✎) om opmerkingen toe te voegen, net als tijdens het spelen.</div>
           <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,padding:"0 4px 4px"}}>
-            <span style={{width:34}}>beurt</span><span style={{flex:1,textAlign:"center"}}>caramboles</span><span style={{width:60,textAlign:"right"}}>briefje</span><span style={{width:74}}></span>
+            <span style={{width:44}}>beurt</span><span style={{flex:1,textAlign:"center"}}>caramboles</span><span style={{width:44,textAlign:"right"}}>briefje</span><span style={{width:62}}></span>
           </div>
           <div style={{border:"1px solid "+KBDR,borderRadius:10,overflow:"hidden"}}>
             {controle.map(function(c,i){
               const rond={width:30,height:30,borderRadius:"50%",border:"1.5px solid "+GOUD,background:"none",color:GOUD,fontSize:17,lineHeight:"26px",padding:0,cursor:"pointer",fontFamily:"inherit"};
+              const b=metAcquit[i],open=openBeurt===i,opm=b.gemist.length+b.goed.length;
+              const sel=new Set(b.gemist.map(function(l){return"G__"+l;}).concat(b.goed.map(function(l){return"P__"+l;})));
               return(
-                <div key={c.nr} style={{display:"flex",alignItems:"center",padding:"6px 8px",gap:4,background:c.klopt?(i%2?"rgba(255,255,255,0.03)":"none"):"rgba(224,85,85,0.16)",borderTop:i?"1px solid rgba(255,255,255,0.05)":"none"}}>
-                  <span style={{width:30,fontSize:13,color:WITD}}>{c.nr}</span>
-                  <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
-                    <button onClick={function(){zetCar(i,c.car-1);}} style={rond} aria-label="min">−</button>
-                    <span style={{width:28,textAlign:"center",fontSize:18,fontWeight:"bold",color:c.car===0?WITD:beurtKleur(c.car,discipline)}}>{c.car===0?"–":c.car}</span>
-                    <button onClick={function(){zetCar(i,c.car+1);}} style={rond} aria-label="plus">+</button>
+                <div key={c.nr} style={{background:c.klopt?(open?"rgba(201,168,76,0.08)":i%2?"rgba(255,255,255,0.03)":"none"):"rgba(224,85,85,0.16)",borderTop:i?"1px solid rgba(255,255,255,0.05)":"none"}}>
+                  <div style={{display:"flex",alignItems:"center",padding:"6px 8px",gap:4}}>
+                    {/* Beurtnummer + opmerkingen: tik om opmerkingen te kiezen */}
+                    <button onClick={function(){setOpenBeurt(open?null:i);}} aria-label={"Opmerkingen beurt "+c.nr}
+                      style={{width:44,textAlign:"left",background:"none",border:"none",padding:0,cursor:"pointer",fontFamily:"inherit",color:WITD,fontSize:13}}>
+                      {c.nr} <span style={{fontSize:12,color:opm?GOUDL:"rgba(255,255,255,0.35)"}}>{open?"▴":"✎"}</span>
+                    </button>
+                    <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",gap:10}}>
+                      <button onClick={function(){zetCar(i,c.car-1);}} style={rond} aria-label="min">−</button>
+                      <span style={{width:28,textAlign:"center",fontSize:18,fontWeight:"bold",color:c.car===0?WITD:beurtKleur(c.car,discipline)}}>{c.car===0?"–":c.car}</span>
+                      <button onClick={function(){zetCar(i,c.car+1);}} style={rond} aria-label="plus">+</button>
+                    </div>
+                    <span style={{width:44,textAlign:"right",fontSize:13,color:WITD}}>{c.totaal===null?"":c.totaal}</span>
+                    <span style={{width:62,textAlign:"right"}}>
+                      {c.klopt?<span style={{color:GRNT,fontSize:14}}>✓</span>
+                        :<button onClick={function(){zetCar(i,c.verwacht);}} style={{fontSize:12,padding:"4px 6px",borderRadius:6,border:"1px solid "+GOUDL,background:"none",color:GOUDL,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>→ {c.verwacht}</button>}
+                    </span>
                   </div>
-                  <span style={{width:56,textAlign:"right",fontSize:13,color:WITD}}>{c.totaal===null?"":c.totaal}</span>
-                  <span style={{width:74,textAlign:"right"}}>
-                    {c.klopt?<span style={{color:GRNT,fontSize:14}}>✓</span>
-                      :<button onClick={function(){zetCar(i,c.verwacht);}} style={{fontSize:12,padding:"4px 6px",borderRadius:6,border:"1px solid "+GOUDL,background:"none",color:GOUDL,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>→ {c.verwacht}</button>}
-                  </span>
+                  {opm>0&&!open&&<div onClick={function(){setOpenBeurt(i);}} style={{padding:"0 8px 6px 52px",fontSize:11,lineHeight:1.4,cursor:"pointer"}}>
+                    {b.goed.length>0&&<span style={{color:GRNT}}>✓ {b.goed.join(", ")} </span>}
+                    {b.gemist.length>0&&<span style={{color:ROOD}}>✗ {b.gemist.join(", ")}</span>}
+                  </div>}
+                  {open&&<div style={{padding:"2px 0 8px",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
+                    <div style={{fontSize:12,color:ROOD,padding:"6px 12px 0"}}>{c.car===0?"Waardoor was het een poedel?":"Waardoor eindigde de serie?"}</div>
+                    <OpmGrid lijst={GEMIST.filter(function(o){return o.label!=="Acquit";})} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={function(k){wisselOpm(i,k);}}/>
+                    {c.car>0&&<>
+                      <div style={{fontSize:12,color:GRNT,padding:"2px 12px 0"}}>Wat ging goed?</div>
+                      <OpmGrid lijst={GOED.filter(function(o){return o.label!=="Acquit";})} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={function(k){wisselOpm(i,k);}}/>
+                    </>}
+                    {i===acquitIdx&&<div style={{fontSize:11,color:WITD,padding:"0 12px"}}>🎬 Acquit staat er automatisch bij ({c.car>0?"goed":"gemist"}); wijzigen kan bij Acquit hieronder.</div>}
+                    <div style={{padding:"6px 12px 0"}}>{knop("Klaar",function(){setOpenBeurt(null);},{width:"100%",padding:"8px",fontSize:14,borderColor:GOUD,color:GOUD})}</div>
+                  </div>}
                 </div>
               );
             })}
@@ -446,6 +489,15 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
               <button key={k} onClick={function(){setTafel(k);}} style={{padding:"8px 2px",borderRadius:8,cursor:"pointer",fontFamily:"inherit",fontSize:15,
                 background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WITD,fontWeight:aan?"bold":"normal"}}>{TAFELS[k].label}</button>);})}
           </div>
+          <div style={{fontSize:12,color:WITD,margin:"12px 0 4px"}}>🎬 Acquit {gelezen.spelers.length>1?"(je stond "+(spelerIdx===0?"links":"rechts")+")":""}</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
+            {[["eerste","Beurt 1"],["laatste","Laatste beurt"],["geen","Niet"]].map(function(x){const aan=acquit===x[0];return(
+              <button key={x[0]} onClick={function(){setAcquit(x[0]);}} style={{padding:"8px 2px",borderRadius:8,cursor:"pointer",fontFamily:"inherit",fontSize:13,
+                background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WITD,fontWeight:aan?"bold":"normal"}}>{x[1]}</button>);})}
+          </div>
+          {acquitIdx>=0&&beurten[acquitIdx]&&<div style={{fontSize:12,marginTop:4,color:beurten[acquitIdx].car>0?GRNT:ROOD}}>
+            Beurt {acquitIdx+1}: {beurten[acquitIdx].car>0?"✓ acquit gelukt ("+beurten[acquitIdx].car+")":"✗ acquit gemist (poedel)"}
+          </div>}
           <div style={{fontSize:12,color:WITD,marginTop:8}}>Discipline: <span style={{color:WIT}}>{DISCIPLINES[discipline].naam}</span> (de discipline die nu bovenaan gekozen is)</div>
 
           <div style={{display:"flex",gap:8,marginTop:16}}>

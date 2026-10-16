@@ -179,12 +179,13 @@ const MIJLPALEN=[
 // AI-chat (ChatGPT, Claude, ...) stuurt. Het antwoord heeft een vast formaat dat leesBriefje() leest; de app
 // zelf praat nooit met een AI.
 const BRIEFJE_PROMPT=[
-  "Dit is een foto van een carambole-wedstrijdbriefje. Lees voor elke speler zijn kolom uit.",
+  "Dit is een foto van een carambole-wedstrijdbriefje. Lees voor elke speler zijn kolom uit, in de volgorde van links naar rechts op het briefje.",
   "Per beurt staan er twee getallen: links het aantal caramboles in die beurt, rechts het totaal na die beurt.",
   "Een streepje, een lege beurt met een streep of een 0 betekent een poedel (0 caramboles; het totaal blijft gelijk).",
   "Lees alle gespeelde beurten, ook de poedels, en stop na de laatste gespeelde beurt.",
   "",
-  "Antwoord ALLEEN in precies dit formaat, zonder uitleg, één blok per speler:",
+  "Zet je hele antwoord in één codeblok (tussen ``` ), zodat ik het met de kopieerknop kan kopiëren.",
+  "Antwoord ALLEEN in precies dit formaat, zonder uitleg, één blok per speler (eerst de linker kolom):",
   "",
   "SPELER: <naam> | TE MAKEN: <getal>",
   "1: <caramboles> / <totaal>",

@@ -114,7 +114,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   `minWidth:0`, anders steken ze uit bij grote tekst.
 - Wedstrijdbriefje (📷 op Spelen, `BriefjeImport` in `jsx/vensters.jsx`): de speler stuurt een foto met
   `BRIEFJE_PROMPT` naar zijn eigen AI-chat en plakt het antwoord; `leesBriefje()` leest het (ruimhartig),
-  `controleerBriefje()` markeert alleen beurten die afwijken van de lopende totalen (met voorstel). Opslaan via
+  `controleerBriefje()` markeert alleen beurten die afwijken van de lopende totalen (met voorstel). Acquit: linker kolom = beurt 1,
+  rechter = laatste beurt (aanpasbaar); Goed of Gemist "Acquit" volgt uit caramboles >0. Opmerkingen per beurt via ✎ (OpmGrid). Opslaan via
   `bewaarPartij()` (ook gebruikt door `sluit()`): op datumvolgorde ingevoegd, `bron:"briefje"`, geen opmerkingen.
   Later eventueel: herkenning op de iPhone zelf (Apple Vision, eigen plugin) met hetzelfde controlescherm.
 - Kop en disciplinebalk (samen in één blok met `data-kop`, inklappen via grid-rijen 1fr→0fr, geen max-height) schuiven weg

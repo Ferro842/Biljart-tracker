@@ -303,8 +303,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
 }
 
 // Info-tab: uitleg, weergave en instellingen, back-up en gegevens, alles wissen en 'Over deze app'
-function InfoTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,tijdsvenster,setTijdsvenster,resetAlles,
-  setSpelelement,setWeergave,openUitleg,vervangData}){
+function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,setWeergave,openUitleg,vervangData}){
   const spel=useContext(SpelContext);
   const eenvoudig=useContext(EenvoudigContext);
   const [confReset,setConfReset]=useState(false);
@@ -349,7 +348,7 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,tijdsvenste
         </div>
         <div style={{fontSize:14,color:WIT,marginBottom:4}}>Eenvoudige modus</div>
         <div style={{fontSize:13,color:WITD,marginBottom:8,lineHeight:1.5}}>
-          Alleen het belangrijkste: per beurt je caramboles invullen en Noteer, zonder de stap met opmerkingen. Wil je bij een beurt toch iets aanvinken, tik dan + opmerking. Geen badges en punten, en in Dash alleen Inzicht en Trend.
+          Alleen het belangrijkste: per beurt je caramboles invullen en Noteer, zonder de stap met opmerkingen. Wil je bij een beurt toch iets aanvinken, tik dan + opmerking. In Dash alleen het belangrijkste. Badges en punten zet je hieronder los aan of uit.
         </div>
         <div style={{display:"flex",gap:6}}>
           {[[true,"Aan"],[false,"Uit"]].map(function(x){
@@ -360,11 +359,11 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,tijdsvenste
         </div>
       </div>
 
-      {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen (niet in eenvoudige modus) */}
-      {!eenvoudig&&<div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+      {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen (ook in eenvoudige modus) */}
+      <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Spelelement</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-          Badges, punten en het schrappen van je slechtste partijen uit je vorm (1 per {PUNTEN_PER_DROP} punten, hoogstens 1 op de 10 partijen).
+          Badges, punten en het schrappen van je slechtste partijen uit je vorm (1 per {PUNTEN_PER_DROP} punten, hoogstens 1 op de 10 partijen). Werkt ook in de eenvoudige modus.
           {spel?" Zet je het uit, dan zie je daar niets meer van en is je vorm gewoon het gemiddelde van die partijen.":" Staat uit: je vorm is gewoon het gemiddelde van die partijen, niets geschrapt. De punten worden op de achtergrond bijgehouden; zet je het weer aan, dan is alles direct terug."}
         </div>
         <div style={{display:"flex",gap:6}}>
@@ -374,37 +373,7 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,tijdsvenste
               style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
           })}
         </div>
-      </div>}
-      {spel&&(<div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
-        <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je vorm en niveau (Stats) en je 👑🏓-records hangen hier niet van af — een record blijft een record.</div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:10}}>
-          {[["1","1 mnd"],["2","2 mnd"],["3","3 mnd"],["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
-            const v=arr[0],l=arr[1];
-            return <button key={v} style={{padding:"7px 0",background:tijdsvenster===v?"var(--c-2d4a1e)":"none",border:"1px solid "+(tijdsvenster===v?GOUD:KBDR),borderRadius:6,color:tijdsvenster===v?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
-              onClick={function(){setTijdsvenster(v);}}>{l}</button>;
-          })}
-        </div>
-        <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
-          <div style={{display:"flex",justifyContent:"space-between"}}>
-            <div>
-              <div style={{fontSize:11,color:WITD}}>⭐-drempel-basis</div>
-              <div style={{fontSize:17,fontWeight:"bold",color:GOUD}}>{huidigeRecords.totaalGem!==null?huidigeRecords.totaalGem.toFixed(huidigeDiscipline==="driebanden"?3:2):"—"}</div>
-              <div style={{fontSize:10,color:WITD,opacity:0.7}}>{huidigeRecords.vensterPartijen} partij{huidigeRecords.vensterPartijen===1?"":"en"} · {huidigeRecords.vensterBeurten} beurten</div>
-            </div>
-            <div style={{textAlign:"right"}}>
-              <div style={{fontSize:11,color:WITD}}>je vorm</div>
-              <div style={{fontSize:17,fontWeight:"bold",color:WIT}}>{niveau.effectiefGemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)}</div>
-              <div style={{fontSize:10,color:WITD,opacity:0.7}}>{niveau.aantalPartijen} partij{niveau.aantalPartijen===1?"":"en"}</div>
-            </div>
-          </div>
-          {niveau.aantalDrops>0
-            ?<div style={{fontSize:10,color:GOUD,marginTop:6,textAlign:"center"}}>🏅 {vormUitleg(niveau,huidigeDiscipline==="driebanden"?3:2)}</div>
-            :<div style={{fontSize:10,color:WITD,opacity:0.6,marginTop:6,textAlign:"center"}}>nog geen badge-drops verdiend</div>
-          }
-        </div>
       </div>
-      )}
 
       {kop("Back-up en gegevens")}
       <DataTab data={data} alleP={alleP} huidigeDiscipline={huidigeDiscipline} vervangData={vervangData} ingebed={true}/>

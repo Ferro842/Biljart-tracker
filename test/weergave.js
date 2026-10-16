@@ -31,15 +31,16 @@
   // Eenvoudige modus
   weergaveKnop("Aan").click();await w(300);
   uit.opgeslagen=data().eenvoudig===true;
-  uit.geenSpelelementKaart=tekst().indexOf("Spelelement")===-1;
+  // Spelelement staat los van de eenvoudige modus: kaart blijft, instelling ongewijzigd
+  uit.spelelementLos=tekst().indexOf("Spelelement")!==-1&&data().spelelement!==false;
   k("Dash").click();await w(300);
-  uit.dashTabs=!!k("Trend")&&!k("Constant")&&!k("Patronen")&&!k("Vergelijk")&&!k("Punten");
+  uit.dashTabs=!!k("Trend")&&!k("Constant")&&!k("Patronen")&&!k("Vergelijk")&&!!k("Punten");
   k("Spelen").click();await w(200);(k("Start partij")||k("Doorgaan")).click();await w(200);
   const voor=(data().lopendePartij||{beurten:[]}).beurten.length;
   k("+").click();await w(30);k("+").click();await w(30);k("Noteer").click();await w(300);
   const lp=(data().lopendePartij||{beurten:[]}).beurten;
   uit.direct=lp.length===voor+1&&lp[lp.length-1].caramboles===2&&tekst().indexOf("Noteer")!==-1;
-  uit.geenPuntenBalk=tekst().indexOf("Deze partij:")===-1;
+  uit.puntenBalk=tekst().indexOf("Deze partij:")!==-1;
   // + opmerking: toch de gewone opmerkingen-stap voor deze beurt
   k("+").click();await w(30);k("+ opmerking").click();await w(250);
   const klos=Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.indexOf("Klos")!==-1;});
@@ -57,6 +58,6 @@
   uit.uitleg=tekst().indexOf("Zo werkt de app")!==-1&&tekst().indexOf("+ opmerking")!==-1&&tekst().indexOf("Info → Exporteer")!==-1;
   k("Sluiten").click();await w(200);
   uit.uitlegDicht=tekst().indexOf("Een partij spelen")===-1;
-  uit.goed=uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.geenSpelelementKaart&&uit.dashTabs&&uit.direct&&uit.geenPuntenBalk&&uit.weerUit;
+  uit.goed=uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
   return uit;
 })()

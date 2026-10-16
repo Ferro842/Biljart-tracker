@@ -27,7 +27,7 @@ Laadvolgorde in `index.html` (alles deelt de globale scope):
 | `jsx/partijrij.jsx` | `PartijRij` (Stats) en `LogPartijRij` (Log), met gedeelde `PartijLabels` en `PartijBeheer` |
 | `jsx/inzicht.jsx` | `InzichtPaneel`: Dash > ✨ Inzicht (coach-samenvatting, hoogste series, je poedels, poedels en series met vergelijken, speelprofiel, seriemakers, seriestoppers, omstandigheden, trend) |
 | `jsx/dashboard.jsx` | `BeurtenTijdlijn` (beurtengrafiek met selecteren, beste/zwakste reeks) en `Dashboard` |
-| `jsx/tabs.jsx` | `LogTab`, `StatsTab` (seizoen, niveau, partijen), `InfoTab` (uitleg, weergave, spelelement, tijdvenster, back-up via `DataTab ingebed`, wissen, over) |
+| `jsx/tabs.jsx` | `LogTab`, `StatsTab` (seizoen, niveau, partijen), `InfoTab` (uitleg, weergave, spelelement, back-up via `DataTab ingebed`, wissen, over) |
 | `jsx/spelen.jsx` | `SetupScherm`, `InvoerScherm`, `GemistScherm`, `GoedScherm`; krijgen de spelstatus als object `spel` |
 | `index.html` | `APP_VERSIE` en `BiljartTracker`: alle app-status, acties, kop, disciplinekeuze, tabbladen |
 
@@ -107,12 +107,15 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   `data.weergaveTipGezien`): `data.tekstgrootte` normaal/groot/extra (`TEKSTGROOTTES`,
   CSS `zoom` op `.app` met hoogte `calc(100vh / zoom)`; bij groter geen ondertitel in de kop en tijdens een partij
   geen klasse-knop) en `data.eenvoudig` (`EenvoudigContext`): Noteer slaat direct op zonder opmerkingen-stap,
-  spelelement uit, Dash alleen Inzicht en Trend, Inzicht zonder de uitgebreide kaarten. Knop "+ opmerking" naast
+  spelelement staat er los van (eigen instelling), Dash alleen Inzicht, Trend (en Punten als het spelelement aan staat), Inzicht zonder de uitgebreide kaarten. Knop "+ opmerking" naast
   Noteer geeft toch de opmerkingen-stap; de opmerkingenkaarten in Inzicht verschijnen dan vanzelf (vanaf één
   bijgehouden partij). Uitleg voor gebruikers: `UitlegVenster` ("ℹ️ Zo werkt de app", onder Start partij en in
   bovenaan Info); bij nieuwe functies daar ook bijwerken. Schuifbalken in flex:
   `minWidth:0`, anders steken ze uit bij grote tekst.
-- Spelelement aan/uit (Stats, `data.spelelement`, standaard aan; `SpelContext` in `jsx/onderdelen.jsx`). Uit =
+- ⭐-drempels (badges) gaan altijd over al je eerdere partijen (`tijdsvensterMaanden` = null); de instelling
+  "Tijdvenster voor prestatie-drempels" is vervallen (16 okt 2026; op echte data vrijwel geen verschil met de laatste
+  20 partijen). `berekenPrestaties` accepteert nog maanden voor de snapshot-test.
+- Spelelement aan/uit (Info, `data.spelelement`, standaard aan; `SpelContext` in `jsx/onderdelen.jsx`). Uit =
   geen badges/punten/Punten-tab/prestatiemeldingen/badge-hints en geen geschrapte partijen
   (`berekenNiveauInfo(partijen,zonderDrops)`); punten worden op de achtergrond wel berekend.
   Leg vorm en moyenne overal uit (`vormUitleg()`, voor seizoenen `gemUitleg()`); waar alle partijen

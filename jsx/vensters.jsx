@@ -227,7 +227,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
 // "Zo werkt de app": vaste uitleg in gewone taal, altijd te openen (onder Start partij en bovenaan Info)
 function UitlegVenster({eenvoudig,onClose}){
   const blokken=[
-    ["🎱","Een partij spelen",[
+    ["logo","Een partij spelen",[
       "Kies de tafel en het doel (aantal beurten of caramboles) en tik op Start partij.",
       "Per beurt: zet je caramboles met + en − (of typ ze) en tik op Noteer.",
       "Vergist? Tik op terug; de laatste beurt wordt weggehaald.",
@@ -253,7 +253,8 @@ function UitlegVenster({eenvoudig,onClose}){
     ]],
     ["🔎","Weergave",[
       "Info → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen.",
-      "Eenvoudige modus: alleen caramboles en Noteer, geen badges en punten, en in Dash alleen het belangrijkste."
+      "Eenvoudige modus: alleen caramboles en Noteer, en in Dash alleen het belangrijkste.",
+      "Spelelement (badges en punten) zet je los aan of uit, ook in de eenvoudige modus."
     ]],
     ["💾","Je gegevens",[
       "Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail.",
@@ -270,7 +271,9 @@ function UitlegVenster({eenvoudig,onClose}){
         {blokken.map(function(b){
           return(
             <div key={b[1]} style={{background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px",marginBottom:10}}>
-              <div style={{fontSize:16,color:GOUD,fontWeight:"bold",marginBottom:6}}>{b[0]} {b[1]}</div>
+              <div style={{fontSize:16,color:GOUD,fontWeight:"bold",marginBottom:6,display:"flex",alignItems:"center",gap:6}}>
+                {b[0]==="logo"?<Logo maat={20}/>:<span>{b[0]}</span>}<span>{b[1]}</span>
+              </div>
               {b[2].map(function(r,i){
                 return <div key={i} style={{fontSize:15,color:WIT,lineHeight:1.5,marginBottom:i<b[2].length-1?6:0,paddingLeft:12,position:"relative"}}><span style={{position:"absolute",left:0,color:GOUD}}>•</span>{r}</div>;
               })}

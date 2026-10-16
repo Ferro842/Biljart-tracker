@@ -21,7 +21,6 @@
   Array.from(kaart.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="Uit";}).click();await w(250);
   uit.opgeslagen=data().spelelement===false;
   const t=tekst();
-  uit.geenTijdvensterKaart=t.indexOf("Tijdvenster voor prestatie-drempels")===-1;
   uit.uitlegUit=t.indexOf("Staat uit")!==-1;
   k("Stats").click();await w(200);
   uit.geenPuntenInStats=!/\d+pt/.test(tekst());
@@ -47,12 +46,11 @@
   sluit();await w(150);
   // Weer aanzetten
   k("Info").click();await w(200);k("🎖️ Aan").click();await w(250);
-  const tijdvensterTerug=tekst().indexOf("Tijdvenster voor prestatie-drempels")!==-1;
   k("Stats").click();await w(200);
-  uit.weerAan=data().spelelement===true&&/\d+pt/.test(tekst())&&tijdvensterTerug;
+  uit.weerAan=data().spelelement===true&&/\d+pt/.test(tekst());
   k("Dash").click();await w(200);uit.puntenTabTerug=!!k("Punten");
   k("Spelen").click();await w(150);
-  uit.goed=uit.opgeslagen&&uit.geenPuntenInStats&&uit.geenTijdvensterKaart&&uit.uitlegUit&&uit.vormZonderSchrappen&&uit.geenDropTekst
+  uit.goed=uit.opgeslagen&&uit.geenPuntenInStats&&uit.uitlegUit&&uit.vormZonderSchrappen&&uit.geenDropTekst
     &&uit.geenPuntenTab&&uit.geenPuntenBalk&&uit.geenToast&&uit.samenvattingZonderPunten&&uit.weerAan&&uit.puntenTabTerug;
   uit.gemAan=gemAan;uit.gemUit=ruw;
   return uit;

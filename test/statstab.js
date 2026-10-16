@@ -1,5 +1,5 @@
-// Test van de Stats-tab (seizoen afsluiten en weer samenvoegen, archief openen) en de Info-tab (tijdvenster kiezen,
-// "Alle data wissen" (alleen de huidige discipline, hier Kader 71/2). Overschrijft de opslag;
+// Test van de Stats-tab (seizoen afsluiten en weer samenvoegen, archief openen) en de Info-tab
+// ("Alle data wissen" (alleen de huidige discipline, hier Kader 71/2). Overschrijft de opslag;
 // alles.js zet testdata terug.
 // Draaien: await eval(await fetch("/test/statstab.js").then(r=>r.text()))
 (async function(){
@@ -15,7 +15,6 @@
   k("Archief").click();await w(200);uit.archief=document.body.textContent.indexOf("Seizoensarchief")!==-1;sluit();await w(150);
   k("Laatste seizoensgrens ongedaan maken").click();await w(150);k("Ja, samenvoegen").click();await w(200);
   uit.samengevoegd=data().seizoenen.length===seizoenenVoor;
-  k("Info").click();await w(200);k("3 mnd").click();await w(150);uit.tijdvenster=data().tijdsvenster==="3";k("Alles").click();await w(150);
   // Alle data wissen alleen voor Kader 71/2
   const libreVoor=data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";}).length;
   k("Kader").click();await w(150);k("Kader 71/2").click();await w(150);k("Info").click();await w(200);
@@ -25,6 +24,6 @@
   uit.libreBehouden=na.filter(function(p){return(p.discipline||"libre")==="libre";}).length===libreVoor;
   uit.bevestigingWeg=!k("Ja, wis alles")&&!!k("Alle data wissen");
   k("Libre").click();await w(150);
-  uit.goed=uit.seizoenAfgesloten&&uit.archief&&uit.samengevoegd&&uit.tijdvenster&&uit.kaderGewist&&uit.libreBehouden&&uit.bevestigingWeg;
+  uit.goed=uit.seizoenAfgesloten&&uit.archief&&uit.samengevoegd&&uit.kaderGewist&&uit.libreBehouden&&uit.bevestigingWeg;
   return uit;
 })()

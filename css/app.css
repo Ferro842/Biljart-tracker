@@ -1,16 +1,18 @@
 /* Opmaak van Biljart Tracker (alles wat niet inline in de componenten staat) */
+/* Laken-kleuren (groen, libre); per discipline overschreven door zetThema() in js/constanten.js */
+:root{--c-1a2e1a:#1a2e1a;--c-22341f:#22341f;--c-3a5c35:#3a5c35;--c-2d4a1e:#2d4a1e;--c-0d1f0d:#0d1f0d;--c-1e3a1e:#1e3a1e;--c-182e14:#182e14;--c-152015:#152015;--c-1a3019:#1a3019;--c-1a2e10:#1a2e10;--c-1c3019:#1c3019;--c-2a4a1e:#2a4a1e;--c-5a7a55:#5a7a55;--c-1c2c1c:#1c2c1c;--c-1c2e18:#1c2e18;--c-24401f:#24401f;--c-132613:#132613;--c-1a3a1a:#1a3a1a;--c-2a3d20:#2a3d20;--c-2d4a22:#2d4a22}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body,#root{height:100%;width:100%;overflow:hidden}
 html{-webkit-text-size-adjust:100%;-moz-text-size-adjust:100%;text-size-adjust:100%}
-body{background:#1a2e1a;font-family:Georgia,serif;color:#f5f0e8}
+body{background:var(--c-1a2e1a);font-family:Georgia,serif;color:#f5f0e8}
 .app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto}
 html.native .app{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 @media (min-width:700px){
   body{display:flex;justify-content:center}
-  .app{max-width:960px;border-left:1px solid #3a5c35;border-right:1px solid #3a5c35}
+  .app{max-width:960px;border-left:1px solid var(--c-3a5c35);border-right:1px solid var(--c-3a5c35)}
 }
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
 input[type=number]{-moz-appearance:textfield}
 @keyframes badgePopIn{0%{opacity:0;transform:scale(0.7) translateY(10px);}60%{opacity:1;transform:scale(1.04) translateY(0);}100%{opacity:1;transform:scale(1) translateY(0);}}
 .plusmin-btn{transition:background-color 0.08s,transform 0.08s;-webkit-tap-highlight-color:transparent;}
-.plusmin-btn:active{background-color:#e8c96a!important;color:#1a2e1a!important;transform:scale(0.92);}
+.plusmin-btn:active{background-color:#e8c96a!important;color:var(--c-1a2e1a)!important;transform:scale(0.92);}

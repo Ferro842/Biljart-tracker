@@ -140,7 +140,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData}){
           <div style={{fontSize:13,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>
           <textarea readOnly value={dataTekst}
             onClick={function(e){e.target.select();}}
-            style={{width:"100%",height:220,background:"#0d1f0d",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
+            style={{width:"100%",height:220,background:"var(--c-0d1f0d)",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
         </div>
       )}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
@@ -211,10 +211,10 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
                 {!confSeizoenAfsluiten
                   ?<button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
                     onClick={function(){setConfSeizoenAfsluiten(true);}}>Seizoen afsluiten</button>
-                  :<div style={{flex:1,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:6,padding:"7px 8px"}}>
+                  :<div style={{flex:1,background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:6,padding:"7px 8px"}}>
                     <div style={{fontSize:13,color:GOUD,marginBottom:6}}>Huidig seizoen afsluiten en een nieuwe beginnen?</div>
                     <div style={{display:"flex",gap:6}}>
-                      <button style={{flex:1,padding:6,background:"#2d4a1e",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                      <button style={{flex:1,padding:6,background:"var(--c-2d4a1e)",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
                         onClick={function(){seizoenAfsluiten();setConfSeizoenAfsluiten(false);}}>Ja, afsluiten</button>
                       <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
                         onClick={function(){setConfSeizoenAfsluiten(false);}}>Annuleer</button>
@@ -230,10 +230,10 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
                 !confSeizoenOngedaan
                   ?<button style={{marginTop:8,padding:0,background:"none",border:"none",color:WITD,cursor:"pointer",fontSize:12,fontFamily:"inherit",textDecoration:"underline",opacity:0.7}}
                     onClick={function(){setConfSeizoenOngedaan(true);}}>Laatste seizoensgrens ongedaan maken</button>
-                  :<div style={{marginTop:8,background:"#1a2e10",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 8px"}}>
+                  :<div style={{marginTop:8,background:"var(--c-1a2e10)",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 8px"}}>
                     <div style={{fontSize:13,color:WITD,marginBottom:6}}>{huidig.naam} en {afgesloten[afgesloten.length-1].naam} weer samenvoegen tot één lopend seizoen?</div>
                     <div style={{display:"flex",gap:6}}>
-                      <button style={{flex:1,padding:6,background:"#2d4a1e",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
+                      <button style={{flex:1,padding:6,background:"var(--c-2d4a1e)",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
                         onClick={function(){seizoensplitsingOngedaanMaken();setConfSeizoenOngedaan(false);}}>Ja, samenvoegen</button>
                       <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
                         onClick={function(){setConfSeizoenOngedaan(false);}}>Annuleer</button>
@@ -254,7 +254,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
         // Voor één tafel: zelfde berekening, alleen met de partijen op die tafel
         const info=tafel==="alle"?niveau:berekenNiveauInfo(alleP.filter(function(p){return(p.tafel||"230")===tafel;}),!spel,{venster:vormVenster==="alles"?null:vormVenster});
         const niv=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline);
-        const chip=function(actief){return{flex:1,padding:"7px 0",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13};};
+        const chip=function(actief){return{flex:1,padding:"7px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13};};
         return(
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
             <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Je niveau</div>
@@ -290,7 +290,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
               {[[10,"10"],[20,"20"],[30,"30"],["alles","Alle"]].map(function(x){
                 const actief=vormVenster===x[0];
                 return <button key={x[1]} onClick={function(){if(!actief)setVormVenster(x[0]);}}
-                  style={{padding:"8px 0",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+                  style={{padding:"8px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
               })}
             </div>
             <div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:8,lineHeight:1.45}}>
@@ -311,7 +311,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           {[[true,"🎖️ Aan"],[false,"Uit"]].map(function(x){
             const actief=spel===x[0];
             return <button key={x[1]} onClick={function(){if(!actief)setSpelelement(x[0]);}}
-              style={{flex:1,padding:"9px 0",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+              style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
           })}
         </div>
       </div>
@@ -321,7 +321,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:10}}>
           {[["1","1 mnd"],["2","2 mnd"],["3","3 mnd"],["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
             const v=arr[0],l=arr[1];
-            return <button key={v} style={{padding:"7px 0",background:tijdsvenster===v?"#2d4a1e":"none",border:"1px solid "+(tijdsvenster===v?GOUD:KBDR),borderRadius:6,color:tijdsvenster===v?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+            return <button key={v} style={{padding:"7px 0",background:tijdsvenster===v?"var(--c-2d4a1e)":"none",border:"1px solid "+(tijdsvenster===v?GOUD:KBDR),borderRadius:6,color:tijdsvenster===v?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
               onClick={function(){setTijdsvenster(v);}}>{l}</button>;
           })}
         </div>
@@ -351,7 +351,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
             {[["Car.",stA.totCar],["Max",stA.max],["Gem. alle partijen",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
               return(
-                <div key={arr[0]} style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px 4px"}}>
+                <div key={arr[0]} style={{textAlign:"center",background:"var(--c-1a3019)",borderRadius:8,padding:"8px 4px"}}>
                   <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>
                   <div style={{fontSize:13,color:WITD}}>{arr[0]}</div>
                 </div>

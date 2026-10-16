@@ -146,7 +146,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
       (gekozen.bi===0?" · eerste beurt":gekozen.bi===n-1?" · laatste beurt":"");
   }
 
-  const chip=function(actief){return{padding:"5px 9px",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:6,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"};};
+  const chip=function(actief){return{padding:"5px 9px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:6,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"};};
 
   return(
     <div>
@@ -177,7 +177,7 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
               <g key={bl.p.id} opacity={sel&&!bl.punten.some(function(pt){return inSel(pt.g);})?0.35:1}>
                 <text x={bl.x0} y={11} fontSize="10" fill={GOUD} fontFamily="Georgia,serif" fontWeight="bold">p{nummers[bl.pi]}</text>
                 {!smal&&<text x={bl.x0} y={23} fontSize="9" fill={WITD} fontFamily="Georgia,serif">{fmtDatum(bl.p.datum)}</text>}
-                <polyline points={bl.punten.map(function(pt){return pt.x+","+pt.y;}).join(" ")} fill="none" stroke="#5a7a55" strokeWidth="1.2" strokeLinejoin="round"/>
+                <polyline points={bl.punten.map(function(pt){return pt.x+","+pt.y;}).join(" ")} fill="none" style={{stroke:"var(--c-5a7a55)"}} strokeWidth="1.2" strokeLinejoin="round"/>
                 {bl.punten.map(function(pt){
                   const k=kleur(pt.v);
                   const eerste=pt.bi===0,laatste=pt.bi===bl.punten.length-1;
@@ -188,9 +188,9 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
                       onClick={function(){if(!selecteerModus&&!selectie)setGekozen({pi:bl.pi,bi:pt.bi});}}>
                       <circle cx={pt.x} cy={pt.y} r={8} fill="transparent"/>
                       {laatste&&!eerste
-                        ?<rect x={pt.x-4} y={pt.y-4} width={8} height={8} fill={G} stroke={WIT} strokeWidth="1.5"/>
+                        ?<rect x={pt.x-4} y={pt.y-4} width={8} height={8} style={{fill:G}} stroke={WIT} strokeWidth="1.5"/>
                         :eerste
-                          ?<circle cx={pt.x} cy={pt.y} r={4.5} fill={G} stroke={WIT} strokeWidth="1.5"/>
+                          ?<circle cx={pt.x} cy={pt.y} r={4.5} style={{fill:G}} stroke={WIT} strokeWidth="1.5"/>
                           :null}
                       <circle cx={pt.x} cy={pt.y} r={actief?4:2.5} fill={k} stroke={actief?WIT:"none"}/>
                       {pt.v>0&&<text x={pt.x} y={pt.y-7} textAnchor="middle" fontSize="8" fill={k} fontFamily="Georgia,serif">{pt.v}</text>}
@@ -457,7 +457,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     inzicht:"Wat je opmerkingen en omstandigheden zeggen over je spel: je sterkste techniek en grootste werkpunt (op slagingspercentage, niet op aantal missers), wat grote series oplevert, waardoor series eindigen, hoe tafel, tijdstip en fase in de partij uitpakken, en of je werkpunten minder vaak voorkomen."
   };
   const btn=(k,l)=>(
-    <button onClick={function(){if(uitlegModus){setUitlegSectie(k);}else{setTab(k);}}} style={{flex:"1 1 auto",padding:"10px 4px",whiteSpace:"nowrap",background:tab===k&&!uitlegModus?"#1c2c1c":"none",
+    <button onClick={function(){if(uitlegModus){setUitlegSectie(k);}else{setTab(k);}}} style={{flex:"1 1 auto",padding:"10px 4px",whiteSpace:"nowrap",background:tab===k&&!uitlegModus?"var(--c-1c2c1c)":"none",
       border:"none",color:tab===k&&!uitlegModus?GOUD:(uitlegModus?"#7fd8e0":WITD),fontSize:12.5,cursor:"pointer",fontFamily:"Georgia,serif",
       borderBottom:tab===k&&!uitlegModus?`2px solid ${GOUD}`:"2px solid transparent"}}>
       {l}
@@ -468,19 +468,19 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:G,fontFamily:"Georgia,serif",color:WIT}}>
 
       {/* Header */}
-      <div style={{background:"linear-gradient(135deg,#0d1f0d,#182e14)",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
+      <div style={{background:"linear-gradient(135deg,var(--c-0d1f0d),var(--c-182e14))",borderBottom:`2px solid ${GOUD}`,padding:"10px 14px",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div>
           <div style={{fontSize:15,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Biljart Dashboard</div>
           <div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>Analyse & trends · {ST.length} partijen</div>
         </div>
         <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}}
-          style={{padding:"6px 12px",background:uitlegModus?"#2d4a1e":"none",border:"1px solid "+(uitlegModus?GOUD:KBDR),borderRadius:8,color:uitlegModus?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",flexShrink:0}}>
+          style={{padding:"6px 12px",background:uitlegModus?"var(--c-2d4a1e)":"none",border:"1px solid "+(uitlegModus?GOUD:KBDR),borderRadius:8,color:uitlegModus?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",flexShrink:0}}>
           {uitlegModus?"✕ Sluit uitleg":"❓ Uitleg"}
         </button>
       </div>
 
       {/* Tabs: passen naast elkaar op een telefoon; scrollen alleen als vangnet op heel smalle schermen */}
-      <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"#152015",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+      <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
         {btn("inzicht","✨ Inzicht")}
         {btn("trend","Trend")}
         {btn("consist","Constant")}
@@ -492,7 +492,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       {/* Selectie + inhoud scrollen samen, zodat het selectieblok op een telefoon wegscrolt */}
       <div style={{flex:1,overflowY:"auto"}}>
         {/* Partijselectie */}
-        <div style={{background:"#152015",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`}}>
+        <div style={{background:"var(--c-152015)",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`}}>
           <div style={{fontSize:12,color:WITD,marginBottom:5}}>
             {geselecteerdeMaanden&&geselecteerdeMaanden.size>0
               ?<>Selectie: {[...geselecteerdeMaanden].join(", ")} · <span style={{color:GOUD}}>{filt.length} partijen</span></>
@@ -514,7 +514,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               const actief=(!geselecteerdeMaanden||geselecteerdeMaanden.size===0)&&va===v&&tot===t;
               return(
                 <button key={l} onClick={()=>{setGeselecteerdeMaanden(null);setVa(v);setTot(t);}}
-                  style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
+                  style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"var(--c-2d4a1e)":"none",border:`1px solid ${actief?GOUD:KBDR}`,
                     borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
                   {l}
                 </button>
@@ -531,7 +531,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
                     return huidige;
                   });
                 }}
-                  style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"#2d4a1e":"none",border:`1px solid ${actief?GOUD:KBDR}`,
+                  style={{flex:"0 0 auto",padding:"4px 10px",background:actief?"var(--c-2d4a1e)":"none",border:`1px solid ${actief?GOUD:KBDR}`,
                     borderRadius:5,color:actief?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
                   {b.key}
                 </button>
@@ -541,7 +541,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
           <div style={{display:"flex",gap:5,marginTop:6,overflowX:"auto",paddingBottom:2}}>
             {[["alle","Alle tafels"]].concat(gespeeldeTafels.map(function(t){return[t,TAFELS[t].label];})).map(([k,l])=>(
               <button key={k} onClick={()=>setTafelFilter(k)}
-                style={{flex:"0 0 auto",padding:"4px 12px",background:tafelKeuze===k?"#2d4a1e":"none",border:`1px solid ${tafelKeuze===k?GOUD:KBDR}`,
+                style={{flex:"0 0 auto",padding:"4px 12px",background:tafelKeuze===k?"var(--c-2d4a1e)":"none",border:`1px solid ${tafelKeuze===k?GOUD:KBDR}`,
                   borderRadius:5,color:tafelKeuze===k?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>
                 {l}
               </button>
@@ -569,7 +569,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               </div>
             </div>
             <div style={{fontSize:12,color:WITD,marginBottom:6,display:"flex",gap:12}}>
-              <span style={{color:"#3a5c35"}}>● Ruw</span>
+              <span style={{color:"var(--c-3a5c35)"}}>● Ruw</span>
               {filt.length>=3&&w3&&<span style={{color:GOUD}}>── 3-partij</span>}
               {filt.length>=5&&w5&&<span style={{color:WIT}}>╌╌ 5-partij</span>}
             </div>
@@ -599,7 +599,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
                   onChange={e=>setTrimH(+e.target.value)} style={{width:"100%",accentColor:GRNT}}/>
               </div>
             </div>
-            <div style={{textAlign:"center",background:"#1a3019",borderRadius:8,padding:"8px"}}>
+            <div style={{textAlign:"center",background:"var(--c-1a3019)",borderRadius:8,padding:"8px"}}>
               <span style={{fontSize:13,color:WITD}}>Gefilterd gemiddelde: </span>
               <span style={{fontSize:20,fontWeight:"bold",color:parseFloat(gemGem)>=grenzen.laag?GOUD:WITD}}>{gemGem}</span>
             </div>
@@ -733,7 +733,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Eerste vs tweede helft</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:10}}>
               {[[`p1–p${h}`,g1,h1],[`p${h+1}–p${sel.length}`,g2,h2]].map(([label,gem,ps])=>(
-                <div key={label} style={{background:"#1a3019",borderRadius:8,padding:"12px",textAlign:"center"}}>
+                <div key={label} style={{background:"var(--c-1a3019)",borderRadius:8,padding:"12px",textAlign:"center"}}>
                   <div style={{fontSize:13,color:WITD,marginBottom:4}}>{label}</div>
                   <div style={{fontSize:28,fontWeight:"bold",color:gemKleur(parseFloat(gem),grenzen)}}>{gem}</div>
                   <div style={{fontSize:12,color:WITD,marginTop:4}}>{ps.length} partijen</div>
@@ -741,7 +741,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
                 </div>
               ))}
             </div>
-            <div style={{textAlign:"center",padding:"8px",background:"#1a3019",borderRadius:8}}>
+            <div style={{textAlign:"center",padding:"8px",background:"var(--c-1a3019)",borderRadius:8}}>
               {parseFloat(g2)>parseFloat(g1)
                 ?<span style={{color:GRNT}}>↑ Tweede helft {(g2-g1).toFixed(2)} hoger — progressie!</span>
                 :<span style={{color:ROOD}}>↓ Eerste helft {(parseFloat(g1)-parseFloat(g2)).toFixed(2)} hoger</span>
@@ -811,7 +811,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
               {berekenMijlpalen(partijen).map(function(m){
                 return(
-                  <div key={m.type+m.aantal} style={{background:m.bereikt?"rgba(201,168,76,0.15)":"#1c2e18",border:"1px solid "+(m.bereikt?GOUD:KBDR),borderRadius:8,padding:"8px 4px",textAlign:"center",opacity:m.bereikt?1:0.55}}>
+                  <div key={m.type+m.aantal} style={{background:m.bereikt?"rgba(201,168,76,0.15)":"var(--c-1c2e18)",border:"1px solid "+(m.bereikt?GOUD:KBDR),borderRadius:8,padding:"8px 4px",textAlign:"center",opacity:m.bereikt?1:0.55}}>
                     <div style={{fontSize:18}}>{m.emoji}</div>
                     <div style={{fontSize:11,color:m.bereikt?GOUD:WITD,fontWeight:m.bereikt?"bold":"normal",marginTop:2}}>{m.naam}</div>
                     <div style={{fontSize:14}}>{m.bereikt?"✅":"🔒"}</div>
@@ -830,7 +830,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       {badgeCatalogusOpen&&<BadgeCatalogus discipline={discipline} onClose={function(){setBadgeCatalogusOpen(false);}}/>}
       {uitlegSectie&&(
         <div onClick={function(){setUitlegSectie(null);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.7)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
-          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid #7fd8e0",borderRadius:16,padding:"18px 18px",maxWidth:340,width:"100%",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid #7fd8e0",borderRadius:16,padding:"18px 18px",maxWidth:340,width:"100%",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
             <div style={{fontSize:16,fontWeight:"bold",color:"#7fd8e0",marginBottom:8}}>❓ {uitlegSectie==="consist"?"Consistentie":uitlegSectie.charAt(0).toUpperCase()+uitlegSectie.slice(1)}</div>
             <div style={{fontSize:14,color:WITD,lineHeight:1.5}}>{UITLEG_TEKST[uitlegSectie]}</div>
             <div onClick={function(){setUitlegSectie(null);}} style={{textAlign:"center",marginTop:14,fontSize:12,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>

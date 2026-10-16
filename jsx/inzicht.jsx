@@ -86,7 +86,7 @@ function InzichtPaneel({partijen,discipline}){
     <div style={{display:"flex",flexDirection:"column",gap:10}}>
 
       {/* Coach-samenvatting */}
-      <div style={{background:"linear-gradient(160deg,#24401f,#132613)",border:"1px solid "+GOUD,borderRadius:12,padding:"14px 12px"}}>
+      <div style={{background:"linear-gradient(160deg,var(--c-24401f),var(--c-132613))",border:"1px solid "+GOUD,borderRadius:12,padding:"14px 12px"}}>
         <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:10}}>Wat je data zegt</div>
         {inz.coach.length===0
           ?<div style={{fontSize:14,color:WITD,lineHeight:1.5}}>Nog te weinig opmerkingen in deze selectie voor duidelijke conclusies. Vink in een partij na elke beurt aan waardoor je serie eindigde en wat goed ging, dan vult dit zich vanzelf.</div>
@@ -234,7 +234,7 @@ function InzichtPaneel({partijen,discipline}){
                       const aan=g===open;
                       return(
                         <button key={g.car} onClick={function(){setSerieAantal(g.car);}}
-                          style={{padding:"5px 10px",background:aan?"#2d4a1e":"rgba(0,0,0,0.2)",border:"1px solid "+(aan?GOUD:KBDR),borderRadius:6,
+                          style={{padding:"5px 10px",background:aan?"var(--c-2d4a1e)":"rgba(0,0,0,0.2)",border:"1px solid "+(aan?GOUD:KBDR),borderRadius:6,
                             cursor:"pointer",fontFamily:"inherit",display:"flex",alignItems:"baseline",gap:4}}>
                           <strong style={{fontSize:16,color:beurtKleur(g.car,discipline)}}>{g.car}</strong>
                           <span style={{fontSize:11,color:aan?GOUD:WITD}}>×{g.series.length}</span>
@@ -400,7 +400,7 @@ function InzichtPaneel({partijen,discipline}){
                 const reken=keuze.car!=null?keuze.car:echt;
                 const zet=function(w){setAcqKeuze(Object.assign({},acqKeuze,{[a.tafel]:Object.assign({kans:keuze.kans!=null?keuze.kans:null,car:keuze.car!=null?keuze.car:null},w)}));};
                 const extra=kans*a.stoten*reken-a.acqCar,nieuw=(a.car+extra)/a.beurten;
-                const chip=function(aan,tekst,klik){return <button key={tekst} onClick={klik} style={{padding:"3px 8px",background:aan?"#2d4a1e":"none",border:"1px solid "+(aan?GOUD:KBDR),borderRadius:5,color:aan?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>{tekst}</button>;};
+                const chip=function(aan,tekst,klik){return <button key={tekst} onClick={klik} style={{padding:"3px 8px",background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),borderRadius:5,color:aan?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>{tekst}</button>;};
                 const knop=function(tekst,klik,uit){return <button onClick={klik} disabled={uit} style={{width:26,height:26,borderRadius:13,border:"1px solid "+GOUD,background:"none",color:GOUD,fontSize:15,lineHeight:1,cursor:uit?"default":"pointer",opacity:uit?0.35:1,fontFamily:"inherit",padding:0}}>{tekst}</button>;};
                 return(
                   <div key={a.tafel} style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px",marginBottom:8}}>
@@ -490,7 +490,7 @@ function InzichtPaneel({partijen,discipline}){
         {/* Vergelijken, per tafel: eerder tegenover nu, laatste 10, goed tegenover slecht, vanaf een maand */}
         {(function(){
           const chip=function(aan,tekst,klik,key){
-            return <button key={key||tekst} onClick={klik} style={{flex:"0 0 auto",padding:"4px 10px",background:aan?"#2d4a1e":"none",border:"1px solid "+(aan?GOUD:KBDR),
+            return <button key={key||tekst} onClick={klik} style={{flex:"0 0 auto",padding:"4px 10px",background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),
               borderRadius:5,color:aan?GOUD:WITD,fontSize:12,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>{tekst}</button>;
           };
           const kop={helften:inz.helftLabels?"Eerder tegenover nu · "+inz.helftLabels.eerste+" → "+inz.helftLabels.tweede:"Eerder tegenover nu",

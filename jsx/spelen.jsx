@@ -15,7 +15,7 @@ function SetupScherm({spel}){
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
           {Object.keys(TAFELS).map(function(t){
             return(
-              <button key={t} style={{padding:"9px 6px",background:tafel===t?"#2d4a1e":"none",border:"1px solid "+(tafel===t?GOUD:KBDR),borderRadius:8,color:tafel===t?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+              <button key={t} style={{padding:"9px 6px",background:tafel===t?"var(--c-2d4a1e)":"none",border:"1px solid "+(tafel===t?GOUD:KBDR),borderRadius:8,color:tafel===t?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
                 onClick={function(){setTafel(t);}}>{TAFELS[t].vol}</button>
             );
           })}
@@ -24,9 +24,9 @@ function SetupScherm({spel}){
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"10px 14px"}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:6}}>Partij doel</div>
         <div style={{display:"flex",gap:8,marginBottom:10}}>
-          <button style={{flex:1,padding:"8px 8px",background:doelType==="beurten"?"#2d4a1e":"none",border:"1px solid "+(doelType==="beurten"?GOUD:KBDR),borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
+          <button style={{flex:1,padding:"8px 8px",background:doelType==="beurten"?"var(--c-2d4a1e)":"none",border:"1px solid "+(doelType==="beurten"?GOUD:KBDR),borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
             onClick={function(){setDoelType("beurten");}}>Beurten</button>
-          <button style={{flex:1,padding:"8px 8px",background:doelType==="caramboles"?"#2d4a1e":"none",border:"1px solid "+(doelType==="caramboles"?GOUD:KBDR),borderRadius:8,color:doelType==="caramboles"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
+          <button style={{flex:1,padding:"8px 8px",background:doelType==="caramboles"?"var(--c-2d4a1e)":"none",border:"1px solid "+(doelType==="caramboles"?GOUD:KBDR),borderRadius:8,color:doelType==="caramboles"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
             onClick={function(){setDoelType("caramboles");}}>Caramboles</button>
         </div>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,marginBottom:10}}>
@@ -41,13 +41,13 @@ function SetupScherm({spel}){
         </div>
         <div style={{display:"flex",gap:6}}>
           {(doelType==="beurten"?[15,20,25,30]:[50,75,100,150]).map(function(n){
-            return <button key={n} style={{flex:1,padding:"7px 0",background:doel===n?"#2d4a1e":"none",border:"1px solid "+(doel===n?GOUD:KBDR),borderRadius:6,color:doel===n?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+            return <button key={n} style={{flex:1,padding:"7px 0",background:doel===n?"var(--c-2d4a1e)":"none",border:"1px solid "+(doel===n?GOUD:KBDR),borderRadius:6,color:doel===n?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
               onClick={function(){setDoel(n);}}>{n}</button>;
           })}
         </div>
       </div>
       {lp.length>0&&(
-        <div style={{background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 14px",fontSize:14,color:WITD}}>
+        <div style={{background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 14px",fontSize:14,color:WITD}}>
           Lopende partij: {lp.length} beurten - {totCarLp} car - tafel {tafelLabel(tafel)}
           <div style={{display:"flex",gap:8,marginTop:8}}>
             <button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
@@ -89,14 +89,14 @@ function InvoerScherm({spel}){
         <div style={{height:3,background:GOUD,width:progPct+"%",transition:"width 0.3s"}}/>
       </div>
       <div style={{padding:"10px 12px 6px",flexShrink:0}}>
-        {spelAan&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
+        {spelAan&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"var(--c-182e14)",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
           <span style={{fontSize:12,color:WITD}}>🎖️ Deze partij: <strong style={{color:GOUD}}>{partijPunten}pt</strong></span>
           <span style={{fontSize:12,color:WITD}}>Totaal: <strong style={{color:GOUD}}>{(niveau.badgePuntenTotaal!==undefined?niveau.badgePuntenTotaal:niveau.badgePunten)+partijPunten}pt</strong></span>
         </div>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
           {[["Gespeeld",lp.length,WIT],["Caramboles",stL?stL.totCar:0,GOUD],["Gem.",stL?stL.gemPerBeurt:"0.00",GOUDL],["Max",stL?stL.max:0,"#e8a84c"]].map(function(arr){
             return(
-              <div key={arr[0]} style={{textAlign:"center",background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 2px"}}>
+              <div key={arr[0]} style={{textAlign:"center",background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 2px"}}>
                 <div style={{fontSize:20,fontWeight:"bold",color:arr[2],lineHeight:1}}>{arr[1]}</div>
                 <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{arr[0]}</div>
               </div>
@@ -104,17 +104,17 @@ function InvoerScherm({spel}){
           })}
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 2fr",gap:6}}>
-          <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
+          <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GRNT,lineHeight:1}}>{stL?stL.opbouw5:0}x</div>
             <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw {dInv.opbouwMin}+</div>
             <div style={{fontSize:13,color:GRNT,marginTop:1}}>{opbouwPct}%</div>
           </div>
-          <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
+          <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:poedels>0?"#e08055":WITD,lineHeight:1}}>{poedels}x</div>
             <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Poedels</div>
             <div style={{fontSize:13,color:poedels>0?"#e08055":WITD,marginTop:1}}>{poedelPct}%</div>
           </div>
-          <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 8px"}}>
+          <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 8px"}}>
             <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Series</div>
             <div style={{display:"flex",gap:4,justifyContent:"space-around"}}>
               {[[dInv.opbouwMin+"-"+dInv.opbouwMax,s57,"#4caf50"],[dInv.sterkMin+"-"+dInv.sterkMax,s89,"#e8c96a"],[dInv.topMin+"+",s10,"#ff9f40"]].map(function(arr){
@@ -228,13 +228,13 @@ function InvoerScherm({spel}){
           const zichtbaar=hints.filter(Boolean); // badge-hints zijn false als het spelelement uit staat
           if(zichtbaar.length===0)return null;
           return(
-            <div style={{background:"#182e14",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
+            <div style={{background:"var(--c-182e14)",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
               {zichtbaar.map(function(h,i){return <div key={i} style={{fontSize:13,color:WITD,padding:"2px 0"}}>{h}</div>;})}
             </div>
           );
         })()}
         {lp.length>1&&(
-          <div style={{background:"#182e14",border:"1px solid "+KBDR,borderRadius:8,padding:"6px 8px"}}>
+          <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"6px 8px"}}>
             <Grafiek beurten={lp} discipline={huidigeDiscipline}/>
           </div>
         )}
@@ -262,7 +262,7 @@ function GemistScherm({spel}){
         <div style={{padding:"0 12px 8px"}}>
           <input type="text" value={andersGemist} onChange={function(e){setAndersGemist(e.target.value);}}
             placeholder="Anders... (typ zelf iets)"
-            style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
+            style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
         </div>
         <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
           <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"rgba(224,96,96,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(224,96,96,0.45)"),borderRadius:12,color:heeftSelectie?G:"#e0a0a0",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
@@ -296,7 +296,7 @@ function GoedScherm({spel}){
         <div style={{padding:"0 12px 8px"}}>
           <input type="text" value={andersGoed} onChange={function(e){setAndersGoed(e.target.value);}}
             placeholder="Anders... (typ zelf iets)"
-            style={{width:"100%",padding:"8px 10px",background:"#1c3019",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
+            style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
         </div>
         <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
           <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GRNT+",#66bb6a)":"rgba(102,187,106,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(102,187,106,0.45)"),borderRadius:12,color:heeftSelectie?WIT:"#a8d5aa",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}

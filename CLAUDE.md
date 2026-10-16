@@ -98,6 +98,10 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   partij binnen het venster weg, hoogstens `MAX_SCHRAP_AANDEEL` (1 op de 10). **Moyenne** = alle partijen,
   niets geschrapt (officieel). `berekenNiveauInfo(partijen,zonderDrops,opties)`; zonder opties de oude
   berekening (alle partijen, geen plafond), waar `test/snapshot.js` op rust. Teksten via `vormUitleg()`.
+- Laken-kleur per discipline: libre groen, driebanden blauw, bandstoten grijs, kader rood. Alle groentinten zijn
+  CSS-variabelen `--c-<hex>` (standaard in `css/app.css`); `zetThema()` in `js/constanten.js` rekent ze om
+  (`themaVan`/`themaKleur`). Nieuwe groentint? Toevoegen aan `THEMA_KLEUREN` en `:root` en als `var(--c-..)` gebruiken;
+  in SVG alleen via `style={{fill/stroke}}`. GOUD/WIT/ROOD/GRNT blijven vast.
 - Spelelement aan/uit (Stats, `data.spelelement`, standaard aan; `SpelContext` in `jsx/onderdelen.jsx`). Uit =
   geen badges/punten/Punten-tab/prestatiemeldingen/badge-hints en geen geschrapte partijen
   (`berekenNiveauInfo(partijen,zonderDrops)`); punten worden op de achtergrond wel berekend.

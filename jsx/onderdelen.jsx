@@ -41,7 +41,7 @@ function OpmGrid({lijst,prefix,kleur,geselecteerd,toggle}){
         const actief=geselecteerd.has(key);
         return(
           <button key={o.label} onClick={function(){toggle(key);}}
-            style={{background:actief?(kleur===ROOD?"#3a1010":"#1a3a1a"):"#1c3019",border:"1px solid "+(actief?kleur:KBDR),borderRadius:8,padding:"7px 4px",color:actief?kleur:WITD,cursor:"pointer",fontSize:13,display:"flex",flexDirection:"column",alignItems:"center",gap:2,fontFamily:"inherit"}}>
+            style={{background:actief?(kleur===ROOD?"#3a1010":"var(--c-1a3a1a)"):"var(--c-1c3019)",border:"1px solid "+(actief?kleur:KBDR),borderRadius:8,padding:"7px 4px",color:actief?kleur:WITD,cursor:"pointer",fontSize:13,display:"flex",flexDirection:"column",alignItems:"center",gap:2,fontFamily:"inherit"}}>
             <span style={{fontSize:14}}>{o.emoji}</span>
             <span>{o.label}</span>
           </button>
@@ -65,7 +65,7 @@ function LogRij({b,nr,discipline}){
           {isPoedel&&<span style={{fontSize:13,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>poedel</span>}
           {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
           {!isPoedel&&heeftGoed&&(b.goed||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
-          {oudeOpm&&<span style={{fontSize:13,background:"#2a3d20",color:GOUD,borderRadius:3,padding:"2px 6px"}}>{oudeOpm}</span>}
+          {oudeOpm&&<span style={{fontSize:13,background:"var(--c-2a3d20)",color:GOUD,borderRadius:3,padding:"2px 6px"}}>{oudeOpm}</span>}
         </div>
       </div>
     </div>
@@ -90,7 +90,7 @@ function PrestatieOverzicht({prestatie}){
   if(!prestatie||badges.length===0)return null;
   const punten=prestatie.punten;
   return(
-    <div style={{marginTop:10,marginBottom:10,background:"#1a2e10",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
+    <div style={{marginTop:10,marginBottom:10,background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
       <button onClick={function(){setPerCategorie(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",fontFamily:"inherit",padding:0,marginBottom:6}}>
         <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Prestaties · {punten}pt totaal</span>
@@ -146,7 +146,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
   const dec=discipline==="driebanden"?3:2;
   if(compact){
     return(
-      <div onClick={onClick} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+niveau.huidig.kleur,borderRadius:12,padding:"10px 12px",cursor:onClick?"pointer":"default"}}>
+      <div onClick={onClick} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+niveau.huidig.kleur,borderRadius:12,padding:"10px 12px",cursor:onClick?"pointer":"default"}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <div style={{width:34,height:34,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+niveau.huidig.kleur+"dd,"+niveau.huidig.kleur+"44)",border:"2px solid "+niveau.huidig.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:17,flexShrink:0}}>
             {niveau.huidig.emoji}
@@ -171,7 +171,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
     );
   }
   return(
-    <div onClick={onClick} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+niveau.huidig.kleur,borderRadius:14,padding:"16px",cursor:onClick?"pointer":"default"}}>
+    <div onClick={onClick} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+niveau.huidig.kleur,borderRadius:14,padding:"16px",cursor:onClick?"pointer":"default"}}>
       <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:12}}>
         <div style={{width:52,height:52,borderRadius:"50%",background:"radial-gradient(circle at 35% 30%,"+niveau.huidig.kleur+"dd,"+niveau.huidig.kleur+"44)",border:"3px solid "+niveau.huidig.kleur,display:"flex",alignItems:"center",justifyContent:"center",fontSize:26,boxShadow:"0 0 16px "+niveau.huidig.kleur+"88"}}>
           {niveau.huidig.emoji}
@@ -281,10 +281,10 @@ function DashGrafiek({data,h=70,grenzen}){
       <svg width={W} height={h+8} style={{display:"block"}}>
         {(grenzen?[grenzen.laag,grenzen.hoog]:[1,2,3]).filter(v=>v>0).map(v=>(
           <line key={v} x1={0} y1={h-(v/max)*(h-8)+4} x2={W} y2={h-(v/max)*(h-8)+4}
-            stroke={KBDR} strokeWidth="0.5" strokeDasharray="3,3"/>
+            style={{stroke:KBDR}} strokeWidth="0.5" strokeDasharray="3,3"/>
         ))}
         {segmenten.map((pts,i)=>(
-          <polyline key={i} points={pts} fill="none" stroke="#2d4a22" strokeWidth="1.5" strokeLinejoin="round"/>
+          <polyline key={i} points={pts} fill="none" style={{stroke:"var(--c-2d4a22)"}} strokeWidth="1.5" strokeLinejoin="round"/>
         ))}
         {data.map((v,i)=>{
           if(v===null)return null;

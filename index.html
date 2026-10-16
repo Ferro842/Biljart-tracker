@@ -24,23 +24,23 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-14.45">
+<link rel="stylesheet" href="css/app.css?v=2026-10-16.1">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-14.45"></script>
-<script src="js/berekeningen.js?v=2026-10-14.45"></script>
-<script src="js/opslag.js?v=2026-10-14.45"></script>
-<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-14.45"></script>
-<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-14.45"></script>
-<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-14.45"></script>
-<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-14.45"></script>
-<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-14.45"></script>
-<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-14.45"></script>
-<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-14.45"></script>
+<script src="js/constanten.js?v=2026-10-16.1"></script>
+<script src="js/berekeningen.js?v=2026-10-16.1"></script>
+<script src="js/opslag.js?v=2026-10-16.1"></script>
+<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-16.1"></script>
+<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-16.1"></script>
+<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-16.1"></script>
+<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-16.1"></script>
+<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-16.1"></script>
+<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-16.1"></script>
+<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-16.1"></script>
 <script type="text/babel">
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-14.45";
+const APP_VERSIE="2026-10-16.1";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -134,6 +134,8 @@ function BiljartTracker(){
     if(lopend)nd.lopendePartij=lopend;else delete nd.lopendePartij;
     setData(nd);slaOp(nd);
   },[data,lp,tafel,doel,doelType]);
+  // Laken-kleur van de gekozen discipline (vóór het tekenen, dus zonder groene flits)
+  React.useLayoutEffect(function(){zetThema(huidigeDiscplineVoorLading);},[huidigeDiscplineVoorLading]);
   if(!data)return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",color:GOUD,fontSize:18,background:G}}>Laden...</div>;
 
   const huidigeDiscipline=huidigeDiscplineVoorLading;
@@ -296,7 +298,7 @@ function BiljartTracker(){
   return(
     <SpelContext.Provider value={spelAan}>
     <div className="app">
-      <div style={{background:"linear-gradient(135deg,#0d1f0d,#1a2e1a)",borderBottom:"2px solid "+GOUD,padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
+      <div style={{background:"linear-gradient(135deg,var(--c-0d1f0d),var(--c-1a2e1a))",borderBottom:"2px solid "+GOUD,padding:"9px 14px",display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <img src={LOGO_URL} alt="Biljart Tracker" style={{width:44,height:44,borderRadius:10,flexShrink:0}}/>
           <div>
@@ -327,7 +329,7 @@ function BiljartTracker(){
       {niveauUpInfo&&(
         <div onClick={function(){setNiveauUpInfo(null);}}
           style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:210,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
-          <div style={{background:"linear-gradient(160deg,#2a4a1e,#0d1f0d)",border:"3px solid "+niveauUpInfo.naar.kleur,borderRadius:22,padding:"28px 22px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 0 60px "+niveauUpInfo.naar.kleur+"66, 0 10px 44px rgba(0,0,0,0.7)",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)"}}>
+          <div style={{background:"linear-gradient(160deg,var(--c-2a4a1e),var(--c-0d1f0d))",border:"3px solid "+niveauUpInfo.naar.kleur,borderRadius:22,padding:"28px 22px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 0 60px "+niveauUpInfo.naar.kleur+"66, 0 10px 44px rgba(0,0,0,0.7)",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)"}}>
             <div style={{fontSize:15,color:WITD,textTransform:"uppercase",letterSpacing:3,marginBottom:10}}>Niveau omhoog!</div>
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:14,marginBottom:14}}>
               <div style={{textAlign:"center",opacity:0.5}}>
@@ -351,7 +353,7 @@ function BiljartTracker(){
       {toastGroep&&(
         <div onClick={function(){setToastGroep(null);}}
           style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
-          <div style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:20,padding:"24px 20px 18px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 10px 44px rgba(0,0,0,0.6)",animation:"badgePopIn 0.4s cubic-bezier(0.34,1.56,0.64,1)"}}>
+          <div style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:20,padding:"24px 20px 18px",maxWidth:360,width:"100%",textAlign:"center",boxShadow:"0 10px 44px rgba(0,0,0,0.6)",animation:"badgePopIn 0.4s cubic-bezier(0.34,1.56,0.64,1)"}}>
             <div style={{fontSize:14,color:WITD,textTransform:"uppercase",letterSpacing:2,marginBottom:4}}>Prestatie behaald!</div>
             <div style={{fontSize:36,fontWeight:"bold",color:GOUD,marginBottom:18,textShadow:"0 0 20px rgba(201,168,76,0.5)"}}>+{toastGroep.reduce(function(a,b){return a+b.punten;},0)}pt</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:14,justifyContent:"center"}}>
@@ -375,7 +377,7 @@ function BiljartTracker(){
 
       {confPartij&&(
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,padding:20}}>
-          <div style={{background:"#1a2e1a",border:"2px solid "+GOUD,borderRadius:14,padding:24,maxWidth:320,width:"100%"}}>
+          <div style={{background:"var(--c-1a2e1a)",border:"2px solid "+GOUD,borderRadius:14,padding:24,maxWidth:320,width:"100%"}}>
             <div style={{fontSize:15,color:WIT,marginBottom:6,textAlign:"center"}}>Partij opslaan?</div>
             <div style={{fontSize:14,color:WITD,marginBottom:18,textAlign:"center"}}>{lp.length} beurten - {totCarLp} car{stL?" - gem "+stL.gemPerBeurt:""}</div>
             <div style={{display:"flex",gap:10}}>
@@ -386,11 +388,11 @@ function BiljartTracker(){
         </div>
       )}
 
-      <div style={{display:"flex",gap:6,padding:"8px 14px",background:"#152015",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
+      <div style={{display:"flex",gap:6,padding:"8px 14px",background:"var(--c-152015)",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
         {HOOFDDISCIPLINES.map(function(d){
           return(
             <button key={d} onClick={function(){wisselDiscipline(d);}}
-              style={{flex:1,padding:"6px 0",background:huidigeDiscipline===d?"#2d4a1e":"none",border:"1px solid "+(huidigeDiscipline===d?GOUD:KBDR),borderRadius:8,color:huidigeDiscipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
+              style={{flex:1,padding:"6px 0",background:huidigeDiscipline===d?"var(--c-2d4a1e)":"none",border:"1px solid "+(huidigeDiscipline===d?GOUD:KBDR),borderRadius:8,color:huidigeDiscipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
               {DISCIPLINES[d].naam}
             </button>
           );
@@ -399,7 +401,7 @@ function BiljartTracker(){
           const kaderActief=KADER_VARIANTEN.indexOf(huidigeDiscipline)!==-1;
           return(
             <button onClick={function(){setKaderKiezerOpen(true);}}
-              style={{flex:1,padding:"6px 0",background:kaderActief?"#2d4a1e":"none",border:"1px solid "+(kaderActief?GOUD:KBDR),borderRadius:8,color:kaderActief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
+              style={{flex:1,padding:"6px 0",background:kaderActief?"var(--c-2d4a1e)":"none",border:"1px solid "+(kaderActief?GOUD:KBDR),borderRadius:8,color:kaderActief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>
               {kaderActief?DISCIPLINES[huidigeDiscipline].naam:"Kader"}
             </button>
           );
@@ -407,7 +409,7 @@ function BiljartTracker(){
       </div>
       {kaderKiezerOpen&&(
         <div onClick={function(){setKaderKiezerOpen(false);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:220,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
-          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,#1e3a1e,#0d1f0d)",border:"2px solid "+GOUD,borderRadius:16,padding:"18px 16px",maxWidth:340,width:"100%"}}>
+          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,padding:"18px 16px",maxWidth:340,width:"100%"}}>
             <div style={{fontSize:16,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Kies je kader-variant</div>
             <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke variant heeft zijn eigen gemiddelde en niveau, los van de andere</div>
             <div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -415,7 +417,7 @@ function BiljartTracker(){
                 const actief=huidigeDiscipline===k;
                 return(
                   <button key={k} onClick={function(){wisselDiscipline(k);setKaderKiezerOpen(false);}}
-                    style={{padding:"12px 10px",background:actief?"#2d4a1e":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:10,color:actief?GOUD:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:15,textAlign:"left"}}>
+                    style={{padding:"12px 10px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:10,color:actief?GOUD:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:15,textAlign:"left"}}>
                     {DISCIPLINES[k].naam}
                   </button>
                 );
@@ -426,9 +428,9 @@ function BiljartTracker(){
         </div>
       )}
 
-      <div style={{display:"flex",borderBottom:"1px solid "+KBDR,background:"#152015",flexShrink:0}}>
+      <div style={{display:"flex",borderBottom:"1px solid "+KBDR,background:"var(--c-152015)",flexShrink:0}}>
         {[["spelen","Spelen"],["stats","Stats"],["dash","Dash"],["log","Log"],["data","Data"]].map(function(arr){
-          return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:tab===arr[0]?"#1c2c1c":"none",border:"none",color:tab===arr[0]?GOUD:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===arr[0]?"2px solid "+GOUD:"2px solid transparent"}}
+          return <button key={arr[0]} style={{flex:1,padding:"11px 0",background:tab===arr[0]?"var(--c-1c2c1c)":"none",border:"none",color:tab===arr[0]?GOUD:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit",borderBottom:tab===arr[0]?"2px solid "+GOUD:"2px solid transparent"}}
             onClick={function(){setTab(arr[0]);}}>{arr[1]}</button>;
         })}
       </div>
@@ -449,7 +451,7 @@ function BiljartTracker(){
           vormVenster={vormVenster} setVormVenster={setVormVenster}/>}
         {tab==="data"&&<DataTab data={data} alleP={alleP} huidigeDiscipline={huidigeDiscipline} vervangData={vervangData}/>}
         {tab==="log"&&<LogTab lp={lp} alleP={alleP} prestatiesMap={prestatiesMap} niveau={niveau} huidigeDiscipline={huidigeDiscipline} verwijderPartij={verwijderPartij} slaNotitieOp={slaNotitieOp}/>}
-        {tab==="dash"&&<Dashboard partijen={alleP} niveau={niveau} tijdsvensterMaanden={tijdsvensterMaanden} discipline={huidigeDiscipline}/>}
+        {tab==="dash"&&<Dashboard key={huidigeDiscipline} partijen={alleP} niveau={niveau} tijdsvensterMaanden={tijdsvensterMaanden} discipline={huidigeDiscipline}/>}
       </div>
     </div>
     </SpelContext.Provider>

@@ -2,8 +2,37 @@
 // discipline, tafelmaten en mijlpalen. Gewone JavaScript (geen JSX), geladen vóór de Babel-code in
 // index.html; alles hier is daardoor overal in de app beschikbaar.
 
-const G="#1a2e1a",GOUD="#c9a84c",GOUDL="#e8c96a",WIT="#f5f0e8",WITD="#d4cfc5";
-const KBG="#22341f",KBDR="#3a5c35",ROOD="#e05555",GRNT="#4caf50";
+// Laken-kleur per discipline: alle groentinten van de app zijn CSS-variabelen (--c-<hex>, standaard groen in
+// css/app.css). zetThema() zet ze om naar blauw (driebanden), grijs (bandstoten) of rood (kader); libre blijft
+// groen. Goud, wit en de signaalkleuren ROOD/GRNT blijven overal gelijk. In SVG var() alleen via style={{}}.
+const THEMA_KLEUREN=["1a2e1a","22341f","3a5c35","2d4a1e","0d1f0d","1e3a1e","182e14","152015","1a3019","1a2e10",
+  "1c3019","2a4a1e","5a7a55","1c2c1c","1c2e18","24401f","132613","1a3a1a","2a3d20","2d4a22"];
+const G="var(--c-1a2e1a)",GOUD="#c9a84c",GOUDL="#e8c96a",WIT="#f5f0e8",WITD="#d4cfc5";
+const KBG="var(--c-22341f)",KBDR="var(--c-3a5c35)",ROOD="#e05555",GRNT="#4caf50";
+// Tint (graden), verzadiging- en lichtheidsfactor per laken; null = groen zoals de kleuren zelf
+function themaVan(discipline){
+  if(discipline==="driebanden")return{tint:212,verz:1.35,licht:1.08};       // biljartblauw
+  if(discipline==="bandstoten")return{tint:210,verz:0.18,licht:1.05};       // grijs
+  if(String(discipline).indexOf("kader")===0)return{tint:356,verz:1.25,licht:1.05}; // rood
+  return null;
+}
+function themaKleur(hex,th){
+  if(!th)return"#"+hex;
+  const r=parseInt(hex.slice(0,2),16)/255,g=parseInt(hex.slice(2,4),16)/255,b=parseInt(hex.slice(4,6),16)/255;
+  const max=Math.max(r,g,b),min=Math.min(r,g,b),l0=(max+min)/2,d=max-min;
+  const s0=d===0?0:d/(1-Math.abs(2*l0-1));
+  const l=Math.min(1,l0*th.licht),s=Math.min(1,s0*th.verz),h=th.tint/360;
+  const q=l<0.5?l*(1+s):l+s-l*s,p=2*l-q;
+  const kan=function(t){t=(t+1)%1;return t<1/6?p+(q-p)*6*t:t<1/2?q:t<2/3?p+(q-p)*(2/3-t)*6:p;};
+  return"#"+[kan(h+1/3),kan(h),kan(h-1/3)].map(function(x){return("0"+Math.round(x*255).toString(16)).slice(-2);}).join("");
+}
+function zetThema(discipline){
+  if(typeof document==="undefined")return;
+  const th=themaVan(discipline),st=document.documentElement.style;
+  THEMA_KLEUREN.forEach(function(h){st.setProperty("--c-"+h,themaKleur(h,th));});
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta)meta.setAttribute("content",themaKleur("1a2e1a",th));
+}
 
 
 const GEMIST=[

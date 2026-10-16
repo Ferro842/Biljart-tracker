@@ -38,3 +38,8 @@ input[type=date]::-webkit-date-and-time-value{text-align:left}
 .staaf-groei{transform-origin:center bottom;animation:staaf-groei 0.6s cubic-bezier(.2,.8,.2,1)}
 html.rustig .balk-groei,html.rustig .staaf-groei,html.rustig .verhaal-in{animation:none}
 @media (prefers-reduced-motion:reduce){.balk-groei,.staaf-groei,.verhaal-in,.viering-bal,.viering-tekst{animation:none}}
+/* Hoofdschermen veren altijd een klein stukje mee aan de rand (iOS), ook als alles op het scherm past: een
+   onzichtbaar streepje van 1 px hoger dan het vak geeft net genoeg om te scrollen. Absoluut, dus geen invloed op
+   de opmaak (ook niet in flex-vakken). */
+.scrollvak{position:relative;overscroll-behavior-y:auto}
+.scrollvak::before{content:"";position:absolute;top:0;left:0;width:1px;height:calc(100% + 1px);pointer-events:none}

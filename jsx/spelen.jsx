@@ -7,7 +7,7 @@
 function SetupScherm({spel}){
   const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip,mijnDoel,openDoel}=spel;
   return(
-    <div style={{flex:1,display:"flex",flexDirection:"column",padding:"10px 14px",gap:7,overflowY:"auto"}}>
+    <div className="scrollvak" style={{flex:1,display:"flex",flexDirection:"column",padding:"10px 14px",gap:7,overflowY:"auto"}}>
       {weergaveTip&&(
         <div style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
           <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>🔎 Nieuw: kies zelf hoe je de app ziet</div>

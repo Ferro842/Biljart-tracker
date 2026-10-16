@@ -151,9 +151,10 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
   return(
     <div>
       <div ref={scrollRef} style={{overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+        {/* Zonder Selecteer ook omhoog/omlaag vegen over de grafiek (alleen pan-x liet het scherm onderaan Trend "hangen") */}
         <svg ref={svgRef} width={W} height={BOVEN+H+ONDER}
           onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp} onClick={onTik}
-          style={{display:"block",touchAction:selecteerModus?"none":"pan-x",userSelect:"none",WebkitUserSelect:"none"}}>
+          style={{display:"block",touchAction:selecteerModus?"none":"pan-x pan-y",userSelect:"none",WebkitUserSelect:"none"}}>
           {blokken.map(function(bl){
             return(
               <rect key={"b"+bl.p.id} x={bl.x0-TUSSEN/2+1} y={0} width={bl.x1-bl.x0+TUSSEN-2} height={BOVEN+H+ONDER} rx={4}
@@ -469,8 +470,8 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     <div style={{height:"100%",display:"flex",flexDirection:"column",background:G,fontFamily:"Georgia,serif",color:WIT}}>
 
 
-      {/* Tabs: passen naast elkaar op een telefoon; scrollen alleen als vangnet op heel smalle schermen */}
-      <div style={{display:"flex",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0,overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+      {/* Tabs: lopen door op een tweede regel als ze niet naast elkaar passen (grote tekst, smal scherm) */}
+      <div style={{display:"flex",flexWrap:"wrap",borderBottom:`1px solid ${KBDR}`,background:"var(--c-152015)",flexShrink:0}}>
         {/* Uitleg per onderdeel (vooraan, zodat hij ook bij grote tekst in beeld is; de oude kopbalk is weg voor meer leesruimte) */}
         <button onClick={function(){setUitlegModus(function(v){return !v;});setUitlegSectie(null);}} aria-label="Uitleg"
           style={{flex:"0 0 auto",alignSelf:"center",width:30,height:30,margin:"0 4px 0 10px",padding:0,borderRadius:"50%",
@@ -488,7 +489,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       </div>
 
       {/* Selectie + inhoud scrollen samen, zodat het selectieblok op een telefoon wegscrolt */}
-      <div style={{flex:1,overflowY:"auto"}}>
+      <div className="scrollvak" style={{flex:1,overflowY:"auto"}}>
         {/* Partijselectie (niet bij de kalender: die toont altijd de laatste 12 maanden) */}
         <div style={{background:"var(--c-152015)",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`,display:tab==="kalender"?"none":"block"}}>
           <div style={{fontSize:12,color:WITD,marginBottom:5}}>

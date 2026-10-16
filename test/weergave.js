@@ -37,12 +37,18 @@
   uit.dashTabs=!!k("Trend")&&!k("Constant")&&!k("Patronen")&&!k("Vergelijk")&&!!k("Punten");
   // Kop en disciplines schuiven weg bij omlaag scrollen en komen terug bij omhoog
   const kopWeg=function(){const k=document.querySelector("[data-kop]");return!!k&&k.getAttribute("data-kop")==="weg";};
-  const sc=Array.from(document.querySelectorAll("#root div")).filter(function(d){return getComputedStyle(d).overflowY==="auto"&&d.scrollHeight>d.clientHeight+50;})[0];
-  if(sc){
+  // Het scrollvak van Dash; tijdelijk verlengd, zodat de test niet afhangt van hoeveel er toevallig in staat
+  const sc=Array.from(document.querySelectorAll("#root .scrollvak")).filter(function(d){return d.clientHeight>0;})[0];
+  const vulling=document.createElement("div");vulling.style.height="1500px";
+  if(sc){sc.appendChild(vulling);
     sc.scrollTop=300;sc.dispatchEvent(new Event("scroll"));await w(550);const weg=kopWeg();
     sc.scrollTop=150;sc.dispatchEvent(new Event("scroll"));await w(550);const blijftWeg=kopWeg();
     sc.scrollTop=0;sc.dispatchEvent(new Event("scroll"));await w(550);
-    uit.kopSchuift=weg&&blijftWeg&&!kopWeg(); // weg bij omlaag, blijft weg bij een stukje omhoog, terug bovenaan
+    // Vlak boven de onderkant blijft de kop staan (anders springt het beeld en blijft er even een leeg vlak)
+    sc.scrollTop=sc.scrollHeight;sc.dispatchEvent(new Event("scroll"));await w(550);const onderaanZichtbaar=!kopWeg();
+    sc.scrollTop=0;sc.dispatchEvent(new Event("scroll"));await w(550);
+    vulling.remove();
+    uit.kopSchuift=weg&&blijftWeg&&onderaanZichtbaar&&!kopWeg(); // weg bij omlaag, blijft weg bij een stukje omhoog, terug bovenaan
   }else uit.kopSchuift=false;
   k("Spelen").click();await w(200);(k("Start partij")||k("Doorgaan")).click();await w(200);
   const voor=(data().lopendePartij||{beurten:[]}).beurten.length;
@@ -67,6 +73,15 @@
   uit.uitleg=tekst().indexOf("Zo werkt de app")!==-1&&tekst().indexOf("+ opmerking")!==-1&&tekst().indexOf("Info → Exporteer")!==-1;
   k("Sluiten").click();await w(200);
   uit.uitlegDicht=tekst().indexOf("Een partij spelen")===-1;
-  uit.goed=uit.kopSchuift&&uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
+  // Spelen past op het scherm, maar veert toch mee (scrollvak: 1 px te scrollen)
+  const sv=document.querySelector(".scrollvak");
+  uit.meeveren=!!sv&&sv.scrollHeight>sv.clientHeight;
+  // Dash-tabs bij Extra groot: lopen door op een tweede regel, niets valt buiten beeld
+  k("Info").click();await w(250);weergaveKnop("Extra groot").click();await w(300);
+  k("Dash").click();await w(300);
+  const kal=k("Kalender");
+  uit.dashTabsPassen=!!kal&&kal.getBoundingClientRect().right<=kal.parentElement.getBoundingClientRect().right+1&&kal.parentElement.scrollWidth<=kal.parentElement.clientWidth;
+  k("Info").click();await w(250);weergaveKnop("Normaal").click();await w(300);k("Spelen").click();await w(150);
+  uit.goed=uit.meeveren&&uit.dashTabsPassen&&uit.kopSchuift&&uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
   return uit;
 })()

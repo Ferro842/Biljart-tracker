@@ -4,7 +4,7 @@
 // Log-tab: lopende partij en alle partijen beurt voor beurt
 function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij,slaNotitieOp}){
   return(
-    <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div className="scrollvak" style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
       {lp.length>0&&(
         <div style={{background:KBG,border:"2px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:10}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Lopende partij</div>
@@ -119,7 +119,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed}){
   const promptPartij="Je bent een biljartcoach voor carambole/libre. Analyseer mijn meest recente partij. Geef: Wat ging goed, Grootste rem, Foutpatronen, Trainingsadvies, Focus. Antwoord beknopt.\n\n"+dataTekst;
   const promptTrend="Je bent een biljartcoach voor carambole/libre. Analyseer mijn trends over al mijn partijen. Geef: Trend, Vooruitgang, Remmers, Inzicht, Trainingsfocus. Antwoord beknopt.\n\n"+dataTekst;
   return(
-    <div style={ingebed?null:{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div className={ingebed?null:"scrollvak"} style={ingebed?null:{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>AI Analyse</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
@@ -175,7 +175,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
   const allB=alleP.flatMap(function(p){return p.beurten;});
   const stA=stat(allB,huidigeDiscipline);
   return(
-    <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div className="scrollvak" style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Seizoen</div>
         {(function(){
@@ -344,7 +344,7 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
 
   const kop=function(t){return <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUDL,margin:"18px 2px 8px"}}>{t}</div>;};
   return(
-    <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div className="scrollvak" style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
       <button onClick={openUitleg} style={{width:"100%",padding:"16px",marginBottom:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>
         ℹ️ Zo werkt de app
       </button>

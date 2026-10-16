@@ -132,7 +132,13 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   bij omlaag scrollen in een tabblad (`kopWeg`, `volgScroll` als native
   capture-luisteraar op het inhoudvak: React geeft scroll van onderliggende vakken niet door) en komen pas terug
   helemaal bovenaan of bij wissel van tab/discipline (niet bij een stukje omhoog: dat voelde onrustig). Tijdens de overgang (450 ms) en onderaan negeren,
-  anders flikkert het. Dash heeft geen eigen kopbalk meer; ❓ Uitleg staat vooraan in de Dash-tabrij.
+  anders flikkert het. Alleen wegschuiven als er onder je meer dan kophoogte + 120 px te scrollen is: vlak boven de
+  onderkant gaf het wegschuiven op iOS een leeg vlak en haperen (Dash → Trend).
+- Hoofdschermen hebben `className="scrollvak"` (`css/app.css`): een onzichtbaar streepje 1 px hoger dan het vak, zodat ze
+  op iOS altijd meeveren aan de rand, ook als alles past. Nieuw scrollend hoofdscherm? Ook `scrollvak` geven.
+- Dash-tabrij loopt door op een tweede regel (`flexWrap`) als de tabs niet naast elkaar passen.
+- Grafieken die zijwaarts scrollen: `touchAction` "pan-x pan-y", nooit alleen "pan-x" (dan kun je er niet overheen
+  omhoog/omlaag vegen en lijkt het scherm te hangen). Alleen tijdens slepen/selecteren "none". Dash heeft geen eigen kopbalk meer; ❓ Uitleg staat vooraan in de Dash-tabrij.
 - ⭐-drempels (badges) gaan altijd over al je eerdere partijen (`tijdsvensterMaanden` = null); de instelling
   "Tijdvenster voor prestatie-drempels" is vervallen (16 okt 2026; op echte data vrijwel geen verschil met de laatste
   20 partijen). `berekenPrestaties` accepteert nog maanden voor de snapshot-test.

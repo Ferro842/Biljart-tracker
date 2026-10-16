@@ -55,7 +55,9 @@
   rd=randen();await sleep(rd[1],rd[1]+42);
   uit.lengteNaSlepen=actieveLengte();
   k("✋").click();await w(150);
-  const goed=uit.nieuw>1&&uit.rechterRand>uit.nieuw&&uit.linkerRand<uit.rechterRand&&uit.verschuiven===uit.linkerRand&&uit.verschoven&&uit.scrolltNaast
+  // Zonder Selecteer kun je ook omhoog/omlaag vegen over de grafiek (anders "hangt" het scherm onderaan Trend)
+  uit.verticaalVegen=svg().style.touchAction.indexOf("pan-y")!==-1;
+  const goed=uit.verticaalVegen&&uit.nieuw>1&&uit.rechterRand>uit.nieuw&&uit.linkerRand<uit.rechterRand&&uit.verschuiven===uit.linkerRand&&uit.verschoven&&uit.scrolltNaast
     &&uit.handvatjes===2&&uit.naTik===0&&uit.beste25===25&&uit.beste50===50&&uit.beste10===10&&uit.lengteBijBeste==="25"&&uit.lengteNaSlepen===null;
   return{goed:goed,details:uit};
 })()

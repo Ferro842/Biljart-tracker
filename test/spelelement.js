@@ -15,15 +15,16 @@
   kb("Libre").click();await w(150);k("Stats").click();await w(200);
   uit.aanVooraf=tekst().indexOf("Badge-punten")!==-1||tekst().indexOf("pt")!==-1;
   const gemAan=(tekst().match(/je vorm(\d+\.\d+)/)||[])[1];
-  // Uitzetten
-  // De knop "Uit" in de kaart Spelelement (Weergave heeft ook een "Uit")
+  // Uitzetten (kaart Spelelement staat in Info; Weergave heeft ook een "Uit")
+  k("Info").click();await w(200);
   const kaart=Array.from(document.querySelectorAll("#root div")).find(function(d){return d.textContent==="Spelelement";}).parentElement;
   Array.from(kaart.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="Uit";}).click();await w(250);
   uit.opgeslagen=data().spelelement===false;
   const t=tekst();
-  uit.geenPuntenInStats=!/\d+pt/.test(t);
   uit.geenTijdvensterKaart=t.indexOf("Tijdvenster voor prestatie-drempels")===-1;
   uit.uitlegUit=t.indexOf("Staat uit")!==-1;
+  k("Stats").click();await w(200);
+  uit.geenPuntenInStats=!/\d+pt/.test(tekst());
   // Vorm zonder schrappen = gewoon het gemiddelde van de laatste 20 libre-partijen
   const libre=data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";}).slice(-20);
   let c=0,n=0;libre.forEach(function(p){p.beurten.forEach(function(b){c+=b.caramboles;n++;});});
@@ -45,8 +46,10 @@
   uit.samenvattingZonderPunten=tekst().indexOf("Partij afgesloten")!==-1&&tekst().indexOf("pt aan badges")===-1;
   sluit();await w(150);
   // Weer aanzetten
-  k("Stats").click();await w(200);k("🎖️ Aan").click();await w(250);
-  uit.weerAan=data().spelelement===true&&/\d+pt/.test(tekst())&&tekst().indexOf("Tijdvenster voor prestatie-drempels")!==-1;
+  k("Info").click();await w(200);k("🎖️ Aan").click();await w(250);
+  const tijdvensterTerug=tekst().indexOf("Tijdvenster voor prestatie-drempels")!==-1;
+  k("Stats").click();await w(200);
+  uit.weerAan=data().spelelement===true&&/\d+pt/.test(tekst())&&tijdvensterTerug;
   k("Dash").click();await w(200);uit.puntenTabTerug=!!k("Punten");
   k("Spelen").click();await w(150);
   uit.goed=uit.opgeslagen&&uit.geenPuntenInStats&&uit.geenTijdvensterKaart&&uit.uitlegUit&&uit.vormZonderSchrappen&&uit.geenDropTekst

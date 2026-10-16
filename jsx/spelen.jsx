@@ -5,9 +5,21 @@
 
 // Spelen, voor de start: niveau, tafelmaat, partijdoel en Start partij
 function SetupScherm({spel}){
-  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,tafel,totCarLp}=spel;
+  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip}=spel;
   return(
     <div style={{flex:1,display:"flex",flexDirection:"column",padding:"10px 14px",gap:7,overflowY:"auto"}}>
+      {weergaveTip&&(
+        <div style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
+          <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>🔎 Nieuw: kies zelf hoe je de app ziet</div>
+          <div style={{fontSize:14,color:WIT,lineHeight:1.5,marginBottom:10}}>
+            Grotere letters en knoppen, of een eenvoudige weergave met alleen het belangrijkste. Standaard staat alles aan; je vindt het altijd bij Info → Weergave.
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button onClick={function(){zieWeergaveTip(true);}} style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Bekijken</button>
+            <button onClick={function(){zieWeergaveTip(false);}} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Niet nodig</button>
+          </div>
+        </div>
+      )}
       <div style={{textAlign:"center",color:GOUD,fontSize:15,fontWeight:"bold"}}>Nieuwe partij</div>
       <NiveauKaart niveau={niveau} compact={true} discipline={huidigeDiscipline} onClick={function(){setNiveauOpen(true);}}/>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>

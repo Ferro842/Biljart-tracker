@@ -27,7 +27,7 @@ Laadvolgorde in `index.html` (alles deelt de globale scope):
 | `jsx/partijrij.jsx` | `PartijRij` (Stats) en `LogPartijRij` (Log), met gedeelde `PartijLabels` en `PartijBeheer` |
 | `jsx/inzicht.jsx` | `InzichtPaneel`: Dash > ✨ Inzicht (coach-samenvatting, hoogste series, je poedels, poedels en series met vergelijken, speelprofiel, seriemakers, seriestoppers, omstandigheden, trend) |
 | `jsx/dashboard.jsx` | `BeurtenTijdlijn` (beurtengrafiek met selecteren, beste/zwakste reeks) en `Dashboard` |
-| `jsx/tabs.jsx` | `LogTab`, `DataTab` (AI-prompt, tekstexport, export/import), `StatsTab` |
+| `jsx/tabs.jsx` | `LogTab`, `StatsTab` (seizoen, niveau, partijen), `InfoTab` (uitleg, weergave, spelelement, tijdvenster, back-up via `DataTab ingebed`, wissen, over) |
 | `jsx/spelen.jsx` | `SetupScherm`, `InvoerScherm`, `GemistScherm`, `GoedScherm`; krijgen de spelstatus als object `spel` |
 | `index.html` | `APP_VERSIE` en `BiljartTracker`: alle app-status, acties, kop, disciplinekeuze, tabbladen |
 
@@ -103,13 +103,14 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   (`themaVan`/`themaKleur`). Nieuwe groentint? Toevoegen aan `THEMA_KLEUREN` en `:root` en als `var(--c-..)` gebruiken;
   in SVG alleen via `style={{fill/stroke}}`. GOUD/WIT/ROOD/GRNT blijven vast. Het logo in de kop is de SVG-component `Logo`
   (`jsx/onderdelen.jsx`), laken via `--c-3f8a3a`/`--c-1d4a1d`; `logo.png` blijft voor favicon en offline-cache.
-- Weergave (Stats → Weergave, ook het eerste welkomstscherm): `data.tekstgrootte` normaal/groot/extra (`TEKSTGROOTTES`,
+- Weergave (Info → Weergave, ook het eerste welkomstscherm; bestaande gebruikers krijgen eenmalig een melding op Spelen,
+  `data.weergaveTipGezien`): `data.tekstgrootte` normaal/groot/extra (`TEKSTGROOTTES`,
   CSS `zoom` op `.app` met hoogte `calc(100vh / zoom)`; bij groter geen ondertitel in de kop en tijdens een partij
   geen klasse-knop) en `data.eenvoudig` (`EenvoudigContext`): Noteer slaat direct op zonder opmerkingen-stap,
   spelelement uit, Dash alleen Inzicht en Trend, Inzicht zonder de uitgebreide kaarten. Knop "+ opmerking" naast
   Noteer geeft toch de opmerkingen-stap; de opmerkingenkaarten in Inzicht verschijnen dan vanzelf (vanaf één
   bijgehouden partij). Uitleg voor gebruikers: `UitlegVenster` ("ℹ️ Zo werkt de app", onder Start partij en in
-  Stats → Weergave); bij nieuwe functies daar ook bijwerken. Schuifbalken in flex:
+  bovenaan Info); bij nieuwe functies daar ook bijwerken. Schuifbalken in flex:
   `minWidth:0`, anders steken ze uit bij grote tekst.
 - Spelelement aan/uit (Stats, `data.spelelement`, standaard aan; `SpelContext` in `jsx/onderdelen.jsx`). Uit =
   geen badges/punten/Punten-tab/prestatiemeldingen/badge-hints en geen geschrapte partijen
@@ -126,7 +127,7 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 4. `manifest.json`, `sw.js`, `icon192.png`, `icon512.png` niet hernoemen of verplaatsen.
 5. Geen API-sleutels, externe diensten of externe scripts. AI-analyse = kopieerbare prompt.
 6. Na elke wijziging testen (zie hieronder) en `APP_VERSIE` plus alle `?v=` in `index.html` ophogen
-   (formaat `JJJJ-MM-DD.n`); die staat onderaan Stats, zo ziet de eigenaar welke versie geladen is.
+   (formaat `JJJJ-MM-DD.n`); die staat onderaan Info, zo ziet de eigenaar welke versie geladen is.
 7. Niets committen, pushen of installeren zonder akkoord van de eigenaar. Geen `sudo`.
 
 ## Testen
@@ -174,7 +175,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
      plugin, omdat `@capacitor/filesystem` iCloud Drive niet ondersteunt. Kan pas met het betaalde account.
    - Werkt alleen als iCloud Drive aan staat. Zo niet: app werkt zoals nu (data alleen op de telefoon) en
      valt terug op de back-upherinnering hieronder.
-   - In het Data-tabblad tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
+   - In het Info-tabblad (Back-up en gegevens) tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
    - `privacy.html` aanpassen: er komt een reservekopie in je eigen iCloud Drive waar alleen jij bij kunt.
      "Data Not Collected" in App Store Connect blijft kloppen.
    - De eigen data van de eigenaar gaat één keer over van de website naar de app via Exporteer/Importeer.

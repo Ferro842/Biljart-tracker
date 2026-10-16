@@ -5,7 +5,7 @@
 const {useState,useEffect,useRef,useMemo,useContext}=React;
 // Staat het spelelement (badges, punten, slechtste partijen schrappen) aan? Uit = niets daarvan tonen.
 const SpelContext=React.createContext(true);
-// Eenvoudige modus (Stats > Weergave): spelen zonder opmerkingen-stap, geen spelelement, minder Dash-onderdelen
+// Eenvoudige modus (Info > Weergave): spelen zonder opmerkingen-stap, geen spelelement, minder Dash-onderdelen
 const EenvoudigContext=React.createContext(false);
 
 // Logo in de kop: laken (kleur van de discipline via --c-3f8a3a/--c-1d4a1d), twee gekruiste keus en drie

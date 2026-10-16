@@ -1,4 +1,4 @@
-// Tabbladen Log, Data en Stats van Biljart Tracker, als losse componenten. De gegevens en acties komen
+// Tabbladen Log, Stats en Info (met de back-up uit DataTab) van Biljart Tracker, als losse componenten. De gegevens en acties komen
 // als props uit BiljartTracker (index.html). JSX via Babel, na jsx/dashboard.jsx.
 
 // Log-tab: lopende partij en alle partijen beurt voor beurt
@@ -18,8 +18,8 @@ function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij
   );
 }
 
-// Data-tab: AI-analyse-prompts, leesbare tekstexport en back-up (exporteren/importeren als JSON)
-function DataTab({data,alleP,huidigeDiscipline,vervangData}){
+// Back-up en gegevens (in de Info-tab): AI-analyse-prompts, leesbare tekstexport en back-up (exporteren/importeren als JSON)
+function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed}){
   const [gekopieerd,setGekopieerd]=useState("");
   const [toonData,setToonData]=useState(false);
 
@@ -118,7 +118,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData}){
   const promptPartij="Je bent een biljartcoach voor carambole/libre. Analyseer mijn meest recente partij. Geef: Wat ging goed, Grootste rem, Foutpatronen, Trainingsadvies, Focus. Antwoord beknopt.\n\n"+dataTekst;
   const promptTrend="Je bent een biljartcoach voor carambole/libre. Analyseer mijn trends over al mijn partijen. Geef: Trend, Vooruitgang, Remmers, Inzicht, Trainingsfocus. Antwoord beknopt.\n\n"+dataTekst;
   return(
-    <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+    <div style={ingebed?null:{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>AI Analyse</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
@@ -161,37 +161,14 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData}){
   );
 }
 
-// Stats-tab: seizoen, tijdvenster, totalen, alle partijen, data wissen en 'Over deze app'
-function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestatiesMap,tijdsvenster,setTijdsvenster,
-  seizoenAfsluiten,seizoensplitsingOngedaanMaken,openArchief,verwijderPartij,slaNotitieOp,resetAlles,setSpelelement,
-  vormVenster,setVormVenster,setWeergave,openUitleg}){
+// Stats-tab: je cijfers. Seizoen, je niveau (vorm en moyenne), totalen en alle partijen. Instellingen,
+// uitleg en back-up staan in de Info-tab.
+function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsluiten,seizoensplitsingOngedaanMaken,
+  openArchief,verwijderPartij,slaNotitieOp,vormVenster,setVormVenster}){
   const spel=useContext(SpelContext);
-  const eenvoudig=useContext(EenvoudigContext);
   const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   const [confSeizoenOngedaan,setConfSeizoenOngedaan]=useState(false);
-  const [confReset,setConfReset]=useState(false);
-  const [deelResultaat,setDeelResultaat]=useState("");
-
-  function deelApp(){
-    // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link (zodra die
-    // er is) of anders de website.
-    const url=IS_NATIVE?(APP_STORE_URL||WEB_URL):window.location.href;
-    const tekst="Ik gebruik deze Biljart Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?";
-    if(navigator.share){
-      navigator.share({title:"Biljart Tracker",text:tekst,url:url}).catch(function(){});
-    }else if(navigator.clipboard){
-      navigator.clipboard.writeText(url).then(function(){
-        setDeelResultaat("Link gekopieerd naar klembord!");
-        setTimeout(function(){setDeelResultaat("");},2500);
-      }).catch(function(){
-        setDeelResultaat("Kopiëren mislukt — kopieer de link handmatig uit de adresbalk.");
-      });
-    }else{
-      setDeelResultaat("Kopieer de link handmatig uit de adresbalk.");
-    }
-  }
-
   const allB=alleP.flatMap(function(p){return p.beurten;});
   const stA=stat(allB,huidigeDiscipline);
   return(
@@ -301,10 +278,67 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
         );
       })()}
 
+      {stA&&(
+        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
+            {[["Car.",stA.totCar],["Max",stA.max],["Gem. alle partijen",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
+              return(
+                <div key={arr[0]} style={{textAlign:"center",background:"var(--c-1a3019)",borderRadius:8,padding:"8px 4px"}}>
+                  <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>
+                  <div style={{fontSize:13,color:WITD}}>{arr[0]}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{fontSize:13,color:GRNT}}>Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten {beurtDrempels(huidigeDiscipline).opbouwMin}+</div>
+        </div>
+      )}
+      <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
+        {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} discipline={huidigeDiscipline} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
+      </div>
+    </div>
+  );
+}
+
+// Info-tab: uitleg, weergave en instellingen, back-up en gegevens, alles wissen en 'Over deze app'
+function InfoTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,tijdsvenster,setTijdsvenster,resetAlles,
+  setSpelelement,setWeergave,openUitleg,vervangData}){
+  const spel=useContext(SpelContext);
+  const eenvoudig=useContext(EenvoudigContext);
+  const [confReset,setConfReset]=useState(false);
+  const [deelResultaat,setDeelResultaat]=useState("");
+
+  function deelApp(){
+    // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link (zodra die
+    // er is) of anders de website.
+    const url=IS_NATIVE?(APP_STORE_URL||WEB_URL):window.location.href;
+    const tekst="Ik gebruik deze Biljart Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?";
+    if(navigator.share){
+      navigator.share({title:"Biljart Tracker",text:tekst,url:url}).catch(function(){});
+    }else if(navigator.clipboard){
+      navigator.clipboard.writeText(url).then(function(){
+        setDeelResultaat("Link gekopieerd naar klembord!");
+        setTimeout(function(){setDeelResultaat("");},2500);
+      }).catch(function(){
+        setDeelResultaat("Kopiëren mislukt — kopieer de link handmatig uit de adresbalk.");
+      });
+    }else{
+      setDeelResultaat("Kopieer de link handmatig uit de adresbalk.");
+    }
+  }
+
+  const kop=function(t){return <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUDL,margin:"18px 2px 8px"}}>{t}</div>;};
+  return(
+    <div style={{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
+      <button onClick={openUitleg} style={{width:"100%",padding:"16px",marginBottom:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>
+        ℹ️ Zo werkt de app
+      </button>
+
       {/* Weergave: tekstgrootte en eenvoudige modus (voor wie het groter en rustiger wil) */}
       <div style={{background:KBG,border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Weergave</div>
-        <button onClick={openUitleg} style={{width:"100%",padding:"10px",marginBottom:12,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>ℹ️ Zo werkt de app</button>
         <div style={{fontSize:14,color:WIT,marginBottom:6}}>Tekstgrootte</div>
         <div style={{display:"flex",gap:6,marginBottom:12}}>
           {TEKSTGROOTTES.map(function(x){
@@ -343,7 +377,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
       </div>}
       {spel&&(<div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Tijdvenster voor prestatie-drempels</div>
-        <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je vorm en niveau (zie hierboven) en je 👑🏓-records hangen hier niet van af — een record blijft een record.</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:8}}>Bepaalt over welke periode je ⭐-drempels berekend worden. Je vorm en niveau (Stats) en je 👑🏓-records hangen hier niet van af — een record blijft een record.</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6,marginBottom:10}}>
           {[["1","1 mnd"],["2","2 mnd"],["3","3 mnd"],["6","6 mnd"],["12","12 mnd"],["alles","Alles"]].map(function(arr){
             const v=arr[0],l=arr[1];
@@ -371,26 +405,10 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,huidigeRecords,prestaties
         </div>
       </div>
       )}
-      {stA&&(
-        <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
-            {[["Car.",stA.totCar],["Max",stA.max],["Gem. alle partijen",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
-              return(
-                <div key={arr[0]} style={{textAlign:"center",background:"var(--c-1a3019)",borderRadius:8,padding:"8px 4px"}}>
-                  <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>
-                  <div style={{fontSize:13,color:WITD}}>{arr[0]}</div>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{fontSize:13,color:GRNT}}>Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten {beurtDrempels(huidigeDiscipline).opbouwMin}+</div>
-        </div>
-      )}
-      <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
-        {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} discipline={huidigeDiscipline} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
-      </div>
+
+      {kop("Back-up en gegevens")}
+      <DataTab data={data} alleP={alleP} huidigeDiscipline={huidigeDiscipline} vervangData={vervangData} ingebed={true}/>
+
       {!confReset
         ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
           onClick={function(){setConfReset(true);}}>Alle data wissen</button>

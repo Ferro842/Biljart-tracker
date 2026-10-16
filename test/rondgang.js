@@ -16,7 +16,7 @@
   }
   for(const disc of ["Libre","Driebanden","Bandstoten"]){
     await klik(disc,disc);
-    for(const tab of ["Spelen","Stats","Log","Data"])await klik(tab,disc+"/"+tab);
+    for(const tab of ["Spelen","Stats","Log","Info"])await klik(tab,disc+"/"+tab);
     await klik("Dash",disc+"/Dash");
     for(const sub of ["✨ Inzicht","Trend","Constant","Patronen","Vergelijk","Punten"])await klik(sub,disc+"/Dash/"+sub);
   }

@@ -1,4 +1,4 @@
-// Test van Stats > Weergave: tekstgrootte (zoom op .app, scherm blijft precies gevuld en niets steekt uit)
+// Test van Info > Weergave: tekstgrootte (zoom op .app, scherm blijft precies gevuld en niets steekt uit)
 // en eenvoudige modus (Noteer slaat de beurt direct op zonder opmerkingen-stap, geen spelelement, in Dash alleen
 // Inzicht en Trend; + opmerking geeft toch de opmerkingen-stap) en het uitlegscherm. Zet alles weer terug. Overschrijft de opslag; alles.js zet testdata terug.
 // Draaien: await eval(await fetch("/test/weergave.js").then(r=>r.text()))
@@ -14,7 +14,13 @@
     return kop?Array.from(kop.parentElement.querySelectorAll("button")).find(function(b){return b.textContent.trim()===t;}):null;
   };
   const uit={};
-  kb("Libre").click();await w(150);k("Stats").click();await w(250);
+  kb("Libre").click();await w(150);k("Spelen").click();await w(200);
+  // Eenmalige melding voor bestaande gebruikers; "Bekijken" opent Info en komt niet terug
+  const metTip=tekst().indexOf("Nieuw: kies zelf hoe je de app ziet")!==-1;
+  if(metTip){k("Bekijken").click();await w(250);}
+  uit.tip=(!metTip||(data().weergaveTipGezien===true&&tekst().indexOf("Zo werkt de app")!==-1));
+  k("Spelen").click();await w(200);uit.tipWeg=tekst().indexOf("Nieuw: kies zelf hoe je de app ziet")===-1;
+  k("Info").click();await w(250);
   // Tekstgrootte
   weergaveKnop("Extra groot").click();await w(300);
   const app=document.querySelector(".app"),r=app.getBoundingClientRect();
@@ -43,14 +49,14 @@
   uit.plusOpmerking=lp2.length===voor+2&&laatste.caramboles===1&&(laatste.gemist||[]).indexOf("Klos")!==-1;
   k("Afsluiten").click();await w(150);k("Opslaan").click();await w(300);
   const o=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed";});if(o)o.click();await w(150);
-  k("Stats").click();await w(250);weergaveKnop("Uit").click();await w(300);
+  k("Info").click();await w(250);weergaveKnop("Uit").click();await w(300);
   uit.weerUit=data().eenvoudig===false&&tekst().indexOf("Spelelement")!==-1;
   k("Spelen").click();await w(150);
   // Uitleg is altijd bereikbaar onder Start partij
   k("ℹ️ Zo werkt de app").click();await w(250);
-  uit.uitleg=tekst().indexOf("Zo werkt de app")!==-1&&tekst().indexOf("+ opmerking")!==-1&&tekst().indexOf("Data → Exporteer")!==-1;
+  uit.uitleg=tekst().indexOf("Zo werkt de app")!==-1&&tekst().indexOf("+ opmerking")!==-1&&tekst().indexOf("Info → Exporteer")!==-1;
   k("Sluiten").click();await w(200);
   uit.uitlegDicht=tekst().indexOf("Een partij spelen")===-1;
-  uit.goed=uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.geenSpelelementKaart&&uit.dashTabs&&uit.direct&&uit.geenPuntenBalk&&uit.weerUit;
+  uit.goed=uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.geenSpelelementKaart&&uit.dashTabs&&uit.direct&&uit.geenPuntenBalk&&uit.weerUit;
   return uit;
 })()

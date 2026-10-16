@@ -80,7 +80,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
   const schermen=[
     {
       titel:"Welkom! Hoe wil je het zien?",
-      body:"Kies de tekstgrootte die prettig leest; je ziet het meteen. Eenvoudige modus houdt alleen het belangrijkste over: per beurt je caramboles en Noteer. Je kunt dit later altijd wijzigen bij Stats → Weergave.",
+      body:"Kies de tekstgrootte die prettig leest; je ziet het meteen. Eenvoudige modus houdt alleen het belangrijkste over: per beurt je caramboles en Noteer. Standaard staat alles aan. Je kunt dit later altijd wijzigen bij Info → Weergave.",
       weergave:true
     },
     {
@@ -112,10 +112,10 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
       titel:"De tabbladen",
       body:"Alles wat je invoert wordt direct automatisch op je iPhone bewaard. Via de tabbladen bovenin bekijk je het:",
       lijst:[
-        ["Stats","Je niveau, elke partij met badges, seizoenen en instellingen."],
+        ["Stats","Je niveau, elke partij met badges en je seizoenen."],
         ["Dash","Grafieken van trend, consistentie, patronen, vergelijking en punten."],
         ["Log","Al je partijen beurt voor beurt terugkijken, met notities."],
-        ["Data","AI-analyse, en Exporteer/Importeer data voor een extra kopie of om over te zetten."]
+        ["Info","Uitleg, weergave en instellingen, AI-analyse, en Exporteer/Importeer data voor een extra kopie of om over te zetten."]
       ],
       alleenApp:true
     },
@@ -224,7 +224,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
   );
 }
 
-// "Zo werkt de app": vaste uitleg in gewone taal, altijd te openen (onder Start partij en in Stats > Weergave)
+// "Zo werkt de app": vaste uitleg in gewone taal, altijd te openen (onder Start partij en bovenaan Info)
 function UitlegVenster({eenvoudig,onClose}){
   const blokken=[
     ["🎱","Een partij spelen",[
@@ -242,22 +242,22 @@ function UitlegVenster({eenvoudig,onClose}){
     ]],
     ["📊","Waar vind je wat",[
       "Spelen: een partij invoeren.",
-      "Stats: je niveau, al je partijen en de instellingen (Weergave).",
+      "Stats: je niveau, je seizoenen en al je partijen.",
       "Dash: Inzicht (wat je data zegt, je hoogste series, je poedels) en grafieken.",
       "Log: elke partij beurt voor beurt terugkijken.",
-      "Data: back-up maken en terugzetten."
+      "Info: deze uitleg, weergave (grotere letters, eenvoudige modus), instellingen en je back-up."
     ]],
     ["🏅","Je niveau",[
       "Je vorm is het gemiddelde van je laatste 20 partijen; daarop is je klasse gebaseerd (KNBB-grenzen).",
       "Je moyenne is het gemiddelde van al je partijen, zoals officieel."
     ]],
     ["🔎","Weergave",[
-      "Stats → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen.",
+      "Info → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen.",
       "Eenvoudige modus: alleen caramboles en Noteer, geen badges en punten, en in Dash alleen het belangrijkste."
     ]],
     ["💾","Je gegevens",[
-      "Alles staat alleen op dit toestel. Maak af en toe een back-up: Data → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail.",
-      "Nieuwe telefoon of opnieuw installeren? Data → Importeer zet de back-up terug."
+      "Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail.",
+      "Nieuwe telefoon of opnieuw installeren? Info → Importeer zet de back-up terug."
     ]]
   ];
   return(

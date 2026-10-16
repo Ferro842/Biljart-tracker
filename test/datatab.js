@@ -5,7 +5,7 @@
   const w=function(ms){return new Promise(function(r){setTimeout(r,ms);});};
   const k=function(t){return Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim().indexOf(t)===0;});};
   const uit={};
-  k("Data").click();await w(200);
+  k("Info").click();await w(200);
   k("Kopieer data").click();await w(150);
   uit.gekopieerd=!!k("Gekopieerd!");
   const ta=document.querySelector("textarea[readonly]");

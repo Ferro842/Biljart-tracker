@@ -147,7 +147,7 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
     const vensterTafel=verwerkt.filter(function(w){return w.tafel===tafelKey;});
     const vensterTafelBest=vensterTafel.length?Math.max.apply(null,vensterTafel.map(function(w){return w.gem;})):0;
     if(gem>vensterTafelBest&&vensterTafelBest>0){
-      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🏓",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+tafelLabel(tafelKey)+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
+      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🔝",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+tafelLabel(tafelKey)+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
     }
 
     if(totaalGemTotDan!==null){
@@ -215,7 +215,7 @@ function bouwBadgeCatalogus(discipline){
     {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:"Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde"},
     {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:"Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)"},
     {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:"Je hoogste partijgemiddelde ooit verbreken"},
-    {label:"Beste partij op deze tafel",emoji:"🏓",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat"},
+    {label:"Beste partij op deze tafel",emoji:"🔝",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat"},
     {label:"Beter dan je totaalgemiddelde",emoji:"📊",punten:"10pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven je totaalgemiddelde tot dan toe"},
     {label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",punten:"15pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven het gemiddelde van je laatste 5 partijen"}
   ];

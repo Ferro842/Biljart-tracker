@@ -209,7 +209,7 @@ function InvoerScherm({spel}){
             const tafelRecord=huidigeRecords.tafelBest[tafel];
             if(tafelRecord&&tafelRecord>0){
               const afstandTafel=tafelRecord-gemNu;
-              if(afstandTafel>0&&afstandTafel<0.3)hints.push("🏓 Nog "+afstandTafel.toFixed(2)+" tot je tafelrecord ("+tafelRecord.toFixed(2)+")");
+              if(afstandTafel>0&&afstandTafel<0.3)hints.push("🔝 Nog "+afstandTafel.toFixed(2)+" tot je tafelrecord ("+tafelRecord.toFixed(2)+")");
             }
             if(huidigeRecords.totaalGem!==null){
               const afstandTotaal=huidigeRecords.totaalGem-gemNu;

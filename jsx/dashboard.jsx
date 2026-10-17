@@ -456,7 +456,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     consist:"Hoeveel procent van je partijen boven bepaalde gemiddelde-drempels uitkomt — die drempels schuiven automatisch mee met je eigen niveau, in stappen van 0,5. Plus je 5 beste en 5 slechtste partijen op een rij.",
     patronen:"Analyse van je opmerkingen (wat je vaak mist of juist goed doet), hoe je caramboles per beurt verdeeld zijn, en hoe je herstelt na een poedel.",
     vergelijk:"Vergelijkt de eerste met de tweede helft van je geselecteerde partijen (zie je progressie?), en toont je gemiddelde per maand naast elkaar.",
-    kalender:"Je speeldagen van de laatste 12 maanden, per maand. Elk gekleurd vakje is een dag waarop je speelde; de kleur is je gemiddelde die dag (groen = op of boven het niveau van de volgende klasse, goud = binnen je huidige klasse, rood = daaronder). Een cijfer in het vakje = aantal partijen die dag. Tik op een dag voor de partijen met tafel, gemiddelde, caramboles en hoogste serie. De kalender gebruikt altijd al je partijen, los van de selectie hierboven bij de andere onderdelen.",
+    kalender:"Je speeldagen per maand, vanaf je eerste partij tot nu (ook maanden zonder partijen, zodat je ziet wanneer je minder speelde). Elk gekleurd vakje is een dag waarop je speelde; de kleur is je gemiddelde die dag (groen = op of boven het niveau van de volgende klasse, goud = binnen je huidige klasse, rood = daaronder). Een cijfer in het vakje = aantal partijen die dag. Tik op een dag voor de partijen met tafel, gemiddelde, caramboles en hoogste serie. De kalender gebruikt altijd al je partijen, los van de selectie hierboven bij de andere onderdelen.",
     punten:"Je niveau, badge-punten, mijlpalen, en een overzicht van je best scorende partijen op badges.",
     inzicht:"Wat je opmerkingen en omstandigheden zeggen over je spel: je sterkste techniek en grootste werkpunt (op slagingspercentage, niet op aantal missers), wat grote series oplevert, waardoor series eindigen, hoe tafel, tijdstip en fase in de partij uitpakken, en of je werkpunten minder vaak voorkomen."
   };
@@ -496,7 +496,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       <div className="scrollvak" style={{flex:1,overflowY:"auto"}}>
         {/* Kop schuift mee met de inhoud; tabbalk en Dash-tabs plakken bovenaan (zie kopBlok in index.html) */}
         {kopBlok?kopBlok({extra:tabRij}):tabRij}
-        {/* Partijselectie (niet bij de kalender: die toont altijd de laatste 12 maanden) */}
+        {/* Partijselectie (niet bij de kalender: die toont altijd alles vanaf je eerste partij) */}
         <div style={{background:"var(--c-152015)",padding:"8px 14px",borderBottom:`1px solid ${KBDR}`,display:tab==="kalender"?"none":"block"}}>
           <div style={{fontSize:12,color:WITD,marginBottom:5}}>
             {geselecteerdeMaanden&&geselecteerdeMaanden.size>0

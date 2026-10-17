@@ -24,24 +24,24 @@ if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativ
 <script src="vendor/react.production.min.js"></script>
 <script src="vendor/react-dom.production.min.js"></script>
 <script src="vendor/babel.min.js"></script>
-<link rel="stylesheet" href="css/app.css?v=2026-10-17.12">
+<link rel="stylesheet" href="css/app.css?v=2026-10-17.13">
 </head>
 <body>
 <div id="root"></div>
-<script src="js/constanten.js?v=2026-10-17.12"></script>
-<script src="js/berekeningen.js?v=2026-10-17.12"></script>
-<script src="js/opslag.js?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/wauw.jsx?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-17.12"></script>
-<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-17.12"></script>
+<script src="js/constanten.js?v=2026-10-17.13"></script>
+<script src="js/berekeningen.js?v=2026-10-17.13"></script>
+<script src="js/opslag.js?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/onderdelen.jsx?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/wauw.jsx?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/vensters.jsx?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/partijrij.jsx?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/inzicht.jsx?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/dashboard.jsx?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/tabs.jsx?v=2026-10-17.13"></script>
+<script type="text/babel" src="jsx/spelen.jsx?v=2026-10-17.13"></script>
 <script type="text/babel">
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-17.12";
+const APP_VERSIE="2026-10-17.13";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -83,7 +83,6 @@ function BiljartTracker(){
   const spelAan=!(data&&data.spelelement===false); // los van de eenvoudige modus
   // Over hoeveel laatste partijen je vorm (en dus je niveau) gaat: 10, 20, 30 of "alles"; standaard 20
   const vormVenster=(data&&data.vormVenster)||20;
-  const niveauOpties={venster:vormVenster==="alles"?null:vormVenster};
 
   const alleP=useMemo(function(){
     if(!data)return[];
@@ -102,9 +101,9 @@ function BiljartTracker(){
   const niveau=useMemo(function(){
     // Je niveau volgt je vorm: het gemiddelde van je laatste N partijen (instelling vormVenster), met het
     // spelelement aan zonder de slechtste daarvan (max 1 op de 10). Moyenne = alle partijen, officieel.
-    const opties={venster:vormVenster==="alles"?null:vormVenster};
-    const info=berekenNiveauInfo(alleP,!spelAan,opties);
-    const voorspelling=berekenVoorspelling(alleP,huidigeDiscplineVoorLading,!spelAan,opties);
+    const opties=vormOpties(vormVenster);
+    const info=berekenVorm(alleP,spelAan,vormVenster);
+    const voorspelling=berekenVoorspelling(alleP,huidigeDiscplineVoorLading,!spelAan||vormVenster==="alles",opties);
     return Object.assign({},bepaalNiveau(info.effectiefGemiddelde,huidigeDiscplineVoorLading),info,{voorspelling:voorspelling});
   },[alleP,huidigeDiscplineVoorLading,spelAan,vormVenster]);
   // Je doel (Spelen → ring): het beginpunt wordt steeds opnieuw berekend met dezelfde vorm-instelling als je vorm nu,
@@ -116,7 +115,7 @@ function BiljartTracker(){
     const grens=new Date(d.gezet).getTime();
     const voor=alleP.filter(function(p){return new Date(p.datum).getTime()<grens;});
     if(!voor.length)return d;
-    const info=berekenNiveauInfo(voor,!spelAan,{venster:vormVenster==="alles"?null:vormVenster});
+    const info=berekenVorm(voor,spelAan,vormVenster);
     return Object.assign({},d,{start:info.effectiefGemiddelde});
   },[data,alleP,huidigeDiscplineVoorLading,spelAan,vormVenster]);
 
@@ -232,8 +231,8 @@ function BiljartTracker(){
     const nieuweAlleP=nieuwePartijen.filter(function(x){return(x.discipline||"libre")===disc;});
     const resultaten=berekenPrestaties(nieuweAlleP,tijdsvensterMaanden,disc);
     const prestatie=resultaten.find(function(r){return r.id===p.id;});
-    const infoVoor=berekenNiveauInfo(alleP,!spelAan,niveauOpties);
-    const infoNa=berekenNiveauInfo(nieuweAlleP,!spelAan,niveauOpties);
+    const infoVoor=berekenVorm(alleP,spelAan,vormVenster);
+    const infoNa=berekenVorm(nieuweAlleP,spelAan,vormVenster);
     const nieuweDrop=spelAan&&infoNa.aantalDrops>infoVoor.aantalDrops?infoNa.gedroptePartijen[infoNa.gedroptePartijen.length-1]:null;
     const niveauVoor=bepaalNiveau(infoVoor.effectiefGemiddelde,disc);
     const niveauNa=bepaalNiveau(infoNa.effectiefGemiddelde,disc);
@@ -292,6 +291,16 @@ function BiljartTracker(){
     setData(nd);slaOp(nd);
   }
 
+  // Opmerkingen van een opgeslagen partij achteraf aanvullen (✎ in Log/Stats); alleen gemist/goed per beurt verandert
+  function slaOpmerkingenOp(id,beurten){
+    const nd=Object.assign({},data,{partijen:data.partijen.map(function(p){
+      if(p.id!==id)return p;
+      return Object.assign({},p,{beurten:p.beurten.map(function(b,i){
+        const n=beurten[i];return n?Object.assign({},b,{gemist:n.gemist.slice(),goed:n.goed.slice()}):b;
+      })});
+    })});
+    setData(nd);slaOp(nd);
+  }
   function slaNotitieOp(id,tekst){
     const nd=Object.assign({},data,{partijen:data.partijen.map(function(p){
       return p.id===id?Object.assign({},p,{notitie:tekst}):p;
@@ -308,14 +317,14 @@ function BiljartTracker(){
   // Spelelement aan/uit. Het niveau verandert mee (met of zonder geschrapte partijen); dat nieuwe niveau
   // geldt meteen als "gezien", zodat er geen onterechte "Niveau omhoog!" verschijnt.
   function setSpelelement(aan){
-    const info=berekenNiveauInfo(alleP,!aan,niveauOpties);
+    const info=berekenVorm(alleP,aan,vormVenster);
     const idx=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline).index;
     const nd=Object.assign({},data,{spelelement:aan,laatstGezienNiveauIndex:idx});
     setData(nd);slaOp(nd);
   }
   // Vorm-venster kiezen (10, 20, 30 of "alles"); ook hier geen onterechte "Niveau omhoog!"
   function setVormVenster(v){
-    const info=berekenNiveauInfo(alleP,!spelAan,{venster:v==="alles"?null:v});
+    const info=berekenVorm(alleP,spelAan,v);
     const idx=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline).index;
     const nd=Object.assign({},data,{vormVenster:v,laatstGezienNiveauIndex:idx});
     setData(nd);slaOp(nd);
@@ -459,6 +468,7 @@ function BiljartTracker(){
   };
 
   return(
+    <OpmerkingenContext.Provider value={slaOpmerkingenOp}>
     <KopContext.Provider value={inSpel?null:kopBlok}>
     <SpelContext.Provider value={spelAan}>
     <EenvoudigContext.Provider value={eenvoudig}>
@@ -608,6 +618,7 @@ function BiljartTracker(){
     </EenvoudigContext.Provider>
     </SpelContext.Provider>
     </KopContext.Provider>
+    </OpmerkingenContext.Provider>
   );
 }
 

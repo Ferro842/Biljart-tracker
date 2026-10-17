@@ -20,13 +20,15 @@
     const ov=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed"&&d.textContent.indexOf("Alle niveaus")!==-1;});
     Array.from(ov.querySelectorAll("button")).find(function(b){return b.textContent.trim()===keuze[0];}).click();await w(250);
     ov.click();await w(200);
-    const info=berekenNiveauInfo(libre(),false,{venster:keuze[1]==="alles"?null:keuze[1]});
+    const info=berekenVorm(libre(),true,keuze[1]); // "alles" = moyenne, niets geschrapt
     const vorm=getal("vorm · ");
     const moy=getal("moyenne · alle");
     moyennes.push(moy);
     uit["vorm_"+keuze[1]]={getoond:vorm,verwacht:info.effectiefGemiddelde.toFixed(2),opgeslagen:data().vormVenster===keuze[1]};
   }
   uit.moyenneGelijk=moyennes.every(function(m){return m&&m===moyennes[0];});
+  // Bij "Alle" is je vorm gewoon je moyenne (niets geschrapt)
+  uit.alleIsMoyenne=uit.vorm_alles.getoond===moyennes[0];
   // Tafelkeuze: vorm en moyenne van alleen die tafel; "Alle tafels" terug
   const tafelKnop=function(t){return Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()===t;});};
   tafelKnop("2,10").click();await w(250);
@@ -38,7 +40,7 @@
   tafelKnop("Alle tafels").click();await w(250);
   uit.terugNaarAlle=tekst().indexOf("Alleen je partijen op de")===-1;
   uit.plafond=berekenNiveauInfo(libre(),false,{venster:10}).aantalDrops<=1;
-  uit.goed=Object.keys(uit).filter(function(x){return x.indexOf("vorm_")===0;}).every(function(x){return uit[x].getoond===uit[x].verwacht&&uit[x].opgeslagen;})
+  uit.goed=uit.alleIsMoyenne&&Object.keys(uit).filter(function(x){return x.indexOf("vorm_")===0;}).every(function(x){return uit[x].getoond===uit[x].verwacht&&uit[x].opgeslagen;})
     &&uit.moyenneGelijk&&uit.plafond&&uit.tafel210.getoond===uit.tafel210.verwacht&&uit.tafel210.moyenne===uit.tafel210.moyenneVerwacht
     &&uit.tafel210.melding&&uit.terugNaarAlle;
   return uit;

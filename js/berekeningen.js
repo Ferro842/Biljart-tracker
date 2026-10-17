@@ -422,8 +422,15 @@ function besteVenster(waarden,lengte,richting){
 // "Je gemiddelde" in de app is altijd het gemiddelde ZONDER de slechtste partijen die je met badge-punten
 // hebt weggespeeld (1 per PUNTEN_PER_DROP). Deze tekst legt dat uit, overal op dezelfde manier.
 // Uitleg bij je vorm (het getal waar je niveau op is gebaseerd), naast je officiële moyenne
+// Je vorm volgens de instelling vormVenster (10/20/30/"alles"). "alles" = je moyenne: alle partijen, niets geschrapt
+// (ook met het spelelement aan); anders je laatste N partijen, met het spelelement aan zonder weggespeelde partijen.
+function vormOpties(vormVenster){return{venster:vormVenster==="alles"?null:vormVenster};}
+function berekenVorm(partijen,spelAan,vormVenster){
+  return berekenNiveauInfo(partijen,!spelAan||vormVenster==="alles",vormOpties(vormVenster));
+}
 function vormUitleg(info,dec){
   const k=function(x){return x.toFixed(dec).replace(".",",");};
+  if(!info.venster&&!info.aantalDrops)return"Moyenne: al je "+info.aantalPartijenTotaal+" partijen, niets geschrapt. Je klasse is hierop gebaseerd.";
   let t=info.venster?"Vorm: je laatste "+info.aantalPartijen+" partijen":"Vorm: al je partijen";
   if(info.aantalDrops)t+=", zonder de "+(info.aantalDrops===1?"slechtste":info.aantalDrops+" slechtste")+" daarvan (met: "+k(info.totaalGemiddelde)+")";
   if(info.venster||info.aantalDrops)t+=". Moyenne (alle "+info.aantalPartijenTotaal+" partijen): "+k(info.moyenne);

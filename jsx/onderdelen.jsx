@@ -10,6 +10,9 @@ const EenvoudigContext=React.createContext(false);
 // Kop en tabbalk (index.html, kopBlok): elk tabblad zet die bovenaan zijn eigen scrollvak, zodat de kop meeschuift
 // met de inhoud. null = de kop staat vast bovenaan (tijdens een partij).
 const KopContext=React.createContext(null);
+// Opmerkingen van een opgeslagen partij achteraf aanvullen/wijzigen: slaOpmerkingenOp(partijId,beurten) uit index.html.
+// null (bijv. een oude index.html met nieuwe jsx) = knop niet tonen.
+const OpmerkingenContext=React.createContext(null);
 
 // Logo in de kop: laken (kleur van de discipline via --c-3f8a3a/--c-1d4a1d), twee gekruiste keus en drie
 // ballen met glimlicht en schaduw. SVG met kleuren via style (var() werkt niet in SVG-attributen).
@@ -71,18 +74,32 @@ function Logo({maat=44}){
 }
 
 function Grafiek({beurten,discipline}){
+  // Past zich aan de beschikbare breedte aan, zodat alle beurten in beeld zijn. Bij heel veel beurten (minder dan 6 px per
+  // beurt) scrolt hij zijwaarts en schuift hij vanzelf mee naar de laatste beurt.
+  const vakRef=useRef(null);
+  const [breedte,setBreedte]=useState(0);
+  const n=beurten?beurten.length:0;
+  useEffect(function(){
+    const el=vakRef.current;if(!el)return;
+    const meet=function(){setBreedte(el.clientWidth);};
+    meet();
+    if(typeof ResizeObserver==="undefined")return;
+    const ro=new ResizeObserver(meet);ro.observe(el);return function(){ro.disconnect();};
+  },[n>=2]);
+  useEffect(function(){const el=vakRef.current;if(el)el.scrollLeft=el.scrollWidth;},[n,breedte]);
   const opbouwMin=beurtDrempels(discipline||"libre").opbouwMin;
   if(!beurten||beurten.length<2)return null;
   const vals=beurten.map(b=>b.caramboles);
   const maxV=Math.max(...vals,1);
-  const ppp=Math.max(6,Math.min(18,300/vals.length));
   const lp=8,tp=16,H=36;
+  const ruimte=breedte>0?(breedte-lp-8)/(vals.length-1):300/vals.length;
+  const ppp=Math.max(6,Math.min(18,ruimte));
   const W=lp+ppp*(vals.length-1);
   const ps=vals.map((v,i)=>(lp+i*ppp)+","+(tp+H-(v/maxV)*H)).join(" ");
-  const fs=vals.length>20?7:vals.length>12?8:9;
+  const fs=ppp<9?7:ppp<12?8:9;
   return(
-    <div style={{overflowX:"auto"}}>
-      <svg width={Math.max(W,40)} height={H+tp+6} style={{overflow:"visible",display:"block"}}>
+    <div ref={vakRef} data-grafiek="" style={{overflowX:"auto"}}>
+      <svg width={Math.max(W+8,40)} height={H+tp+6} style={{overflow:"visible",display:"block"}}>
         <polyline points={ps} fill="none" stroke={GOUD} strokeWidth="1.5" strokeLinejoin="round"/>
         {vals.map(function(v,i){
           const cx=lp+i*ppp,cy=tp+H-(v/maxV)*H;
@@ -263,7 +280,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           <div style={{fontSize:13,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
         </div>
         <div style={{marginLeft:"auto",textAlign:"right"}}>
-          <div style={{fontSize:12,color:WITD}}>vorm</div>
+          <div style={{fontSize:12,color:WITD}}>{!niveau.venster&&!niveau.aantalDrops&&niveau.moyenne!==undefined?"moyenne":"vorm"}</div>
           <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
         </div>
       </div>

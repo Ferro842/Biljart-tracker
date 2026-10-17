@@ -328,9 +328,10 @@ function KalenderPaneel({partijen,discipline}){
   },[partijen]);
   const alleGem=(function(){let c=0,n=0;Object.keys(perDag).forEach(function(k){c+=perDag[k].car;n+=perDag[k].beurten;});return n?c/n:0;})();
   const grenzen=gemGrenzen(alleGem,discipline);
-  // Laatste 12 maanden tot en met nu
+  // Alle maanden vanaf je eerste partij tot en met nu (ook maanden zonder partijen: dan zie je wanneer je minder speelde)
   const nu=new Date(),maanden=[];
-  for(let i=11;i>=0;i--)maanden.push(new Date(nu.getFullYear(),nu.getMonth()-i,1));
+  const eerste=(partijen||[]).reduce(function(m,p){const d=new Date(p.datum);return !m||d<m?d:m;},null)||nu;
+  for(let d=new Date(eerste.getFullYear(),eerste.getMonth(),1);d<=nu;d=new Date(d.getFullYear(),d.getMonth()+1,1))maanden.push(d);
   const MND=["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
   const speeldagen=Object.keys(perDag).filter(function(k){const p=k.split("-").map(Number);return new Date(p[0],p[1],p[2])>=maanden[0];}).length;
   const sel=gekozen?perDag[gekozen]:null;
@@ -355,7 +356,7 @@ function KalenderPaneel({partijen,discipline}){
   return(
     <div>
       <div style={{fontSize:13,color:WITD,lineHeight:1.5,marginBottom:10}}>
-        <b style={{color:WIT}}>{speeldagen}</b> speeldag{speeldagen===1?"":"en"} in de laatste 12 maanden. Kleur = je gemiddelde die dag:
+        <b style={{color:WIT}}>{speeldagen}</b> speeldag{speeldagen===1?"":"en"} sinds {MND[maanden[0].getMonth()]} {maanden[0].getFullYear()}. Kleur = je gemiddelde die dag:
         <span style={{color:GRNT}}> ■ goed</span><span style={{color:GOUD}}> ■ gemiddeld</span><span style={{color:ROOD}}> ■ minder</span>. Tik op een dag voor de partijen.
       </div>
       <div ref={rasterRef} style={{display:"grid",gridTemplateColumns:"repeat("+kolommen+",minmax(0,1fr))",gap:12}}>

@@ -102,6 +102,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   partij binnen het venster weg, hoogstens `MAX_SCHRAP_AANDEEL` (1 op de 10). **Moyenne** = alle partijen,
   niets geschrapt (officieel). `berekenNiveauInfo(partijen,zonderDrops,opties)`; zonder opties de oude
   berekening (alle partijen, geen plafond), waar `test/snapshot.js` op rust. Teksten via `vormUitleg()`.
+  Altijd via `berekenVorm(partijen,spelAan,vormVenster)`: bij "alles" = moyenne (niets geschrapt, ook met spelelement aan;
+  label "moyenne").
 - Laken-kleur per discipline: libre groen, driebanden blauw, bandstoten grijs, kader rood. Alle groentinten zijn
   CSS-variabelen `--c-<hex>` (standaard in `css/app.css`); `zetThema()` in `js/constanten.js` rekent ze om (met het kader-keuzemenu open al rood)
   (`themaVan`/`themaKleur`). Nieuwe groentint? Toevoegen aan `THEMA_KLEUREN` en `:root` en als `var(--c-..)` gebruiken;
@@ -141,7 +143,12 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   rijen eerst zonder icoontjes, dan kleinere tekst (gemeten met ResizeObserver; scrollen alleen als vangnet). Nieuw tabblad? Zelf `kopBlok` bovenaan het scrollvak zetten.
 - Vensters (overlays) binnen `.app` worden mee-gezoomd bij grote tekst: hoogtes in vh altijd als
   `calc(85vh / var(--zoom,1))`, anders vallen ze bij Extra groot onder het scherm.
-- Kalender (Dash): details van een dag als hele rij direct onder de rij met die maand (`kolommen` gemeten).
+- Kalender (Dash): alle maanden vanaf je eerste partij tot nu (ook lege maanden); details van een dag als hele rij direct
+  onder de rij met die maand (`kolommen` gemeten).
+- Opmerkingen achteraf: Log/Stats → partij → ✎ Opmerkingen aanvullen (`OpmerkingenBewerken` in `jsx/vensters.jsx`, opslaan via
+  `OpmerkingenContext` = `slaOpmerkingenOp` in index.html; alleen gemist/goed per beurt, zelf getypte blijven staan).
+- `Grafiek` (beurten van een partij, ook tijdens het spelen) meet zijn breedte: alle beurten passend; pas onder 6 px per
+  beurt zijwaarts scrollen, dan schuift hij mee naar de laatste beurt.
 - Hoofdschermen hebben `className="scrollvak"` (`css/app.css`): een onzichtbaar streepje 1 px hoger dan het vak, zodat ze
   op iOS altijd meeveren aan de rand, ook als alles past. Nieuw scrollend hoofdscherm? Ook `scrollvak` geven.
 - Dash-tabrij loopt door op een tweede regel (`flexWrap`) als de tabs niet naast elkaar passen.

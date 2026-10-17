@@ -18,6 +18,8 @@ function PartijLabels({p,punten,gedropt}){
 // Onderkant van een opengeklapte partij: notitie bewerken en partij verwijderen (met bevestiging)
 function PartijBeheer({p,onNotitie,onVerwijder}){
   const [confVerwijder,setConfVerwijder]=useState(false);
+  const slaOpmerkingenOp=useContext(OpmerkingenContext);
+  const [opmOpen,setOpmOpen]=useState(false);
   const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
   return(
     <>
@@ -33,7 +35,13 @@ function PartijBeheer({p,onNotitie,onVerwijder}){
           )}
         </div>
       )}
-      <div style={{marginTop:8}}><DeelKaartKnop partij={p} discipline={p.discipline||"libre"} stijl={{fontSize:13,padding:"6px 10px"}}/></div>
+      <div style={{marginTop:8,display:"flex",gap:8,flexWrap:"wrap"}}>
+        {/* Opmerkingen achteraf aanvullen, ook als de partij zonder (of met weinig) opmerkingen is ingevuld */}
+        {slaOpmerkingenOp&&<button onClick={function(){setOpmOpen(true);}}
+          style={{padding:"6px 10px",background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>✎ Opmerkingen aanvullen</button>}
+        <DeelKaartKnop partij={p} discipline={p.discipline||"libre"} stijl={{fontSize:13,padding:"6px 10px"}}/>
+      </div>
+      {opmOpen&&<OpmerkingenBewerken partij={p} discipline={p.discipline||"libre"} onOpslaan={slaOpmerkingenOp} onClose={function(){setOpmOpen(false);}}/>}
       {onVerwijder&&(
         !confVerwijder
           ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}

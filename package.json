@@ -4,7 +4,8 @@
   "description": "",
   "scripts": {
     "build": "rm -rf www && mkdir www && cp index.html manifest.json sw.js icon192.png icon512.png icon180.png logo.png www/ && cp -R css js jsx vendor www/",
-    "ios": "npm run build && npx cap sync ios && npx cap open ios"
+    "ios": "npm run build && npx cap sync ios && npx cap open ios",
+    "android": "npm run build && npx cap sync android && npx cap open android"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "homepage": "https://github.com/Ferro842/Biljart-tracker#readme",
   "private": true,
   "dependencies": {
+    "@capacitor/android": "^8.5.3",
     "@capacitor/core": "^8.5.2",
     "@capacitor/filesystem": "^8.1.3",
     "@capacitor/haptics": "^8.0.2",

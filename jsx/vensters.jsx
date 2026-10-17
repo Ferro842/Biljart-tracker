@@ -269,7 +269,7 @@ function UitlegVenster({eenvoudig,onClose}){
       "Spelelement (badges en punten) zet je los aan of uit, ook in de eenvoudige modus."
     ]],
     ["💾","Je gegevens",[
-      "Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail.",
+      "Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail. De app herinnert je eraan na 10 nieuwe partijen of een maand.",
       "Nieuwe telefoon of opnieuw installeren? Info → Importeer zet de back-up terug."
     ]]
   ];

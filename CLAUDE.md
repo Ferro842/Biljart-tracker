@@ -5,8 +5,12 @@ UI-teksten zijn Nederlands. De eigenaar test op de telefoon, dus werk in kleine 
 controleren zijn.
 
 - Web/PWA: https://ferro842.github.io/Biljart-tracker/ (GitHub Pages vanaf `main`, repo Ferro842/Biljart-tracker)
-- iOS-app: Capacitor (`appId nl.ferrovandam.biljarttracker`, webDir `www/`, map `ios/`). Nog niet in de
-  App Store; Apple Developer-account is aangevraagd.
+- iOS-app: Capacitor (`appId nl.ferrovandam.biljarttracker`, webDir `www/`, map `ios/`). Alleen iPhone
+  (`TARGETED_DEVICE_FAMILY = 1`), `ITSAppUsesNonExemptEncryption = false`. Apple Developer-account goedgekeurd (17 okt 2026).
+- Android-app: Capacitor (map `android/`, zelfde id; `npm run android` opent Android Studio). Iconen en opstartscherm
+  gemaakt uit het iOS-icoon (Swift-scriptjes, geen extra pakketten).
+- Store-materiaal in `store/`: teksten (`app-store.md`, `play-store.md`), voorbeelddata voor schermafbeeldingen
+  (`node store/maak-demodata.js` → `demodata.json`, geen echte namen), Play-pictogram en feature graphic (`store/play/`).
 - Privacybeleid (voor App Store Connect): `privacy.html`
 
 ## Opbouw
@@ -234,11 +238,9 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    - `privacy.html` aanpassen: er komt een reservekopie in je eigen iCloud Drive waar alleen jij bij kunt.
      "Data Not Collected" in App Store Connect blijft kloppen.
    - De eigen data van de eigenaar gaat één keer over van de website naar de app via Exporteer/Importeer.
-3. **Back-upherinnering** (website, Android, en iOS zonder iCloud Drive): alleen bedoeld om eraan te
-   herinneren dat data die alleen op je telefoon staat uiteindelijk kwijt kan raken (telefoon kwijt/kapot,
-   app of website-opslag verwijderd). Af en toe tonen (bijv. na 10 partijen of een maand zonder export),
-   met één tik naar het deelmenu (Exporteer). Op de website ook `navigator.storage.persist()` aanvragen.
-   Niet tonen als de automatische iCloud Drive-back-up werkt.
+3. **Back-upherinnering**: gebouwd (17 okt 2026): `backupNodig()`/`maakBackupBestand()` in `js/opslag.js`, kaartje
+   bovenaan Spelen, laatste back-up in Info, `navigator.storage.persist()` op de website. Straks niet tonen als de
+   automatische iCloud Drive-back-up werkt.
 
 ### Overig
 

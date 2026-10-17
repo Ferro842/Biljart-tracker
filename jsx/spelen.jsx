@@ -5,7 +5,7 @@
 
 // Spelen, voor de start: tafelmaat, partijdoel en Start partij (je klasse staat rechtsboven in de kop)
 function SetupScherm({spel}){
-  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip}=spel;
+  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip,backupHerinnering,maakBackupNu,backupLater}=spel;
   const kopBlok=useContext(KopContext);
   const [bevestigNieuw,setBevestigNieuw]=useState(false); // Start partij terwijl er nog een partij loopt
   const startNieuw=function(){setBevestigNieuw(false);setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");};
@@ -34,6 +34,21 @@ function SetupScherm({spel}){
               onClick={function(){setFase("invoer");}}>Doorgaan</button>
             <button style={{flex:1,padding:8,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
               onClick={function(){setConfPartij(true);}}>Afsluiten</button>
+          </div>
+        </div>
+      )}
+      {/* Back-upherinnering: je partijen staan alleen op dit toestel */}
+      {backupHerinnering&&lp.length===0&&(
+        <div data-backup-herinnering="" style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
+          <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>💾 Tijd voor een back-up</div>
+          <div style={{fontSize:14,color:WIT,lineHeight:1.5,marginBottom:10}}>
+            {backupHerinnering.ooit
+              ?backupHerinnering.nieuw+" nieuwe partij"+(backupHerinnering.nieuw===1?"":"en")+" sinds je laatste back-up ("+backupHerinnering.dagen+" dagen geleden)."
+              :"Je hebt nog geen back-up gemaakt."} Je partijen staan alleen op dit toestel; raakt het kwijt of verwijder je de app, dan zijn ze weg. Bewaar een kopie in Bestanden, iCloud Drive of je mail.
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button onClick={maakBackupNu} style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Back-up maken</button>
+            <button onClick={backupLater} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Later</button>
           </div>
         </div>
       )}

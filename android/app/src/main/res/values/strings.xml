@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Biljart Tracker</string>
+    <string name="title_activity_main">Biljart Tracker</string>
+    <string name="package_name">nl.ferrovandam.biljarttracker</string>
+    <string name="custom_url_scheme">nl.ferrovandam.biljarttracker</string>
+</resources>

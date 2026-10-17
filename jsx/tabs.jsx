@@ -21,30 +21,12 @@ function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij
 }
 
 // Back-up en gegevens (in de Info-tab): AI-analyse-prompts, leesbare tekstexport en back-up (exporteren/importeren als JSON)
-function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed}){
+function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
   const [gekopieerd,setGekopieerd]=useState("");
   const [toonData,setToonData]=useState(false);
 
   async function exporteerData(){
-    const naam="biljart-backup-"+new Date().toISOString().slice(0,10)+".json";
-    if(IS_NATIVE){
-      // In de iOS-app werkt een download-link niet: schrijf een tijdelijk bestand en open het deelmenu
-      // (Bewaar in Bestanden, AirDrop, mail, ...).
-      try{
-        await nativeFS().writeFile({path:naam,data:JSON.stringify(data,null,2),directory:"CACHE",encoding:"utf8"});
-        const r=await nativeFS().getUri({path:naam,directory:"CACHE"});
-        await window.Capacitor.Plugins.Share.share({files:[r.uri]});
-      }catch(e){
-        if(!/cancel/i.test(String(e&&e.message)))alert("Exporteren mislukt: "+(e&&e.message||e));
-      }
-      return;
-    }
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
-    a.href=url;a.download=naam;
-    document.body.appendChild(a);a.click();document.body.removeChild(a);
-    setTimeout(function(){URL.revokeObjectURL(url);},1000);
+    if(await maakBackupBestand(data)&&onBackup)onBackup();
   }
 
   function importeerData(e){
@@ -154,6 +136,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed}){
         <div style={{display:"flex",gap:8}}>
           <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
             onClick={exporteerData}>📤 Exporteer data</button>
+          <div style={{fontSize:12,color:WITD,marginTop:6}}>{data.laatsteBackup?"Laatste back-up: "+new Date(data.laatsteBackup).toLocaleDateString("nl-NL",{day:"numeric",month:"long",year:"numeric"}):"Je hebt nog geen back-up gemaakt."}</div>
           <label style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit",textAlign:"center",boxSizing:"border-box"}}>
             📥 Importeer data
             <input type="file" accept=".json,application/json" onChange={importeerData} style={{display:"none"}}/>
@@ -282,7 +265,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
               {!niveau.venster&&!niveau.aantalDrops
                 ?"Je klasse is nu gebaseerd op je moyenne: al je partijen, niets geschrapt."
                 :<>Je vorm is het gemiddelde van {niveau.venster?"je laatste "+vormVenster+" partijen":"al je partijen"}{spel&&data.schrappen!==false?", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)":""}; je moyenne gaat altijd over al je partijen.</>}
-              Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij <b style={{color:GOUD}}>je klasse rechtsboven</b>.
+              {" "}Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij <b style={{color:GOUD}}>je klasse rechtsboven</b>.
             </div>
           </div>
         );
@@ -313,7 +296,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
 }
 
 // Info-tab: uitleg, weergave en instellingen, back-up en gegevens, alles wissen en 'Over deze app'
-function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,setWeergave,openUitleg,vervangData}){
+function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,setWeergave,openUitleg,vervangData,backupGemaakt}){
   const kopBlok=useContext(KopContext);
   const spel=useContext(SpelContext);
   const eenvoudig=useContext(EenvoudigContext);
@@ -401,7 +384,7 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
       </div>
 
       {kop("Back-up en gegevens")}
-      <DataTab data={data} alleP={alleP} huidigeDiscipline={huidigeDiscipline} vervangData={vervangData} ingebed={true}/>
+      <DataTab data={data} alleP={alleP} huidigeDiscipline={huidigeDiscipline} vervangData={vervangData} ingebed={true} onBackup={backupGemaakt}/>
 
       {!confReset
         ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}

@@ -166,3 +166,50 @@ async function slaOp(d){
   try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){console.log("Opslaan mislukt:",e);}
   try{if(window.storage)await window.storage.set(SK,JSON.stringify(d));}catch(e){}
 }
+
+// Back-up als JSON-bestand: in de app via het deelmenu (Bewaar in Bestanden, AirDrop, mail, ...), op de website als
+// download. Geeft true als het gelukt is (niet geannuleerd); op de website is annuleren niet te zien.
+async function maakBackupBestand(data){
+  const naam="biljart-backup-"+new Date().toISOString().slice(0,10)+".json";
+  if(IS_NATIVE){
+    try{
+      await nativeFS().writeFile({path:naam,data:JSON.stringify(data,null,2),directory:"CACHE",encoding:"utf8"});
+      const r=await nativeFS().getUri({path:naam,directory:"CACHE"});
+      await window.Capacitor.Plugins.Share.share({files:[r.uri]});
+      return true;
+    }catch(e){
+      if(!/cancel/i.test(String(e&&e.message)))alert("Exporteren mislukt: "+(e&&e.message||e));
+      return false;
+    }
+  }
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;a.download=naam;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  return true;
+}
+
+// Back-upherinnering: je partijen staan alleen op dit toestel. Seintje na BACKUP_NA_PARTIJEN nieuwe partijen sinds je
+// laatste back-up, of na BACKUP_NA_DAGEN dagen met minstens één nieuwe partij. "Later" = een week niet vragen.
+// data.laatsteBackup (datum) en data.laatsteBackupAantal (aantal partijen toen) worden gezet bij elke export.
+const BACKUP_NA_PARTIJEN=10,BACKUP_NA_DAGEN=30;
+function backupNodig(data){
+  const ps=(data&&data.partijen)||[];
+  if(ps.length<3)return null;
+  const nu=Date.now();
+  if(data.backupLaterTot&&nu<new Date(data.backupLaterTot).getTime())return null;
+  const nieuw=ps.length-(data.laatsteBackup?(data.laatsteBackupAantal||0):0);
+  const sinds=data.laatsteBackup?new Date(data.laatsteBackup).getTime()
+    :ps.reduce(function(m,p){const t=new Date(p.datum).getTime();return t<m?t:m;},nu);
+  const dagen=Math.floor((nu-sinds)/86400000);
+  if(nieuw>=BACKUP_NA_PARTIJEN||(nieuw>=1&&dagen>=BACKUP_NA_DAGEN))return{nieuw:nieuw,dagen:dagen,ooit:!!data.laatsteBackup};
+  return null;
+}
+
+// Website: vraag de browser om de opslag niet zomaar op te ruimen (bijv. bij weinig ruimte). In de app niet nodig.
+async function vraagBlijvendeOpslag(){
+  if(IS_NATIVE||!navigator.storage||!navigator.storage.persist)return;
+  try{if(!(await navigator.storage.persisted()))await navigator.storage.persist();}catch(e){}
+}

@@ -253,14 +253,14 @@ function UitlegVenster({eenvoudig,onClose}){
       "Info: deze uitleg, weergave (grotere letters, eenvoudige modus), instellingen en je back-up."
     ]],
     ["🏅","Je niveau",[
-      "Je vorm is het gemiddelde van je laatste 20 partijen; daarop is je klasse gebaseerd (KNBB-grenzen).",
+      "Je vorm is het gemiddelde van je laatste 20 partijen (of 10, 30 of alle: tik op je klasse rechtsboven); daarop is je klasse gebaseerd (KNBB-grenzen).",
       "Je moyenne is het gemiddelde van al je partijen, zoals officieel."
     ]],
     ["✨","Extra",[
       "📤 Deel als kaart: na het opslaan van een partij (en bij elke partij in Stats en Log) maak je er een mooie afbeelding van voor WhatsApp of de mail.",
       "🎬 Je seizoen in beeld: Stats → Seizoen → Bekijk je seizoen (ook in het Archief). Tik rechts voor verder, links terug.",
       "📅 Kalender: Dash → Kalender laat per dag zien wanneer je speelde, gekleurd naar je gemiddelde.",
-      "🎯 Doel: Stats → Je niveau → Stel een doel. De ring bovenaan Spelen laat zien hoe ver je bent.",
+      "🎯 Doel: tik op je klasse rechtsboven → Stel een doel. Daar laat een ring zien hoe ver je bent, en kies je ook op hoeveel partijen je vorm gebaseerd is.",
       "🎉 Bij een topserie, record, hogere klasse of gehaald doel volgt een korte viering. Uitzetten kan bij Info → Weergave."
     ]],
     ["🔎","Weergave",[
@@ -629,13 +629,31 @@ function BadgeCatalogus({discipline,onClose}){
   );
 }
 
-function NiveauOverzicht({niveau,discipline,onClose}){
+// Klasse-overzicht (knop rechtsboven): je klasse, waarop je vorm gebaseerd is (10/20/30/alle) en je doel, alles op één plek.
+// mijnDoel/openDoel/vormVenster/setVormVenster zijn optioneel (vanuit Dash → Punten alleen de klassen).
+function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenster,setVormVenster}){
   const niveaus=(DISCIPLINES[discipline]||DISCIPLINES.libre).niveaus;
   const decimalen=discipline==="driebanden"?3:2;
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
         <NiveauKaart niveau={niveau} discipline={discipline}/>
+        {setVormVenster&&<div style={{marginTop:12}}>
+          <div style={{fontSize:13,color:WITD,marginBottom:6}}>Je vorm (en klasse) volgt je laatste:</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
+            {[[10,"10"],[20,"20"],[30,"30"],["alles","Alle"]].map(function(x){
+              const actief=vormVenster===x[0];
+              return <button key={x[1]} onClick={function(){if(!actief)setVormVenster(x[0]);}}
+                style={{padding:"8px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+            })}
+          </div>
+          <div style={{fontSize:12,color:WITD,marginTop:4,textAlign:"center"}}>partijen</div>
+        </div>}
+        {openDoel&&<div style={{marginTop:12}}>
+          {mijnDoel
+            ?<DoelRing doel={mijnDoel} vorm={niveau.effectiefGemiddelde} discipline={discipline} onWijzig={openDoel}/>
+            :<button onClick={openDoel} style={{width:"100%",padding:"11px 12px",background:"none",border:"1px dashed "+GOUD,borderRadius:12,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>🎯 Stel een doel</button>}
+        </div>}
         <div style={{fontSize:13,fontWeight:"bold",color:GOUD,marginTop:16,marginBottom:8,textAlign:"center",textTransform:"uppercase",letterSpacing:1}}>Alle niveaus — {(DISCIPLINES[discipline]||DISCIPLINES.libre).naam}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {niveaus.map(function(n,i){

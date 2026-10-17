@@ -15,7 +15,11 @@
   const libre=function(){return data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";});};
   let moyennes=[];
   for(const keuze of [["10",10],["30",30],["Alle","alles"],["20",20]]){
-    k(keuze[0]).click();await w(250);
+    // De keuze staat in het klasse-overzicht (knop rechtsboven); daarna sluiten
+    document.querySelector("[data-kop] button").click();await w(250);
+    const ov=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed"&&d.textContent.indexOf("Alle niveaus")!==-1;});
+    Array.from(ov.querySelectorAll("button")).find(function(b){return b.textContent.trim()===keuze[0];}).click();await w(250);
+    ov.click();await w(200);
     const info=berekenNiveauInfo(libre(),false,{venster:keuze[1]==="alles"?null:keuze[1]});
     const vorm=getal("vorm · ");
     const moy=getal("moyenne · alle");

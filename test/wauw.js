@@ -14,22 +14,28 @@
   k("Stats").click();await w(300);
   const vormVak=Array.from(document.querySelectorAll("#root div")).find(function(x){return x.children.length===0&&x.textContent.indexOf("vorm · ")===0;});
   uit.telop=!!vormVak&&/^\d+\.\d{2}$/.test(vormVak.previousElementSibling.textContent);
-  // Doel instellen → ring op Spelen
-  kb("Stel een doel").click();await w(250);
+  // Doel instellen via het klasse-overzicht (knop rechtsboven)
+  document.querySelector("[data-kop] button").click();await w(300);
+  kb("🎯 Stel een doel").click();await w(250);
   uit.doelVenster=tekst().indexOf("Je doel")!==-1;
   k("Doel opslaan").click();await w(300);
   uit.doelOpgeslagen=!!(data().doelen&&data().doelen.libre&&data().doelen.libre.waarde>0);
-  k("Spelen").click();await w(250);
-  uit.doelRing=tekst().indexOf("Doel ")!==-1&&!!document.querySelector("#root svg circle");
-  // Net ingesteld: 0%, ook na het wisselen van de vorm-instelling (het begin rekent mee met dezelfde instelling)
-  const ringPct=function(){const t=Array.from(document.querySelectorAll("#root svg text")).find(function(x){return /%$/.test(x.textContent);});return t?t.textContent:null;};
+  // Doel en vorm-keuze staan in het klasse-overzicht (knop rechtsboven), niet meer op Spelen
+  const overzicht=function(){return Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed"&&d.textContent.indexOf("Alle niveaus")!==-1;});};
+  const openOverzicht=async function(){document.querySelector("[data-kop] button").click();await w(300);};
+  const ringPct=function(){const o=overzicht();const t=o&&Array.from(o.querySelectorAll("svg text")).find(function(x){return /%$/.test(x.textContent);});return t?t.textContent:null;};
+  const knopIn=function(t){const o=overzicht();return o&&Array.from(o.querySelectorAll("button")).find(function(b){return b.textContent.trim()===t;});};
+  await openOverzicht();
+  uit.doelRing=!!overzicht()&&overzicht().textContent.indexOf("Doel ")!==-1&&!!overzicht().querySelector("svg circle");
+  // Net ingesteld: 0%, ook na het wisselen van de vorm-instelling in het overzicht (begin rekent mee met dezelfde instelling)
   const pctVoor=ringPct();
-  k("Stats").click();await w(250);const vv=Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="10";});
-  if(vv)vv.click();await w(250);
-  k("Spelen").click();await w(250);const pctNa=ringPct();
-  k("Stats").click();await w(250);const v20=Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="20";});
-  if(v20)v20.click();await w(250);k("Spelen").click();await w(250);
-  uit.doelStartVolgtVorm=pctVoor==="0%"&&pctNa==="0%"&&!!vv&&tekst().indexOf("begon op")!==-1;
+  const vv=knopIn("10");if(vv)vv.click();await w(250);
+  const pctNa=ringPct(),beginTekst=!!overzicht()&&overzicht().textContent.indexOf("begon op")!==-1;
+  const v20=knopIn("20");if(v20)v20.click();await w(250);
+  uit.doelStartVolgtVorm=pctVoor==="0%"&&pctNa==="0%"&&!!vv&&beginTekst;
+  overzicht().click();await w(250);
+  k("Spelen").click();await w(250);
+  uit.geenRingOpSpelen=tekst().indexOf("🎯 Doel")===-1&&!overzicht();
   // Je seizoen in beeld: openen, doorbladeren, laatste kaart met delen, sluiten
   k("Stats").click();await w(250);kb("Bekijk je seizoen").click();await w(400);
   uit.verhaalOpen=tekst().indexOf("Jouw seizoen in beeld")!==-1;
@@ -73,7 +79,7 @@
   Array.from(kaartA.querySelectorAll("button")).find(function(b){return b.textContent.indexOf("Aan")!==-1;}).click();await w(250);
   uit.animatiesAan=data().animaties===true&&!document.documentElement.classList.contains("rustig");
   k("Spelen").click();await w(150);
-  uit.goed=uit.telop&&uit.doelVenster&&uit.doelOpgeslagen&&uit.doelRing&&uit.doelStartVolgtVorm&&uit.verhaalOpen&&uit.verhaalSlot&&uit.verhaalDicht&&uit.kalender&&uit.kalenderDag&&uit.kalenderOnderMaand
+  uit.goed=uit.telop&&uit.doelVenster&&uit.doelOpgeslagen&&uit.doelRing&&uit.doelStartVolgtVorm&&uit.geenRingOpSpelen&&uit.verhaalOpen&&uit.verhaalSlot&&uit.verhaalDicht&&uit.kalender&&uit.kalenderDag&&uit.kalenderOnderMaand
     &&uit.kaart&&uit.viering&&uit.deelKnop&&uit.animatiesUit&&uit.animatiesAan;
   return uit;
 })()

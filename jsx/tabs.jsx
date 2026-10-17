@@ -167,7 +167,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed}){
 // Stats-tab: je cijfers. Seizoen, je niveau (vorm en moyenne), totalen en alle partijen. Instellingen,
 // uitleg en back-up staan in de Info-tab.
 function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsluiten,seizoensplitsingOngedaanMaken,
-  openArchief,verwijderPartij,slaNotitieOp,vormVenster,setVormVenster,openVerhaal,openDoel}){
+  openArchief,verwijderPartij,slaNotitieOp,vormVenster,openVerhaal}){
   const kopBlok=useContext(KopContext);
   const spel=useContext(SpelContext);
   const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
@@ -278,19 +278,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
             {tafel!=="alle"&&(
               <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>Alleen je partijen op de {tafelLabel(tafel)}. Je niveau bovenin de app gaat over alle tafels.</div>
             )}
-            {openDoel&&<button onClick={openDoel} style={{width:"100%",marginBottom:12,padding:10,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>
-              {data.doelen&&data.doelen[huidigeDiscipline]?"🎯 Je doel: "+data.doelen[huidigeDiscipline].waarde.toFixed(dec).replace(".",",")+(data.doelen[huidigeDiscipline].gehaald?" (gehaald!) · nieuw doel":" · wijzigen"):"🎯 Stel een doel"}
-            </button>}
-            <div style={{fontSize:12,color:WITD,marginBottom:6}}>Niveau op basis van je laatste:</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-              {[[10,"10"],[20,"20"],[30,"30"],["alles","Alle"]].map(function(x){
-                const actief=vormVenster===x[0];
-                return <button key={x[1]} onClick={function(){if(!actief)setVormVenster(x[0]);}}
-                  style={{padding:"8px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
-              })}
-            </div>
-            <div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:8,lineHeight:1.45}}>
-              Je vorm is het gemiddelde van je laatste partijen{spel?", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)":""}. Zo tellen oude partijen na verloop van tijd niet meer mee. 20 is een goede balans tussen rustig en actueel; je moyenne blijft altijd over al je partijen gaan.
+            <div style={{fontSize:11,color:WITD,opacity:0.8,lineHeight:1.45}}>
+              Je vorm is het gemiddelde van je laatste {vormVenster==="alles"?"partijen (nu: alle)":vormVenster+" partijen"}{spel?", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)":""}; je moyenne gaat altijd over al je partijen.
+              Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij <b style={{color:GOUD}}>je klasse rechtsboven</b>.
             </div>
           </div>
         );

@@ -97,8 +97,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   gemiddelde. Vanaf 5 aangevinkte acquits per tafel (onder 15 met waarschuwing; op de 2,10 vaak niet aangevinkt); zonder keuze rekent het met de echte waarden (nu = ±0).
   Poedel na poedel per tafel (`poedel.perTafel`) en vergeleken met "na een score", niet met de gewone
   poedelkans: over alle tafels samen geeft de moeilijkere tafel een vals "poedels komen in reeksen".
-- Niveau volgt je **vorm**: gemiddelde van je laatste `vormVenster` partijen (Stats; 10/20/30/"alles", standaard
-  20). Met het spelelement aan valt per `PUNTEN_PER_DROP` (1000) punten verdiend in die partijen de slechtste
+- Niveau volgt je **vorm**: gemiddelde van je laatste `vormVenster` partijen (klasse-overzicht rechtsboven; 10/20/30/"alles", standaard
+  20; Stats verwijst ernaar). Met het spelelement aan valt per `PUNTEN_PER_DROP` (1000) punten verdiend in die partijen de slechtste
   partij binnen het venster weg, hoogstens `MAX_SCHRAP_AANDEEL` (1 op de 10). **Moyenne** = alle partijen,
   niets geschrapt (officieel). `berekenNiveauInfo(partijen,zonderDrops,opties)`; zonder opties de oude
   berekening (alle partijen, geen plafond), waar `test/snapshot.js` op rust. Teksten via `vormUitleg()`.
@@ -124,8 +124,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   Later eventueel: herkenning op de iPhone zelf (Apple Vision, eigen plugin) met hetzelfde controlescherm.
 - Wauw (17 okt 2026): vieringen bij topserie/record (in `noteer`), hogere klasse, beste partij ooit en gehaald doel
   (in `bewaarPartij`); `data.animaties===false` zet animaties en vieringen uit (klasse `rustig` op `<html>`).
-  Doel per discipline in `data.doelen[discipline]` = {waarde,datum,start,gehaald,gezet}; ring bovenaan Spelen (prop
-  `mijnDoel`; let op: `doel`/`setDoel` zijn het partijdoel). Het beginpunt rekent `mijnDoel` (index.html) steeds opnieuw uit
+  Doel per discipline in `data.doelen[discipline]` = {waarde,datum,start,gehaald,gezet}; ring in het klasse-overzicht
+  (`NiveauOverzicht`, knop rechtsboven; daar ook de keuze 10/20/30/alle voor je vorm) via `mijnDoel`; let op: `doel`/`setDoel` zijn het partijdoel). Het beginpunt rekent `mijnDoel` (index.html) steeds opnieuw uit
   met de huidige vorm-instelling over de partijen van vóór `gezet`; de bewaarde `start` alleen als terugval. Anders springt
   het percentage mee als je de vorm-instelling wisselt (gebeurde: begin over alle partijen, vorm over 10). "Je seizoen in beeld" opent vanzelf na Seizoen afsluiten
   (`berekenSeizoenVerhaal` in `js/berekeningen.js`). Partijkaart via "📤 Deel als kaart" (samenvatting, partijregels).

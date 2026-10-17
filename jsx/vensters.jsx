@@ -695,10 +695,12 @@ function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenste
 }
 
 // Opmerkingen van een opgeslagen partij achteraf aanvullen of wijzigen (Log/Stats → partij → ✎ Opmerkingen aanvullen).
-// Tik op een beurt voor dezelfde knoppen als tijdens het spelen. Zelf getypte opmerkingen blijven gewoon staan.
+// Werkt als tijdens het spelen: lijst met beurten → tik een beurt → stap 1 "Waardoor eindigde de serie?" → stap 2 "Wat
+// ging goed?" (niet bij een poedel) → Klaar = terug naar de lijst. Pas in de lijst sla je alles in één keer op.
+// Zelf getypte opmerkingen blijven gewoon staan.
 function OpmerkingenBewerken({partij,discipline,onOpslaan,onClose}){
   const [beurten,setBeurten]=useState(function(){return partij.beurten.map(function(b){return Object.assign({},b,{gemist:(b.gemist||[]).slice(),goed:(b.goed||[]).slice()});});});
-  const [openBeurt,setOpenBeurt]=useState(null);
+  const [stap,setStap]=useState(null); // null = lijst, anders {i, soort:"gemist"|"goed"}
   const gewijzigd=JSON.stringify(beurten.map(function(b){return[b.gemist,b.goed];}))!==JSON.stringify(partij.beurten.map(function(b){return[b.gemist||[],b.goed||[]];}));
   const wissel=function(i,sleutel){
     setBeurten(function(oud){return oud.map(function(b,j){
@@ -709,48 +711,63 @@ function OpmerkingenBewerken({partij,discipline,onOpslaan,onClose}){
     });});
   };
   const metOpm=beurten.filter(function(b){return b.gemist.length+b.goed.length>0;}).length;
+  const knopStijl=function(hoofd,kleur){return hoofd
+    ?{flex:1,padding:13,background:"linear-gradient(135deg,"+(kleur||GOUD)+","+(kleur===GRNT?"#66bb6a":GOUDL)+")",border:"none",borderRadius:10,color:kleur===GRNT?WIT:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}
+    :{padding:"13px 14px",background:"none",border:"1px solid "+KBDR,borderRadius:10,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"};};
+  const onderbalk={display:"flex",gap:8,padding:"10px 12px",borderTop:"1px solid "+KBDR,flexShrink:0,background:"var(--c-152015)"};
+  const b=stap?beurten[stap.i]:null;
   return(
     <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:"14px 10px"}}>
-      <div data-opm-bewerken="" style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,maxWidth:440,width:"100%",
-        maxHeight:"calc(92vh / var(--zoom,1))",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-        <div style={{padding:"14px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
-          <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>✎ Opmerkingen aanvullen</div>
-          <div style={{fontSize:12,color:WITD,marginTop:2}}>{fmtDatum(partij.datum)} · {tafelLabel(partij.tafel||"230")} · {metOpm} van {beurten.length} beurten met opmerking. Tik op een beurt.</div>
-        </div>
-        <div style={{flex:1,minHeight:0,overflowY:"auto"}}>
-          {beurten.map(function(b,i){
-            const open=openBeurt===i,opm=b.gemist.length+b.goed.length;
-            const sel=new Set(b.gemist.map(function(l){return"G__"+l;}).concat(b.goed.map(function(l){return"P__"+l;})));
-            return(
-              <div key={i} style={{borderTop:i?"1px solid rgba(255,255,255,0.06)":"none",background:open?"rgba(201,168,76,0.08)":"none"}}>
-                <div onClick={function(){setOpenBeurt(open?null:i);}} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",cursor:"pointer"}}>
+      <div data-opm-bewerken="" style={Object.assign({background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,maxWidth:440,width:"100%",
+        maxHeight:"calc(92vh / var(--zoom,1))",display:"flex",flexDirection:"column",overflow:"hidden"},stap?{height:"calc(92vh / var(--zoom,1))"}:null)}>
+        {!stap&&<>
+          <div style={{padding:"14px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
+            <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>✎ Opmerkingen aanvullen</div>
+            <div style={{fontSize:12,color:WITD,marginTop:2}}>{fmtDatum(partij.datum)} · {tafelLabel(partij.tafel||"230")} · {metOpm} van {beurten.length} beurten met opmerking. Tik op een beurt.</div>
+          </div>
+          <div style={{flex:1,minHeight:0,overflowY:"auto"}}>
+            {beurten.map(function(bt,i){
+              const opm=bt.gemist.length+bt.goed.length;
+              return(
+                <div key={i} data-beurt-rij="" onClick={function(){setStap({i:i,soort:"gemist"});}}
+                  style={{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",cursor:"pointer",borderTop:i?"1px solid rgba(255,255,255,0.06)":"none"}}>
                   <span style={{width:26,fontSize:13,color:WITD}}>{i+1}</span>
-                  <span style={{width:30,fontSize:18,fontWeight:"bold",color:b.caramboles===0?"#e08055":beurtKleur(b.caramboles,discipline)}}>{b.caramboles}</span>
+                  <span style={{width:30,fontSize:18,fontWeight:"bold",color:bt.caramboles===0?"#e08055":beurtKleur(bt.caramboles,discipline)}}>{bt.caramboles}</span>
                   <span style={{flex:1,minWidth:0,fontSize:12,lineHeight:1.35}}>
-                    {b.goed.length>0&&<span style={{color:GRNT}}>✓ {b.goed.join(", ")} </span>}
-                    {b.gemist.length>0&&<span style={{color:ROOD}}>✗ {b.gemist.join(", ")}</span>}
+                    {bt.goed.length>0&&<span style={{color:GRNT}}>✓ {bt.goed.join(", ")} </span>}
+                    {bt.gemist.length>0&&<span style={{color:ROOD}}>✗ {bt.gemist.join(", ")}</span>}
                     {opm===0&&<span style={{color:"rgba(255,255,255,0.3)"}}>geen opmerking</span>}
                   </span>
-                  <span style={{color:open?GOUD:GOUDL,fontSize:14}}>{open?"▴":"✎"}</span>
+                  <span style={{color:GOUDL,fontSize:14}}>✎</span>
                 </div>
-                {open&&<div style={{paddingBottom:8}}>
-                  <div style={{fontSize:12,color:ROOD,padding:"0 12px"}}>{b.caramboles===0?"Waardoor was het een poedel?":"Waardoor eindigde de serie?"}</div>
-                  <OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={function(k){wissel(i,k);}}/>
-                  {b.caramboles>0&&<>
-                    <div style={{fontSize:12,color:GRNT,padding:"0 12px"}}>Wat ging goed?</div>
-                    <OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={function(k){wissel(i,k);}}/>
-                  </>}
-                </div>}
-              </div>
-            );
-          })}
-        </div>
-        <div style={{display:"flex",gap:8,padding:"10px 12px",borderTop:"1px solid "+KBDR,flexShrink:0,background:"var(--c-152015)"}}>
-          <button onClick={function(){if(gewijzigd)onOpslaan(partij.id,beurten);onClose();}}
-            style={{flex:1,padding:12,background:gewijzigd?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"none",border:"1px solid "+GOUD,borderRadius:10,color:gewijzigd?G:GOUD,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>
-            {gewijzigd?"Opslaan":"Sluiten"}</button>
-          {gewijzigd&&<button onClick={onClose} style={{padding:"12px 14px",background:"none",border:"1px solid "+KBDR,borderRadius:10,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Annuleer</button>}
-        </div>
+              );
+            })}
+          </div>
+          <div style={onderbalk}>
+            <button onClick={function(){if(gewijzigd)onOpslaan(partij.id,beurten);onClose();}} style={knopStijl(true)}>{gewijzigd?"Opslaan":"Sluiten"}</button>
+            {gewijzigd&&<button onClick={onClose} style={knopStijl(false)}>Annuleer</button>}
+          </div>
+        </>}
+        {stap&&<>
+          <div style={{padding:"12px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
+            <div style={{fontSize:12,color:WITD}}>Beurt {stap.i+1} · {b.caramboles} {b.caramboles===1?"carambole":"caramboles"}</div>
+            <div style={{fontSize:18,fontWeight:"bold",color:stap.soort==="gemist"?ROOD:GRNT}}>
+              {stap.soort==="gemist"?(b.caramboles===0?"Waardoor was het een poedel?":"Waardoor eindigde de serie?"):"Wat ging goed?"}
+            </div>
+          </div>
+          {/* Zelfde raster als tijdens het spelen: vult de ruimte, alles in één keer in beeld */}
+          <div style={{flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
+            {stap.soort==="gemist"
+              ?<OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={new Set(b.gemist.map(function(l){return"G__"+l;}))} toggle={function(k){wissel(stap.i,k);}} vullen={true}/>
+              :<OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={new Set(b.goed.map(function(l){return"P__"+l;}))} toggle={function(k){wissel(stap.i,k);}} vullen={true}/>}
+          </div>
+          <div style={onderbalk}>
+            {stap.soort==="gemist"
+              ?<button onClick={function(){if(b.caramboles===0)setStap(null);else setStap({i:stap.i,soort:"goed"});}} style={knopStijl(true)}>{b.caramboles===0?"Klaar":"Volgende stap"}</button>
+              :<button onClick={function(){setStap(null);}} style={knopStijl(true,GRNT)}>Klaar</button>}
+            <button onClick={function(){if(stap.soort==="goed")setStap({i:stap.i,soort:"gemist"});else setStap(null);}} style={knopStijl(false)}>terug</button>
+          </div>
+        </>}
       </div>
     </div>
   );

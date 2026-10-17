@@ -149,6 +149,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   onder de rij met die maand (`kolommen` gemeten).
 - Opmerkingen achteraf: Log/Stats → partij → ✎ Opmerkingen aanvullen (`OpmerkingenBewerken` in `jsx/vensters.jsx`, opslaan via
   `OpmerkingenContext` = `slaOpmerkingenOp` in index.html; alleen gemist/goed per beurt, zelf getypte blijven staan).
+  Stappen zoals tijdens het spelen: lijst → beurt → "Waardoor eindigde de serie?" → "Wat ging goed?" (niet bij poedel) →
+  Klaar = terug in de lijst; Opslaan/Annuleer alleen in de lijst.
 - `Grafiek` (beurten van een partij, ook tijdens het spelen) meet zijn breedte: alle beurten passend; pas onder 6 px per
   beurt zijwaarts scrollen, dan schuift hij mee naar de laatste beurt.
 - Invoerscherm: onder Noteer eerst de grafiek, dan de spelelement-meldingen. Meldingen kort houden (één regel bij Extra

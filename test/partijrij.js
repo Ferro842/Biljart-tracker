@@ -32,7 +32,13 @@
   const klos=Array.from(venster.querySelectorAll("button")).find(function(b){return /Klos$/.test(b.textContent.trim());});
   const hadKlos=b1voor.gemist.indexOf("Klos")!==-1;
   klos.click();await w(150);
-  Array.from(venster.querySelectorAll("button")).find(function(b){return b.textContent.trim()==="Opslaan";}).click();await w(250);
+  const vk=function(t){return Array.from(document.querySelectorAll("[data-opm-bewerken] button")).find(function(b){return b.textContent.trim()===t;});};
+  uit.opmGeenOpslaanInStap=!vk("Opslaan");
+  // stap 1 bevestigen, (bij een serie) stap 2 "Wat ging goed?" bevestigen, terug in de lijst pas opslaan
+  (vk("Volgende stap")||vk("Klaar")).click();await w(200);
+  if(vk("Klaar")){uit.opmStapGoed=document.querySelector("[data-opm-bewerken]").textContent.indexOf("Wat ging goed?")!==-1;vk("Klaar").click();await w(200);}
+  uit.opmTerugInLijst=!!document.querySelector("[data-beurt-rij]");
+  vk("Opslaan").click();await w(250);
   const b1na=p17().beurten[0];
   uit.opmBewaard=!document.querySelector("[data-opm-bewerken]")&&(b1na.gemist.indexOf("Klos")!==-1)!==hadKlos
     &&b1na.caramboles===b1voor.caramboles&&b1na.goed.join()===b1voor.goed.join();
@@ -43,6 +49,6 @@
   uit.logNotitie=data().partijen.some(function(p){return p.notitie==="Log-notitie";});
   k("Partij verwijderen").click();await w(150);k("Ja, verwijderen").click();await w(200);
   uit.logVerwijderd=data().partijen.length===voor-1;
-  uit.goed=uit.grafiekPast&&uit.opmVenster&&uit.opmBewaard&&uit.statsLabels&&uit.statsNotitie&&uit.annuleren&&uit.logNotitie&&uit.logVerwijderd;
+  uit.goed=uit.opmGeenOpslaanInStap&&uit.opmStapGoed!==false&&uit.opmTerugInLijst&&uit.grafiekPast&&uit.opmVenster&&uit.opmBewaard&&uit.statsLabels&&uit.statsNotitie&&uit.annuleren&&uit.logNotitie&&uit.logVerwijderd;
   return uit;
 })()

@@ -97,16 +97,34 @@ function Grafiek({beurten,discipline}){
   );
 }
 
-function OpmGrid({lijst,prefix,kleur,geselecteerd,toggle}){
+function OpmGrid({lijst,prefix,kleur,geselecteerd,toggle,vullen}){
+  // vullen: het raster neemt de beschikbare hoogte (tijdens het spelen) en alles moet in één keer in beeld. Het meet de
+  // ruimte per rij: krap = zonder icoontjes, nog krapper = ook kleinere tekst. Past het dan nog niet: scrollen als vangnet.
+  const ref=useRef(null);
+  const [krap,setKrap]=useState(0);
+  const rijen=Math.ceil(lijst.length/3);
+  useEffect(function(){
+    if(!vullen)return;
+    const el=ref.current;if(!el)return;
+    const meet=function(){
+      const rij=(el.clientHeight-16-5*(rijen-1))/rijen; // padding 8+8, gap 5
+      setKrap(rij>=50?0:rij>=34?1:2);
+    };
+    meet();
+    if(typeof ResizeObserver==="undefined")return;
+    const ro=new ResizeObserver(meet);ro.observe(el);return function(){ro.disconnect();};
+  },[vullen,rijen]);
   return(
-    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:5,padding:"8px 12px"}}>
+    <div ref={ref} data-opmgrid={vullen?krap:undefined} style={Object.assign({display:"grid",gridTemplateColumns:"repeat(3,minmax(0,1fr))",gap:5,padding:"8px 12px"},
+      vullen?{flex:1,minHeight:0,gridAutoRows:"1fr",overflowY:"auto"}:null)}>
       {lijst.map(function(o){
         const key=prefix+o.label;
         const actief=geselecteerd.has(key);
         return(
           <button key={o.label} onClick={function(){toggle(key);}}
-            style={{background:actief?(kleur===ROOD?"#3a1010":"var(--c-1a3a1a)"):"var(--c-1c3019)",border:"1px solid "+(actief?kleur:KBDR),borderRadius:8,padding:"7px 4px",color:actief?kleur:WITD,cursor:"pointer",fontSize:13,display:"flex",flexDirection:"column",alignItems:"center",gap:2,fontFamily:"inherit"}}>
-            <span style={{fontSize:14}}>{o.emoji}</span>
+            style={{background:actief?(kleur===ROOD?"#3a1010":"var(--c-1a3a1a)"):"var(--c-1c3019)",border:"1px solid "+(actief?kleur:KBDR),borderRadius:8,padding:krap?"2px 3px":"7px 4px",color:actief?kleur:WITD,cursor:"pointer",
+              fontSize:krap===2?11.5:13,lineHeight:1.15,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,fontFamily:"inherit",minHeight:0,overflow:"hidden"}}>
+            {!krap&&<span style={{fontSize:14}}>{o.emoji}</span>}
             <span>{o.label}</span>
           </button>
         );

@@ -137,7 +137,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   onder de tabbalk), `extra` (rij die mee plakt, bijv. de Dash-tabs). Tijdens een partij (`inSpel`) is KopContext null en
   staat de kop niet in beeld: op het invoerscherm alleen een smalle spelbalk (`data-spelbalk`: discipline · tafel, ☰ Menu
   klapt `kopBlok()` uit, Afsluiten), in de opmerkingen-stappen (Gemist/Goed) niets; hun vervolgknoppen staan vast
-  onderaan (`STAP_KNOPPEN`). Nieuw tabblad? Zelf `kopBlok` bovenaan het scrollvak zetten.
+  onderaan (`STAP_KNOPPEN`) en het raster (`OpmGrid vullen`) past altijd in één keer: rijen verdelen de hoogte, bij krappe
+  rijen eerst zonder icoontjes, dan kleinere tekst (gemeten met ResizeObserver; scrollen alleen als vangnet). Nieuw tabblad? Zelf `kopBlok` bovenaan het scrollvak zetten.
 - Vensters (overlays) binnen `.app` worden mee-gezoomd bij grote tekst: hoogtes in vh altijd als
   `calc(85vh / var(--zoom,1))`, anders vallen ze bij Extra groot onder het scherm.
 - Kalender (Dash): details van een dag als hele rij direct onder de rij met die maand (`kolommen` gemeten).

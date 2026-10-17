@@ -284,16 +284,17 @@ function GemistScherm({spel}){
   const heeftSelectie=gs.length>0||andersGemist.trim().length>0;
   return(
     <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-      <div style={{flex:1,overflowY:"auto"}}>
-        <div style={{padding:"12px 14px",borderBottom:"1px solid "+KBDR}}>
+      {/* Alles in één keer in beeld: titel, raster (vult de ruimte), Anders..., knoppen vast onderaan */}
+      <div style={{flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"10px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div style={{fontSize:19,color:ROOD,fontWeight:"bold"}}>Gemist door — {car} caramboles</div>
+            <div style={{fontSize:19,color:ROOD,fontWeight:"bold"}}>Gemist door — {car} {car===1?"carambole":"caramboles"}</div>
             {gs.length>0&&<span style={{fontSize:15,color:ROOD,fontWeight:"bold"}}>{gs.length}x</span>}
           </div>
-          <div style={{fontSize:13,color:WITD,marginTop:3}}>Tik om te selecteren — je kunt er meerdere kiezen</div>
+          <div style={{fontSize:12,color:WITD,marginTop:2}}>Tik om te selecteren — je kunt er meerdere kiezen</div>
         </div>
-        <OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={toggle}/>
-        <div style={{padding:"0 12px 8px"}}>
+        <OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={toggle} vullen={true}/>
+        <div style={{padding:"0 12px 8px",flexShrink:0}}>
           <input type="text" value={andersGemist} onChange={function(e){setAndersGemist(e.target.value);}}
             placeholder="Anders... (typ zelf iets)"
             style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
@@ -319,16 +320,17 @@ function GoedScherm({spel}){
   const heeftSelectie=gs.length>0||andersGoed.trim().length>0;
   return(
     <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-      <div style={{flex:1,overflowY:"auto"}}>
-        <div style={{padding:"12px 14px",borderBottom:"1px solid "+KBDR}}>
+      {/* Alles in één keer in beeld: titel, raster (vult de ruimte), Anders..., knoppen vast onderaan */}
+      <div style={{flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"10px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div style={{fontSize:19,color:GRNT,fontWeight:"bold"}}>Wat ging goed?</div>
             {gs.length>0&&<span style={{fontSize:15,color:GRNT,fontWeight:"bold"}}>{gs.length}x</span>}
           </div>
-          <div style={{fontSize:13,color:WITD,marginTop:3}}>Tik om te selecteren — je kunt er meerdere kiezen</div>
+          <div style={{fontSize:12,color:WITD,marginTop:2}}>Tik om te selecteren — je kunt er meerdere kiezen</div>
         </div>
-        <OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={toggle}/>
-        <div style={{padding:"0 12px 8px"}}>
+        <OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={toggle} vullen={true}/>
+        <div style={{padding:"0 12px 8px",flexShrink:0}}>
           <input type="text" value={andersGoed} onChange={function(e){setAndersGoed(e.target.value);}}
             placeholder="Anders... (typ zelf iets)"
             style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>

@@ -93,10 +93,12 @@
   uit.spelMenu=menuOpen&&!document.querySelector("[data-kop]");
   k("Noteer").click();await w(300);
   const opsl=k("Opslaan");
+  const raster=document.querySelector("[data-opmgrid]");
+  uit.opmerkingenInBeeld=!!raster&&raster.scrollHeight<=raster.clientHeight+1;
   uit.stapKnopInBeeld=!!opsl&&opsl.getBoundingClientRect().bottom<=appR().bottom+1&&!document.querySelector("[data-spelbalk]")&&!document.querySelector("[data-kop]");
   k("terug").click();await w(200);k("terug").click();await w(300);
   uit.spelTerug=!!k("Start partij");
   k("Info").click();await w(250);weergaveKnop("Normaal").click();await w(300);k("Spelen").click();await w(150);
-  uit.goed=uit.spelbalk&&uit.spelMenu&&uit.stapKnopInBeeld&&uit.spelTerug&&uit.meeveren&&uit.dashTabsPassen&&uit.kopSchuift&&uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
+  uit.goed=uit.opmerkingenInBeeld&&uit.spelbalk&&uit.spelMenu&&uit.stapKnopInBeeld&&uit.spelTerug&&uit.meeveren&&uit.dashTabsPassen&&uit.kopSchuift&&uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
   return uit;
 })()

@@ -275,6 +275,9 @@ function InvoerScherm({spel}){
 }
 
 // Spelen, na een beurt: waardoor de serie eindigde
+// Onderbalk met de vervolgknoppen van de opmerkingen-stappen (Gemist/Goed)
+const STAP_KNOPPEN={padding:"10px 14px 12px",display:"flex",gap:8,flexShrink:0,borderTop:"1px solid "+KBDR,background:"var(--c-152015)"};
+
 function GemistScherm({spel}){
   const {andersGemist,car,noteer,sel,setAndersGemist,setFase,toggle}=spel;
   const gs=Array.from(sel).filter(function(k){return k.startsWith("G__");});
@@ -295,14 +298,15 @@ function GemistScherm({spel}){
             placeholder="Anders... (typ zelf iets)"
             style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
         </div>
-        <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
-          <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"rgba(224,96,96,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(224,96,96,0.45)"),borderRadius:12,color:heeftSelectie?G:"#e0a0a0",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
-            onClick={function(){if(car===0){noteer();}else{setFase("goed");}}}>
-          {car===0?"Opslaan":"Volgende stap"}
-        </button>
-          <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={function(){setFase("invoer");}}>terug</button>
-        </div>
+      </div>
+      {/* Vervolgknoppen vast onderaan: altijd in beeld, ook bij grote tekst */}
+      <div style={STAP_KNOPPEN}>
+        <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"rgba(224,96,96,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(224,96,96,0.45)"),borderRadius:12,color:heeftSelectie?G:"#e0a0a0",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
+          onClick={function(){if(car===0){noteer();}else{setFase("goed");}}}>
+        {car===0?"Opslaan":"Volgende stap"}
+      </button>
+        <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
+          onClick={function(){setFase("invoer");}}>terug</button>
       </div>
     </div>
   );
@@ -329,12 +333,13 @@ function GoedScherm({spel}){
             placeholder="Anders... (typ zelf iets)"
             style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
         </div>
-        <div style={{padding:"6px 14px 14px",display:"flex",gap:8}}>
-          <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GRNT+",#66bb6a)":"rgba(102,187,106,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(102,187,106,0.45)"),borderRadius:12,color:heeftSelectie?WIT:"#a8d5aa",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
-            onClick={noteer}>Beurt opslaan</button>
-          <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={function(){setFase("gemist");}}>terug</button>
-        </div>
+      </div>
+      {/* Vervolgknoppen vast onderaan: altijd in beeld, ook bij grote tekst */}
+      <div style={STAP_KNOPPEN}>
+        <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GRNT+",#66bb6a)":"rgba(102,187,106,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(102,187,106,0.45)"),borderRadius:12,color:heeftSelectie?WIT:"#a8d5aa",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
+          onClick={noteer}>Beurt opslaan</button>
+        <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
+          onClick={function(){setFase("gemist");}}>terug</button>
       </div>
     </div>
   );

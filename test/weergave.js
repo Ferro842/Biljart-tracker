@@ -82,6 +82,21 @@
   const kal=k("Kalender");
   uit.dashTabsPassen=!!kal&&kal.getBoundingClientRect().right<=kal.parentElement.getBoundingClientRect().right+1&&kal.parentElement.scrollWidth<=kal.parentElement.clientWidth;
   k("Info").click();await w(250);weergaveKnop("Normaal").click();await w(300);k("Spelen").click();await w(150);
-  uit.goed=uit.meeveren&&uit.dashTabsPassen&&uit.kopSchuift&&uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
+  // Tijdens een partij (Extra groot): smalle spelbalk i.p.v. kop en tabbalk; ☰ Menu klapt het menu uit; in de
+  // opmerkingen-stap geen balk en de vervolgknop vast onderaan in beeld
+  k("Info").click();await w(250);weergaveKnop("Extra groot").click();await w(300);
+  k("Spelen").click();await w(200);k("Start partij").click();await w(300);
+  const appR=function(){return document.querySelector(".app").getBoundingClientRect();};
+  uit.spelbalk=!!document.querySelector("[data-spelbalk]")&&!document.querySelector("[data-kop]");
+  kb("☰ Menu").click();await w(200);const menuOpen=!!document.querySelector("[data-kop]");
+  kb("✕ Menu").click();await w(200);
+  uit.spelMenu=menuOpen&&!document.querySelector("[data-kop]");
+  k("Noteer").click();await w(300);
+  const opsl=k("Opslaan");
+  uit.stapKnopInBeeld=!!opsl&&opsl.getBoundingClientRect().bottom<=appR().bottom+1&&!document.querySelector("[data-spelbalk]")&&!document.querySelector("[data-kop]");
+  k("terug").click();await w(200);k("terug").click();await w(300);
+  uit.spelTerug=!!k("Start partij");
+  k("Info").click();await w(250);weergaveKnop("Normaal").click();await w(300);k("Spelen").click();await w(150);
+  uit.goed=uit.spelbalk&&uit.spelMenu&&uit.stapKnopInBeeld&&uit.spelTerug&&uit.meeveren&&uit.dashTabsPassen&&uit.kopSchuift&&uit.tip&&uit.tipWeg&&uit.plusOpmerking&&uit.uitleg&&uit.uitlegDicht&&uit.zoom&&uit.vultScherm&&uit.terugNormaal&&uit.opgeslagen&&uit.spelelementLos&&uit.dashTabs&&uit.direct&&uit.puntenBalk&&uit.weerUit;
   return uit;
 })()

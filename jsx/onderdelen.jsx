@@ -247,9 +247,10 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
         <div style={{marginLeft:"auto",textAlign:"right"}}>
           <div style={{fontSize:12,color:WITD}}>vorm</div>
           <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
-          {niveau.moyenne!==undefined&&<div style={{fontSize:11,color:WITD,maxWidth:170}}>{vormUitleg(niveau,dec)}</div>}
         </div>
       </div>
+      {/* Uitleg over de volle breedte (naast de klasse werd het bij grote tekst een smal, lang kolommetje) */}
+      {niveau.moyenne!==undefined&&<div style={{fontSize:12,color:WITD,lineHeight:1.4,marginTop:-4,marginBottom:12}}>{vormUitleg(niveau,dec)}</div>}
       {niveau.volgende
         ?<>
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>

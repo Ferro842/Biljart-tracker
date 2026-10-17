@@ -456,6 +456,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
     consist:"Hoeveel procent van je partijen boven bepaalde gemiddelde-drempels uitkomt — die drempels schuiven automatisch mee met je eigen niveau, in stappen van 0,5. Plus je 5 beste en 5 slechtste partijen op een rij.",
     patronen:"Analyse van je opmerkingen (wat je vaak mist of juist goed doet), hoe je caramboles per beurt verdeeld zijn, en hoe je herstelt na een poedel.",
     vergelijk:"Vergelijkt de eerste met de tweede helft van je geselecteerde partijen (zie je progressie?), en toont je gemiddelde per maand naast elkaar.",
+    kalender:"Je speeldagen van de laatste 12 maanden, per maand. Elk gekleurd vakje is een dag waarop je speelde; de kleur is je gemiddelde die dag (groen = op of boven het niveau van de volgende klasse, goud = binnen je huidige klasse, rood = daaronder). Een cijfer in het vakje = aantal partijen die dag. Tik op een dag voor de partijen met tafel, gemiddelde, caramboles en hoogste serie. De kalender gebruikt altijd al je partijen, los van de selectie hierboven bij de andere onderdelen.",
     punten:"Je niveau, badge-punten, mijlpalen, en een overzicht van je best scorende partijen op badges.",
     inzicht:"Wat je opmerkingen en omstandigheden zeggen over je spel: je sterkste techniek en grootste werkpunt (op slagingspercentage, niet op aantal missers), wat grote series oplevert, waardoor series eindigen, hoe tafel, tijdstip en fase in de partij uitpakken, en of je werkpunten minder vaak voorkomen."
   };
@@ -724,7 +725,10 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
                   {kaart("Klein herstel",Math.round(poedelHerstel.klein/poedelHerstel.basis*100)+"%",poedelHerstel.klein+"x",GOUD)}
                   {kaart("Sterk herstel",Math.round(poedelHerstel.sterk/poedelHerstel.basis*100)+"%",poedelHerstel.sterk+"x ("+poedelHerstel.herstelMin+"+)",GRNT)}
                 </div>
-                <div style={{fontSize:12,color:WITD}}>Gebaseerd op {poedelHerstel.basis} poedels ({poedelHerstel.totaalPoedels} totaal in selectie)</div>
+                <div style={{fontSize:12,color:WITD,lineHeight:1.4}}>
+                  Gebaseerd op {poedelHerstel.basis} poedels.
+                  {poedelHerstel.totaalPoedels>poedelHerstel.basis&&<> Je had er {poedelHerstel.totaalPoedels} in de selectie; {poedelHerstel.totaalPoedels-poedelHerstel.basis===1?"één daarvan was":(poedelHerstel.totaalPoedels-poedelHerstel.basis)+" daarvan waren"} de laatste beurt van een partij, daarna kwam geen beurt meer om te beoordelen.</>}
+                </div>
               </>
             }
           </div>
@@ -835,7 +839,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
       {badgeCatalogusOpen&&<BadgeCatalogus discipline={discipline} onClose={function(){setBadgeCatalogusOpen(false);}}/>}
       {uitlegSectie&&(
         <div onClick={function(){setUitlegSectie(null);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.7)",zIndex:250,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
-          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid #7fd8e0",borderRadius:16,padding:"18px 18px",maxWidth:340,width:"100%",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+          <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid #7fd8e0",borderRadius:16,padding:"18px 18px",maxWidth:340,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
             <div style={{fontSize:16,fontWeight:"bold",color:"#7fd8e0",marginBottom:8}}>❓ {uitlegSectie==="consist"?"Consistentie":uitlegSectie.charAt(0).toUpperCase()+uitlegSectie.slice(1)}</div>
             <div style={{fontSize:14,color:WITD,lineHeight:1.5}}>{UITLEG_TEKST[uitlegSectie]}</div>
             <div onClick={function(){setUitlegSectie(null);}} style={{textAlign:"center",marginTop:14,fontSize:12,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>

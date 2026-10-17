@@ -135,7 +135,11 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   vinger meeschuift en vanzelf terugkomt bovenaan. Geen animatie of scroll-luisteraar (het oude inklappen voelde houterig:
   de inhoud sprong los van je vinger). Opties: `rand` (zijpadding van het vak, negatief teruggezet), `onder` (ruimte
   onder de tabbalk), `extra` (rij die mee plakt, bijv. de Dash-tabs). Tijdens een partij (`inSpel`) is KopContext null en
-  staat de kop vast bovenaan (Afsluiten altijd bereikbaar). Nieuw tabblad? Zelf `kopBlok` bovenaan het scrollvak zetten.
+  staat de kop niet in beeld: op het invoerscherm alleen een smalle spelbalk (`data-spelbalk`: discipline · tafel, ☰ Menu
+  klapt `kopBlok()` uit, Afsluiten), in de opmerkingen-stappen (Gemist/Goed) niets; hun vervolgknoppen staan vast
+  onderaan (`STAP_KNOPPEN`). Nieuw tabblad? Zelf `kopBlok` bovenaan het scrollvak zetten.
+- Vensters (overlays) binnen `.app` worden mee-gezoomd bij grote tekst: hoogtes in vh altijd als
+  `calc(85vh / var(--zoom,1))`, anders vallen ze bij Extra groot onder het scherm.
 - Kalender (Dash): details van een dag als hele rij direct onder de rij met die maand (`kolommen` gemeten).
 - Hoofdschermen hebben `className="scrollvak"` (`css/app.css`): een onzichtbaar streepje 1 px hoger dan het vak, zodat ze
   op iOS altijd meeveren aan de rand, ook als alles past. Nieuw scrollend hoofdscherm? Ook `scrollvak` geven.

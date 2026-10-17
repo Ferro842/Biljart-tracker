@@ -631,7 +631,7 @@ function BadgeCatalogus({discipline,onClose}){
 
 // Klasse-overzicht (knop rechtsboven): je klasse, waarop je vorm gebaseerd is (10/20/30/alle) en je doel, alles op één plek.
 // mijnDoel/openDoel/vormVenster/setVormVenster zijn optioneel (vanuit Dash → Punten alleen de klassen).
-function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenster,setVormVenster}){
+function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenster,setVormVenster,schrappen,setSchrappen}){
   const niveaus=(DISCIPLINES[discipline]||DISCIPLINES.libre).niveaus;
   const decimalen=discipline==="driebanden"?3:2;
   return(
@@ -648,6 +648,20 @@ function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenste
             })}
           </div>
           <div style={{fontSize:12,color:WITD,marginTop:4,textAlign:"center"}}>partijen</div>
+        </div>}
+        {/* Schrappen (alleen met het spelelement aan): uit = alle partijen tellen; bij Alle is je vorm dan je moyenne */}
+        {setSchrappen&&schrappen!==null&&schrappen!==undefined&&<div style={{marginTop:12}}>
+          <div style={{fontSize:13,color:WITD,marginBottom:6}}>Slechtste partijen schrappen met je punten:</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+            {[[true,"Aan"],[false,"Uit"]].map(function(x){
+              const actief=schrappen===x[0];
+              return <button key={x[1]} onClick={function(){if(!actief)setSchrappen(x[0]);}}
+                style={{padding:"8px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+            })}
+          </div>
+          <div style={{fontSize:12,color:WITD,marginTop:4,lineHeight:1.4}}>
+            {schrappen?"Per "+PUNTEN_PER_DROP+" verdiende punten valt je slechtste partij weg (hoogstens 1 op de 10).":"Alle partijen tellen mee; je punten en badges blijven gewoon."}
+          </div>
         </div>}
         {openDoel&&<div style={{marginTop:12}}>
           {mijnDoel

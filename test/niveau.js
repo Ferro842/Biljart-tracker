@@ -20,15 +20,28 @@
     const ov=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed"&&d.textContent.indexOf("Alle niveaus")!==-1;});
     Array.from(ov.querySelectorAll("button")).find(function(b){return b.textContent.trim()===keuze[0];}).click();await w(250);
     ov.click();await w(200);
-    const info=berekenVorm(libre(),true,keuze[1]); // "alles" = moyenne, niets geschrapt
+    const info=berekenVorm(libre(),true,keuze[1]); // spelelement en schrappen aan
     const vorm=getal("vorm · ");
     const moy=getal("moyenne · alle");
     moyennes.push(moy);
     uit["vorm_"+keuze[1]]={getoond:vorm,verwacht:info.effectiefGemiddelde.toFixed(2),opgeslagen:data().vormVenster===keuze[1]};
   }
   uit.moyenneGelijk=moyennes.every(function(m){return m&&m===moyennes[0];});
-  // Bij "Alle" is je vorm gewoon je moyenne (niets geschrapt)
-  uit.alleIsMoyenne=uit.vorm_alles.getoond===moyennes[0];
+  // Schrappen uit (klasse-overzicht) + Alle: je vorm is je moyenne en heet ook zo; daarna schrappen weer aan
+  const ovKnop=async function(t){
+    document.querySelector("[data-kop] button").click();await w(250);
+    const ov=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed"&&d.textContent.indexOf("Alle niveaus")!==-1;});
+    const b=Array.from(ov.querySelectorAll("button")).find(function(x){return x.textContent.trim()===t;});if(b)b.click();await w(250);
+    ov.click();await w(200);return b;
+  };
+  await ovKnop("Alle");await ovKnop("Uit");
+  const zonder=getal("vorm · ");
+  document.querySelector("[data-kop] button").click();await w(250);
+  const ovT=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed"&&d.textContent.indexOf("Alle niveaus")!==-1;});
+  const heetMoyenne=!!ovT&&ovT.textContent.indexOf("Moyenne: al je")!==-1;ovT.click();await w(200);
+  uit.schrappenUit={getoond:zonder,moyenne:moyennes[0],opgeslagen:data().schrappen===false,heetMoyenne:heetMoyenne};
+  await ovKnop("Aan");await ovKnop("20");
+  uit.alleIsMoyenne=zonder===moyennes[0]&&uit.schrappenUit.opgeslagen&&heetMoyenne&&data().schrappen===true;
   // Tafelkeuze: vorm en moyenne van alleen die tafel; "Alle tafels" terug
   const tafelKnop=function(t){return Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()===t;});};
   tafelKnop("2,10").click();await w(250);

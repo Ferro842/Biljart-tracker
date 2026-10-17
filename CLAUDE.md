@@ -102,8 +102,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   partij binnen het venster weg, hoogstens `MAX_SCHRAP_AANDEEL` (1 op de 10). **Moyenne** = alle partijen,
   niets geschrapt (officieel). `berekenNiveauInfo(partijen,zonderDrops,opties)`; zonder opties de oude
   berekening (alle partijen, geen plafond), waar `test/snapshot.js` op rust. Teksten via `vormUitleg()`.
-  Altijd via `berekenVorm(partijen,spelAan,vormVenster)`: bij "alles" = moyenne (niets geschrapt, ook met spelelement aan;
-  label "moyenne").
+  Altijd via `berekenVorm(partijen,schrapt,vormVenster)` met `schrapt` = spelelement aan én `data.schrappen!==false`
+  (schakelaar "Slechtste partijen schrappen" in het klasse-overzicht; uit = punten/badges blijven, niets geschrapt).
+  Label "moyenne" alleen bij alle partijen en niets geschrapt (`!venster&&!aantalDrops`), anders "vorm".
 - Laken-kleur per discipline: libre groen, driebanden blauw, bandstoten grijs, kader rood. Alle groentinten zijn
   CSS-variabelen `--c-<hex>` (standaard in `css/app.css`); `zetThema()` in `js/constanten.js` rekent ze om (met het kader-keuzemenu open al rood)
   (`themaVan`/`themaKleur`). Nieuwe groentint? Toevoegen aan `THEMA_KLEUREN` en `:root` en als `var(--c-..)` gebruiken;

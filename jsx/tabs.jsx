@@ -245,7 +245,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
         const tafel=gespeeld.indexOf(niveauTafel)!==-1?niveauTafel:"alle";
         const opTafel=tafel==="alle"?"":" op "+tafelLabel(tafel);
         // Voor één tafel: zelfde berekening, alleen met de partijen op die tafel
-        const info=tafel==="alle"?niveau:berekenVorm(alleP.filter(function(p){return(p.tafel||"230")===tafel;}),spel,vormVenster);
+        const info=tafel==="alle"?niveau:berekenVorm(alleP.filter(function(p){return(p.tafel||"230")===tafel;}),spel&&data.schrappen!==false,vormVenster);
         const niv=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline);
         const chip=function(actief){return{flex:1,padding:"7px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13};};
         return(
@@ -261,7 +261,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:tafel==="alle"?10:6}}>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
                 <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}><Telop waarde={info.effectiefGemiddelde} dec={dec}/></div>
-                <div style={{fontSize:11,color:WITD}}>vorm · {info.venster?"laatste "+info.aantalPartijen:"alle partijen (= moyenne)"}{opTafel}</div>
+                <div style={{fontSize:11,color:WITD}}>vorm · {info.venster?"laatste "+info.aantalPartijen:!info.aantalDrops?"alle partijen = moyenne":"alle partijen"}{opTafel}</div>
                 <div style={{fontSize:10,color:spel&&info.aantalDrops>0?GOUD:WITD,marginTop:2}}>
                   {!spel?"niets geschrapt · spelelement uit"
                     :info.aantalDrops>0?"zonder je "+(info.aantalDrops===1?"slechtste":info.aantalDrops+" slechtste")+" · spelelement aan"
@@ -279,9 +279,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
               <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>Alleen je partijen op de {tafelLabel(tafel)}. Je niveau bovenin de app gaat over alle tafels.</div>
             )}
             <div style={{fontSize:11,color:WITD,opacity:0.8,lineHeight:1.45}}>
-              {vormVenster==="alles"
+              {!niveau.venster&&!niveau.aantalDrops
                 ?"Je klasse is nu gebaseerd op je moyenne: al je partijen, niets geschrapt."
-                :<>Je vorm is het gemiddelde van je laatste {vormVenster} partijen{spel?", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)":""}; je moyenne gaat altijd over al je partijen.</>}
+                :<>Je vorm is het gemiddelde van {niveau.venster?"je laatste "+vormVenster+" partijen":"al je partijen"}{spel&&data.schrappen!==false?", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)":""}; je moyenne gaat altijd over al je partijen.</>}
               Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij <b style={{color:GOUD}}>je klasse rechtsboven</b>.
             </div>
           </div>

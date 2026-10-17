@@ -297,7 +297,8 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
         :<div style={{textAlign:"center",fontSize:13,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
       }
 
-      {spel&&<div style={{marginTop:12,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
+      {/* Punten tot de volgende schrapping: niet als schrappen uit staat (klasse-overzicht) */}
+      {spel&&niveau.schrapt!==false&&<div style={{marginTop:12,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
           <span style={{fontSize:13,color:WITD}}>🎖️ {niveau.venster?"Punten in je laatste "+niveau.aantalPartijen+" partijen":"Badge-punten"}</span>
           <span style={{fontSize:14,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten} / {niveau.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>

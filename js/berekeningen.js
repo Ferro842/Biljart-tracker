@@ -422,11 +422,11 @@ function besteVenster(waarden,lengte,richting){
 // "Je gemiddelde" in de app is altijd het gemiddelde ZONDER de slechtste partijen die je met badge-punten
 // hebt weggespeeld (1 per PUNTEN_PER_DROP). Deze tekst legt dat uit, overal op dezelfde manier.
 // Uitleg bij je vorm (het getal waar je niveau op is gebaseerd), naast je officiële moyenne
-// Je vorm volgens de instelling vormVenster (10/20/30/"alles"). "alles" = je moyenne: alle partijen, niets geschrapt
-// (ook met het spelelement aan); anders je laatste N partijen, met het spelelement aan zonder weggespeelde partijen.
+// Je vorm volgens de instelling vormVenster (10/20/30/"alles"). schrapt = spelelement aan én schrappen aan (klasse-
+// overzicht): dan vallen weggespeelde slechtste partijen weg. "alles" zonder schrappen = je moyenne (officieel).
 function vormOpties(vormVenster){return{venster:vormVenster==="alles"?null:vormVenster};}
-function berekenVorm(partijen,spelAan,vormVenster){
-  return berekenNiveauInfo(partijen,!spelAan||vormVenster==="alles",vormOpties(vormVenster));
+function berekenVorm(partijen,schrapt,vormVenster){
+  return berekenNiveauInfo(partijen,!schrapt,vormOpties(vormVenster));
 }
 function vormUitleg(info,dec){
   const k=function(x){return x.toFixed(dec).replace(".",",");};

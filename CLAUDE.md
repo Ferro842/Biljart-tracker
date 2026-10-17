@@ -150,6 +150,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   `OpmerkingenContext` = `slaOpmerkingenOp` in index.html; alleen gemist/goed per beurt, zelf getypte blijven staan).
 - `Grafiek` (beurten van een partij, ook tijdens het spelen) meet zijn breedte: alle beurten passend; pas onder 6 px per
   beurt zijwaarts scrollen, dan schuift hij mee naar de laatste beurt.
+- Invoerscherm: onder Noteer eerst de grafiek, dan de spelelement-meldingen. Meldingen kort houden (één regel bij Extra
+  groot, ±40 tekens); bij Extra groot past zo alles in één scherm (402×778 getest), scrollen alleen als vangnet.
 - Hoofdschermen hebben `className="scrollvak"` (`css/app.css`): een onzichtbaar streepje 1 px hoger dan het vak, zodat ze
   op iOS altijd meeveren aan de rand, ook als alles past. Nieuw scrollend hoofdscherm? Ook `scrollvak` geven.
 - Dash-tabrij loopt door op een tweede regel (`flexWrap`) als de tabs niet naast elkaar passen.

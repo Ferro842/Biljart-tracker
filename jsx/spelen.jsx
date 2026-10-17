@@ -132,18 +132,16 @@ function InvoerScherm({spel}){
         </div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 2fr",gap:6}}>
           <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
-            <div style={{fontSize:18,fontWeight:"bold",color:GRNT,lineHeight:1}}>{stL?stL.opbouw5:0}x</div>
+            <div style={{fontSize:18,fontWeight:"bold",color:GRNT,lineHeight:1}}>{stL?stL.opbouw5:0}x <span style={{fontSize:13,fontWeight:"normal"}}>{opbouwPct}%</span></div>
             <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw {dInv.opbouwMin}+</div>
-            <div style={{fontSize:13,color:GRNT,marginTop:1}}>{opbouwPct}%</div>
           </div>
           <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
-            <div style={{fontSize:18,fontWeight:"bold",color:poedels>0?"#e08055":WITD,lineHeight:1}}>{poedels}x</div>
+            <div style={{fontSize:18,fontWeight:"bold",color:poedels>0?"#e08055":WITD,lineHeight:1}}>{poedels}x <span style={{fontSize:13,fontWeight:"normal"}}>{poedelPct}%</span></div>
             <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Poedels</div>
-            <div style={{fontSize:13,color:poedels>0?"#e08055":WITD,marginTop:1}}>{poedelPct}%</div>
           </div>
           <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 8px"}}>
-            <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:4}}>Series</div>
-            <div style={{display:"flex",gap:4,justifyContent:"space-around"}}>
+            <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:1}}>Series</div>
+            <div style={{display:"flex",gap:4,justifyContent:"space-around",lineHeight:1.15}}>
               {[[dInv.opbouwMin+"-"+dInv.opbouwMax,s57,"#4caf50"],[dInv.sterkMin+"-"+dInv.sterkMax,s89,"#e8c96a"],[dInv.topMin+"+",s10,"#ff9f40"]].map(function(arr){
                 return(
                   <div key={arr[0]} style={{textAlign:"center"}}>
@@ -185,7 +183,13 @@ function InvoerScherm({spel}){
             onClick={function(){if(lp.length){setLp(function(p){return p.slice(0,-1);});setBeurtNr(function(n){return Math.max(1,n-1);});}else{setFase("setup");}}}>terug</button>
         </div>
       </div>
+      {/* Onder Noteer: eerst je beurten (grafiek), daaronder de meldingen van het spelelement */}
       <div style={{padding:"8px 12px",flex:1,overflowY:"auto"}}>
+        {lp.length>1&&(
+          <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"6px 8px",marginBottom:6}}>
+            <Grafiek beurten={lp} discipline={huidigeDiscipline}/>
+          </div>
+        )}
         {(function(){
           let huidigeStreak=0;
           for(let i=lp.length-1;i>=0;i--){
@@ -213,7 +217,7 @@ function InvoerScherm({spel}){
             }
             if(huidigeRecords.allTimeBestGem>0){
               const afstandRecord=huidigeRecords.allTimeBestGem-gemNu;
-              if(afstandRecord>0&&afstandRecord<0.3)hints.push("👑 Nog "+afstandRecord.toFixed(2)+" tot je beste gemiddelde ooit ("+huidigeRecords.allTimeBestGem.toFixed(2)+")");
+              if(afstandRecord>0&&afstandRecord<0.3)hints.push("👑 Nog "+afstandRecord.toFixed(2)+" tot je beste gem. ooit ("+huidigeRecords.allTimeBestGem.toFixed(2)+")");
             }
             const tafelRecord=huidigeRecords.tafelBest[tafel];
             if(tafelRecord&&tafelRecord>0){
@@ -222,26 +226,26 @@ function InvoerScherm({spel}){
             }
             if(huidigeRecords.totaalGem!==null){
               const afstandTotaal=huidigeRecords.totaalGem-gemNu;
-              if(afstandTotaal>0&&afstandTotaal<0.3)hints.push("📊 Nog "+afstandTotaal.toFixed(2)+" tot je totaalgemiddelde ("+huidigeRecords.totaalGem.toFixed(2)+")");
+              if(afstandTotaal>0&&afstandTotaal<0.3)hints.push("📊 Nog "+afstandTotaal.toFixed(2)+" tot je moyenne ("+huidigeRecords.totaalGem.toFixed(2)+")");
             }
             if(huidigeRecords.rolling5p!==null){
               const afstandRolling=huidigeRecords.rolling5p-gemNu;
-              if(afstandRolling>0&&afstandRolling<0.3)hints.push("📉 Nog "+afstandRolling.toFixed(2)+" tot je 5-partij rolling gemiddelde ("+huidigeRecords.rolling5p.toFixed(2)+")");
+              if(afstandRolling>0&&afstandRolling<0.3)hints.push("📉 Nog "+afstandRolling.toFixed(2)+" tot je gem. laatste 5 partijen ("+huidigeRecords.rolling5p.toFixed(2)+")");
             }
           }
           if(lp.length>=3){
             const poedelsNu=lp.filter(function(x){return x.caramboles===0;}).length;
             if(poedelsNu===0){
-              hints.push(spelAan&&"🛡️ Nog 0 poedels in "+lp.length+" beurten, blijf dit volhouden voor +30pt");
+              hints.push(spelAan&&"🛡️ 0 poedels in "+lp.length+" beurten: houd vol voor +30pt");
             }else{
               const poedelPctNu=poedelsNu/lp.length*100;
-              if(poedelPctNu<20)hints.push(spelAan&&"✅ "+Math.round(poedelPctNu)+"% poedels tot nu toe (drempel: <20%)");
+              if(poedelPctNu<20)hints.push(spelAan&&"✅ "+Math.round(poedelPctNu)+"% poedels (onder 20%)");
             }
           }
           if(lp.length>0&&huidigeRecords.allTimeMaxBeurt>0){
             const maxInPartij=Math.max.apply(null,lp.map(function(x){return x.caramboles;}));
             const afstandMax=huidigeRecords.allTimeMaxBeurt-maxInPartij;
-            if(afstandMax>0&&afstandMax<=3)hints.push("🏆 Hoogste beurt nu: "+maxInPartij+" car (record: "+huidigeRecords.allTimeMaxBeurt+" car)");
+            if(afstandMax>0&&afstandMax<=3)hints.push("🏆 Hoogste beurt nu "+maxInPartij+" (record "+huidigeRecords.allTimeMaxBeurt+")");
           }
           const helftNu=Math.floor(lp.length/2);
           if(helftNu>=3&&huidigeRecords.totaalGem!==null){
@@ -249,7 +253,7 @@ function InvoerScherm({spel}){
             const gemENu=eersteNu.reduce(function(a,b){return a+b.caramboles;},0)/eersteNu.length;
             const gemTNu=tweedeNu.reduce(function(a,b){return a+b.caramboles;},0)/tweedeNu.length;
             if(gemTNu>gemENu&&stL&&parseFloat(stL.gemPerBeurt)>huidigeRecords.totaalGem){
-              hints.push(spelAan&&"📈 Tot nu toe op koers voor sterke afsluiting: 1e helft "+gemENu.toFixed(2)+" · 2e helft "+gemTNu.toFixed(2)+" (schatting, kan nog veranderen)");
+              hints.push(spelAan&&"📈 Sterke 2e helft: "+gemENu.toFixed(2)+" → "+gemTNu.toFixed(2));
             }
           }
           if(doel&&doelType==="caramboles"){
@@ -258,16 +262,11 @@ function InvoerScherm({spel}){
           const zichtbaar=hints.filter(Boolean); // badge-hints zijn false als het spelelement uit staat
           if(zichtbaar.length===0)return null;
           return(
-            <div style={{background:"var(--c-182e14)",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
-              {zichtbaar.map(function(h,i){return <div key={i} style={{fontSize:13,color:WITD,padding:"2px 0"}}>{h}</div>;})}
+            <div style={{background:"var(--c-182e14)",border:"1px solid "+GOUD,borderRadius:8,padding:"5px 10px"}}>
+              {zichtbaar.map(function(h,i){return <div key={i} style={{fontSize:12.5,color:WITD,padding:"1px 0",lineHeight:1.3}}>{h}</div>;})}
             </div>
           );
         })()}
-        {lp.length>1&&(
-          <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"6px 8px"}}>
-            <Grafiek beurten={lp} discipline={huidigeDiscipline}/>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -287,7 +286,7 @@ function GemistScherm({spel}){
       <div style={{flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
         <div style={{padding:"10px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div style={{fontSize:19,color:ROOD,fontWeight:"bold"}}>Gemist door — {car} {car===1?"carambole":"caramboles"}</div>
+            <div style={{fontSize:19,color:ROOD,fontWeight:"bold"}}>Gemist door</div>
             {gs.length>0&&<span style={{fontSize:15,color:ROOD,fontWeight:"bold"}}>{gs.length}x</span>}
           </div>
           <div style={{fontSize:12,color:WITD,marginTop:2}}>Tik om te selecteren — je kunt er meerdere kiezen</div>

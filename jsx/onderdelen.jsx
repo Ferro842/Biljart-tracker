@@ -92,13 +92,13 @@ function Grafiek({beurten,discipline}){
   const vals=beurten.map(b=>b.caramboles);
   const maxV=Math.max(...vals,1);
   const lp=8,tp=16,H=36;
-  const ruimte=breedte>0?(breedte-lp-8)/(vals.length-1):300/vals.length;
-  const ppp=Math.max(6,Math.min(18,ruimte));
+  const ruimte=breedte>0?(breedte-lp-14)/(vals.length-1):300/vals.length;
+  const ppp=Math.max(6,Math.min(28,ruimte));
   const W=lp+ppp*(vals.length-1);
   const ps=vals.map((v,i)=>(lp+i*ppp)+","+(tp+H-(v/maxV)*H)).join(" ");
   const fs=ppp<9?7:ppp<12?8:9;
   return(
-    <div ref={vakRef} data-grafiek="" style={{overflowX:"auto"}}>
+    <div ref={vakRef} data-grafiek="" style={{overflowX:ruimte<6?"auto":"hidden"}}>
       <svg width={Math.max(W+8,40)} height={H+tp+6} style={{overflow:"visible",display:"block"}}>
         <polyline points={ps} fill="none" stroke={GOUD} strokeWidth="1.5" strokeLinejoin="round"/>
         {vals.map(function(v,i){

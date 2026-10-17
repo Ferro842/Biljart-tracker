@@ -45,6 +45,7 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   onboardingGezien, lopendePartij? }`. `huidigeId` is één teller voor partijen én beurten.
 - `lopendePartij` (optioneel): `{beurten,tafel,doel,doelType}` van een nog niet afgesloten partij; wordt bij
   elke wijziging bewaard, bij het laden teruggezet en bij afsluiten in dezelfde opslag verwijderd.
+  Op het startscherm staat hij bovenaan (Doorgaan/Afsluiten); Start partij met een lopende partij vraagt eerst bevestiging.
 - Partij zonder `discipline` = libre; zonder `tafel` wordt gemigreerd door `migreerTafels()`.
 - Eenmalige aanvulling: in partijen op de 2,30 van vóór `ACQUIT_AANVULLING_TOT` (15 okt 2026) begon iedereen
   met de acquit; `migreerAcquit()`/`vulAcquitAan()` zetten bij laden/importeren in beurt 1 "Acquit" bij Goed

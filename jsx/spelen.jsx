@@ -7,9 +7,36 @@
 function SetupScherm({spel}){
   const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip}=spel;
   const kopBlok=useContext(KopContext);
+  const [bevestigNieuw,setBevestigNieuw]=useState(false); // Start partij terwijl er nog een partij loopt
+  const startNieuw=function(){setBevestigNieuw(false);setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");};
   return(
     <div className="scrollvak" style={{flex:1,display:"flex",flexDirection:"column",padding:kopBlok?"0 14px 10px":"10px 14px",gap:7,overflowY:"auto"}}>
+      {bevestigNieuw&&(
+        <div onClick={function(){setBevestigNieuw(false);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+          <div onClick={function(e){e.stopPropagation();}} style={{background:"var(--c-1a2e1a)",border:"2px solid "+GOUD,borderRadius:14,padding:20,maxWidth:340,width:"100%"}}>
+            <div style={{fontSize:16,color:WIT,fontWeight:"bold",marginBottom:6,textAlign:"center"}}>Je hebt nog een lopende partij</div>
+            <div style={{fontSize:14,color:WITD,marginBottom:16,textAlign:"center",lineHeight:1.45}}>{lp.length} beurten · {totCarLp} car. Begin je een nieuwe partij, dan gaat deze verloren. Wil je hem bewaren, kies dan Doorgaan en daarna Afsluiten.</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              <button onClick={function(){setBevestigNieuw(false);setFase("invoer");}} style={{padding:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>Doorgaan met lopende partij</button>
+              <button onClick={startNieuw} style={{padding:12,background:"#7a3030",border:"none",borderRadius:8,color:WIT,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Toch nieuwe partij beginnen</button>
+              <button onClick={function(){setBevestigNieuw(false);}} style={{padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Annuleer</button>
+            </div>
+          </div>
+        </div>
+      )}
       {kopBlok&&kopBlok({rand:14,onder:3,gap:7})}
+      {/* Lopende partij bovenaan, zodat Doorgaan meteen in beeld is (niet verstopt achter Start partij) */}
+      {lp.length>0&&(
+        <div style={{background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 14px",fontSize:14,color:WITD}}>
+          Lopende partij: {lp.length} beurten - {totCarLp} car - tafel {tafelLabel(tafel)}
+          <div style={{display:"flex",gap:8,marginTop:8}}>
+            <button style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:6,color:G,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",fontSize:15}}
+              onClick={function(){setFase("invoer");}}>Doorgaan</button>
+            <button style={{flex:1,padding:8,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+              onClick={function(){setConfPartij(true);}}>Afsluiten</button>
+          </div>
+        </div>
+      )}
       {weergaveTip&&(
         <div style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
           <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>🔎 Nieuw: kies zelf hoe je de app ziet</div>
@@ -62,20 +89,9 @@ function SetupScherm({spel}){
           })}
         </div>
       </div>
-      {lp.length>0&&(
-        <div style={{background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 14px",fontSize:14,color:WITD}}>
-          Lopende partij: {lp.length} beurten - {totCarLp} car - tafel {tafelLabel(tafel)}
-          <div style={{display:"flex",gap:8,marginTop:8}}>
-            <button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
-              onClick={function(){setFase("invoer");}}>Doorgaan</button>
-            <button style={{flex:1,padding:8,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
-              onClick={function(){setConfPartij(true);}}>Afsluiten</button>
-          </div>
-        </div>
-      )}
       {/* Start partij blijft onderaan in beeld, ook als het scherm te klein is (bijv. iPhone SE met extra grote tekst) */}
       <button style={{position:"sticky",bottom:0,zIndex:2,flexShrink:0,padding:18,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 -6px 14px "+G}}
-        onClick={function(){setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");}}>
+        onClick={function(){if(lp.length>0)setBevestigNieuw(true);else startNieuw();}}>
         Start partij
       </button>
       <button onClick={function(){setBriefjeOpen(true);}}

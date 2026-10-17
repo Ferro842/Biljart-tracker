@@ -9,6 +9,10 @@ controleren zijn.
   (`TARGETED_DEVICE_FAMILY = 1`), `ITSAppUsesNonExemptEncryption = false`. Apple Developer-account goedgekeurd (17 okt 2026).
 - Android-app: Capacitor (map `android/`, zelfde id; `npm run android` opent Android Studio). Iconen en opstartscherm
   gemaakt uit het iOS-icoon (Swift-scriptjes, geen extra pakketten).
+  Bouwen zonder Android Studio: `npx cap sync android && cd android && JAVA_HOME=~/Library/Java/JavaVirtualMachines/jbr-21.0.11/Contents/Home ./gradlew assembleDebug`
+  (Gradle 8.14 werkt niet met Java 25). Emulator `Pixel_9` (API 36): `~/Library/Android/sdk/emulator/emulator -avd Pixel_9`.
+  Systeembalken donkergroen via `res/values/styles.xml` + `colors.xml`; witte icoontjes via `SystemBars.style = DARK` in
+  `capacitor.config.json` (geldt ook voor iOS). Play-schermafbeeldingen max. 2:1 → `store/screenshots/android/play/` (1080×2160).
 - Store-materiaal in `store/`: teksten (`app-store.md`, `play-store.md`), voorbeelddata voor schermafbeeldingen
   (`node store/maak-demodata.js` → `demodata.json`, geen echte namen), Play-pictogram en feature graphic (`store/play/`).
 - Privacybeleid (voor App Store Connect): `privacy.html`

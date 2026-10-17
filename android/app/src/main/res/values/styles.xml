@@ -13,6 +13,12 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:background">@null</item>
+        <!-- Donkergroen achter status- en navigatiebalk (zoals de app), met lichte icoontjes -->
+        <item name="android:windowBackground">@color/biljart_groen</item>
+        <item name="android:statusBarColor">@color/biljart_groen</item>
+        <item name="android:navigationBarColor">@color/biljart_groen</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 
 

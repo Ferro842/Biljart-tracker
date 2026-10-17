@@ -2,5 +2,10 @@
   "appId": "nl.ferrovandam.biljarttracker",
   "appName": "Biljart Tracker",
   "webDir": "www",
-  "backgroundColor": "#1a2e1a"
+  "backgroundColor": "#1a2e1a",
+  "plugins": {
+    "SystemBars": {
+      "style": "DARK"
+    }
+  }
 }

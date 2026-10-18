@@ -2,7 +2,7 @@
 // Terimler: beurt = istaka, serie = seri, poedel = sıfır, moyenne = genel ortalama, vorm = form, caramboles = sayı.
 VERTALING.tr={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"Karambol - Seri takibi",
+  "Carambole - Series":"Karambol - Seri takibi",
   "Afsluiten":"Bitir",
   "Kader":"Kadr",
   "Spelen":"Oyna",

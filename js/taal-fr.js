@@ -2,7 +2,7 @@
 // Termes : beurt = reprise, serie = série, poedel = reprise blanche, moyenne = moyenne, vorm = forme, caramboles = points.
 VERTALING.fr={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"Carambole - Séries",
+  "Carambole - Series":"Carambole - Séries",
   "Afsluiten":"Terminer",
   "Kader":"Cadre",
   "Spelen":"Jouer",

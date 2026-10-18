@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-18.24";
+const APP_VERSIE="2026-10-18.25";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -415,7 +415,7 @@ function BiljartTracker(){
               <div style={{minWidth:0}}>
                 <div style={{fontSize:16,fontWeight:"bold",color:GOUD,letterSpacing:1}}>Carom Tracker</div>
                 {/* Bij grotere tekst is er geen ruimte voor de ondertitel */}
-                {tekstgrootte==="normaal"&&<div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>{t("Carambole - Serie registratie")}</div>}
+                {tekstgrootte==="normaal"&&<div style={{fontSize:12,color:WITD,letterSpacing:2,textTransform:"uppercase"}}>{t("Carambole - Series")}</div>}
               </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>

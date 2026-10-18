@@ -2,7 +2,7 @@
 // Begriffe: beurt = Aufnahme, serie = Serie, poedel = Nuller, moyenne = Durchschnitt, vorm = Form, caramboles = Punkte.
 VERTALING.de={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"Karambol - Serien",
+  "Carambole - Series":"Karambol - Serien",
   "Afsluiten":"Beenden",
   "Kader":"Cadre",
   "Spelen":"Spielen",

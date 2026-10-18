@@ -2,7 +2,7 @@
 // Termen: beurt = イニング, serie = 連続得点 (hoogste: ハイラン), poedel = ゼロ, caramboles = 点, gemiddelde = アベレージ, moyenne = 通算アベレージ, vorm = フォーム, vierbal = 四つ球.
 VERTALING.ja={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"キャロム - 連続得点の記録",
+  "Carambole - Series":"キャロム - 連続得点の記録",
   "Afsluiten":"終了",
   "Kader":"ボークライン",
   "Spelen":"プレー",

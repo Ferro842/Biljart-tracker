@@ -2,7 +2,7 @@
 // Termen: beurt = inning, serie = run, poedel = miss, moyenne = average, vorm = form, caramboles = points.
 VERTALING.en={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"Carom - Run tracking",
+  "Carambole - Series":"Carom - Run tracking",
   "Afsluiten":"Finish",
   "Kader":"Balkline",
   "Spelen":"Play",

@@ -2,7 +2,7 @@
 // Termen: beurt = lượt, serie = seri, poedel = lượt trắng, caramboles = điểm, gemiddelde = trung bình (TB), moyenne = trung bình chung, vorm = phong độ, vierbal = 4 bi.
 VERTALING.vi={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"Carom - Ghi seri điểm",
+  "Carambole - Series":"Carom - Ghi seri điểm",
   "Afsluiten":"Kết thúc",
   "Kader":"Balkline",
   "Spelen":"Chơi",

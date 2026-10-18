@@ -2,7 +2,7 @@
 // 용어: beurt = 이닝, serie = 연속 득점/하이런, poedel = 공타, caramboles = 득점(점), gemiddelde = 에버리지, vierbal = 4구.
 VERTALING.ko={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"캐롬 - 연속 득점 기록",
+  "Carambole - Series":"캐롬 - 연속 득점 기록",
   "Afsluiten":"종료",
   "Kader":"보크라인",
   "Spelen":"플레이",

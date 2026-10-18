@@ -14,7 +14,7 @@ bestanden.forEach(function(f){
   const re=/(?:^|[^\w.$])t\(\s*"((?:[^"\\]|\\.)*)"/g;let m;
   while((m=re.exec(src))){sleutels.add(JSON.parse('"'+m[1]+'"'));}
   // t(voorwaarde?"a":"b"): beide teksten
-  const re2=/(?:^|[^\w.$])t\(\s*[\w.$!=<>&|() ]+\?\s*"((?:[^"\\]|\\.)*)"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+  const re2=/(?:^|[^\w.$])t\(\s*[\w.$!=<>&|() +-]+\?\s*"((?:[^"\\]|\\.)*)"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
   while((m=re2.exec(src))){sleutels.add(JSON.parse('"'+m[1]+'"'));sleutels.add(JSON.parse('"'+m[2]+'"'));}
 });
 // Vaste labels die als variabele in t() gaan
@@ -32,6 +32,9 @@ sleutels.add(c.BRIEFJE_PROMPT);
   const src=fs.readFileSync(path.join(map,"js/berekeningen.js"),"utf8");const re=/(?:label|categorie):"([^"]+)"/g;let m;
   while((m=re.exec(src))){if(m[1]!=="Gemiddelde boven ")sleutels.add(m[1]);}
   sleutels.add("Gemiddelde boven {g}");sleutels.add("Overig");
+  // Titels van de omstandigheden in berekenInzicht (blijven Nederlands, getoond met t(o.titel))
+  sleutels.add("0 (poedel)"); // eerste groep van histogramBuckets, getoond met t(label)
+  const re3=/groep\("([^"]+)"/g;while((m=re3.exec(src))){sleutels.add(m[1]);}
 })();
 
 global.VERTALING={};

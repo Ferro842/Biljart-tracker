@@ -198,8 +198,11 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   libre/driebanden/bandstoten/kader = straight rail, three-cushion, one-cushion, balkline / libre, trois bandes, une bande, cadre /
   Freie Partie, Dreiband, Einband, Cadre.
 - Fase 1 klaar (kop, tabbladen, Spelen, opmerkingen, Info, welkom). Fase 2 klaar (Stats, Log, partijregels, vensters, uitleg,
-  badges, vormUitleg, wauw: doel, kalender, seizoen in beeld, deelkaarten). Nog te doen: fase 3 Dash/Inzicht
-  (`jsx/dashboard.jsx`, `jsx/inzicht.jsx`, `berekenInzicht`-teksten), fase 4 store-teksten per taal; daarna nieuwe talen.
+  badges, vormUitleg, wauw: doel, kalender, seizoen in beeld, deelkaarten). Fase 3 klaar (Dash, Inzicht, coachzinnen en
+  omstandigheden in `berekenInzicht`; titels van omstandigheden blijven Nederlands in de data, want de code vergelijkt erop,
+  en worden getoond met `t(o.titel)`). Nog te doen: fase 4 store-teksten per taal; daarna nieuwe talen.
+  Na een tekstwijziging in `berekenInzicht`: Nederlandse uitkomst oud tegenover nieuw vergelijken (de snapshot-hash
+  bevat de coachzinnen niet).
 
 ## Harde regels
 

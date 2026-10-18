@@ -68,7 +68,7 @@ VERTALING.ja={
   // Spelen: tijdens de partij
   "Deze partij:":"このゲーム：",
   "Totaal:":"合計：",
-  "Gespeeld":"ゲーム数",
+  "Gespeeld":"イニング数",
   "Gem.":"平均",
   "Max":"最高",
   "Opbouw {n}+":"{n}点以上",

@@ -346,7 +346,7 @@ function BriefjeImport({ discipline, tafelStandaard, onOpslaan, onClose }) {
     return Math.max(m, b.car);
   }, 0);
   const dec = discipline === "driebanden" ? 3 : 2;
-  const gem = beurten.length ? (totaal / beurten.length).toFixed(dec).replace(".", ",") : "–";
+  const gem = beurten.length ? getalTekst(totaal / beurten.length, dec) : "–";
   const doelGetal = parseInt(doel, 10);
   function opslaan() {
     const d = datum.split("-").map(function(x) {

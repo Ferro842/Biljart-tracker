@@ -2,7 +2,7 @@
 // Términos: beurt = entrada, serie = serie, poedel = cero, moyenne = promedio general, vorm = forma, caramboles = carambolas.
 VERTALING.es={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"Carambola - Registro de series",
+  "Carambole - Serie registratie":"Carambola - Series",
   "Afsluiten":"Terminar",
   "Kader":"Cuadro",
   "Spelen":"Jugar",

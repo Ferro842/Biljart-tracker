@@ -626,7 +626,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             {[[drempD1,b15,"#5a8a50"],[drempD2,b20,GOUD],[drempD3,b25,"#e8a84c"],[drempD4,b30,ROOD]].map(([d,pct,k])=>(
               <div key={d} style={{marginBottom:14}}>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-                  <span style={{fontSize:14,color:WITD}}>{t("Boven {g}",{g:gemDrempelTekst(d,stapC)})}</span>
+                  <span style={{fontSize:14,color:WITD}}>{t("Boven {g}",{g:kommaTekst(gemDrempelTekst(d,stapC))})}</span>
                   <span style={{fontSize:18,fontWeight:"bold",color:k}}>{pct}%</span>
                 </div>
                 <DashBalk pct={pct} kleur={k}/>

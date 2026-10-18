@@ -1,5 +1,5 @@
 // Gebouwd uit jsx/app.jsx door bouw-jsx.js; niet zelf aanpassen.
-const APP_VERSIE = "2026-10-18.19";
+const APP_VERSIE = "2026-10-18.22";
 function BiljartTracker() {
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("spelen");

@@ -294,8 +294,8 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ### Samen, na goedkeuring van 1.0
 4. **Versie 1.1 naar de App Store**: naam per taal uit `store/aso.md` (Carom Tracker: …), alle talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
-   systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle zeven talen staan in
-   `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
+   systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle tien talen staan in
+   `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko|ja|vi|pt` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
 5. **`APP_STORE_URL`** in `js/constanten.js` invullen na publicatie (voor "Deel deze app").
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
@@ -317,8 +317,8 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    - In Info (Back-up en gegevens) tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
    - `privacy.html` aanpassen: reservekopie in je eigen iCloud Drive waar alleen jij bij kunt. "Data Not Collected"
      blijft kloppen.
-8. **Japans, Vietnamees en Portugees** (18 okt 2026 in de app en winkelteksten): nog schermafbeeldingen maken
-   (`store/screenshots/ios-ja|vi|pt`, Japans met vierbal of driebanden als voorbeeld) en laten nalezen (punt 3).
+8. **Japans, Vietnamees en Portugees** (18 okt 2026): app, winkelteksten en schermafbeeldingen (`store/screenshots/ios-ja|vi|pt`,
+   driebanden-voorbeelddata) klaar; alleen nog laten nalezen (punt 3).
 9. **Inkomsten** (alleen als de eigenaar dat wil): eerst gratis houden; later eventueel een eenmalige Pro-aankoop of
    fooienpot via Apple/Google zelf (geen externe dienst). Geen advertenties of abonnement.
 10. **Wedstrijdbriefje op de iPhone zelf herkennen** (Apple Vision, eigen plugin), met hetzelfde controlescherm.

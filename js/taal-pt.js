@@ -2,7 +2,7 @@
 // Termen (Braziliaans, je = você): beurt = entrada, serie = série, poedel = zero, caramboles = pontos, gemiddelde = média, moyenne = média geral, vorm = forma, vierbal = quatro bolas; Livre, Três tabelas, Uma tabela, Quadro.
 VERTALING.pt={
   // Kop, tabbladen, algemeen
-  "Carambole - Serie registratie":"Carambola - Registro de séries",
+  "Carambole - Serie registratie":"Carambola - Séries",
   "Afsluiten":"Encerrar",
   "Kader":"Quadro",
   "Spelen":"Jogar",

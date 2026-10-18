@@ -15,7 +15,8 @@ controleert ze.
   Schermafbeeldingen: Engelse staan in `store/screenshots/ios-en/` (6,9 inch, 1320 × 2868) en `ios-en-6.3/` (1206 × 2622),
   ook in iCloud Drive → "Biljart Tracker store" → "English 6,9 inch" / "English 6,3 inch". Zonder eigen schermafbeeldingen
   gebruikt Apple per taal de Nederlandse. Frans, Duits, Spaans, Turks en Koreaans op dezelfde manier: `ios-fr/`, `ios-de/`,
-  `ios-es/`, `ios-tr/`, `ios-ko/`; Japans, Vietnamees en Portugees (`ios-ja/`, `ios-vi/`, `ios-pt/`) nog te maken (elk ook `-6.3/`; iCloud: "Français …", "Deutsch …", "Español …", "Türkçe …", "한국어 …").
+  `ios-es/`, `ios-tr/`, `ios-ko/`, en Japans, Vietnamees en Portugees in `ios-ja/`, `ios-vi/`, `ios-pt/` (alle drie met driebanden-voorbeelddata, zoals het Koreaans)
+  (elk ook `-6.3/`; iCloud: "Français …", "Deutsch …", "Español …", "Türkçe …", "한국어 …", "日本語 …", "Tiếng Việt …", "Português …").
 - Play Console: Winkelvermelding → Vertalingen beheren → talen toevoegen (en-GB/en-US, fr-FR, de-DE) en per taal
   app-naam, korte beschrijving en volledige beschrijving invullen.
 

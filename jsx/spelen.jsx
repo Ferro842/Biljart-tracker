@@ -253,7 +253,7 @@ function InvoerScherm({spel}){
             if(gemNu<drempel2Nu){
               const drempel=gemNu<drempel1Nu?drempel1Nu:drempel2Nu;
               const afstand=drempel-gemNu;
-              if(afstand<stapNu)hints.push(spelAan&&"⭐ "+t("Nog {a} tot gemiddelde {g}",{a:afstand.toFixed(2),g:gemDrempelTekst(drempel,stapNu)}));
+              if(afstand<stapNu)hints.push(spelAan&&"⭐ "+t("Nog {a} tot gemiddelde {g}",{a:afstand.toFixed(2),g:kommaTekst(gemDrempelTekst(drempel,stapNu))}));
             }
             if(huidigeRecords.allTimeBestGem>0){
               const afstandRecord=huidigeRecords.allTimeBestGem-gemNu;

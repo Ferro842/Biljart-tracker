@@ -393,7 +393,7 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   const totaal=beurten.reduce(function(s,b){return s+b.car;},0);
   const hoogste=beurten.reduce(function(m,b){return Math.max(m,b.car);},0);
   const dec=discipline==="driebanden"?3:2;
-  const gem=beurten.length?(totaal/beurten.length).toFixed(dec).replace(".",","):"–";
+  const gem=beurten.length?getalTekst(totaal/beurten.length,dec):"–";
   const doelGetal=parseInt(doel,10); // te maken caramboles van het briefje (niet zichtbaar; wordt als doel bewaard)
 
   function opslaan(){

@@ -78,6 +78,17 @@
   uit.icloud=!!icUit&&icUit.dataset.icloud==="uit"&&!!icAan&&icAan.dataset.icloud==="aan"&&backupNodig(veel)===null;
   window.icloudPlugin=oudPlugin;Object.assign(ICLOUD,oudIcloud);icloudMeld();await w(150);
   uit.icloud=uit.icloud&&backupNodig(veel)!==null;
-  uit.goed=uit.backupRegels&&uit.icloudWebUit&&uit.icloud&&uit.backupKaart&&uit.backupDatumRegel&&uit.gekopieerd&&uit.tekstExport&&uit.handmatig&&uit.ladenZonderPartijen&&uit.beoordelingRegels&&uit.tafelsBewaard&&uit.promptKnop&&uit.geimporteerd&&uit.statsNaImport;
+  // Webapp op een telefoon: Exporteren via het deelmenu (nagebootst); annuleren telt niet als back-up
+  const oudDeel=window.deelmenuVoorBestand,oudShare=Object.getOwnPropertyDescriptor(navigator,"share");
+  let gedeeld=null;
+  window.deelmenuVoorBestand=function(naam,tekst){return new File([tekst],naam,{type:"application/json"});};
+  Object.defineProperty(navigator,"share",{configurable:true,value:function(o){gedeeld=o;return Promise.resolve();}});
+  const deelOk=await maakBackupBestand({partijen:[]});
+  Object.defineProperty(navigator,"share",{configurable:true,value:function(){const e=new Error("geannuleerd");e.name="AbortError";return Promise.reject(e);}});
+  const deelAnnuleer=await maakBackupBestand({partijen:[]});
+  window.deelmenuVoorBestand=oudDeel;
+  if(oudShare)Object.defineProperty(navigator,"share",oudShare);else delete navigator.share;
+  uit.deelmenu=deelOk===true&&!!gedeeld&&gedeeld.files&&gedeeld.files[0].name.indexOf("biljart-backup-")===0&&deelAnnuleer===false;
+  uit.goed=uit.backupRegels&&uit.deelmenu&&uit.icloudWebUit&&uit.icloud&&uit.backupKaart&&uit.backupDatumRegel&&uit.gekopieerd&&uit.tekstExport&&uit.handmatig&&uit.ladenZonderPartijen&&uit.beoordelingRegels&&uit.tafelsBewaard&&uit.promptKnop&&uit.geimporteerd&&uit.statsNaImport;
   return uit;
 })()

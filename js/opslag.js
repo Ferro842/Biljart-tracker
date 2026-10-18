@@ -194,13 +194,34 @@ async function maakBackupBestand(data){
       return false;
     }
   }
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  // Website op een telefoon/tablet: het deelmenu (Bewaar in Bestanden → bijv. iCloud Drive, AirDrop, mail), net als
+  // in de app. Op een computer, of als de browser geen bestanden kan delen: gewone download.
+  const tekst=JSON.stringify(data,null,2);
+  const bestand=deelmenuVoorBestand(naam,tekst);
+  if(bestand){
+    try{await navigator.share({files:[bestand],title:naam});return true;}
+    catch(e){
+      if(e&&e.name==="AbortError")return false; // zelf geannuleerd
+      console.log("Delen mislukt, dan downloaden:",e&&e.message);
+    }
+  }
+  const blob=new Blob([tekst],{type:"application/json"});
   const url=URL.createObjectURL(blob);
   const a=document.createElement("a");
   a.href=url;a.download=naam;
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   setTimeout(function(){URL.revokeObjectURL(url);},1000);
   return true;
+}
+
+// Bestand om te delen via het deelmenu, of null als dat hier niet kan of niet handig is (computer met muis)
+function deelmenuVoorBestand(naam,tekst){
+  try{
+    if(!navigator.share||!navigator.canShare||typeof File==="undefined")return null;
+    if(!(window.matchMedia&&window.matchMedia("(pointer: coarse)").matches))return null;
+    const bestand=new File([tekst],naam,{type:"application/json"});
+    return navigator.canShare({files:[bestand]})?bestand:null;
+  }catch(e){return null;}
 }
 
 // Back-upherinnering: je partijen staan alleen op dit toestel. Seintje na BACKUP_NA_PARTIJEN nieuwe partijen sinds je

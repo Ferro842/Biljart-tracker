@@ -77,7 +77,9 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (Babel maakte er `
 - Seizoenen: `data.seizoenen` [{id,naam,startDatum,eindDatum}]. "Seizoen afsluiten" (Stats) vraagt de begindatum van
   het nieuwe seizoen (standaard nu; eerder kan, bijv. om een grens te herstellen). "Laatste seizoensgrens ongedaan
   maken" staat in het archiefvenster (niet direct onder de knoppen: was per ongeluk aan te tikken).
-- Back-up: Info → Exporteer/Importeer (JSON). "Kopieer data" is alleen een leesbare tekstexport.
+- Back-up: Info → Exporteer/Importeer (JSON). "Kopieer data" is alleen een leesbare tekstexport. Exporteren (`maakBackupBestand`):
+  in de app via het deelmenu (Share-plugin), op de website op een telefoon/tablet ook via het deelmenu (`navigator.share` met
+  bestand, `deelmenuVoorBestand()`: alleen bij `pointer: coarse`), op een computer als download.
 - iCloud-back-up (alleen iOS-app, 18 okt 2026): eigen plugin `ICloudBackup` (`ios/App/App/ICloudBackupPlugin.swift`,
   geregistreerd in `MainViewController.swift`, dat SceneDelegate als hoofdweergave gebruikt; entitlements `App/App.entitlements`,
   `NSUbiquitousContainers` in Info.plist met mapnaam "Carom Tracker"). JS in `js/opslag.js` (`ICLOUD`, `icloudStatus()`,

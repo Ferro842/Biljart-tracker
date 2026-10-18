@@ -25,7 +25,7 @@ controleert ze.
 
 | Veld | Tekst |
 |---|---|
-| Naam (30) | Biljart Tracker |
+| Naam (30) | Carom Tracker |
 | Ondertitel (30) | Carom billiards: runs, average |
 | Play: korte beschrijving (80) | Track your carom billiards games: every inning, with average, runs and class. |
 
@@ -35,7 +35,7 @@ controleert ze.
 
 **Beschrijving (4000)**
 
-> Biljart Tracker is made by and for carom billiards players. Record your points for each inning while you play and see right away how your game is going.
+> Carom Tracker is made by and for carom billiards players. Record your points for each inning while you play and see right away how your game is going.
 >
 > WHILE YOU PLAY
 > • Set your points per inning with + and −, and one tap on Record
@@ -75,7 +75,7 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 
 | Veld | Tekst |
 |---|---|
-| Naam (30) | Biljart Tracker |
+| Naam (30) | Carom Tracker |
 | Ondertitel (30) | Billard carambole : séries |
 | Play: korte beschrijving (80) | Suis tes parties de carambole : chaque reprise, moyenne, séries et classe. |
 
@@ -85,7 +85,7 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 
 **Beschrijving (4000)**
 
-> Biljart Tracker est conçu par et pour les joueurs de billard carambole. Note tes points à chaque reprise pendant que tu joues et vois tout de suite comment se déroule ta partie.
+> Carom Tracker est conçu par et pour les joueurs de billard carambole. Note tes points à chaque reprise pendant que tu joues et vois tout de suite comment se déroule ta partie.
 >
 > PENDANT LE JEU
 > • Tes points par reprise avec + et −, et une touche sur Noter
@@ -125,7 +125,7 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 
 | Veld | Tekst |
 |---|---|
-| Naam (30) | Biljart Tracker |
+| Naam (30) | Carom Tracker |
 | Ondertitel (30) | Karambol: Serien & Schnitt |
 | Play: korte beschrijving (80) | Erfasse deine Karambolpartien: jede Aufnahme, mit Schnitt, Serien und Klasse. |
 
@@ -135,7 +135,7 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 
 **Beschrijving (4000)**
 
-> Biljart Tracker ist von und für Karambolspieler gemacht. Notiere beim Spielen pro Aufnahme deine Punkte und sieh sofort, wie deine Partie läuft.
+> Carom Tracker ist von und für Karambolspieler gemacht. Notiere beim Spielen pro Aufnahme deine Punkte und sieh sofort, wie deine Partie läuft.
 >
 > BEIM SPIELEN
 > • Pro Aufnahme deine Punkte mit + und −, und ein Tipp auf Eintragen
@@ -175,7 +175,7 @@ Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme
 
 | Veld | Tekst |
 |---|---|
-| Naam (30) | Biljart Tracker |
+| Naam (30) | Carom Tracker |
 | Ondertitel (30) | Carambola: series y promedio |
 | Play: korte beschrijving (80) | Registra tus partidas de carambola: cada entrada, promedio, series y categoría. |
 
@@ -185,7 +185,7 @@ Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme
 
 **Beschrijving (4000)**
 
-> Biljart Tracker está hecho por y para jugadores de carambola. Anota tus carambolas en cada entrada mientras juegas y ve al instante cómo va tu partida.
+> Carom Tracker está hecho por y para jugadores de carambola. Anota tus carambolas en cada entrada mientras juegas y ve al instante cómo va tu partida.
 >
 > MIENTRAS JUEGAS
 > • Tus carambolas por entrada con + y −, y un toque en Anotar
@@ -225,7 +225,7 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 
 | Veld | Tekst |
 |---|---|
-| Naam (30) | Biljart Tracker |
+| Naam (30) | Carom Tracker |
 | Ondertitel (30) | Karambol: seri ve ortalama |
 | Play: korte beschrijving (80) | Karambol maçlarını takip et: her istaka, ortalama, seriler ve sınıf. |
 
@@ -235,7 +235,7 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 
 **Beschrijving (4000)**
 
-> Biljart Tracker, karambol oyuncuları tarafından karambol oyuncuları için yapıldı. Oynarken her istakada sayını gir ve maçının nasıl gittiğini hemen gör.
+> Carom Tracker, karambol oyuncuları tarafından karambol oyuncuları için yapıldı. Oynarken her istakada sayını gir ve maçının nasıl gittiğini hemen gör.
 >
 > OYNARKEN
 > • İstaka başına sayın + ve − ile, ve Kaydet'e tek dokunuş
@@ -275,7 +275,7 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 
 | Veld | Tekst |
 |---|---|
-| Naam (30) | Biljart Tracker |
+| Naam (30) | Carom Tracker |
 | Ondertitel (30) | 4구·3쿠션 경기 기록과 에버리지 |
 | Play: korte beschrijving (80) | 캐롬 경기를 이닝마다 기록하세요: 에버리지, 하이런, 공타, 등급까지. |
 
@@ -285,7 +285,7 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 
 **Beschrijving (4000)**
 
-> Biljart Tracker는 캐롬 선수가 캐롬 선수를 위해 만든 앱이에요. 치면서 이닝마다 득점을 입력하고 경기 흐름을 바로 확인하세요.
+> Carom Tracker는 캐롬 선수가 캐롬 선수를 위해 만든 앱이에요. 치면서 이닝마다 득점을 입력하고 경기 흐름을 바로 확인하세요.
 >
 > 경기 중에
 > • 이닝마다 + 와 − 로 득점, 기록 버튼 한 번
@@ -325,6 +325,6 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 
 ## App Review-notities (Engels, voor de beoordelaar)
 
-> Biljart Tracker works completely offline; there is no account and no server. All data stays on the device.
+> Carom Tracker works completely offline; there is no account and no server. All data stays on the device.
 > To test: on Play choose a table and tap Start game, set points with + and tap Record. After a few innings: Finish → Save. Stats, Dash and Log are then filled. The language can be changed under Info → Display → Language.
 > The "Game from a score sheet" button only creates a text that users can paste into an AI chat of their own choice; the app itself never connects to an AI service.

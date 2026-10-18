@@ -1,4 +1,4 @@
-# Biljart Tracker
+# Carom Tracker (voorheen Biljart Tracker)
 
 Nederlandstalige app voor het bijhouden van carambole-partijen. Communiceer in het Nederlands; alle
 UI-teksten zijn Nederlands. De eigenaar test op de telefoon, dus werk in kleine stappen die daar te
@@ -15,7 +15,7 @@ controleren zijn.
   `capacitor.config.json` (geldt ook voor iOS). Play-schermafbeeldingen max. 2:1 → `store/screenshots/android/play/` (1080×2160).
 - Vindbaarheid (ASO): `store/aso.md` gaat vóór naam/ondertitel/trefwoorden in `app-store.md` en `talen.md` (per taal,
   plus English (U.K.) en Spanish (Mexico) voor extra trefwoorden; controle met `node store/controleer-lengtes.js`, ook op
-  dubbele woorden). Merknaam nog niet gekozen (voorkeur "Carom Tracker"). Website: `<title>`, meta description, Open Graph
+  dubbele woorden). Merknaam: **Carom Tracker** (18 okt 2026), in de winkels per taal "Carom Tracker: Biljart/Billiards/Billard/Billar/Bilardo", Koreaans "캐롬 트래커: 당구 기록". In de app overal Carom Tracker; naam onder het icoon "Carom" (iOS `CFBundleDisplayName`, PWA `short_name`/`apple-mobile-web-app-title`). Opslagsleutel, webadres (repo Biljart-tracker) en app-ID blijven ongewijzigd. Website: `<title>`, meta description, Open Graph
   en JSON-LD in de kop van `index.html`, plus `<noscript>`-tekst.
 - Beoordeling vragen: `beoordelingMoment()`/`vraagBeoordeling()` in `js/opslag.js`, aangeroepen in `bewaarPartij` (record,
   beste partij, hogere klasse, gehaald doel; vanaf 5 partijen, hoogstens eens per 120 dagen en 3 keer; `data.beoordelingGevraagd`).
@@ -291,7 +291,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ### Later
 7. **Automatische back-up naar iCloud Drive** (alleen iOS-app), zodat je nooit meer zelf hoeft te exporteren:
-   - De app zet zelf een kopie van de data in de iCloud Drive van de gebruiker, map "Biljart Tracker",
+   - De app zet zelf een kopie van de data in de iCloud Drive van de gebruiker, map "Carom Tracker",
      bijgewerkt na elke partij (laatste paar versies bewaren). Blijft bestaan als de app verwijderd wordt en
      is zichtbaar op iPad/Mac.
    - Iedere gebruiker gebruikt zijn eigen iCloud (eigen Apple ID); niets gaat naar de maker of een server.

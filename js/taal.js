@@ -1,4 +1,4 @@
-// Talen van Biljart Tracker. De Nederlandse tekst is zelf de sleutel: t("Start partij") geeft in het Engels
+// Talen van Carom Tracker. De Nederlandse tekst is zelf de sleutel: t("Start partij") geeft in het Engels
 // "Start game". Vertalingen staan per taal in js/taal-<code>.js (VERTALING.en = {...}). Ontbreekt een vertaling,
 // dan valt t() terug op Engels en daarna op het Nederlands, zodat er nooit een lege knop staat.
 // Variabelen tussen accolades: t("Seizoen {n}",{n:2}). Opgeslagen gegevens (opmerkingen, disciplines,

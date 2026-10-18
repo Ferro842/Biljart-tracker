@@ -1,4 +1,4 @@
-// "Wauw"-onderdelen van Biljart Tracker: optellende cijfers (Telop), vieringen (vier/VieringLaag), deelbare
+// "Wauw"-onderdelen van Carom Tracker: optellende cijfers (Telop), vieringen (vier/VieringLaag), deelbare
 // afbeeldingen (partijkaart en seizoenskaart via canvas), "Je seizoen in beeld" (SeizoenVerhaal), de
 // speelkalender (KalenderPaneel) en het doel met voortgangsring (DoelRing/DoelInstellen).
 // JSX via Babel, direct na jsx/onderdelen.jsx. Animaties staan uit als <html> de klasse "rustig" heeft
@@ -129,7 +129,7 @@ function maakPartijKaart(partij,discipline,niveauNaam){
   const poedels=bt.filter(function(x){return x===0;}).length;
   canvasAchtergrond(ctx,B,H,th);
   tekenLogo(ctx,80,80,120,th);
-  tekst(ctx,"Biljart Tracker",230,140,52,GOUD,"left",true);
+  tekst(ctx,"Carom Tracker",230,140,52,GOUD,"left",true);
   const d=new Date(partij.datum);
   tekst(ctx,(DISCIPLINES[discipline]||DISCIPLINES.libre).naam+" · "+d.toLocaleDateString(taalLocale(),{weekday:"short",day:"numeric",month:"long",year:"numeric"})+" · "+tafelLabel(partij.tafel||"230"),230,190,30,WITD);
   tekst(ctx,kommaGetal(gem,dec),B/2,470,230,GOUDL,"center",true);
@@ -170,7 +170,7 @@ async function deelAfbeelding(canvas,naam){
   }
   const blob=await (await fetch(dataUrl)).blob();
   const bestand=new File([blob],naam,{type:"image/png"});
-  if(navigator.canShare&&navigator.canShare({files:[bestand]})){await navigator.share({files:[bestand],title:"Biljart Tracker"});return;}
+  if(navigator.canShare&&navigator.canShare({files:[bestand]})){await navigator.share({files:[bestand],title:"Carom Tracker"});return;}
   const a=document.createElement("a");a.href=dataUrl;a.download=naam;document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 

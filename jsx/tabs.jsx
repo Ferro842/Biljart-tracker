@@ -1,4 +1,4 @@
-// Tabbladen Log, Stats en Info (met de back-up uit DataTab) van Biljart Tracker, als losse componenten. De gegevens en acties komen
+// Tabbladen Log, Stats en Info (met de back-up uit DataTab) van Carom Tracker, als losse componenten. De gegevens en acties komen
 // als props uit BiljartTracker (index.html). JSX via Babel, na jsx/dashboard.jsx.
 
 // Log-tab: lopende partij en alle partijen beurt voor beurt
@@ -311,9 +311,9 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
     // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link (zodra die
     // er is) of anders de website.
     const url=IS_NATIVE?(APP_STORE_URL||WEB_URL):window.location.href;
-    const tekst=t("Ik gebruik deze Biljart Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?");
+    const tekst=t("Ik gebruik deze Carom Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?");
     if(navigator.share){
-      navigator.share({title:"Biljart Tracker",text:tekst,url:url}).catch(function(){});
+      navigator.share({title:"Carom Tracker",text:tekst,url:url}).catch(function(){});
     }else if(navigator.clipboard){
       navigator.clipboard.writeText(url).then(function(){
         setDeelResultaat(t("Link gekopieerd naar klembord!"));
@@ -425,7 +425,7 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Over deze app")}</div>
           <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-            {t("Biljart Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.")}
+            {t("Carom Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.")}
           </div>
           <button onClick={deelApp} style={{width:"100%",padding:11,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit",marginBottom:8}}>
             📤 {t("Deel deze app")}

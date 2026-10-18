@@ -1,4 +1,4 @@
-// Laden en opslaan van Biljart Tracker. Web: localStorage (en window.storage als dat bestaat) onder
+// Laden en opslaan van Carom Tracker. Web: localStorage (en window.storage als dat bestaat) onder
 // sleutel SK. iOS-app (Capacitor): bestand in de Library-map, localStorage als extra kopie.
 // Migraties van oude data gebeuren hier bij het laden: gebruikers mogen nooit een lege app zien.
 // Gewone JavaScript, geladen na js/constanten.js en vóór de Babel-code in index.html.

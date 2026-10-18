@@ -1,4 +1,4 @@
-# App Store Connect – Biljart Tracker
+# App Store Connect – Carom Tracker
 
 Naam, ondertitel en trefwoorden: zie `store/aso.md` (gaat vóór wat hieronder staat). De beschrijving hieronder blijft gelden.
 
@@ -8,7 +8,7 @@ Alles om in App Store Connect in te vullen (Nederlands als hoofdtaal). Tekens tu
 
 | Veld | Invullen |
 |---|---|
-| Naam (30) | Biljart Tracker |
+| Naam (30) | Carom Tracker |
 | Ondertitel (30) | Carambole: serie en moyenne |
 | Bundel-ID | nl.ferrovandam.biljarttracker |
 | SKU | biljarttracker-ios-1 |
@@ -19,7 +19,7 @@ Alles om in App Store Connect in te vullen (Nederlands als hoofdtaal). Tekens tu
 | Prijs | Gratis |
 | Beschikbaarheid | Alle landen (of alleen Nederland en België) |
 
-Is de naam "Biljart Tracker" al bezet, kies dan bijvoorbeeld "Biljart Tracker – Carambole".
+Is de naam "Carom Tracker" al bezet, kies dan bijvoorbeeld "Carom Tracker – Carambole".
 
 ## Versie 1.0
 
@@ -29,7 +29,7 @@ Is de naam "Biljart Tracker" al bezet, kies dan bijvoorbeeld "Biljart Tracker �
 
 **Beschrijving (4000)**
 
-> Biljart Tracker is gemaakt door en voor carambolespelers. Noteer tijdens het spelen per beurt je caramboles en zie direct hoe je partij verloopt.
+> Carom Tracker is gemaakt door en voor carambolespelers. Noteer tijdens het spelen per beurt je caramboles en zie direct hoe je partij verloopt.
 >
 > TIJDENS HET SPELEN
 > • Per beurt je caramboles met + en −, en één tik op Noteer
@@ -79,7 +79,7 @@ Kies **"Gegevens worden niet verzameld"** (Data Not Collected). Klopt: geen acco
 - Inloggen nodig: **Nee**
 - Notities:
 
-> Biljart Tracker werkt volledig offline; er is geen account en er is geen server. Alle gegevens blijven op het toestel.
+> Carom Tracker werkt volledig offline; er is geen account en er is geen server. Alle gegevens blijven op het toestel.
 > Testen: kies op Spelen een tafel en tik op Start partij, zet caramboles met + en tik op Noteer. Na een paar beurten: Afsluiten → Opslaan. Daarna zijn Stats, Dash en Log gevuld.
 > Het knopje "Partij van een wedstrijdbriefje" maakt alleen een tekst die de gebruiker zelf in een AI-chat naar keuze kan plakken; de app maakt zelf geen verbinding met een AI-dienst.
 

@@ -30,8 +30,8 @@ Kandidaten voor de merknaam (beschikbaarheid pas te zien in App Store Connect bi
 | Caromi | Kort, eigen merk, makkelijk te onthouden | Zegt niets zonder ondertitel |
 | Cue & Carom | Herkenbaar biljartbeeld | Het "&" typt lastig |
 
-Onderstaande tabellen gaan uit van **Carom Tracker**. Kies je een andere merknaam, dan blijft de rest hetzelfde (alleen
-de lengte van de naam opnieuw controleren).
+**Gekozen (18 okt 2026): Carom Tracker.** Onderstaande tabellen gaan daarvan uit. In App Store Connect de naam per taal
+invullen bij versie 1.1 (versie 1.0 heet nog Biljart Tracker).
 
 ---
 

@@ -1,4 +1,4 @@
-// Dash-tab van Biljart Tracker: BeurtenTijdlijn (doorlopende beurtengrafiek met selecteren en
+// Dash-tab van Carom Tracker: BeurtenTijdlijn (doorlopende beurtengrafiek met selecteren en
 // beste/zwakste reeks) en Dashboard (Trend, Consistentie, Patronen, Vergelijk, Punten).
 // JSX via Babel, na jsx/partijrij.jsx.
 

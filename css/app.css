@@ -1,4 +1,4 @@
-/* Opmaak van Biljart Tracker (alles wat niet inline in de componenten staat) */
+/* Opmaak van Carom Tracker (alles wat niet inline in de componenten staat) */
 /* Laken-kleuren (groen, libre); per discipline overschreven door zetThema() in js/constanten.js */
 :root{--c-1a2e1a:#1a2e1a;--c-22341f:#22341f;--c-3a5c35:#3a5c35;--c-2d4a1e:#2d4a1e;--c-0d1f0d:#0d1f0d;--c-1e3a1e:#1e3a1e;--c-182e14:#182e14;--c-152015:#152015;--c-1a3019:#1a3019;--c-1a2e10:#1a2e10;--c-1c3019:#1c3019;--c-2a4a1e:#2a4a1e;--c-5a7a55:#5a7a55;--c-1c2c1c:#1c2c1c;--c-1c2e18:#1c2e18;--c-24401f:#24401f;--c-132613:#132613;--c-1a3a1a:#1a3a1a;--c-2a3d20:#2a3d20;--c-2d4a22:#2d4a22;--c-3f8a3a:#3f8a3a;--c-1d4a1d:#1d4a1d}
 *{box-sizing:border-box;margin:0;padding:0}

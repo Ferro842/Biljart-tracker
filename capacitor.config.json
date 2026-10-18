@@ -1,6 +1,6 @@
 {
   "appId": "nl.ferrovandam.biljarttracker",
-  "appName": "Biljart Tracker",
+  "appName": "Carom Tracker",
   "webDir": "www",
   "backgroundColor": "#1a2e1a",
   "plugins": {

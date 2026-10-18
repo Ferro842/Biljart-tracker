@@ -1,4 +1,4 @@
-// Vensters (overlays) van Biljart Tracker: samenvatting na een partij, welkomstflow, seizoensarchief,
+// Vensters (overlays) van Carom Tracker: samenvatting na een partij, welkomstflow, seizoensarchief,
 // badgecatalogus en niveau-overzicht. JSX via Babel, geladen na jsx/onderdelen.jsx.
 
 function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,discipline,onClose}){
@@ -93,7 +93,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
       alleenWeb:true
     },
     {
-      titel:t("Welkom bij Biljart Tracker"),
+      titel:t("Welkom bij Carom Tracker"),
       body:t("Een app om je carambole-partijen bij te houden — met niveaus op basis van de echte KNBB-klassen, en een spelelement dat je motiveert om net dat beetje boven je eigen niveau uit te blijven presteren.")
     },
     {

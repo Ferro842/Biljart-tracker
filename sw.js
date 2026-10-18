@@ -1,4 +1,4 @@
-// Service worker van Biljart Tracker: maakt de app installeerbaar (samen met manifest.json) en laat de
+// Service worker van Carom Tracker: maakt de app installeerbaar (samen met manifest.json) en laat de
 // website ook zonder internet openen.
 // Strategie "eerst het netwerk": elk bestand wordt eerst van de server gehaald (dus altijd de nieuwste
 // versie) en in de cache bewaard. Alleen als dat mislukt, of langer duurt dan NETWERK_WACHT_MS terwijl er

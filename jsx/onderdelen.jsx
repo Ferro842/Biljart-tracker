@@ -1,4 +1,4 @@
-// Kleine, herbruikbare UI-onderdelen van Biljart Tracker: grafiekjes, balkjes, opmerkingen-raster,
+// Kleine, herbruikbare UI-onderdelen van Carom Tracker: grafiekjes, balkjes, opmerkingen-raster,
 // beurtregel, prestatie-overzicht en niveaukaart. JSX: geladen via Babel (type="text/babel") als
 // eerste Babel-script, vóór de code in index.html. Alles hier is daarna overal beschikbaar.
 
@@ -47,7 +47,7 @@ function Logo({maat=44}){
     );
   };
   return(
-    <svg width={maat} height={maat} viewBox="0 0 100 100" style={{flexShrink:0,display:"block"}} aria-label="Biljart Tracker">
+    <svg width={maat} height={maat} viewBox="0 0 100 100" style={{flexShrink:0,display:"block"}} aria-label="Carom Tracker">
       <defs>
         <radialGradient id="lg-laken" cx="50%" cy="42%" r="70%">
           <stop offset="0%" style={{stopColor:"var(--c-3f8a3a)"}}/><stop offset="100%" style={{stopColor:"var(--c-1d4a1d)"}}/>

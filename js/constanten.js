@@ -1,4 +1,4 @@
-// Vaste gegevens van Biljart Tracker: kleuren, opmerkingenlijsten, opslagsleutel, niveaus per
+// Vaste gegevens van Carom Tracker: kleuren, opmerkingenlijsten, opslagsleutel, niveaus per
 // discipline, tafelmaten en mijlpalen. Gewone JavaScript (geen JSX), geladen vóór de Babel-code in
 // index.html; alles hier is daardoor overal in de app beschikbaar.
 

@@ -1,4 +1,4 @@
-// Rekenlogica van Biljart Tracker: statistiek per partij, badges (prestaties), records, niveau en
+// Rekenlogica van Carom Tracker: statistiek per partij, badges (prestaties), records, niveau en
 // badge-drops, voorspelling, seizoenen en mijlpalen. Gewone JavaScript zonder React of JSX, geladen
 // na js/constanten.js en vóór de Babel-code in index.html. Puur rekenwerk: leest of schrijft geen opslag.
 

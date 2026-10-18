@@ -1,4 +1,4 @@
-# Google Play Console – Biljart Tracker
+# Google Play Console – Carom Tracker
 
 Alles om in de Play Console in te vullen (Nederlands als standaardtaal).
 
@@ -14,7 +14,7 @@ Alles om in de Play Console in te vullen (Nederlands als standaardtaal).
 
 | Veld | Invullen |
 |---|---|
-| App-naam (30) | Biljart Tracker |
+| App-naam (30) | Carom Tracker |
 | Pakketnaam | nl.ferrovandam.biljarttracker |
 | Categorie | Sport |
 | Tags | Biljart, Sport |

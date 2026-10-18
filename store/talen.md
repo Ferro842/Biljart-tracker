@@ -9,7 +9,9 @@ controleert ze.
 - App Store Connect: bij je app rechtsboven naast de taal (Nederlands) op het taalmenu tikken → taal toevoegen
   (English (U.K.) of English (U.S.), French, German). Per taal: naam, ondertitel (bij App-informatie) en promotietekst,
   beschrijving en trefwoorden (bij de versie). Support-, marketing- en privacy-URL zijn hetzelfde.
-  Schermafbeeldingen: zonder eigen schermafbeeldingen gebruikt Apple de Nederlandse; Engelse kunnen later uit de simulator.
+  Schermafbeeldingen: Engelse staan in `store/screenshots/ios-en/` (6,9 inch, 1320 × 2868) en `ios-en-6.3/` (1206 × 2622),
+  ook in iCloud Drive → "Biljart Tracker store" → "English 6,9 inch" / "English 6,3 inch". Zonder eigen schermafbeeldingen
+  gebruikt Apple per taal de Nederlandse; voor Frans en Duits kan dat (of later op dezelfde manier maken).
 - Play Console: Winkelvermelding → Vertalingen beheren → talen toevoegen (en-GB/en-US, fr-FR, de-DE) en per taal
   app-naam, korte beschrijving en volledige beschrijving invullen.
 

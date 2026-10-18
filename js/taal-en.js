@@ -560,7 +560,7 @@ VERTALING.en={
   // Dash: tabbladen en uitleg
   "Inzicht":"Insight",
   "Trend":"Trend",
-  "Constant":"Consistency",
+  "Constant":"Steady",
   "Patronen":"Patterns",
   "Vergelijk":"Compare",
   "Punten":"Points",

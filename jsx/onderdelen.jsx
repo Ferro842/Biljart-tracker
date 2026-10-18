@@ -161,9 +161,9 @@ function LogRij({b,nr,discipline}){
         <span style={{fontSize:13,color:WITD,minWidth:18,textAlign:"right"}}>{nr}</span>
         <span style={{fontSize:20,fontWeight:"bold",color:b.caramboles>=beurtDrempels(discipline||"libre").opbouwMin?GOUDL:isPoedel?"#e08055":WIT,minWidth:26}}>{b.caramboles}</span>
         <div style={{flex:1,display:"flex",gap:3,flexWrap:"wrap",alignItems:"center"}}>
-          {isPoedel&&<span style={{fontSize:13,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>poedel</span>}
-          {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
-          {!isPoedel&&heeftGoed&&(b.goed||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"2px 6px"}}>{o}</span>;})}
+          {isPoedel&&<span style={{fontSize:13,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>{t("poedel")}</span>}
+          {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{t(o)}</span>;})}
+          {!isPoedel&&heeftGoed&&(b.goed||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"2px 6px"}}>{t(o)}</span>;})}
           {oudeOpm&&<span style={{fontSize:13,background:"var(--c-2a3d20)",color:GOUD,borderRadius:3,padding:"2px 6px"}}>{oudeOpm}</span>}
         </div>
       </div>
@@ -192,8 +192,8 @@ function PrestatieOverzicht({prestatie}){
     <div style={{marginTop:10,marginBottom:10,background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:8,padding:"8px 10px"}}>
       <button onClick={function(){setPerCategorie(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",display:"flex",justifyContent:"space-between",alignItems:"center",cursor:"pointer",fontFamily:"inherit",padding:0,marginBottom:6}}>
-        <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>Prestaties · {punten}pt totaal</span>
-        <span style={{fontSize:12,color:WITD}}>{perCategorie?"lijst ▸":"per categorie ▾"}</span>
+        <span style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>{t("Prestaties · {n}pt totaal",{n:punten})}</span>
+        <span style={{fontSize:12,color:WITD}}>{perCategorie?t("lijst")+" ▸":t("per categorie")+" ▾"}</span>
       </button>
       {!perCategorie&&(
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -201,7 +201,7 @@ function PrestatieOverzicht({prestatie}){
             return(
               <div key={i}>
                 <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:WITD}}>
-                  <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                  <span>{b.emoji} {badgeLabel(b.label)}{b.aantal>1?" ×"+b.aantal:""}</span>
                   <span style={{color:GOUD,fontWeight:"bold"}}>+{b.punten}</span>
                 </div>
                 {b.detail&&<div style={{fontSize:12,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
@@ -216,14 +216,14 @@ function PrestatieOverzicht({prestatie}){
             return(
               <div key={g.naam}>
                 <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:GOUDL,marginBottom:4,fontWeight:"bold"}}>
-                  <span>{g.naam}</span><span>{g.subtotaal}pt</span>
+                  <span>{t(g.naam)}</span><span>{g.subtotaal}pt</span>
                 </div>
                 <div style={{display:"flex",flexDirection:"column",gap:6}}>
                   {g.lijst.map(function(b,i){
                     return(
                       <div key={i} style={{paddingLeft:8}}>
                         <div style={{display:"flex",justifyContent:"space-between",fontSize:13,color:WITD}}>
-                          <span>{b.emoji} {b.label}{b.aantal>1?" ×"+b.aantal:""}</span>
+                          <span>{b.emoji} {badgeLabel(b.label)}{b.aantal>1?" ×"+b.aantal:""}</span>
                           <span style={{color:GOUD}}>+{b.punten}</span>
                         </div>
                         {b.detail&&<div style={{fontSize:12,color:WITD,opacity:0.65,marginTop:1}}>{b.detail}</div>}
@@ -263,7 +263,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={6}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:3,fontSize:11,color:WITD}}>
             <span>{niveau.progressPct}%</span>
-            <span>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(dec)}</span>
+            <span>{niveau.volgende.emoji} {niveau.volgende.naam} · {t("gem")} {niveau.volgende.gemDrempel.toFixed(dec)}</span>
           </div>
         </div>}
       </div>
@@ -280,7 +280,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           <div style={{fontSize:13,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
         </div>
         <div style={{marginLeft:"auto",textAlign:"right"}}>
-          <div style={{fontSize:12,color:WITD}}>{!niveau.venster&&!niveau.aantalDrops&&niveau.moyenne!==undefined?"moyenne":"vorm"}</div>
+          <div style={{fontSize:12,color:WITD}}>{!niveau.venster&&!niveau.aantalDrops&&niveau.moyenne!==undefined?t("moyenne"):t("vorm")}</div>
           <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
         </div>
       </div>
@@ -291,16 +291,16 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:5,fontSize:13}}>
             <span style={{fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.effectiefGemiddelde.toFixed(dec)}</span>
-            <span style={{fontSize:12,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · gem {niveau.volgende.gemDrempel.toFixed(dec)}</span>
+            <span style={{fontSize:12,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · {t("gem")} {niveau.volgende.gemDrempel.toFixed(dec)}</span>
           </div>
         </>
-        :<div style={{textAlign:"center",fontSize:13,color:niveau.huidig.kleur,fontWeight:"bold"}}>Hoogste niveau bereikt! 💎</div>
+        :<div style={{textAlign:"center",fontSize:13,color:niveau.huidig.kleur,fontWeight:"bold"}}>{t("Hoogste niveau bereikt!")} 💎</div>
       }
 
       {/* Punten tot de volgende schrapping: niet als schrappen uit staat (klasse-overzicht) */}
       {spel&&niveau.schrapt!==false&&<div style={{marginTop:12,background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"9px 10px"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-          <span style={{fontSize:13,color:WITD}}>🎖️ {niveau.venster?"Punten in je laatste "+niveau.aantalPartijen+" partijen":"Badge-punten"}</span>
+          <span style={{fontSize:13,color:WITD}}>🎖️ {niveau.venster?t("Punten in je laatste {n} partijen",{n:niveau.aantalPartijen}):t("Badge-punten")}</span>
           <span style={{fontSize:14,fontWeight:"bold",color:GOUD}}>{niveau.badgePunten} / {niveau.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
         </div>
         <DashBalk pct={(niveau.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
@@ -315,36 +315,36 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
                     <span style={{fontSize:12,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
                   </div>
                   <div style={{fontSize:11,color:WITD,marginTop:2,textDecoration:"line-through",opacity:0.8}}>
-                    p{p.nr} · gem {p.gem.toFixed(dec)}
+                    p{p.nr} · {t("gem")} {p.gem.toFixed(dec)}
                   </div>
-                  <div style={{fontSize:10,color:"#ff9f80",marginTop:1}}>telt niet mee</div>
+                  <div style={{fontSize:10,color:"#ff9f80",marginTop:1}}>{t("telt niet mee")}</div>
                 </div>
               );
             })}
           </div>
           :<div style={{marginTop:8,fontSize:12,color:WITD,opacity:0.75,textAlign:"center"}}>
-            Bij {PUNTEN_PER_DROP}pt: je slechtste partij schrappen uit je vorm
+            {t("Bij {n}pt: je slechtste partij schrappen uit je vorm",{n:PUNTEN_PER_DROP})}
           </div>
         }
         <div style={{marginTop:8,fontSize:11,color:WITD,opacity:0.75,textAlign:"center"}}>
           {niveau.plafondBereikt
-            ?"Maximum bereikt: nooit meer dan 1 op de 10 partijen geschrapt ("+niveau.maxDrops+" van "+niveau.aantalPartijen+")."
-            :"Maximaal 1 op de 10 partijen kan geschrapt worden."}
+            ?t("Maximum bereikt: nooit meer dan 1 op de 10 partijen geschrapt ({m} van {n}).",{m:niveau.maxDrops,n:niveau.aantalPartijen})
+            :t("Maximaal 1 op de 10 partijen kan geschrapt worden.")}
         </div>
       </div>}
 
       {spel&&niveau.volgendeKandidaatId&&(
         <div style={{marginTop:8,textAlign:"center",fontSize:11,color:"#ff9f80"}}>
-          🎯 Eerstvolgende partij die vervalt: p{niveau.volgendeKandidaatNr} (gem {niveau.volgendeKandidaatGem.toFixed(dec)})
+          🎯 {t("Eerstvolgende partij die vervalt: p{n} (gem {g})",{n:niveau.volgendeKandidaatNr,g:niveau.volgendeKandidaatGem.toFixed(dec)})}
         </div>
       )}
       {niveau.voorspelling&&niveau.volgende&&(
         <div style={{marginTop:8,textAlign:"center",fontSize:11,color:WITD}}>
           {niveau.voorspelling.recenteVorm===null
-            ?"📈 Nog te weinig recente partijen voor een voorspelling"
+            ?"📈 "+t("Nog te weinig recente partijen voor een voorspelling")
             :niveau.voorspelling.mogelijk===false
-              ?"📈 Je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(dec)+") ligt onder de "+niveau.volgende.gemDrempel.toFixed(dec)+" die nodig is voor "+niveau.volgende.naam
-              :"📈 Bij je recente vorm ("+niveau.voorspelling.recenteVorm.toFixed(dec)+") bereik je "+niveau.volgende.naam+" over ongeveer "+niveau.voorspelling.aantalPartijen+" partijen"}
+              ?"📈 "+t("Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}",{v:niveau.voorspelling.recenteVorm.toFixed(dec),d:niveau.volgende.gemDrempel.toFixed(dec),k:niveau.volgende.naam})
+              :"📈 "+t("Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen",{v:niveau.voorspelling.recenteVorm.toFixed(dec),k:niveau.volgende.naam,n:niveau.voorspelling.aantalPartijen})}
         </div>
       )}
     </div>

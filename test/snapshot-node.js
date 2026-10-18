@@ -7,7 +7,7 @@ const fs=require("fs"),path=require("path"),crypto=require("crypto");
 const args=process.argv.slice(2);
 const map=args.indexOf("--map")!==-1?args[args.indexOf("--map")+1]:path.join(__dirname,"..");
 global.document={documentElement:{classList:{contains:function(){return false;}}}};
-const code=["js/constanten.js","js/berekeningen.js","js/opslag.js"].map(function(f){return fs.readFileSync(path.join(map,f),"utf8");}).join("\n");
+const code=["js/constanten.js","js/taal.js","js/berekeningen.js","js/opslag.js"].map(function(f){return fs.readFileSync(path.join(map,f),"utf8");}).join("\n");
 const data=JSON.parse(fs.readFileSync(path.join(__dirname,"testdata.json"),"utf8"));
 const uit=(new Function("data",code+`
   migreerTafels(data);

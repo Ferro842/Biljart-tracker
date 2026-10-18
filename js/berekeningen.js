@@ -71,19 +71,19 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
 
     if(st.opbouw57>0){
       const waarden=p.beurten.filter(function(b){return b.caramboles>=d.opbouwMin&&b.caramboles<=d.opbouwMax;}).map(function(b){return b.caramboles;});
-      badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: "+d.opbouwMin+"-"+d.opbouwMax+" car per beurt)"});
+      badges.push({label:"Opbouw",emoji:"🎯",aantal:st.opbouw57,punten:st.opbouw57*10,categorie:"Beurt-pieken",detail:t("Beurten van {w} car (drempel: {a}-{b} car per beurt)",{w:waarden.join(", "),a:d.opbouwMin,b:d.opbouwMax})});
     }
     if(st.opbouw89>0){
       const waarden=p.beurten.filter(function(b){return b.caramboles>=d.sterkMin&&b.caramboles<=d.sterkMax;}).map(function(b){return b.caramboles;});
-      badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: "+d.sterkMin+"-"+d.sterkMax+" car per beurt)"});
+      badges.push({label:"Sterke serie",emoji:"🔥",aantal:st.opbouw89,punten:st.opbouw89*20,categorie:"Beurt-pieken",detail:t("Beurten van {w} car (drempel: {a}-{b} car per beurt)",{w:waarden.join(", "),a:d.sterkMin,b:d.sterkMax})});
     }
     if(st.opbouw10>0){
       const waarden=p.beurten.filter(function(b){return b.caramboles>=d.topMin;}).map(function(b){return b.caramboles;});
-      badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35,categorie:"Beurt-pieken",detail:"Beurten van "+waarden.join(", ")+" car (drempel: "+d.topMin+"+ car per beurt)"});
+      badges.push({label:"Topserie",emoji:"💫",aantal:st.opbouw10,punten:st.opbouw10*35,categorie:"Beurt-pieken",detail:t("Beurten van {w} car (drempel: {a}+ car per beurt)",{w:waarden.join(", "),a:d.topMin})});
     }
 
     if(st.max>allTimeMaxBeurt&&allTimeMaxBeurt>0){
-      badges.push({label:"Nieuw record beurt",emoji:"🏆",aantal:1,punten:50,categorie:"Beurt-pieken",detail:"Nieuwe hoogste beurt: "+st.max+" car (vorig record: "+allTimeMaxBeurt+" car)"});
+      badges.push({label:"Nieuw record beurt",emoji:"🏆",aantal:1,punten:50,categorie:"Beurt-pieken",detail:t("Nieuwe hoogste beurt: {n} car (vorig record: {r} car)",{n:st.max,r:allTimeMaxBeurt})});
     }
 
     let langsteReeks=0,huidigeReeks=0;
@@ -92,31 +92,31 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
       else huidigeReeks=0;
     });
     if(st.poedels===0){
-      badges.push({label:"Geen poedel hele partij",emoji:"🛡️",aantal:1,punten:30,categorie:"Consistentie",detail:"0 van de "+st.aantalBeurten+" beurten was een poedel"});
+      badges.push({label:"Geen poedel hele partij",emoji:"🛡️",aantal:1,punten:30,categorie:"Consistentie",detail:t("0 van de {n} beurten was een poedel",{n:st.aantalBeurten})});
     }else if(langsteReeks>=8){
-      badges.push({label:"Lange reeks zonder poedel",emoji:"⛓️",aantal:1,punten:25,categorie:"Consistentie",detail:"Langste reeks: "+langsteReeks+" beurten op rij zonder poedel (drempel: 8+)"});
+      badges.push({label:"Lange reeks zonder poedel",emoji:"⛓️",aantal:1,punten:25,categorie:"Consistentie",detail:t("Langste reeks: {n} beurten op rij zonder poedel (drempel: {d}+)",{n:langsteReeks,d:8})});
     }else if(langsteReeks>=5){
-      badges.push({label:"Reeks zonder poedel",emoji:"⛓️",aantal:1,punten:15,categorie:"Consistentie",detail:"Langste reeks: "+langsteReeks+" beurten op rij zonder poedel (drempel: 5+)"});
+      badges.push({label:"Reeks zonder poedel",emoji:"⛓️",aantal:1,punten:15,categorie:"Consistentie",detail:t("Langste reeks: {n} beurten op rij zonder poedel (drempel: {d}+)",{n:langsteReeks,d:5})});
     }
     const poedelPct=st.poedels/st.aantalBeurten*100;
     if(poedelPct<20&&st.poedels>0){
-      badges.push({label:"Weinig poedels",emoji:"✅",aantal:1,punten:15,categorie:"Consistentie",detail:st.poedels+" van de "+st.aantalBeurten+" beurten poedel ("+Math.round(poedelPct)+"%, drempel: <20%)"});
+      badges.push({label:"Weinig poedels",emoji:"✅",aantal:1,punten:15,categorie:"Consistentie",detail:t("{p} van de {n} beurten poedel ({pct}%, drempel: <20%)",{p:st.poedels,n:st.aantalBeurten,pct:Math.round(poedelPct)})});
     }
 
     const herstelDetails=[];
     p.beurten.forEach(function(b,i){
       if(b.caramboles===0){
         const next=p.beurten[i+1];
-        if(next&&next.caramboles>=d.opbouwMin)herstelDetails.push("na poedel volgde "+next.caramboles+" car");
+        if(next&&next.caramboles>=d.opbouwMin)herstelDetails.push(t("na poedel volgde {n} car",{n:next.caramboles}));
       }
     });
-    if(herstelDetails.length>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelDetails.length,punten:herstelDetails.length*15,categorie:"Mentaliteit",detail:herstelDetails.join(" · ")+" (drempel: "+d.opbouwMin+"+ car direct na een poedel)"});
+    if(herstelDetails.length>0)badges.push({label:"Sterk herstel na poedel",emoji:"💪",aantal:herstelDetails.length,punten:herstelDetails.length*15,categorie:"Mentaliteit",detail:herstelDetails.join(" · ")+t(" (drempel: {n}+ car direct na een poedel)",{n:d.opbouwMin})});
 
     const venster=vensterSlice(p.datum);
     const vensterCar=venster.reduce(function(a,w){return a+w.tot;},0);
     const vensterBeurt=venster.reduce(function(a,w){return a+w.n;},0);
     const totaalGemTotDan=vensterBeurt>0?vensterCar/vensterBeurt:null;
-    const vensterLabel=tijdsvensterMaanden?" (laatste "+tijdsvensterMaanden+" mnd)":" ooit";
+    const vensterLabel=tijdsvensterMaanden?t(" (laatste {n} mnd)",{n:tijdsvensterMaanden}):t(" ooit");
 
     const helft=Math.floor(p.beurten.length/2);
     if(helft>=3){
@@ -124,7 +124,7 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
       const gemE=eerste.reduce(function(a,b){return a+b.caramboles;},0)/eerste.length;
       const gemT=tweede.reduce(function(a,b){return a+b.caramboles;},0)/tweede.length;
       if(gemT>gemE&&totaalGemTotDan!==null&&gem>totaalGemTotDan){
-        badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit",detail:"1e helft: "+gemE.toFixed(2)+" · 2e helft: "+gemT.toFixed(2)+" · partijgemiddelde "+gem.toFixed(2)+" boven totaalgemiddelde"+vensterLabel+" "+totaalGemTotDan.toFixed(2)});
+        badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit",detail:t("1e helft: {a} · 2e helft: {b} · partijgemiddelde {g} boven totaalgemiddelde{v} {t}",{a:gemE.toFixed(2),b:gemT.toFixed(2),g:gem.toFixed(2),v:vensterLabel,t:totaalGemTotDan.toFixed(2)})});
       }
     }
 
@@ -133,31 +133,31 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
     const drempel1=gemDrempelBoven(basis,stap);
     const drempel2=Math.round((drempel1+stap)*1000)/1000;
     if(gem>=drempel2){
-      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel2,stap),emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel2.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
+      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel2,stap),emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:t("Partijgemiddelde: {g} (persoonlijke drempel: {d}, op basis van je totaalgemiddelde{v} {b})",{g:gem.toFixed(2),d:drempel2.toFixed(2),v:vensterLabel,b:basis.toFixed(2)})});
     }else if(gem>=drempel1){
-      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel1,stap),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:"Partijgemiddelde: "+gem.toFixed(2)+" (persoonlijke drempel: "+drempel1.toFixed(2)+", op basis van je totaalgemiddelde"+vensterLabel+" "+basis.toFixed(2)+")"});
+      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel1,stap),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:t("Partijgemiddelde: {g} (persoonlijke drempel: {d}, op basis van je totaalgemiddelde{v} {b})",{g:gem.toFixed(2),d:drempel1.toFixed(2),v:vensterLabel,b:basis.toFixed(2)})});
     }
 
     const vensterBestGem=verwerkt.length?Math.max.apply(null,verwerkt.map(function(w){return w.gem;})):0;
     if(gem>vensterBestGem&&vensterBestGem>0){
-      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:"Nieuw record: "+gem.toFixed(2)+" (vorig record ooit: "+vensterBestGem.toFixed(2)+")"});
+      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:t("Nieuw record: {g} (vorig record ooit: {v})",{g:gem.toFixed(2),v:vensterBestGem.toFixed(2)})});
     }
 
     const tafelKey=p.tafel||"230";
     const vensterTafel=verwerkt.filter(function(w){return w.tafel===tafelKey;});
     const vensterTafelBest=vensterTafel.length?Math.max.apply(null,vensterTafel.map(function(w){return w.gem;})):0;
     if(gem>vensterTafelBest&&vensterTafelBest>0){
-      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🔝",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:"Nieuw record op "+tafelLabel(tafelKey)+"-tafel: "+gem.toFixed(2)+" (vorig: "+vensterTafelBest.toFixed(2)+")"});
+      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🔝",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:t("Nieuw record op {tafel}-tafel: {g} (vorig: {v})",{tafel:tafelLabel(tafelKey),g:gem.toFixed(2),v:vensterTafelBest.toFixed(2)})});
     }
 
     if(totaalGemTotDan!==null){
-      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking",detail:"Deze partij: "+gem.toFixed(2)+" vs totaalgemiddelde"+vensterLabel+" "+totaalGemTotDan.toFixed(2)});
+      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking",detail:t("Deze partij: {g} vs totaalgemiddelde{v} {t}",{g:gem.toFixed(2),v:vensterLabel,t:totaalGemTotDan.toFixed(2)})});
     }
     const laatste5=verwerkt.slice(-5);
     if(laatste5.length>=5){
       const rC=laatste5.reduce(function(a,r){return a+r.tot;},0),rN=laatste5.reduce(function(a,r){return a+r.n;},0);
       const rollingGem=rC/rN;
-      if(gem>rollingGem)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking",detail:"Deze partij: "+gem.toFixed(2)+" vs 5-partij rolling: "+rollingGem.toFixed(2)});
+      if(gem>rollingGem)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking",detail:t("Deze partij: {g} vs 5-partij rolling: {r}",{g:gem.toFixed(2),r:rollingGem.toFixed(2)})});
     }
 
     const totaalPunten=badges.reduce(function(a,b){return a+b.punten;},0);
@@ -203,21 +203,21 @@ function berekenLopendeRecords(partijen,tijdsvensterMaanden){
 function bouwBadgeCatalogus(discipline){
   const d=beurtDrempels(discipline);
   return[
-    {label:"Opbouw",emoji:"🎯",punten:"10pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van "+d.opbouwMin+"-"+d.opbouwMax+" caramboles"},
-    {label:"Sterke serie",emoji:"🔥",punten:"20pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van "+d.sterkMin+"-"+d.sterkMax+" caramboles"},
-    {label:"Topserie",emoji:"💫",punten:"35pt per keer",categorie:"Beurt-pieken",uitleg:"Een beurt van "+d.topMin+"+ caramboles"},
-    {label:"Nieuw record beurt",emoji:"🏆",punten:"50pt",categorie:"Beurt-pieken",uitleg:"Je hoogste beurt ooit verbreken"},
-    {label:"Geen poedel hele partij",emoji:"🛡️",punten:"30pt",categorie:"Consistentie",uitleg:"Geen enkele poedel in de hele partij"},
-    {label:"Lange reeks zonder poedel",emoji:"⛓️",punten:"25pt",categorie:"Consistentie",uitleg:"8 of meer beurten op rij zonder poedel"},
-    {label:"Reeks zonder poedel",emoji:"⛓️",punten:"15pt",categorie:"Consistentie",uitleg:"5 of meer beurten op rij zonder poedel"},
-    {label:"Weinig poedels",emoji:"✅",punten:"15pt",categorie:"Consistentie",uitleg:"Minder dan 20% van je beurten was een poedel"},
-    {label:"Sterk herstel na poedel",emoji:"💪",punten:"15pt per keer",categorie:"Mentaliteit",uitleg:d.opbouwMin+" of meer caramboles direct na een poedel"},
-    {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:"Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde"},
-    {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:"Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)"},
-    {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:"Je hoogste partijgemiddelde ooit verbreken"},
-    {label:"Beste partij op deze tafel",emoji:"🔝",punten:"40pt",categorie:"Tafel-specifiek",uitleg:"Nieuw record-gemiddelde specifiek op deze tafelmaat"},
-    {label:"Beter dan je totaalgemiddelde",emoji:"📊",punten:"10pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven je totaalgemiddelde tot dan toe"},
-    {label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",punten:"15pt",categorie:"Vergelijking",uitleg:"Partijgemiddelde boven het gemiddelde van je laatste 5 partijen"}
+    {label:"Opbouw",emoji:"🎯",punten:t("{n}pt per keer",{n:10}),categorie:"Beurt-pieken",uitleg:t("Een beurt van {a}-{b} caramboles",{a:d.opbouwMin,b:d.opbouwMax})},
+    {label:"Sterke serie",emoji:"🔥",punten:t("{n}pt per keer",{n:20}),categorie:"Beurt-pieken",uitleg:t("Een beurt van {a}-{b} caramboles",{a:d.sterkMin,b:d.sterkMax})},
+    {label:"Topserie",emoji:"💫",punten:t("{n}pt per keer",{n:35}),categorie:"Beurt-pieken",uitleg:t("Een beurt van {a}+ caramboles",{a:d.topMin})},
+    {label:"Nieuw record beurt",emoji:"🏆",punten:"50pt",categorie:"Beurt-pieken",uitleg:t("Je hoogste beurt ooit verbreken")},
+    {label:"Geen poedel hele partij",emoji:"🛡️",punten:"30pt",categorie:"Consistentie",uitleg:t("Geen enkele poedel in de hele partij")},
+    {label:"Lange reeks zonder poedel",emoji:"⛓️",punten:"25pt",categorie:"Consistentie",uitleg:t("8 of meer beurten op rij zonder poedel")},
+    {label:"Reeks zonder poedel",emoji:"⛓️",punten:"15pt",categorie:"Consistentie",uitleg:t("5 of meer beurten op rij zonder poedel")},
+    {label:"Weinig poedels",emoji:"✅",punten:"15pt",categorie:"Consistentie",uitleg:t("Minder dan 20% van je beurten was een poedel")},
+    {label:"Sterk herstel na poedel",emoji:"💪",punten:t("{n}pt per keer",{n:15}),categorie:"Mentaliteit",uitleg:t("{n} of meer caramboles direct na een poedel",{n:d.opbouwMin})},
+    {label:"Sterke afsluiting",emoji:"📈",punten:"15pt",categorie:"Mentaliteit",uitleg:t("Tweede helft van de partij beter dan de eerste, én partijgemiddelde boven je totaalgemiddelde")},
+    {label:"Gemiddelde boven persoonlijke drempel",emoji:"⭐",punten:"15-30pt",categorie:"Doel & totaal",uitleg:t("Partijgemiddelde boven een drempel net boven je eigen totaalgemiddelde (schuift automatisch mee)")},
+    {label:"Nieuw beste gemiddelde",emoji:"👑",punten:"60pt",categorie:"Doel & totaal",uitleg:t("Je hoogste partijgemiddelde ooit verbreken")},
+    {label:"Beste partij op deze tafel",emoji:"🔝",punten:"40pt",categorie:"Tafel-specifiek",uitleg:t("Nieuw record-gemiddelde specifiek op deze tafelmaat")},
+    {label:"Beter dan je totaalgemiddelde",emoji:"📊",punten:"10pt",categorie:"Vergelijking",uitleg:t("Partijgemiddelde boven je totaalgemiddelde tot dan toe")},
+    {label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",punten:"15pt",categorie:"Vergelijking",uitleg:t("Partijgemiddelde boven het gemiddelde van je laatste 5 partijen")}
   ];
 }
 
@@ -227,7 +227,7 @@ function maandKey(iso){
   return MND[d.getMonth()]+" "+d.getFullYear();
 }
 function fmtDatum(iso){
-  return new Date(iso).toLocaleDateString("nl-NL",{day:"numeric",month:"short"});
+  return new Date(iso).toLocaleDateString(taalLocale(),{day:"numeric",month:"short"});
 }
 function categorieKleur(cat){
   const map={
@@ -429,16 +429,16 @@ function berekenVorm(partijen,schrapt,vormVenster){
   return berekenNiveauInfo(partijen,!schrapt,vormOpties(vormVenster));
 }
 function vormUitleg(info,dec){
-  const k=function(x){return x.toFixed(dec).replace(".",",");};
-  if(!info.venster&&!info.aantalDrops)return"Moyenne: al je "+info.aantalPartijenTotaal+" partijen, niets geschrapt. Je klasse is hierop gebaseerd.";
-  let t=info.venster?"Vorm: je laatste "+info.aantalPartijen+" partijen":"Vorm: al je partijen";
-  if(info.aantalDrops)t+=", zonder de "+(info.aantalDrops===1?"slechtste":info.aantalDrops+" slechtste")+" daarvan (met: "+k(info.totaalGemiddelde)+")";
-  if(info.venster||info.aantalDrops)t+=". Moyenne (alle "+info.aantalPartijenTotaal+" partijen): "+k(info.moyenne);
-  return t+".";
+  const k=function(x){return getalTekst(x,dec);};
+  if(!info.venster&&!info.aantalDrops)return t("Moyenne: al je {n} partijen, niets geschrapt. Je klasse is hierop gebaseerd.",{n:info.aantalPartijenTotaal});
+  let tekst=info.venster?t("Vorm: je laatste {n} partijen",{n:info.aantalPartijen}):t("Vorm: al je partijen");
+  if(info.aantalDrops)tekst+=info.aantalDrops===1?t(", zonder de slechtste daarvan (met: {g})",{g:k(info.totaalGemiddelde)}):t(", zonder de {n} slechtste daarvan (met: {g})",{n:info.aantalDrops,g:k(info.totaalGemiddelde)});
+  if(info.venster||info.aantalDrops)tekst+=t(". Moyenne (alle {n} partijen): {g}",{n:info.aantalPartijenTotaal,g:k(info.moyenne)});
+  return tekst+".";
 }
 function gemUitleg(info,dec,periode){
-  if(!info.aantalDrops)return"alle partijen tellen mee";
-  return"zonder je "+(info.aantalDrops===1?"slechtste partij":info.aantalDrops+" slechtste partijen")+(periode||"")+" (met alle partijen: "+info.totaalGemiddelde.toFixed(dec)+")";
+  if(!info.aantalDrops)return t("alle partijen tellen mee");
+  return(info.aantalDrops===1?t("zonder je slechtste partij"):t("zonder je {n} slechtste partijen",{n:info.aantalDrops}))+(periode||"")+t(" (met alle partijen: {g})",{g:info.totaalGemiddelde.toFixed(dec)});
 }
 
 // Kleurgrenzen voor een gemiddelde, per discipline en op basis van je huidige klasse: groen vanaf de

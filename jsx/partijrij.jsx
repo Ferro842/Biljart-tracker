@@ -9,7 +9,7 @@ function PartijLabels({p,punten,gedropt}){
     <>
       {p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}
       {spel&&punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}
-      {gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 geschrapt uit je vorm</span>}
+      {gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 {t("geschrapt uit je vorm")}</span>}
       {p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}
     </>
   );
@@ -25,34 +25,34 @@ function PartijBeheer({p,onNotitie,onVerwijder}){
     <>
       {onNotitie&&(
         <div style={{marginTop:8}}>
-          <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>Notitie</div>
+          <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:4}}>{t("Notitie")}</div>
           <textarea value={notitieTekst} onChange={function(e){setNotitieTekst(e.target.value);}}
-            placeholder="Sfeer, met wie, hoe het voelde..."
+            placeholder={t("Sfeer, met wie, hoe het voelde...")}
             style={{width:"100%",minHeight:50,background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:6,color:WIT,fontSize:13,padding:8,fontFamily:"inherit",resize:"vertical"}}/>
           {notitieTekst!==(p.notitie||"")&&(
             <button style={{marginTop:6,padding:"6px 12px",background:"var(--c-2d4a1e)",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-              onClick={function(){onNotitie(p.id,notitieTekst);}}>Notitie opslaan</button>
+              onClick={function(){onNotitie(p.id,notitieTekst);}}>{t("Notitie opslaan")}</button>
           )}
         </div>
       )}
       <div style={{marginTop:8,display:"flex",gap:8,flexWrap:"wrap"}}>
         {/* Opmerkingen achteraf aanvullen, ook als de partij zonder (of met weinig) opmerkingen is ingevuld */}
         {slaOpmerkingenOp&&<button onClick={function(){setOpmOpen(true);}}
-          style={{padding:"6px 10px",background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>✎ Opmerkingen aanvullen</button>}
+          style={{padding:"6px 10px",background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>✎ {t("Opmerkingen aanvullen")}</button>}
         <DeelKaartKnop partij={p} discipline={p.discipline||"libre"} stijl={{fontSize:13,padding:"6px 10px"}}/>
       </div>
       {opmOpen&&<OpmerkingenBewerken partij={p} discipline={p.discipline||"libre"} onOpslaan={slaOpmerkingenOp} onClose={function(){setOpmOpen(false);}}/>}
       {onVerwijder&&(
         !confVerwijder
           ?<button style={{marginTop:8,padding:"6px 10px",background:"none",border:"1px solid #7a3030",borderRadius:6,color:"#e06060",cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-            onClick={function(){setConfVerwijder(true);}}>Partij verwijderen</button>
+            onClick={function(){setConfVerwijder(true);}}>{t("Partij verwijderen")}</button>
           :<div style={{marginTop:8,background:"#2a1515",border:"1px solid #7a3030",borderRadius:6,padding:"8px 10px"}}>
-            <div style={{fontSize:13,color:"#e06060",marginBottom:6}}>Deze partij definitief verwijderen?</div>
+            <div style={{fontSize:13,color:"#e06060",marginBottom:6}}>{t("Deze partij definitief verwijderen?")}</div>
             <div style={{display:"flex",gap:6}}>
               <button style={{flex:1,padding:6,background:"#7a3030",border:"none",borderRadius:5,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                onClick={function(){onVerwijder(p.id);}}>Ja, verwijderen</button>
+                onClick={function(){onVerwijder(p.id);}}>{t("Ja, verwijderen")}</button>
               <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                onClick={function(){setConfVerwijder(false);}}>Annuleer</button>
+                onClick={function(){setConfVerwijder(false);}}>{t("Annuleer")}</button>
             </div>
           </div>
       )}
@@ -72,8 +72,8 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})} · p{nr}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
-          <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car · {st.aantalBeurten}b · gem {st.gemPerBeurt} · max {st.max} · {st.poedels}x poedel · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString(taalLocale(),{weekday:"short",day:"numeric",month:"short"})} · p{nr}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
+          <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{t("{c} car · {b}b · gem {g} · max {m} · {p}x poedel",{c:st.totCar,b:st.aantalBeurten,g:st.gemPerBeurt,m:st.max,p:st.poedels})} · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
       </button>
@@ -109,8 +109,8 @@ function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie})
       <button onClick={function(){setOpen(function(v){return !v;});}}
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
-          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"short"})}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
-          {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{st.totCar} car - {st.aantalBeurten}b - gem {st.gemPerBeurt} - max {st.max} - {st.poedels}x poedel</div>}
+          <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString(taalLocale(),{weekday:"short",day:"numeric",month:"short"})}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
+          {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{t("{c} car - {b}b - gem {g} - max {m} - {p}x poedel",{c:st.totCar,b:st.aantalBeurten,g:st.gemPerBeurt,m:st.max,p:st.poedels})}</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
       </button>

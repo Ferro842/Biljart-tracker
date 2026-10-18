@@ -10,7 +10,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
         {niveauOmhoog&&(
           <div style={{background:"linear-gradient(160deg,var(--c-2a4a1e),var(--c-0d1f0d))",border:"2px solid "+niveauOmhoog.naar.kleur,borderRadius:14,padding:"16px 12px",marginBottom:14,textAlign:"center",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",boxShadow:"0 0 30px "+niveauOmhoog.naar.kleur+"66"}}>
-            <div style={{fontSize:13,color:WITD,marginBottom:8}}>🎉 Niveau omhoog!</div>
+            <div style={{fontSize:13,color:WITD,marginBottom:8}}>🎉 {t("Niveau omhoog!")}</div>
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:14}}>
               <div style={{textAlign:"center",opacity:0.6}}>
                 <div style={{fontSize:24}}>{niveauOmhoog.van.emoji}</div>
@@ -29,42 +29,42 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
         {spel&&nieuweDrop&&(
           <div style={{background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",borderRadius:14,padding:"14px",marginBottom:14,textAlign:"center",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",boxShadow:"0 0 30px "+GOUD+"aa"}}>
             <div style={{fontSize:28}}>🎉🥇🎉</div>
-            <div style={{fontSize:15,fontWeight:"bold",color:G,marginTop:4}}>Slechtste-partij-drop ontgrendeld!</div>
-            <div style={{fontSize:13,color:G,marginTop:4}}>p{nieuweDrop.nr} (gem {nieuweDrop.gem.toFixed(dec)}) is geschrapt uit je gemiddelde</div>
+            <div style={{fontSize:15,fontWeight:"bold",color:G,marginTop:4}}>{t("Slechtste-partij-drop ontgrendeld!")}</div>
+            <div style={{fontSize:13,color:G,marginTop:4}}>{t("p{n} (gem {g}) is geschrapt uit je gemiddelde",{n:nieuweDrop.nr,g:nieuweDrop.gem.toFixed(dec)})}</div>
           </div>
         )}
-        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Partij afgesloten</div>
-        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>{new Date(partij.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})}</div>
+        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>{t("Partij afgesloten")}</div>
+        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>{new Date(partij.datum).toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long"})}</div>
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:14}}>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.totCar}</div>
-            <div style={{fontSize:11,color:WITD}}>caramboles</div>
+            <div style={{fontSize:11,color:WITD}}>{t("caramboles")}</div>
           </div>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.gemPerBeurt}</div>
-            <div style={{fontSize:11,color:WITD}}>gemiddelde</div>
+            <div style={{fontSize:11,color:WITD}}>{t("gemiddelde")}</div>
           </div>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.max}</div>
-            <div style={{fontSize:11,color:WITD}}>hoogste beurt</div>
+            <div style={{fontSize:11,color:WITD}}>{t("hoogste beurt")}</div>
           </div>
         </div>
-        <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{st.aantalBeurten} beurten · {st.poedels}x poedel{spel&&<> · <span style={{color:GOUD,fontWeight:"bold"}}>{punten}pt aan badges</span></>}</div>
+        <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{t("{b} beurten · {p}x poedel",{b:st.aantalBeurten,p:st.poedels})}{spel&&<> · <span style={{color:GOUD,fontWeight:"bold"}}>{t("{n}pt aan badges",{n:punten})}</span></>}</div>
         {infoNa&&(
           <div style={{marginBottom:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-              <span style={{fontSize:12,color:WITD}}>📊 Je vorm nu</span>
+              <span style={{fontSize:12,color:WITD}}>📊 {t("Je vorm nu")}</span>
               <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{infoNa.effectiefGemiddelde.toFixed(dec)}</span>
             </div>
             <div style={{fontSize:11,color:WITD,marginTop:-3,marginBottom:6}}>{vormUitleg(infoNa,dec)}</div>
             {spel&&<>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-                <span style={{fontSize:12,color:WITD}}>🎖️ {infoNa.venster?"Punten in je laatste "+infoNa.aantalPartijen+" partijen":"Badge-punten"}</span>
+                <span style={{fontSize:12,color:WITD}}>🎖️ {infoNa.venster?t("Punten in je laatste {n} partijen",{n:infoNa.aantalPartijen}):t("Badge-punten")}</span>
                 <span style={{fontSize:13,fontWeight:"bold",color:GOUD}}>{infoNa.badgePunten} / {infoNa.aantalDrops*PUNTEN_PER_DROP+PUNTEN_PER_DROP}pt</span>
               </div>
               <DashBalk pct={(infoNa.badgePunten%PUNTEN_PER_DROP)/PUNTEN_PER_DROP*100} kleur={GOUD} hoogte={5}/>
               <div style={{textAlign:"center",marginTop:6,fontSize:11,color:WITD,opacity:0.8}}>
-                {infoNa.plafondBereikt?"Maximum bereikt: nooit meer dan 1 op de 10 partijen geschrapt":"Nog "+infoNa.puntenTotVolgendeDrop+"pt tot je volgende slechtste-partij-drop"}
+                {infoNa.plafondBereikt?t("Maximum bereikt: nooit meer dan 1 op de 10 partijen geschrapt"):t("Nog {n}pt tot je volgende slechtste-partij-drop",{n:infoNa.puntenTotVolgendeDrop})}
               </div>
             </>}
           </div>
@@ -73,7 +73,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
         <div onClick={function(e){e.stopPropagation();}} style={{display:"flex",justifyContent:"center",marginTop:14}}>
           <DeelKaartKnop partij={partij} discipline={discipline} niveauNaam={infoNa?bepaalNiveau(infoNa.effectiefGemiddelde,discipline).huidig.naam:null} stijl={{padding:"11px 18px",fontSize:15}}/>
         </div>
-        <div onClick={onClose} style={{textAlign:"center",marginTop:16,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+        <div onClick={onClose} style={{textAlign:"center",marginTop:16,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>{t("Tik om te sluiten")}</div>
       </div>
     </div>
   );
@@ -239,54 +239,54 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
 // "Zo werkt de app": vaste uitleg in gewone taal, altijd te openen (onder Start partij en bovenaan Info)
 function UitlegVenster({eenvoudig,onClose}){
   const blokken=[
-    ["logo","Een partij spelen",[
-      "Kies de tafel en het doel (aantal beurten of caramboles) en tik op Start partij.",
-      "Per beurt: zet je caramboles met + en − (of typ ze) en tik op Noteer.",
-      "Vergist? Tik op terug; de laatste beurt wordt weggehaald.",
-      "Tijdens een partij zie je bovenin alleen een smalle balk, zodat alles goed in beeld past. Via ☰ Menu kom je bij de andere tabbladen; je partij blijft gewoon staan.",
-      "Klaar: tik rechtsboven op Afsluiten en dan op Opslaan. Stop je tussendoor, dan onthoudt de app de partij.",
-      "Op papier gespeeld? Tik op 📷 Partij van een wedstrijdbriefje: je eigen AI-chat leest de foto, jij controleert de beurten en slaat op."
+    ["logo",t("Een partij spelen"),[
+      t("Kies de tafel en het doel (aantal beurten of caramboles) en tik op Start partij."),
+      t("Per beurt: zet je caramboles met + en − (of typ ze) en tik op Noteer."),
+      t("Vergist? Tik op terug; de laatste beurt wordt weggehaald."),
+      t("Tijdens een partij zie je bovenin alleen een smalle balk, zodat alles goed in beeld past. Via ☰ Menu kom je bij de andere tabbladen; je partij blijft gewoon staan."),
+      t("Klaar: tik rechtsboven op Afsluiten en dan op Opslaan. Stop je tussendoor, dan onthoudt de app de partij."),
+      t("Op papier gespeeld? Tik op 📷 Partij van een wedstrijdbriefje: je eigen AI-chat leest de foto, jij controleert de beurten en slaat op.")
     ]],
-    ["✍️","Opmerkingen (mag, hoeft niet)",[
-      "Na Noteer kun je aanvinken waardoor je serie eindigde en wat er goed ging.",
+    ["✍️",t("Opmerkingen (mag, hoeft niet)"),[
+      t("Na Noteer kun je aanvinken waardoor je serie eindigde en wat er goed ging."),
       eenvoudig
-        ?"Je staat in de eenvoudige modus: die stap wordt overgeslagen. Wil je bij een beurt toch iets aanvinken, tik dan op + opmerking in plaats van Noteer."
-        :"In de eenvoudige modus wordt die stap overgeslagen; daar tik je + opmerking als je bij een beurt toch iets wilt aanvinken.",
-      "Je hoeft niet altijd opmerkingen te zetten. Een partij telt als bijgehouden als ongeveer een kwart van de beurten een opmerking heeft. Alleen die partijen gebruikt Dash → Inzicht voor je technieken; hoe vaker je het doet, hoe meer de app je kan vertellen."
+        ?t("Je staat in de eenvoudige modus: die stap wordt overgeslagen. Wil je bij een beurt toch iets aanvinken, tik dan op + opmerking in plaats van Noteer.")
+        :t("In de eenvoudige modus wordt die stap overgeslagen; daar tik je + opmerking als je bij een beurt toch iets wilt aanvinken."),
+      t("Je hoeft niet altijd opmerkingen te zetten. Een partij telt als bijgehouden als ongeveer een kwart van de beurten een opmerking heeft. Alleen die partijen gebruikt Dash → Inzicht voor je technieken; hoe vaker je het doet, hoe meer de app je kan vertellen.")
     ]],
-    ["📊","Waar vind je wat",[
-      "Spelen: een partij invoeren.",
-      "Stats: je niveau, je seizoenen en al je partijen.",
-      "Dash: Inzicht (wat je data zegt, je hoogste series, je poedels) en grafieken.",
-      "Log: elke partij beurt voor beurt terugkijken.",
-      "Info: deze uitleg, weergave (grotere letters, eenvoudige modus), instellingen en je back-up."
+    ["📊",t("Waar vind je wat"),[
+      t("Spelen: een partij invoeren."),
+      t("Stats: je niveau, je seizoenen en al je partijen."),
+      t("Dash: Inzicht (wat je data zegt, je hoogste series, je poedels) en grafieken."),
+      t("Log: elke partij beurt voor beurt terugkijken."),
+      t("Info: deze uitleg, weergave (grotere letters, eenvoudige modus), instellingen en je back-up.")
     ]],
-    ["🏅","Je niveau",[
-      "Je vorm is het gemiddelde van je laatste 20 partijen (of 10, 30 of alle: tik op je klasse rechtsboven); daarop is je klasse gebaseerd (KNBB-grenzen).",
-      "Je moyenne is het gemiddelde van al je partijen, zoals officieel."
+    ["🏅",t("Je niveau"),[
+      t("Je vorm is het gemiddelde van je laatste 20 partijen (of 10, 30 of alle: tik op je klasse rechtsboven); daarop is je klasse gebaseerd (KNBB-grenzen)."),
+      t("Je moyenne is het gemiddelde van al je partijen, zoals officieel.")
     ]],
-    ["✨","Extra",[
-      "📤 Deel als kaart: na het opslaan van een partij (en bij elke partij in Stats en Log) maak je er een mooie afbeelding van voor WhatsApp of de mail.",
-      "🎬 Je seizoen in beeld: Stats → Seizoen → Bekijk je seizoen (ook in het Archief). Tik rechts voor verder, links terug.",
-      "📅 Kalender: Dash → Kalender laat per dag zien wanneer je speelde, gekleurd naar je gemiddelde.",
-      "🎯 Doel: tik op je klasse rechtsboven → Stel een doel. Daar laat een ring zien hoe ver je bent, en kies je ook op hoeveel partijen je vorm gebaseerd is.",
-      "🎉 Bij een topserie, record, hogere klasse of gehaald doel volgt een korte viering. Uitzetten kan bij Info → Weergave."
+    ["✨",t("Extra"),[
+      t("📤 Deel als kaart: na het opslaan van een partij (en bij elke partij in Stats en Log) maak je er een mooie afbeelding van voor WhatsApp of de mail."),
+      t("🎬 Je seizoen in beeld: Stats → Seizoen → Bekijk je seizoen (ook in het Archief). Tik rechts voor verder, links terug."),
+      t("📅 Kalender: Dash → Kalender laat per dag zien wanneer je speelde, gekleurd naar je gemiddelde."),
+      t("🎯 Doel: tik op je klasse rechtsboven → Stel een doel. Daar laat een ring zien hoe ver je bent, en kies je ook op hoeveel partijen je vorm gebaseerd is."),
+      t("🎉 Bij een topserie, record, hogere klasse of gehaald doel volgt een korte viering. Uitzetten kan bij Info → Weergave.")
     ]],
-    ["🔎","Weergave",[
-      "Info → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen.",
-      "Eenvoudige modus: alleen caramboles en Noteer, en in Dash alleen het belangrijkste.",
-      "Spelelement (badges en punten) zet je los aan of uit, ook in de eenvoudige modus."
+    ["🔎",t("Weergave"),[
+      t("Info → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen."),
+      t("Eenvoudige modus: alleen caramboles en Noteer, en in Dash alleen het belangrijkste."),
+      t("Spelelement (badges en punten) zet je los aan of uit, ook in de eenvoudige modus.")
     ]],
-    ["💾","Je gegevens",[
-      "Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail. De app herinnert je eraan na 10 nieuwe partijen of een maand.",
-      "Nieuwe telefoon of opnieuw installeren? Info → Importeer zet de back-up terug."
+    ["💾",t("Je gegevens"),[
+      t("Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail. De app herinnert je eraan na 10 nieuwe partijen of een maand."),
+      t("Nieuwe telefoon of opnieuw installeren? Info → Importeer zet de back-up terug.")
     ]]
   ];
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:300,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"20px 14px",overflowY:"auto"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,padding:"18px 16px",maxWidth:420,width:"100%"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <div style={{fontSize:20,fontWeight:"bold",color:GOUD}}>ℹ️ Zo werkt de app</div>
+          <div style={{fontSize:20,fontWeight:"bold",color:GOUD}}>ℹ️ {t("Zo werkt de app")}</div>
           <button onClick={onClose} style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:16,padding:"4px 12px",cursor:"pointer",fontFamily:"inherit"}}>✕</button>
         </div>
         {blokken.map(function(b){
@@ -301,7 +301,7 @@ function UitlegVenster({eenvoudig,onClose}){
             </div>
           );
         })}
-        <button className="plusmin-btn" onClick={onClose} style={{width:"100%",padding:13,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>Sluiten</button>
+        <button className="plusmin-btn" onClick={onClose} style={{width:"100%",padding:13,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>{t("Sluiten")}</button>
       </div>
     </div>
   );
@@ -332,11 +332,11 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   function kopieerVraag(){
     const klaar=function(){setGekopieerd(true);setTimeout(function(){setGekopieerd(false);},2500);};
     const oud=function(){
-      const el=document.createElement("textarea");el.value=BRIEFJE_PROMPT;el.setAttribute("readonly","");
+      const el=document.createElement("textarea");el.value=t(BRIEFJE_PROMPT);el.setAttribute("readonly","");
       el.style.position="absolute";el.style.left="-9999px";document.body.appendChild(el);el.select();
       try{document.execCommand("copy");}catch(e){}document.body.removeChild(el);klaar();
     };
-    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(BRIEFJE_PROMPT).then(klaar).catch(oud);else oud();
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t(BRIEFJE_PROMPT)).then(klaar).catch(oud);else oud();
   }
   function kiesSpeler(r,i){
     const s=r.spelers[i];
@@ -355,7 +355,7 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
   }
   function inlezen(){
     const r=leesBriefje(tekst);
-    if(!r){setFout("Ik kan hier geen beurten in vinden. Plak het hele antwoord van je AI-chat, met de regels \"SPELER:\" en \"1: … / …\".");return;}
+    if(!r){setFout(t("Ik kan hier geen beurten in vinden. Plak het hele antwoord van je AI-chat, met de regels \"SPELER:\" en \"1: … / …\"."));return;}
     setFout("");setGelezen(r);kiesSpeler(r,0);
     if(r.datum&&r.datum.jaar>2000)setDatum(r.datum.jaar+"-"+tweeCijfers(r.datum.maand)+"-"+tweeCijfers(r.datum.dag));
     setStap("controle");
@@ -403,11 +403,11 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
 
   const knop=function(tekst,klik,stijl){return <button onClick={klik} style={Object.assign({padding:"11px 12px",borderRadius:10,border:"1px solid "+KBDR,background:"none",color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit"},stijl||{})}>{tekst}</button>;};
   const goud={background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",color:G,fontWeight:"bold"};
-  const kopje=function(t){return <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:1,margin:"14px 0 6px"}}>{t}</div>;};
-  const stapRegel=function(nr,t){return(
+  const kopje=function(tekst){return <div style={{fontSize:12,color:GOUDL,textTransform:"uppercase",letterSpacing:1,margin:"14px 0 6px"}}>{tekst}</div>;};
+  const stapRegel=function(nr,tekst){return(
     <div style={{display:"flex",gap:10,marginBottom:8,alignItems:"flex-start"}}>
       <span style={{flexShrink:0,width:24,height:24,borderRadius:"50%",border:"1.5px solid "+GOUD,color:GOUD,fontSize:13,fontWeight:"bold",textAlign:"center",lineHeight:"21px"}}>{nr}</span>
-      <span style={{fontSize:14,color:WIT,lineHeight:1.45}}>{t}</span>
+      <span style={{fontSize:14,color:WIT,lineHeight:1.45}}>{tekst}</span>
     </div>
   );};
 
@@ -415,62 +415,62 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
     <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:300,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"18px 12px",overflowY:"auto"}}>
       <div style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,padding:"16px 14px",maxWidth:440,width:"100%"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10,gap:8}}>
-          <div style={{fontSize:19,fontWeight:"bold",color:GOUD}}>📷 Partij van een briefje</div>
+          <div style={{fontSize:19,fontWeight:"bold",color:GOUD}}>📷 {t("Partij van een briefje")}</div>
           <button onClick={onClose} aria-label="Sluiten" style={{background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:16,padding:"4px 12px",cursor:"pointer",fontFamily:"inherit"}}>✕</button>
         </div>
 
         {stap==="plakken"&&<>
-          {stapRegel(1,"Maak een foto van het wedstrijdbriefje, zo recht en scherp mogelijk.")}
-          {stapRegel(2,<span>Tik hieronder op <b>Kopieer de vraag</b>. Open je eigen AI-chat (bijvoorbeeld ChatGPT of Claude), voeg de foto toe, plak de vraag en verstuur.</span>)}
-          {stapRegel(3,<span>Kopieer het antwoord, plak het in het vak hieronder en tik op <b>Inlezen</b>. Daarna controleer je alles voordat het wordt opgeslagen.</span>)}
-          {knop(gekopieerd?"✓ Vraag gekopieerd":"📋 Kopieer de vraag",kopieerVraag,{width:"100%",marginTop:4,borderColor:GOUD,color:GOUD})}
-          <textarea value={tekst} onChange={function(e){setTekst(e.target.value);}} placeholder="Plak hier het antwoord"
+          {stapRegel(1,t("Maak een foto van het wedstrijdbriefje, zo recht en scherp mogelijk."))}
+          {stapRegel(2,t("Tik hieronder op Kopieer de vraag. Open je eigen AI-chat (bijvoorbeeld ChatGPT of Claude), voeg de foto toe, plak de vraag en verstuur."))}
+          {stapRegel(3,t("Kopieer het antwoord, plak het in het vak hieronder en tik op Inlezen. Daarna controleer je alles voordat het wordt opgeslagen."))}
+          {knop(gekopieerd?"✓ "+t("Vraag gekopieerd"):"📋 "+t("Kopieer de vraag"),kopieerVraag,{width:"100%",marginTop:4,borderColor:GOUD,color:GOUD})}
+          <textarea value={tekst} onChange={function(e){setTekst(e.target.value);}} placeholder={t("Plak hier het antwoord")}
             style={{width:"100%",minHeight:150,marginTop:12,padding:10,borderRadius:10,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:14,fontFamily:"Menlo,monospace",lineHeight:1.4,resize:"vertical"}}/>
           {fout&&<div style={{fontSize:13,color:ROOD,marginTop:6,lineHeight:1.4}}>{fout}</div>}
           <div style={{display:"flex",gap:8,marginTop:12}}>
-            {knop("Annuleer",onClose,{flex:1})}
-            {knop("Inlezen",inlezen,Object.assign({flex:2},goud,tekst.trim()?{}:{opacity:0.5}))}
+            {knop(t("Annuleer"),onClose,{flex:1})}
+            {knop(t("Inlezen"),inlezen,Object.assign({flex:2},goud,tekst.trim()?{}:{opacity:0.5}))}
           </div>
-          <div style={{fontSize:11,color:WITD,opacity:0.75,marginTop:10,lineHeight:1.4}}>De app stuurt zelf niets naar internet; de foto gaat alleen naar je eigen AI-chat.</div>
+          <div style={{fontSize:11,color:WITD,opacity:0.75,marginTop:10,lineHeight:1.4}}>{t("De app stuurt zelf niets naar internet; de foto gaat alleen naar je eigen AI-chat.")}</div>
         </>}
 
         {stap==="controle"&&gelezen&&<>
           {gelezen.spelers.length>1&&<>
-            {kopje("Welke kolom is van jou?")}
+            {kopje(t("Welke kolom is van jou?"))}
             <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
               {gelezen.spelers.map(function(s,i){const aan=i===spelerIdx;return(
                 <button key={i} onClick={function(){kiesSpeler(gelezen,i);}} style={{flex:1,minWidth:110,padding:"9px 8px",borderRadius:10,cursor:"pointer",fontFamily:"inherit",fontSize:15,
                   background:aan?"linear-gradient(180deg,var(--c-2d4a1e),var(--c-1e3a1e))":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WIT,fontWeight:aan?"bold":"normal"}}>
-                  {s.naam}<div style={{fontSize:11,color:WITD,fontWeight:"normal"}}>{s.beurten.length} beurten{s.teMaken?" · te maken "+s.teMaken:""}</div>
+                  {s.naam}<div style={{fontSize:11,color:WITD,fontWeight:"normal"}}>{t("{n} beurten",{n:s.beurten.length})}{s.teMaken?" · "+t("te maken {n}",{n:s.teMaken}):""}</div>
                 </button>);})}
             </div>
           </>}
 
           {/* Samenvatting en controle */}
           <div style={{marginTop:12,background:"rgba(0,0,0,0.25)",borderRadius:10,padding:"10px 12px",display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:4,textAlign:"center"}}>
-            {[["car.",totaal],["beurten",beurten.length],["gem.",gem],["hoogste",hoogste]].map(function(x){return(
+            {[[t("car."),totaal],[t("beurten"),beurten.length],[t("gem."),gem],[t("hoogste"),hoogste]].map(function(x){return(
               <div key={x[0]}><div style={{fontSize:18,fontWeight:"bold",color:WIT}}>{x[1]}</div><div style={{fontSize:11,color:WITD}}>{x[0]}</div></div>);})}
           </div>
           <div style={{marginTop:8,fontSize:13,lineHeight:1.4,color:afwijkend.length?GOUDL:GRNT}}>
             {afwijkend.length
-              ?"⚠️ "+afwijkend.length+" beurt"+(afwijkend.length>1?"en wijken":" wijkt")+" af van de totalen op het briefje. Controleer "+(afwijkend.length>1?"ze":"hem")+" met de foto, of tik op het voorstel."
-              :"✓ Alle beurten kloppen met de totalen op het briefje."}
+              ?"⚠️ "+(afwijkend.length>1?t("{n} beurten wijken af van de totalen op het briefje. Controleer ze met de foto, of tik op het voorstel.",{n:afwijkend.length}):t("1 beurt wijkt af van de totalen op het briefje. Controleer hem met de foto, of tik op het voorstel."))
+              :"✓ "+t("Alle beurten kloppen met de totalen op het briefje.")}
           </div>
 
           {/* Aantal beurten: telt de AI-chat een streep in de laatste beurt niet mee, dan hier met één tik goedzetten */}
           <div style={{marginTop:10,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-            <span style={{fontSize:13,color:WIT,marginRight:2}}>Aantal beurten: <b style={{color:GOUD}}>{beurten.length}</b></span>
+            <span style={{fontSize:13,color:WIT,marginRight:2}}>{t("Aantal beurten:")} <b style={{color:GOUD}}>{beurten.length}</b></span>
             {[20,25,30].map(function(n){const aan=beurten.length===n;return(
               <button key={n} onClick={function(){zetAantal(n);}} style={{padding:"5px 10px",borderRadius:8,cursor:"pointer",fontFamily:"inherit",fontSize:14,
                 background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WITD,fontWeight:aan?"bold":"normal"}}>{n}</button>);})}
           </div>
-          {kopje("Beurten")}
+          {kopje(t("Beurten"))}
           {aangevuld>0&&<div style={{fontSize:12,color:GOUDL,marginBottom:6,lineHeight:1.4}}>
-            ℹ️ {aangevuld===1?"De laatste beurt ontbrak":"De laatste "+aangevuld+" beurten ontbraken"} in je kolom; aangevuld als poedel tot {beurten.length} beurten, evenveel als je tegenstander. Klopt dat niet, haal {aangevuld===1?"hem":"ze"} weg met "− laatste beurt".
+            ℹ️ {aangevuld===1?t("De laatste beurt ontbrak in je kolom; aangevuld als poedel tot {n} beurten, evenveel als je tegenstander. Klopt dat niet, haal hem weg met \"− laatste beurt\".",{n:beurten.length}):t("De laatste {a} beurten ontbraken in je kolom; aangevuld als poedel tot {n} beurten, evenveel als je tegenstander. Klopt dat niet, haal ze weg met \"− laatste beurt\".",{a:aangevuld,n:beurten.length})}
           </div>}
-          <div style={{fontSize:12,color:WITD,marginBottom:6,lineHeight:1.4}}>Tik op een beurtnummer (✎) om opmerkingen toe te voegen, net als tijdens het spelen.</div>
+          <div style={{fontSize:12,color:WITD,marginBottom:6,lineHeight:1.4}}>{t("Tik op een beurtnummer (✎) om opmerkingen toe te voegen, net als tijdens het spelen.")}</div>
           <div style={{display:"flex",fontSize:10,color:WITD,textTransform:"uppercase",letterSpacing:0.5,padding:"0 4px 4px"}}>
-            <span style={{width:44}}>beurt</span><span style={{flex:1,textAlign:"center"}}>caramboles</span><span style={{width:44,textAlign:"right"}}>briefje</span><span style={{width:62}}></span>
+            <span style={{width:44}}>{t("beurt")}</span><span style={{flex:1,textAlign:"center"}}>{t("caramboles")}</span><span style={{width:44,textAlign:"right"}}>{t("briefje")}</span><span style={{width:62}}></span>
           </div>
           <div style={{border:"1px solid "+KBDR,borderRadius:10,overflow:"hidden"}}>
             {controle.map(function(c,i){
@@ -501,49 +501,49 @@ function BriefjeImport({discipline,tafelStandaard,onOpslaan,onClose}){
                     {b.gemist.length>0&&<span style={{color:ROOD}}>✗ {b.gemist.join(", ")}</span>}
                   </div>}
                   {open&&<div style={{padding:"2px 0 8px",borderTop:"1px solid rgba(255,255,255,0.06)"}}>
-                    <div style={{fontSize:12,color:ROOD,padding:"6px 12px 0"}}>{c.car===0?"Waardoor was het een poedel?":"Waardoor eindigde de serie?"}</div>
+                    <div style={{fontSize:12,color:ROOD,padding:"6px 12px 0"}}>{c.car===0?t("Waardoor was het een poedel?"):t("Waardoor eindigde de serie?")}</div>
                     <OpmGrid lijst={GEMIST.filter(function(o){return o.label!=="Acquit";})} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={function(k){wisselOpm(i,k);}}/>
                     {c.car>0&&<>
-                      <div style={{fontSize:12,color:GRNT,padding:"2px 12px 0"}}>Wat ging goed?</div>
+                      <div style={{fontSize:12,color:GRNT,padding:"2px 12px 0"}}>{t("Wat ging goed?")}</div>
                       <OpmGrid lijst={GOED.filter(function(o){return o.label!=="Acquit";})} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={function(k){wisselOpm(i,k);}}/>
                     </>}
-                    {i===acquitIdx&&<div style={{fontSize:11,color:WITD,padding:"0 12px"}}>🎬 Acquit staat er automatisch bij ({c.car>0?"goed":"gemist"}); wijzigen kan bij Acquit hieronder.</div>}
-                    <div style={{padding:"6px 12px 0"}}>{knop("Klaar",function(){setOpenBeurt(null);},{width:"100%",padding:"8px",fontSize:14,borderColor:GOUD,color:GOUD})}</div>
+                    {i===acquitIdx&&<div style={{fontSize:11,color:WITD,padding:"0 12px"}}>🎬 {c.car>0?t("Acquit staat er automatisch bij (goed); wijzigen kan bij Acquit hieronder."):t("Acquit staat er automatisch bij (gemist); wijzigen kan bij Acquit hieronder.")}</div>}
+                    <div style={{padding:"6px 12px 0"}}>{knop(t("Klaar"),function(){setOpenBeurt(null);},{width:"100%",padding:"8px",fontSize:14,borderColor:GOUD,color:GOUD})}</div>
                   </div>}
                 </div>
               );
             })}
           </div>
           <div style={{display:"flex",gap:8,marginTop:8}}>
-            {knop("+ beurt",function(){setBeurten(beurten.concat([{nr:beurten.length+1,car:0,totaal:null}]));},{flex:1,fontSize:14,padding:"8px"})}
-            {knop("− laatste beurt",function(){if(beurten.length>1)setBeurten(beurten.slice(0,-1));},{flex:1,fontSize:14,padding:"8px",opacity:beurten.length>1?1:0.4})}
+            {knop("+ "+t("beurt"),function(){setBeurten(beurten.concat([{nr:beurten.length+1,car:0,totaal:null}]));},{flex:1,fontSize:14,padding:"8px"})}
+            {knop("− "+t("laatste beurt"),function(){if(beurten.length>1)setBeurten(beurten.slice(0,-1));},{flex:1,fontSize:14,padding:"8px",opacity:beurten.length>1?1:0.4})}
           </div>
 
-          {kopje("Partij")}
-          <label style={{display:"block",fontSize:12,color:WITD}}>Datum
+          {kopje(t("Partij"))}
+          <label style={{display:"block",fontSize:12,color:WITD}}>{t("Datum")}
             <input type="date" value={datum} onChange={function(e){setDatum(e.target.value);}}
               style={{display:"block",width:"100%",boxSizing:"border-box",marginTop:4,padding:"10px 10px",borderRadius:8,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:16,fontFamily:"inherit",colorScheme:"dark",minHeight:44}}/>
           </label>
-          <div style={{fontSize:12,color:WITD,margin:"10px 0 4px"}}>Tafel</div>
+          <div style={{fontSize:12,color:WITD,margin:"10px 0 4px"}}>{t("Tafel")}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
             {Object.keys(TAFELS).map(function(k){const aan=k===tafel;return(
               <button key={k} onClick={function(){setTafel(k);}} style={{padding:"8px 2px",borderRadius:8,cursor:"pointer",fontFamily:"inherit",fontSize:15,
                 background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WITD,fontWeight:aan?"bold":"normal"}}>{TAFELS[k].label}</button>);})}
           </div>
-          <div style={{fontSize:12,color:WITD,margin:"12px 0 4px"}}>🎬 Acquit {gelezen.spelers.length>1?"(je stond "+(spelerIdx===0?"links":"rechts")+")":""}</div>
+          <div style={{fontSize:12,color:WITD,margin:"12px 0 4px"}}>🎬 {t("Acquit")} {gelezen.spelers.length>1?(spelerIdx===0?t("(je stond links)"):t("(je stond rechts)")):""}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:6}}>
-            {[["eerste","Beurt 1"],["laatste","Laatste beurt"],["geen","Niet"]].map(function(x){const aan=acquit===x[0];return(
+            {[["eerste",t("Beurt {n}",{n:1})],["laatste",t("Laatste beurt")],["geen",t("Niet")]].map(function(x){const aan=acquit===x[0];return(
               <button key={x[0]} onClick={function(){setAcquit(x[0]);}} style={{padding:"8px 2px",borderRadius:8,cursor:"pointer",fontFamily:"inherit",fontSize:13,
                 background:aan?"var(--c-2d4a1e)":"none",border:"1px solid "+(aan?GOUD:KBDR),color:aan?GOUD:WITD,fontWeight:aan?"bold":"normal"}}>{x[1]}</button>);})}
           </div>
           {acquitIdx>=0&&beurten[acquitIdx]&&<div style={{fontSize:12,marginTop:4,color:beurten[acquitIdx].car>0?GRNT:ROOD}}>
-            Beurt {acquitIdx+1}: {beurten[acquitIdx].car>0?"✓ acquit gelukt ("+beurten[acquitIdx].car+")":"✗ acquit gemist (poedel)"}
+            {t("Beurt {n}",{n:acquitIdx+1})}: {beurten[acquitIdx].car>0?"✓ "+t("acquit gelukt ({n})",{n:beurten[acquitIdx].car}):"✗ "+t("acquit gemist (poedel)")}
           </div>}
-          <div style={{fontSize:12,color:WITD,marginTop:8}}>Discipline: <span style={{color:WIT}}>{DISCIPLINES[discipline].naam}</span> (de discipline die nu bovenaan gekozen is)</div>
+          <div style={{fontSize:12,color:WITD,marginTop:8}}>{t("Discipline:")} <span style={{color:WIT}}>{DISCIPLINES[discipline].naam}</span> {t("(de discipline die nu bovenaan gekozen is)")}</div>
 
           <div style={{display:"flex",gap:8,marginTop:16}}>
-            {knop("Terug",function(){setStap("plakken");},{flex:1})}
-            {knop(afwijkend.length?"Toch opslaan":"Partij opslaan",opslaan,Object.assign({flex:2},goud))}
+            {knop(t("Terug"),function(){setStap("plakken");},{flex:1})}
+            {knop(afwijkend.length?t("Toch opslaan"):t("Partij opslaan"),opslaan,Object.assign({flex:2},goud))}
           </div>
         </>}
       </div>
@@ -560,8 +560,8 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan,onVerhaal
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
-        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Seizoensarchief</div>
-        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke afgesloten periode, met de eindstand van dat seizoen</div>
+        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>{t("Seizoensarchief")}</div>
+        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>{t("Elke afgesloten periode, met de eindstand van dat seizoen")}</div>
         <div style={{display:"flex",flexDirection:"column",gap:10}}>
           {seizoenen.filter(function(s){return s.eindDatum!==null;}).slice().reverse().map(function(s){
             const stats=berekenSeizoenStats(alleP,s,discipline,!spel,{});
@@ -572,17 +572,17 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan,onVerhaal
                     {stats.niveau.emoji}
                   </div>
                   <div style={{flex:1}}>
-                    <div style={{fontSize:14,fontWeight:"bold",color:WIT}}>{s.naam}</div>
+                    <div style={{fontSize:14,fontWeight:"bold",color:WIT}}>{seizoenNaam(s)}</div>
                     <div style={{fontSize:11,color:WITD}}>
-                      {s.startDatum?new Date(s.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"begin"} – {new Date(s.eindDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"})}
+                      {s.startDatum?new Date(s.startDatum).toLocaleDateString(taalLocale(),{day:"numeric",month:"short",year:"numeric"}):t("begin")} – {new Date(s.eindDatum).toLocaleDateString(taalLocale(),{day:"numeric",month:"short",year:"numeric"})}
                     </div>
                   </div>
                 </div>
                 <div style={{fontSize:13,color:WITD}}>
-                  {stats.aantalPartijen} partijen · gem {stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)} · {spel&&<>{stats.badgePunten}pt · </>}<span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
+                  {t("{n} partijen · gem {g}",{n:stats.aantalPartijen,g:stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)})} · {spel&&<>{stats.badgePunten}pt · </>}<span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
                 </div>
-                {onVerhaal&&<button onClick={function(){onVerhaal(s);}} style={{marginTop:8,padding:"6px 12px",background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>🎬 Bekijk dit seizoen</button>}
-                {stats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:2}}>Gemiddelde {gemUitleg(stats,discipline==="driebanden"?3:2," van dit seizoen")}</div>}
+                {onVerhaal&&<button onClick={function(){onVerhaal(s);}} style={{marginTop:8,padding:"6px 12px",background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>🎬 {t("Bekijk dit seizoen")}</button>}
+                {stats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:2}}>{t("Gemiddelde")} {gemUitleg(stats,discipline==="driebanden"?3:2,t(" van dit seizoen"))}</div>}
               </div>
             );
           })}
@@ -590,13 +590,13 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan,onVerhaal
         {onOngedaan&&afgesloten.length>0&&(!confOngedaan
           ?<button onClick={function(){setConfOngedaan(true);}} style={{display:"block",margin:"14px auto 0",padding:"4px 0",background:"none",border:"none",color:WITD,cursor:"pointer",fontSize:12,fontFamily:"inherit",textDecoration:"underline",opacity:0.75}}>Laatste seizoensgrens ongedaan maken</button>
           :<div style={{marginTop:12,background:"rgba(0,0,0,0.25)",border:"1px solid "+KBDR,borderRadius:8,padding:"9px 10px"}}>
-            <div style={{fontSize:13,color:WITD,marginBottom:8,lineHeight:1.4}}>{huidig.naam} en {afgesloten[afgesloten.length-1].naam} weer samenvoegen tot één lopend seizoen?</div>
+            <div style={{fontSize:13,color:WITD,marginBottom:8,lineHeight:1.4}}>{t("{a} en {b} weer samenvoegen tot één lopend seizoen?",{a:seizoenNaam(huidig),b:seizoenNaam(afgesloten[afgesloten.length-1])})}</div>
             <div style={{display:"flex",gap:6}}>
-              <button onClick={onOngedaan} style={{flex:1,padding:8,background:"var(--c-2d4a1e)",border:"none",borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>Ja, samenvoegen</button>
-              <button onClick={function(){setConfOngedaan(false);}} style={{flex:1,padding:8,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>Annuleer</button>
+              <button onClick={onOngedaan} style={{flex:1,padding:8,background:"var(--c-2d4a1e)",border:"none",borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>{t("Ja, samenvoegen")}</button>
+              <button onClick={function(){setConfOngedaan(false);}} style={{flex:1,padding:8,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>{t("Annuleer")}</button>
             </div>
           </div>)}
-        <div onClick={onClose} style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+        <div onClick={onClose} style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>{t("Tik om te sluiten")}</div>
       </div>
     </div>
   );
@@ -609,19 +609,19 @@ function BadgeCatalogus({discipline,onClose}){
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:400,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
-        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>Alle badges</div>
-        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>Elke badge die je kunt verdienen, en wat ervoor nodig is</div>
+        <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>{t("Alle badges")}</div>
+        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>{t("Elke badge die je kunt verdienen, en wat ervoor nodig is")}</div>
         {categorieen.map(function(cat){
           return(
             <div key={cat} style={{marginBottom:14}}>
-              <div style={{fontSize:12,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6,borderBottom:"1px solid "+KBDR,paddingBottom:4}}>{cat}</div>
+              <div style={{fontSize:12,color:GOUD,textTransform:"uppercase",letterSpacing:1,marginBottom:6,borderBottom:"1px solid "+KBDR,paddingBottom:4}}>{t(cat)}</div>
               {BADGE_CATALOGUS.filter(function(b){return b.categorie===cat;}).map(function(b){
                 return(
                   <div key={b.label} style={{display:"flex",alignItems:"flex-start",gap:8,padding:"6px 0"}}>
                     <span style={{fontSize:18,flexShrink:0}}>{b.emoji}</span>
                     <div style={{flex:1}}>
                       <div style={{display:"flex",justifyContent:"space-between",gap:8}}>
-                        <span style={{fontSize:13,fontWeight:"bold",color:WIT}}>{b.label}</span>
+                        <span style={{fontSize:13,fontWeight:"bold",color:WIT}}>{badgeLabel(b.label)}</span>
                         <span style={{fontSize:12,color:GOUD,flexShrink:0}}>{b.punten}</span>
                       </div>
                       <div style={{fontSize:12,color:WITD,marginTop:1}}>{b.uitleg}</div>
@@ -632,7 +632,7 @@ function BadgeCatalogus({discipline,onClose}){
             </div>
           );
         })}
-        <div onClick={onClose} style={{textAlign:"center",marginTop:6,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+        <div onClick={onClose} style={{textAlign:"center",marginTop:6,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>{t("Tik om te sluiten")}</div>
       </div>
     </div>
   );
@@ -648,36 +648,36 @@ function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenste
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
         <NiveauKaart niveau={niveau} discipline={discipline}/>
         {setVormVenster&&<div style={{marginTop:12}}>
-          <div style={{fontSize:13,color:WITD,marginBottom:6}}>Je vorm (en klasse) volgt je laatste:</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:6}}>{t("Je vorm (en klasse) volgt je laatste:")}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-            {[[10,"10"],[20,"20"],[30,"30"],["alles","Alle"]].map(function(x){
+            {[[10,"10"],[20,"20"],[30,"30"],["alles",t("Alle")]].map(function(x){
               const actief=vormVenster===x[0];
               return <button key={x[1]} onClick={function(){if(!actief)setVormVenster(x[0]);}}
                 style={{padding:"8px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
             })}
           </div>
-          <div style={{fontSize:12,color:WITD,marginTop:4,textAlign:"center"}}>partijen</div>
+          <div style={{fontSize:12,color:WITD,marginTop:4,textAlign:"center"}}>{t("partijen")}</div>
         </div>}
         {/* Schrappen (alleen met het spelelement aan): uit = alle partijen tellen; bij Alle is je vorm dan je moyenne */}
         {setSchrappen&&schrappen!==null&&schrappen!==undefined&&<div style={{marginTop:12}}>
-          <div style={{fontSize:13,color:WITD,marginBottom:6}}>Slechtste partijen schrappen met je punten:</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:6}}>{t("Slechtste partijen schrappen met je punten:")}</div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            {[[true,"Aan"],[false,"Uit"]].map(function(x){
+            {[[true,t("Aan")],[false,t("Uit")]].map(function(x){
               const actief=schrappen===x[0];
               return <button key={x[1]} onClick={function(){if(!actief)setSchrappen(x[0]);}}
                 style={{padding:"8px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
             })}
           </div>
           <div style={{fontSize:12,color:WITD,marginTop:4,lineHeight:1.4}}>
-            {schrappen?"Per "+PUNTEN_PER_DROP+" verdiende punten valt je slechtste partij weg (hoogstens 1 op de 10).":"Alle partijen tellen mee; je punten en badges blijven gewoon."}
+            {schrappen?t("Per {n} verdiende punten valt je slechtste partij weg (hoogstens 1 op de 10).",{n:PUNTEN_PER_DROP}):t("Alle partijen tellen mee; je punten en badges blijven gewoon.")}
           </div>
         </div>}
         {openDoel&&<div style={{marginTop:12}}>
           {mijnDoel
             ?<DoelRing doel={mijnDoel} vorm={niveau.effectiefGemiddelde} discipline={discipline} onWijzig={openDoel}/>
-            :<button onClick={openDoel} style={{width:"100%",padding:"11px 12px",background:"none",border:"1px dashed "+GOUD,borderRadius:12,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>🎯 Stel een doel</button>}
+            :<button onClick={openDoel} style={{width:"100%",padding:"11px 12px",background:"none",border:"1px dashed "+GOUD,borderRadius:12,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>🎯 {t("Stel een doel")}</button>}
         </div>}
-        <div style={{fontSize:13,fontWeight:"bold",color:GOUD,marginTop:16,marginBottom:8,textAlign:"center",textTransform:"uppercase",letterSpacing:1}}>Alle niveaus — {(DISCIPLINES[discipline]||DISCIPLINES.libre).naam}</div>
+        <div style={{fontSize:13,fontWeight:"bold",color:GOUD,marginTop:16,marginBottom:8,textAlign:"center",textTransform:"uppercase",letterSpacing:1}}>{t("Alle niveaus")} — {(DISCIPLINES[discipline]||DISCIPLINES.libre).naam}</div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {niveaus.map(function(n,i){
             const bereikt=i<niveau.index;
@@ -689,15 +689,15 @@ function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenste
                   {n.emoji}
                 </div>
                 <div style={{flex:1}}>
-                  <div style={{fontSize:14,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:12,color:WITD,fontWeight:"normal"}}> — jouw niveau</span>}</div>
-                  <div style={{fontSize:12,color:WITD}}>vanaf gemiddelde {n.gemDrempel.toFixed(decimalen)}</div>
+                  <div style={{fontSize:14,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:12,color:WITD,fontWeight:"normal"}}> — {t("jouw niveau")}</span>}</div>
+                  <div style={{fontSize:12,color:WITD}}>{t("vanaf gemiddelde {g}",{g:n.gemDrempel.toFixed(decimalen)})}</div>
                 </div>
                 <div style={{fontSize:14}}>{bereikt?"✅":toekomstig?"🔒":""}</div>
               </div>
             );
           })}
         </div>
-        <div onClick={onClose} style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>Tik om te sluiten</div>
+        <div onClick={onClose} style={{textAlign:"center",marginTop:14,fontSize:13,color:WITD,opacity:0.7,cursor:"pointer",padding:"6px 0"}}>{t("Tik om te sluiten")}</div>
       </div>
     </div>
   );
@@ -731,8 +731,8 @@ function OpmerkingenBewerken({partij,discipline,onOpslaan,onClose}){
         maxHeight:"calc(92vh / var(--zoom,1))",display:"flex",flexDirection:"column",overflow:"hidden"},stap?{height:"calc(92vh / var(--zoom,1))"}:null)}>
         {!stap&&<>
           <div style={{padding:"14px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
-            <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>✎ Opmerkingen aanvullen</div>
-            <div style={{fontSize:12,color:WITD,marginTop:2}}>{fmtDatum(partij.datum)} · {tafelLabel(partij.tafel||"230")} · {metOpm} van {beurten.length} beurten met opmerking. Tik op een beurt.</div>
+            <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>✎ {t("Opmerkingen aanvullen")}</div>
+            <div style={{fontSize:12,color:WITD,marginTop:2}}>{fmtDatum(partij.datum)} · {tafelLabel(partij.tafel||"230")} · {t("{a} van {b} beurten met opmerking. Tik op een beurt.",{a:metOpm,b:beurten.length})}</div>
           </div>
           <div style={{flex:1,minHeight:0,overflowY:"auto"}}>
             {beurten.map(function(bt,i){
@@ -743,9 +743,9 @@ function OpmerkingenBewerken({partij,discipline,onOpslaan,onClose}){
                   <span style={{width:26,fontSize:13,color:WITD}}>{i+1}</span>
                   <span style={{width:30,fontSize:18,fontWeight:"bold",color:bt.caramboles===0?"#e08055":beurtKleur(bt.caramboles,discipline)}}>{bt.caramboles}</span>
                   <span style={{flex:1,minWidth:0,fontSize:12,lineHeight:1.35}}>
-                    {bt.goed.length>0&&<span style={{color:GRNT}}>✓ {bt.goed.join(", ")} </span>}
-                    {bt.gemist.length>0&&<span style={{color:ROOD}}>✗ {bt.gemist.join(", ")}</span>}
-                    {opm===0&&<span style={{color:"rgba(255,255,255,0.3)"}}>geen opmerking</span>}
+                    {bt.goed.length>0&&<span style={{color:GRNT}}>✓ {bt.goed.map(function(l){return t(l);}).join(", ")} </span>}
+                    {bt.gemist.length>0&&<span style={{color:ROOD}}>✗ {bt.gemist.map(function(l){return t(l);}).join(", ")}</span>}
+                    {opm===0&&<span style={{color:"rgba(255,255,255,0.3)"}}>{t("geen opmerking")}</span>}
                   </span>
                   <span style={{color:GOUDL,fontSize:14}}>✎</span>
                 </div>
@@ -753,15 +753,15 @@ function OpmerkingenBewerken({partij,discipline,onOpslaan,onClose}){
             })}
           </div>
           <div style={onderbalk}>
-            <button onClick={function(){if(gewijzigd)onOpslaan(partij.id,beurten);onClose();}} style={knopStijl(true)}>{gewijzigd?"Opslaan":"Sluiten"}</button>
-            {gewijzigd&&<button onClick={onClose} style={knopStijl(false)}>Annuleer</button>}
+            <button onClick={function(){if(gewijzigd)onOpslaan(partij.id,beurten);onClose();}} style={knopStijl(true)}>{gewijzigd?t("Opslaan"):t("Sluiten")}</button>
+            {gewijzigd&&<button onClick={onClose} style={knopStijl(false)}>{t("Annuleer")}</button>}
           </div>
         </>}
         {stap&&<>
           <div style={{padding:"12px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
-            <div style={{fontSize:12,color:WITD}}>Beurt {stap.i+1} · {b.caramboles} {b.caramboles===1?"carambole":"caramboles"}</div>
+            <div style={{fontSize:12,color:WITD}}>{t("Beurt {n}",{n:stap.i+1})} · {b.caramboles} {b.caramboles===1?t("carambole"):t("caramboles")}</div>
             <div style={{fontSize:18,fontWeight:"bold",color:stap.soort==="gemist"?ROOD:GRNT}}>
-              {stap.soort==="gemist"?(b.caramboles===0?"Waardoor was het een poedel?":"Waardoor eindigde de serie?"):"Wat ging goed?"}
+              {stap.soort==="gemist"?(b.caramboles===0?t("Waardoor was het een poedel?"):t("Waardoor eindigde de serie?")):t("Wat ging goed?")}
             </div>
           </div>
           {/* Zelfde raster als tijdens het spelen: vult de ruimte, alles in één keer in beeld */}
@@ -772,9 +772,9 @@ function OpmerkingenBewerken({partij,discipline,onOpslaan,onClose}){
           </div>
           <div style={onderbalk}>
             {stap.soort==="gemist"
-              ?<button onClick={function(){if(b.caramboles===0)setStap(null);else setStap({i:stap.i,soort:"goed"});}} style={knopStijl(true)}>{b.caramboles===0?"Klaar":"Volgende stap"}</button>
-              :<button onClick={function(){setStap(null);}} style={knopStijl(true,GRNT)}>Klaar</button>}
-            <button onClick={function(){if(stap.soort==="goed")setStap({i:stap.i,soort:"gemist"});else setStap(null);}} style={knopStijl(false)}>terug</button>
+              ?<button onClick={function(){if(b.caramboles===0)setStap(null);else setStap({i:stap.i,soort:"goed"});}} style={knopStijl(true)}>{b.caramboles===0?t("Klaar"):t("Volgende stap")}</button>
+              :<button onClick={function(){setStap(null);}} style={knopStijl(true,GRNT)}>{t("Klaar")}</button>}
+            <button onClick={function(){if(stap.soort==="goed")setStap({i:stap.i,soort:"gemist"});else setStap(null);}} style={knopStijl(false)}>{t("terug")}</button>
           </div>
         </>}
       </div>

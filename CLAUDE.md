@@ -184,8 +184,12 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   welkomstscherm (`data.taal`). Zonder keuze: Nederlands voor bestaande gebruikers (onboardingGezien/partijen), anders de taal
   van het toestel (`taalVoorData`). `zetTaal()` draait bovenaan de render van BiljartTracker; `t()` leest de globale `TAAL`.
 - Nieuwe tekst altijd als `t("Nederlandse tekst",{n:..})` en vertalen in alle `js/taal-*.js`; controle:
-  `node test/vertalingen-node.js` (zoekt `t("...")` in de code; teksten via een variabele, zoals `t(cond?"a":"b")`, ziet hij niet
-  en staan dan als "overbodig"). Ontbreekt een vertaling, dan valt `t()` terug op Engels en daarna Nederlands.
+  `node test/vertalingen-node.js` (zoekt `t("...")` en `t(cond?"a":"b")` in de code; teksten via een andere variabele ziet hij
+  niet en staan dan als "overbodig"). Ontbreekt een vertaling, dan valt `t()` terug op Engels en daarna Nederlands.
+- Hulpjes in `js/taal.js`: `badgeLabel()`, `seizoenNaam()` ("Seizoen 2" → taal), `taalLocale()` (voor toLocaleDateString),
+  `getalTekst()` (komma/punt), `maandTekst()` (maandKey "mrt 2026" → taal), `maandNaam()`, `weekdagLetters()`.
+- `BRIEFJE_PROMPT` wordt vertaald met `t(BRIEFJE_PROMPT)`; de trefwoorden SPELER/TE MAKEN/BEURTEN/DATUM blijven Nederlands
+  (de vertaalde vraag zegt dat), want `leesBriefje()` zoekt daarop.
 - Opgeslagen gegevens blijven Nederlands (opmerkingen, badge-labels, seizoennamen): alleen bij tonen `t(label)`. `.naam` van
   DISCIPLINES, niveaus, TAFELS en MIJLPALEN is een getter die al vertaalt (Nederlands in `_naam`); nooit kopiëren met Object.assign.
 - Disciplinebalk: `kortNaam(d)` ("kort:Libre" in een taalbestand, alleen van die taal zelf). Geen lusvariabele `t` gebruiken
@@ -193,8 +197,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 - Termen: beurt = inning / reprise / Aufnahme; serie = run / série / Serie; poedel = miss / reprise blanche / Nuller;
   libre/driebanden/bandstoten/kader = straight rail, three-cushion, one-cushion, balkline / libre, trois bandes, une bande, cadre /
   Freie Partie, Dreiband, Einband, Cadre.
-- Fase 1 klaar (kop, tabbladen, Spelen, opmerkingen, Info, welkom). Nog te doen: fase 2 Stats/Log/partijregels/vensters/uitleg,
-  fase 3 Dash/Inzicht/berekeningen-teksten (badges, vormUitleg), fase 4 store-teksten per taal; daarna nieuwe talen.
+- Fase 1 klaar (kop, tabbladen, Spelen, opmerkingen, Info, welkom). Fase 2 klaar (Stats, Log, partijregels, vensters, uitleg,
+  badges, vormUitleg, wauw: doel, kalender, seizoen in beeld, deelkaarten). Nog te doen: fase 3 Dash/Inzicht
+  (`jsx/dashboard.jsx`, `jsx/inzicht.jsx`, `berekenInzicht`-teksten), fase 4 store-teksten per taal; daarna nieuwe talen.
 
 ## Harde regels
 

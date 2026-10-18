@@ -6,23 +6,33 @@
 const fs=require("fs"),path=require("path");
 const map=path.join(__dirname,"..");
 const bestanden=["index.html"].concat(
-  fs.readdirSync(path.join(map,"js")).filter(function(f){return/\.js$/.test(f)&&!/^taal/.test(f);}).map(function(f){return"js/"+f;}),
+  fs.readdirSync(path.join(map,"js")).filter(function(f){return/\.js$/.test(f)&&!/^taal-/.test(f);}).map(function(f){return"js/"+f;}),
   fs.readdirSync(path.join(map,"jsx")).filter(function(f){return/\.jsx$/.test(f);}).map(function(f){return"jsx/"+f;}));
 const sleutels=new Set();
 bestanden.forEach(function(f){
   const src=fs.readFileSync(path.join(map,f),"utf8");
   const re=/(?:^|[^\w.$])t\(\s*"((?:[^"\\]|\\.)*)"/g;let m;
   while((m=re.exec(src))){sleutels.add(JSON.parse('"'+m[1]+'"'));}
+  // t(voorwaarde?"a":"b"): beide teksten
+  const re2=/(?:^|[^\w.$])t\(\s*[\w.$!=<>&|() ]+\?\s*"((?:[^"\\]|\\.)*)"\s*:\s*"((?:[^"\\]|\\.)*)"/g;
+  while((m=re2.exec(src))){sleutels.add(JSON.parse('"'+m[1]+'"'));sleutels.add(JSON.parse('"'+m[2]+'"'));}
 });
 // Vaste labels die als variabele in t() gaan
 global.document=undefined;
 const c=(new Function(fs.readFileSync(path.join(map,"js/constanten.js"),"utf8")+
-  ";return{GEMIST:GEMIST,GOED:GOED,DISCIPLINES:DISCIPLINES,TAFELS:TAFELS,TEKSTGROOTTES:TEKSTGROOTTES,MIJLPALEN:MIJLPALEN};"))();
+  ";return{GEMIST:GEMIST,GOED:GOED,DISCIPLINES:DISCIPLINES,TAFELS:TAFELS,TEKSTGROOTTES:TEKSTGROOTTES,MIJLPALEN:MIJLPALEN,BRIEFJE_PROMPT:BRIEFJE_PROMPT};"))();
 c.GEMIST.concat(c.GOED).forEach(function(o){sleutels.add(o.label);});
 Object.keys(c.DISCIPLINES).forEach(function(k){const d=c.DISCIPLINES[k];sleutels.add(d.naam);d.niveaus.forEach(function(n){sleutels.add(n.naam);});});
 Object.keys(c.TAFELS).forEach(function(k){sleutels.add(c.TAFELS[k].naam);});
 c.TEKSTGROOTTES.forEach(function(x){sleutels.add(x[1]);});
 c.MIJLPALEN.forEach(function(m){sleutels.add(m.naam);});
+sleutels.add(c.BRIEFJE_PROMPT);
+// Badge-labels en -categorieën (getoond met badgeLabel()/t()), "Gemiddelde boven X" als sjabloon
+(function(){
+  const src=fs.readFileSync(path.join(map,"js/berekeningen.js"),"utf8");const re=/(?:label|categorie):"([^"]+)"/g;let m;
+  while((m=re.exec(src))){if(m[1]!=="Gemiddelde boven ")sleutels.add(m[1]);}
+  sleutels.add("Gemiddelde boven {g}");sleutels.add("Overig");
+})();
 
 global.VERTALING={};
 ["en","fr","de"].forEach(function(code){(new Function("VERTALING",fs.readFileSync(path.join(map,"js/taal-"+code+".js"),"utf8")))(global.VERTALING);});

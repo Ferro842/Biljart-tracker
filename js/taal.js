@@ -1,7 +1,7 @@
 // Talen van Biljart Tracker. De Nederlandse tekst is zelf de sleutel: t("Start partij") geeft in het Engels
 // "Start game". Vertalingen staan per taal in js/taal-<code>.js (VERTALING.en = {...}). Ontbreekt een vertaling,
 // dan valt t() terug op Engels en daarna op het Nederlands, zodat er nooit een lege knop staat.
-// Variabelen tussen accolades: t("Nog {n} beurten",{n:5}). Opgeslagen gegevens (opmerkingen, disciplines,
+// Variabelen tussen accolades: t("Seizoen {n}",{n:2}). Opgeslagen gegevens (opmerkingen, disciplines,
 // klassen) blijven intern Nederlands en worden alleen bij het tonen vertaald (met t(label)).
 // Controle op ontbrekende vertalingen: node test/vertalingen-node.js
 const TALEN=[
@@ -47,6 +47,31 @@ function kortNaam(disc){
   const d=DISCIPLINES[disc];if(!d)return disc;
   const v=VERTALING[TAAL]&&VERTALING[TAAL]["kort:"+(d._naam||d.naam)]; // alleen van de taal zelf, niet via Engels
   return v||d.naam;
+}
+// Badge-labels blijven intern Nederlands (de code vergelijkt erop); zo worden ze getoond
+function badgeLabel(l){
+  const m=/^Gemiddelde boven (.+)$/.exec(l||"");
+  return m?t("Gemiddelde boven {g}",{g:m[1]}):t(l);
+}
+// Datumnotatie van de taal (voor toLocaleDateString)
+function taalLocale(){return{nl:"nl-NL",en:"en-GB",fr:"fr-FR",de:"de-DE"}[TAAL]||"nl-NL";}
+// Seizoennamen worden als "Seizoen 2" opgeslagen; zo tonen ze in de gekozen taal (een eigen naam blijft staan)
+function seizoenNaam(s){
+  const m=/^Seizoen (\d+)$/.exec((s&&s.naam)||"");
+  return m?t("Seizoen {n}",{n:m[1]}):(s&&s.naam)||"";
+}
+// Maandsleutel "mrt 2026" (maandKey) als tekst in de gekozen taal; lang = volledige maandnaam
+const MAANDEN_NL=["jan","feb","mrt","apr","mei","jun","jul","aug","sep","okt","nov","dec"];
+function maandTekst(k,lang){
+  const m=/^([a-z]+) (\d{4})$/.exec(k||""),i=m?MAANDEN_NL.indexOf(m[1]):-1;
+  if(i<0)return k||"";
+  return new Date(+m[2],i,1).toLocaleDateString(taalLocale(),{month:lang?"long":"short",year:"numeric"});
+}
+// Maandnaam (0-11) en eenletterige weekdagen vanaf maandag in de gekozen taal
+function maandNaam(i){return new Date(2026,i,1).toLocaleDateString(taalLocale(),{month:"long"});}
+function weekdagLetters(){
+  const uit=[];for(let i=0;i<7;i++)uit.push(new Date(2026,0,5+i).toLocaleDateString(taalLocale(),{weekday:"narrow"}).toLowerCase());
+  return uit;
 }
 // Getal met de decimaalkomma of -punt van de taal (Engels: punt)
 function getalTekst(x,dec){

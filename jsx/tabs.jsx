@@ -9,7 +9,7 @@ function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij
       {kopBlok&&kopBlok({rand:14,onder:12})}
       {lp.length>0&&(
         <div style={{background:KBG,border:"2px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:10}}>
-          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Lopende partij</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Lopende partij")}</div>
           {[].concat(lp).reverse().map(function(b,i){return <LogRij key={b.id} b={b} nr={lp.length-i} discipline={huidigeDiscipline}/>;}) }
         </div>
       )}
@@ -38,7 +38,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
       let parsed;
       try{parsed=JSON.parse(reader.result);}catch(err){parsed=null;}
       if(!parsed||!Array.isArray(parsed.partijen)){
-        alert("Dit lijkt geen geldige back-up te zijn (geen partijen-lijst gevonden).");
+        alert(t("Dit lijkt geen geldige back-up te zijn (geen partijen-lijst gevonden)."));
         return;
       }
       const perDiscipline={};
@@ -46,8 +46,8 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
         const d=p.discipline||"libre";
         perDiscipline[d]=(perDiscipline[d]||0)+1;
       });
-      const overzicht=Object.keys(perDiscipline).map(function(d){return d+": "+perDiscipline[d];}).join(", ");
-      if(!window.confirm("Gevonden: "+parsed.partijen.length+" partijen ("+overzicht+").\n\nDit vervangt ALLE huidige data ("+data.partijen.length+" partijen). Doorgaan?"))return;
+      const overzicht=Object.keys(perDiscipline).map(function(d){return(DISCIPLINES[d]?DISCIPLINES[d].naam:d)+": "+perDiscipline[d];}).join(", ");
+      if(!window.confirm(t("Gevonden: {n} partijen ({o}).\n\nDit vervangt ALLE huidige data ({h} partijen). Doorgaan?",{n:parsed.partijen.length,o:overzicht,h:data.partijen.length})))return;
       migreerTafels(parsed);
       herstelBeurten(parsed);
       migreerAcquit(parsed);
@@ -64,21 +64,21 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
 
   function bouwTekst(){
     const stA=stat(alleP.flatMap(function(p){return p.beurten;}),huidigeDiscipline);
-    const r=["BILJART DATA — "+new Date().toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"}),"========================================"];
-    if(stA)r.push("TOTAAL: "+alleP.length+" partijen · "+stA.totCar+"car · gem "+stA.gemPerBeurt+" · max "+stA.max+" · "+stA.poedels+" poedels");
+    const r=[t("BILJART DATA")+" — "+new Date().toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long",year:"numeric"}),"========================================"];
+    if(stA)r.push(t("TOTAAL: {n} partijen · {c} car · gem {g} · max {m} · {p} poedels",{n:alleP.length,c:stA.totCar,g:stA.gemPerBeurt,m:stA.max,p:stA.poedels}));
     var alleOmgekeerd=[].concat(alleP).reverse();
     const dTxt=beurtDrempels(huidigeDiscipline);
     alleOmgekeerd.forEach(function(p,i){
       const st=stat(p.beurten,huidigeDiscipline);
       r.push("");
-      r.push("Partij "+(alleP.length-i)+" · "+new Date(p.datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long"})+(p.tafel?" · Tafel "+tafelVol(p.tafel):""));
-      if(st)r.push(st.aantalBeurten+"b · max "+st.max+" · gem "+st.gemPerBeurt+" · "+st.poedels+"x poedel · "+st.opbouw5+"x"+dTxt.opbouwMin+"+");
+      r.push(t("Partij {n}",{n:alleP.length-i})+" · "+new Date(p.datum).toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long"})+(p.tafel?" · "+t("Tafel")+" "+tafelVol(p.tafel):""));
+      if(st)r.push(t("{b} beurten · max {m} · gem {g} · {p}x poedel · {o}x {min}+",{b:st.aantalBeurten,m:st.max,g:st.gemPerBeurt,p:st.poedels,o:st.opbouw5,min:dTxt.opbouwMin}));
       p.beurten.forEach(function(b,j){
-        const g=(b.gemist||[]).join(", ");
-        const gd=(b.goed||[]).join(", ");
-        var rule="  B"+(j+1)+": "+b.caramboles+"car"+(b.caramboles===0?" [poedel]":"");
-        if(g)rule+=" - Gemist: "+g;
-        if(gd)rule+=" - Goed: "+gd;
+        const g=(b.gemist||[]).map(function(l){return t(l);}).join(", ");
+        const gd=(b.goed||[]).map(function(l){return t(l);}).join(", ");
+        var rule="  "+t("B{n}",{n:j+1})+": "+b.caramboles+" car"+(b.caramboles===0?" ["+t("poedel")+"]":"");
+        if(g)rule+=" - "+t("Gemist")+": "+g;
+        if(gd)rule+=" - "+t("Goed")+": "+gd;
         r.push(rule);
       });
     });
@@ -100,48 +100,48 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
   }
 
   const dataTekst=bouwTekst();
-  const promptPartij="Je bent een biljartcoach voor carambole/libre. Analyseer mijn meest recente partij. Geef: Wat ging goed, Grootste rem, Foutpatronen, Trainingsadvies, Focus. Antwoord beknopt.\n\n"+dataTekst;
-  const promptTrend="Je bent een biljartcoach voor carambole/libre. Analyseer mijn trends over al mijn partijen. Geef: Trend, Vooruitgang, Remmers, Inzicht, Trainingsfocus. Antwoord beknopt.\n\n"+dataTekst;
+  const promptPartij=t("Je bent een biljartcoach voor carambole/libre. Analyseer mijn meest recente partij. Geef: Wat ging goed, Grootste rem, Foutpatronen, Trainingsadvies, Focus. Antwoord beknopt.")+"\n\n"+dataTekst;
+  const promptTrend=t("Je bent een biljartcoach voor carambole/libre. Analyseer mijn trends over al mijn partijen. Geef: Trend, Vooruitgang, Remmers, Inzicht, Trainingsfocus. Antwoord beknopt.")+"\n\n"+dataTekst;
   return(
     <div className={ingebed?null:"scrollvak"} style={ingebed?null:{overflowY:"auto",padding:"12px 14px",height:"100%"}}>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>AI Analyse</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("AI Analyse")}</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-          Kopieer een kant-en-klare prompt met al je data erin, en plak die in ChatGPT, Claude of een andere AI-chat voor een persoonlijke analyse.
+          {t("Kopieer een kant-en-klare prompt met al je data erin, en plak die in ChatGPT, Claude of een andere AI-chat voor een persoonlijke analyse.")}
         </div>
         <div style={{display:"flex",gap:8}}>
           <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={function(){kopieer(promptPartij,"aipartij");}}>{gekopieerd==="aipartij"?"Gekopieerd!":"📋 Partij-analyse-prompt"}</button>
+            onClick={function(){kopieer(promptPartij,"aipartij");}}>{gekopieerd==="aipartij"?t("Gekopieerd!"):"📋 "+t("Partij-analyse-prompt")}</button>
           <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={function(){kopieer(promptTrend,"aitrend");}}>{gekopieerd==="aitrend"?"Gekopieerd!":"📋 Trend-analyse-prompt"}</button>
+            onClick={function(){kopieer(promptTrend,"aitrend");}}>{gekopieerd==="aitrend"?t("Gekopieerd!"):"📋 "+t("Trend-analyse-prompt")}</button>
         </div>
       </div>
       <button style={{width:"100%",padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:10,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",marginBottom:12}}
         onClick={function(){kopieer(dataTekst,"data");setToonData(function(v){return !v;});}}>
-        {gekopieerd==="data"?"Gekopieerd!":"Kopieer data"}
+        {gekopieerd==="data"?t("Gekopieerd!"):t("Kopieer data")}
       </button>
       {toonData&&(
         <div>
-          <div style={{fontSize:13,color:WITD,marginBottom:6}}>Selecteer alles hieronder en kopieer:</div>
+          <div style={{fontSize:13,color:WITD,marginBottom:6}}>{t("Selecteer alles hieronder en kopieer:")}</div>
           <textarea readOnly value={dataTekst}
             onClick={function(e){e.target.select();}}
             style={{width:"100%",height:220,background:"var(--c-0d1f0d)",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
         </div>
       )}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginTop:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Back-up</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Back-up")}</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-          Sla al je data op als bestand, of zet een eerder bestand terug.
+          {t("Sla al je data op als bestand, of zet een eerder bestand terug.")}
         </div>
         <div style={{display:"flex",gap:8}}>
           <button style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={exporteerData}>📤 Exporteer data</button>
-          <div style={{fontSize:12,color:WITD,marginTop:6}}>{data.laatsteBackup?"Laatste back-up: "+new Date(data.laatsteBackup).toLocaleDateString("nl-NL",{day:"numeric",month:"long",year:"numeric"}):"Je hebt nog geen back-up gemaakt."}</div>
+            onClick={exporteerData}>📤 {t("Exporteer data")}</button>
           <label style={{flex:1,padding:12,background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit",textAlign:"center",boxSizing:"border-box"}}>
-            📥 Importeer data
+            📥 {t("Importeer data")}
             <input type="file" accept=".json,application/json" onChange={importeerData} style={{display:"none"}}/>
           </label>
         </div>
+        <div style={{fontSize:12,color:WITD,marginTop:8}}>{data.laatsteBackup?t("Laatste back-up: {d}",{d:new Date(data.laatsteBackup).toLocaleDateString(taalLocale(),{day:"numeric",month:"long",year:"numeric"})}):t("Je hebt nog geen back-up gemaakt.")}</div>
       </div>
     </div>
   );
@@ -164,7 +164,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
     <div className="scrollvak" style={{overflowY:"auto",padding:kopBlok?"0 14px 12px":"12px 14px",height:"100%"}}>
       {kopBlok&&kopBlok({rand:14,onder:12})}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Seizoen</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Seizoen")}</div>
         {(function(){
           const seizoenen=data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}];
           const huidig=seizoenen[seizoenen.length-1];
@@ -172,26 +172,26 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
           const huidigStats=berekenSeizoenStats(alleP,huidig,huidigeDiscipline,!spel,{});
           return(
             <div>
-              <div style={{fontSize:14,color:WIT,marginBottom:2}}>{huidig.naam} <span style={{fontSize:13,color:WITD}}>(sinds {huidig.startDatum?new Date(huidig.startDatum).toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"}):"het begin"})</span></div>
-              <div style={{fontSize:13,color:WITD,marginBottom:huidigStats.aantalDrops>0?2:10}}>{huidigStats.aantalPartijen} partijen · gem {huidigStats.gemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
-              {huidigStats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:10}}>Gemiddelde {gemUitleg(huidigStats,huidigeDiscipline==="driebanden"?3:2," van dit seizoen")}. Elk seizoen telt zijn eigen badge-punten.</div>}
+              <div style={{fontSize:14,color:WIT,marginBottom:2}}>{seizoenNaam(huidig)} <span style={{fontSize:13,color:WITD}}>({huidig.startDatum?t("sinds {d}",{d:new Date(huidig.startDatum).toLocaleDateString(taalLocale(),{day:"numeric",month:"short",year:"numeric"})}):t("sinds het begin")})</span></div>
+              <div style={{fontSize:13,color:WITD,marginBottom:huidigStats.aantalDrops>0?2:10}}>{t("{n} partijen · gem {g}",{n:huidigStats.aantalPartijen,g:huidigStats.gemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)})} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
+              {huidigStats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:10}}>{t("Gemiddelde")} {gemUitleg(huidigStats,huidigeDiscipline==="driebanden"?3:2,t(" van dit seizoen"))}. {t("Elk seizoen telt zijn eigen badge-punten.")}</div>}
               <div style={{display:"flex",gap:6}}>
                 {!confSeizoenAfsluiten
                   ?<button style={{flex:1,padding:8,background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-                    onClick={function(){setConfSeizoenAfsluiten(true);}}>Seizoen afsluiten</button>
+                    onClick={function(){setConfSeizoenAfsluiten(true);}}>{t("Seizoen afsluiten")}</button>
                   :<div style={{flex:1,minWidth:0,background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:6,padding:"7px 8px"}}>
-                    <div style={{fontSize:13,color:GOUD,marginBottom:6}}>Huidig seizoen afsluiten en een nieuwe beginnen?</div>
-                    <label style={{display:"block",fontSize:12,color:WITD,marginBottom:8}}>Nieuw seizoen begint op
+                    <div style={{fontSize:13,color:GOUD,marginBottom:6}}>{t("Huidig seizoen afsluiten en een nieuwe beginnen?")}</div>
+                    <label style={{display:"block",fontSize:12,color:WITD,marginBottom:8}}>{t("Nieuw seizoen begint op")}
                       <input type="date" value={nieuwSeizoenVanaf} max={vandaagStr} onChange={function(e){setNieuwSeizoenVanaf(e.target.value);}}
                         style={{display:"block",width:"100%",boxSizing:"border-box",marginTop:4,padding:"8px 10px",borderRadius:6,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:15,fontFamily:"inherit",colorScheme:"dark",minHeight:40}}/>
-                      <span style={{display:"block",marginTop:4,lineHeight:1.4}}>Partijen vanaf die dag horen bij het nieuwe seizoen. Kies een eerdere datum om een grens achteraf te leggen.</span>
+                      <span style={{display:"block",marginTop:4,lineHeight:1.4}}>{t("Partijen vanaf die dag horen bij het nieuwe seizoen. Kies een eerdere datum om een grens achteraf te leggen.")}</span>
                     </label>
                     {(function(){
                       // Een begindatum vóór de start van het huidige seizoen kan niet
                       const start=huidig.startDatum?new Date(huidig.startDatum):null;
                       const d=nieuwSeizoenVanaf.split("-").map(function(x){return parseInt(x,10);});
                       const gekozen=new Date(d[0],d[1]-1,d[2],0,0,0);
-                      return start&&gekozen<=start?<div style={{fontSize:12,color:ROOD,marginBottom:6}}>Kies een datum na {start.toLocaleDateString("nl-NL",{day:"numeric",month:"short",year:"numeric"})}.</div>:null;
+                      return start&&gekozen<=start?<div style={{fontSize:12,color:ROOD,marginBottom:6}}>{t("Kies een datum na {d}.",{d:start.toLocaleDateString(taalLocale(),{day:"numeric",month:"short",year:"numeric"})})}</div>:null;
                     })()}
                     <div style={{display:"flex",gap:6}}>
                       <button style={{flex:1,padding:6,background:"var(--c-2d4a1e)",border:"none",borderRadius:5,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
@@ -203,19 +203,19 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                           // Vandaag gekozen: het huidige moment (zoals altijd); anders het begin van die dag
                           seizoenAfsluiten(nieuwSeizoenVanaf===vandaagStr?new Date().toISOString():gekozen.toISOString());
                           setConfSeizoenAfsluiten(false);setNieuwSeizoenVanaf(vandaagStr);
-                        }}>Ja, afsluiten</button>
+                        }}>{t("Ja, afsluiten")}</button>
                       <button style={{flex:1,padding:6,background:"none",border:"1px solid "+KBDR,borderRadius:5,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}
-                        onClick={function(){setConfSeizoenAfsluiten(false);}}>Annuleer</button>
+                        onClick={function(){setConfSeizoenAfsluiten(false);}}>{t("Annuleer")}</button>
                     </div>
                   </div>
                 }
                 {afgesloten.length>0&&!confSeizoenAfsluiten&&(
                   <button style={{padding:"8px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}
-                    onClick={openArchief}>Archief ({afgesloten.length})</button>
+                    onClick={openArchief}>{t("Archief")} ({afgesloten.length})</button>
                 )}
               </div>
               {!confSeizoenAfsluiten&&openVerhaal&&<button onClick={function(){openVerhaal(huidig);}}
-                style={{marginTop:8,width:"100%",padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WIT,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>🎬 Bekijk je seizoen tot nu toe</button>}
+                style={{marginTop:8,width:"100%",padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WIT,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>🎬 {t("Bekijk je seizoen tot nu toe")}</button>}
             </div>
           );
         })()}
@@ -226,17 +226,17 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
         const dec=huidigeDiscipline==="driebanden"?3:2;
         const gespeeld=Object.keys(TAFELS).filter(function(k){return alleP.some(function(p){return(p.tafel||"230")===k;});});
         const tafel=gespeeld.indexOf(niveauTafel)!==-1?niveauTafel:"alle";
-        const opTafel=tafel==="alle"?"":" op "+tafelLabel(tafel);
+        const opTafel=tafel==="alle"?"":" "+t("op {tafel}",{tafel:tafelLabel(tafel)});
         // Voor één tafel: zelfde berekening, alleen met de partijen op die tafel
         const info=tafel==="alle"?niveau:berekenVorm(alleP.filter(function(p){return(p.tafel||"230")===tafel;}),spel&&data.schrappen!==false,vormVenster);
         const niv=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline);
         const chip=function(actief){return{flex:1,padding:"7px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13};};
         return(
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Je niveau</div>
+            <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Je niveau")}</div>
             {gespeeld.length>1&&(
               <div style={{display:"flex",gap:6,marginBottom:10}}>
-                {[["alle","Alle tafels"]].concat(gespeeld.map(function(k){return[k,tafelLabel(k)];})).map(function(x){
+                {[["alle",t("Alle tafels")]].concat(gespeeld.map(function(k){return[k,tafelLabel(k)];})).map(function(x){
                   return <button key={x[0]} onClick={function(){setNiveauTafel(x[0]);}} style={chip(tafel===x[0])}>{x[1]}</button>;
                 })}
               </div>
@@ -244,28 +244,30 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:tafel==="alle"?10:6}}>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
                 <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}><Telop waarde={info.effectiefGemiddelde} dec={dec}/></div>
-                <div style={{fontSize:11,color:WITD}}>vorm · {info.venster?"laatste "+info.aantalPartijen:!info.aantalDrops?"alle partijen = moyenne":"alle partijen"}{opTafel}</div>
+                <div style={{fontSize:11,color:WITD}}>{t("vorm")} · {info.venster?t("laatste {n}",{n:info.aantalPartijen}):!info.aantalDrops?t("alle partijen = moyenne"):t("alle partijen")}{opTafel}</div>
                 <div style={{fontSize:10,color:spel&&info.aantalDrops>0?GOUD:WITD,marginTop:2}}>
-                  {!spel?"niets geschrapt · spelelement uit"
-                    :info.aantalDrops>0?"zonder je "+(info.aantalDrops===1?"slechtste":info.aantalDrops+" slechtste")+" · spelelement aan"
-                    :"nog niets geschrapt · spelelement aan"}
+                  {!spel?t("niets geschrapt · spelelement uit")
+                    :info.aantalDrops>0?(info.aantalDrops===1?t("zonder je slechtste · spelelement aan"):t("zonder je {n} slechtste · spelelement aan",{n:info.aantalDrops}))
+                    :t("nog niets geschrapt · spelelement aan")}
                 </div>
                 <div style={{fontSize:10,color:niv.huidig.kleur,marginTop:2}}>{niv.huidig.emoji} {niv.huidig.naam} {niv.progressPct}%</div>
               </div>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
                 <div style={{fontSize:22,fontWeight:"bold",color:WIT}}><Telop waarde={info.moyenne} dec={dec}/></div>
-                <div style={{fontSize:11,color:WITD}}>moyenne · alle {info.aantalPartijenTotaal}{opTafel}</div>
-                <div style={{fontSize:10,color:WITD,opacity:0.7}}>officieel, niets geschrapt</div>
+                <div style={{fontSize:11,color:WITD}}>{t("moyenne · alle {n}",{n:info.aantalPartijenTotaal})}{opTafel}</div>
+                <div style={{fontSize:10,color:WITD,opacity:0.7}}>{t("officieel, niets geschrapt")}</div>
               </div>
             </div>
             {tafel!=="alle"&&(
-              <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>Alleen je partijen op de {tafelLabel(tafel)}. Je niveau bovenin de app gaat over alle tafels.</div>
+              <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>{t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.",{tafel:tafelLabel(tafel)})}</div>
             )}
             <div style={{fontSize:11,color:WITD,opacity:0.8,lineHeight:1.45}}>
               {!niveau.venster&&!niveau.aantalDrops
-                ?"Je klasse is nu gebaseerd op je moyenne: al je partijen, niets geschrapt."
-                :<>Je vorm is het gemiddelde van {niveau.venster?"je laatste "+vormVenster+" partijen":"al je partijen"}{spel&&data.schrappen!==false?", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)":""}; je moyenne gaat altijd over al je partijen.</>}
-              {" "}Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij <b style={{color:GOUD}}>je klasse rechtsboven</b>.
+                ?t("Je klasse is nu gebaseerd op je moyenne: al je partijen, niets geschrapt.")
+                :(niveau.venster?t("Je vorm is het gemiddelde van je laatste {n} partijen",{n:vormVenster}):t("Je vorm is het gemiddelde van al je partijen"))
+                  +(spel&&data.schrappen!==false?t(", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)"):"")
+                  +t("; je moyenne gaat altijd over al je partijen.")}
+              {" "}{t("Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij")} <b style={{color:GOUD}}>{t("je klasse rechtsboven")}</b>.
             </div>
           </div>
         );
@@ -273,9 +275,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
 
       {stA&&(
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Alle {alleP.length} partijen</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Alle {n} partijen",{n:alleP.length})}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
-            {[["Car.",stA.totCar],["Max",stA.max],["Gem. alle partijen",stA.gemPerBeurt],["Beurten",stA.aantalBeurten],["Poedels",stA.poedels],["Partijen",alleP.length]].map(function(arr){
+            {[[t("Car."),stA.totCar],[t("Max"),stA.max],[t("Gem. alle partijen"),stA.gemPerBeurt],[t("Beurten"),stA.aantalBeurten],[t("Poedels"),stA.poedels],[t("Partijen"),alleP.length]].map(function(arr){
               return(
                 <div key={arr[0]} style={{textAlign:"center",background:"var(--c-1a3019)",borderRadius:8,padding:"8px 4px"}}>
                   <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>
@@ -284,11 +286,11 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
               );
             })}
           </div>
-          <div style={{fontSize:13,color:GRNT}}>Opbouw: {stA.opbouw5}/{stA.aantalBeurten} beurten {beurtDrempels(huidigeDiscipline).opbouwMin}+</div>
+          <div style={{fontSize:13,color:GRNT}}>{t("Opbouw: {a}/{b} beurten {n}+",{a:stA.opbouw5,b:stA.aantalBeurten,n:beurtDrempels(huidigeDiscipline).opbouwMin})}</div>
         </div>
       )}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Per partij</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Per partij")}</div>
         {[].concat(alleP).reverse().map(function(p,i){return <PartijRij key={p.id} p={p} nr={alleP.length-i} prestatie={prestatiesMap[p.id]} gedropt={niveau.gedropteIds&&niveau.gedropteIds.has(p.id)} discipline={huidigeDiscipline} onVerwijder={verwijderPartij} onNotitie={slaNotitieOp}/>;}) }
       </div>
     </div>

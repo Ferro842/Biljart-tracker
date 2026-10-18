@@ -28,7 +28,7 @@ function Telop({waarde,dec=2,duur=650,komma=false}){
     return function(){cancelAnimationFrame(raf);clearTimeout(zeker);};
   },[waarde]);
   const tekst=Number(toon).toFixed(dec);
-  return <span>{komma?tekst.replace(".",","):tekst}</span>;
+  return <span>{komma?getalTekst(toon,dec):tekst}</span>;
 }
 
 // Korte tik in je hand (iOS-app met Haptics-plugin; anders trillen waar dat kan, bijv. Android)
@@ -118,7 +118,7 @@ function canvasAchtergrond(ctx,B,H,th){
 function tekst(ctx,t,x,y,grootte,kleur,uitlijn,vet){
   ctx.font=(vet?"bold ":"")+grootte+"px Georgia, serif";ctx.fillStyle=kleur;ctx.textAlign=uitlijn||"left";ctx.textBaseline="alphabetic";ctx.fillText(t,x,y);
 }
-function kommaGetal(x,dec){return x.toFixed(dec).replace(".",",");}
+function kommaGetal(x,dec){return getalTekst(x,dec);}
 
 // Partijkaart: staande afbeelding (1080×1350) van één partij
 function maakPartijKaart(partij,discipline,niveauNaam){
@@ -131,10 +131,10 @@ function maakPartijKaart(partij,discipline,niveauNaam){
   tekenLogo(ctx,80,80,120,th);
   tekst(ctx,"Biljart Tracker",230,140,52,GOUD,"left",true);
   const d=new Date(partij.datum);
-  tekst(ctx,(DISCIPLINES[discipline]||DISCIPLINES.libre).naam+" · "+d.toLocaleDateString("nl-NL",{weekday:"short",day:"numeric",month:"long",year:"numeric"})+" · "+tafelLabel(partij.tafel||"230"),230,190,30,WITD);
+  tekst(ctx,(DISCIPLINES[discipline]||DISCIPLINES.libre).naam+" · "+d.toLocaleDateString(taalLocale(),{weekday:"short",day:"numeric",month:"long",year:"numeric"})+" · "+tafelLabel(partij.tafel||"230"),230,190,30,WITD);
   tekst(ctx,kommaGetal(gem,dec),B/2,470,230,GOUDL,"center",true);
-  tekst(ctx,"gemiddelde",B/2,565,36,WITD,"center");
-  const vakken=[[String(car),"caramboles"],[String(n),"beurten"],[String(max),"hoogste serie"],[String(poedels),"poedels"]];
+  tekst(ctx,t("gemiddelde"),B/2,565,36,WITD,"center");
+  const vakken=[[String(car),t("caramboles")],[String(n),t("beurten")],[String(max),t("hoogste serie")],[String(poedels),t("poedels")]];
   vakken.forEach(function(v,i){
     const vb=(B-160-3*24)/4,x=80+i*(vb+24);
     rondRect(ctx,x,610,vb,165,24);ctx.fillStyle="rgba(0,0,0,0.3)";ctx.fill();
@@ -144,7 +144,7 @@ function maakPartijKaart(partij,discipline,niveauNaam){
   // Beurtengrafiek
   const gx=80,gy=815,gb=B-160,gh=320;
   rondRect(ctx,gx,gy,gb,gh,24);ctx.fillStyle="rgba(0,0,0,0.25)";ctx.fill();
-  tekst(ctx,"Beurt voor beurt",gx+30,gy+50,30,WITD);
+  tekst(ctx,t("Beurt voor beurt"),gx+30,gy+50,30,WITD);
   const top=Math.max(1,max),bb=(gb-60)/Math.max(1,n);
   bt.forEach(function(x,i){
     const bx=gx+30+i*bb+bb*0.15,breed=Math.max(3,bb*0.7);
@@ -181,11 +181,11 @@ function DeelKaartKnop({partij,discipline,niveauNaam,stijl}){
     if(e)e.stopPropagation();
     setBezig(true);
     try{await deelAfbeelding(maakPartijKaart(partij,discipline,niveauNaam),"partij-"+String(partij.datum).slice(0,10)+".png");}
-    catch(err){if(!/cancel|abort/i.test(String(err&&(err.message||err))))alert("Delen lukte niet: "+(err&&err.message||err));}
+    catch(err){if(!/cancel|abort/i.test(String(err&&(err.message||err))))alert(t("Delen lukte niet: {f}",{f:err&&err.message||err}));}
     setBezig(false);
   };
   return <button onClick={deel} style={Object.assign({padding:"9px 12px",background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14},stijl||{})}>
-    {bezig?"Bezig…":"📤 Deel als kaart"}
+    {bezig?t("Bezig…"):"📤 "+t("Deel als kaart")}
   </button>;
 }
 
@@ -195,12 +195,12 @@ function maakSeizoenKaart(v,discipline){
   const ctx=c.getContext("2d"),th=themaKleurenNu(),dec=discipline==="driebanden"?3:2;
   canvasAchtergrond(ctx,B,H,th);
   tekenLogo(ctx,B/2-70,90,140,th);
-  tekst(ctx,v.seizoen.naam,B/2,330,64,GOUD,"center",true);
+  tekst(ctx,seizoenNaam(v.seizoen),B/2,330,64,GOUD,"center",true);
   tekst(ctx,(DISCIPLINES[discipline]||DISCIPLINES.libre).naam+" · "+fmtDatum(v.van)+" – "+fmtDatum(v.totDatum),B/2,385,32,WITD,"center");
   tekst(ctx,kommaGetal(v.gem,dec),B/2,580,180,GOUDL,"center",true);
-  tekst(ctx,"gemiddelde · "+v.niveau.naam,B/2,670,36,WITD,"center");
-  const regels=[["Partijen",String(v.partijen)],["Caramboles",String(v.caramboles)],["Hoogste serie",String(v.hoogste.car)],
-    ["Beste partij",kommaGetal(v.beste.gem,dec)],["Poedels per partij",kommaGetal(v.poedelsPerPartij,1)]];
+  tekst(ctx,t("gemiddelde")+" · "+v.niveau.naam,B/2,670,36,WITD,"center");
+  const regels=[[t("Partijen"),String(v.partijen)],[t("Caramboles"),String(v.caramboles)],[t("Hoogste serie"),String(v.hoogste.car)],
+    [t("Beste partij"),kommaGetal(v.beste.gem,dec)],[t("Poedels per partij"),kommaGetal(v.poedelsPerPartij,1)]];
   regels.forEach(function(r,i){
     const y=750+i*92;
     rondRect(ctx,120,y,B-240,72,20);ctx.fillStyle="rgba(0,0,0,0.28)";ctx.fill();
@@ -217,56 +217,56 @@ function SeizoenVerhaal({seizoen,alleP,discipline,onClose}){
   if(!v){
     return(
       <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,zIndex:320,background:"rgba(0,0,0,0.85)",display:"flex",alignItems:"center",justifyContent:"center",padding:24}}>
-        <div style={{color:WIT,fontSize:16,textAlign:"center"}}>Nog geen partijen in {seizoen.naam} voor deze discipline.<div style={{color:WITD,fontSize:13,marginTop:10}}>Tik om te sluiten</div></div>
+        <div style={{color:WIT,fontSize:16,textAlign:"center"}}>{t("Nog geen partijen in {s} voor deze discipline.",{s:seizoenNaam(seizoen)})}<div style={{color:WITD,fontSize:13,marginTop:10}}>{t("Tik om te sluiten")}</div></div>
       </div>
     );
   }
   const groot=function(inhoud,kleur){return <div style={{fontSize:76,fontWeight:"bold",color:kleur||GOUDL,lineHeight:1.05}}>{inhoud}</div>;};
-  const sub=function(t){return <div style={{fontSize:18,color:WIT,marginTop:10,lineHeight:1.45}}>{t}</div>;};
-  const klein=function(t){return <div style={{fontSize:14,color:WITD,marginTop:12,lineHeight:1.5}}>{t}</div>;};
+  const sub=function(x){return <div style={{fontSize:18,color:WIT,marginTop:10,lineHeight:1.45}}>{x}</div>;};
+  const klein=function(x){return <div style={{fontSize:14,color:WITD,marginTop:12,lineHeight:1.5}}>{x}</div>;};
   const kaarten=[
-    {k:"🎬",titel:v.seizoen.naam,inhoud:<>
+    {k:"🎬",titel:seizoenNaam(v.seizoen),inhoud:<>
       <div style={{margin:"10px auto 18px",display:"flex",justifyContent:"center"}}><Logo maat={110}/></div>
-      {sub("Jouw seizoen in beeld")}
+      {sub(t("Jouw seizoen in beeld"))}
       {klein((DISCIPLINES[discipline]||DISCIPLINES.libre).naam+" · "+fmtDatum(v.van)+" – "+fmtDatum(v.totDatum))}
-      {klein("Tik rechts voor verder, links om terug te gaan.")}
+      {klein(t("Tik rechts voor verder, links om terug te gaan."))}
     </>},
-    {k:"🎱",titel:"Aan tafel",inhoud:<>
-      {groot(<Telop waarde={v.partijen} dec={0}/>)}{sub("partijen, op "+v.speeldagen+" speeldag"+(v.speeldagen===1?"":"en"))}
-      {klein(<>Samen <b style={{color:WIT}}><Telop waarde={v.caramboles} dec={0}/></b> caramboles in {v.beurten} beurten.</>)}
+    {k:"🎱",titel:t("Aan tafel"),inhoud:<>
+      {groot(<Telop waarde={v.partijen} dec={0}/>)}{sub(t(v.speeldagen===1?"partijen, op {n} speeldag":"partijen, op {n} speeldagen",{n:v.speeldagen}))}
+      {klein(<>{t("Samen")} <b style={{color:WIT}}><Telop waarde={v.caramboles} dec={0}/></b> {t("caramboles in {n} beurten.",{n:v.beurten})}</>)}
     </>},
-    {k:"📈",titel:"Je gemiddelde",inhoud:<>
-      {groot(<Telop waarde={v.gem} dec={dec} komma={true}/>)}{sub("gemiddeld per beurt dit seizoen")}
-      {klein("Daarmee speel je in de "+v.niveau.naam+".")}
+    {k:"📈",titel:t("Je gemiddelde"),inhoud:<>
+      {groot(<Telop waarde={v.gem} dec={dec} komma={true}/>)}{sub(t("gemiddeld per beurt dit seizoen"))}
+      {klein(t("Daarmee speel je in de {k}.",{k:v.niveau.naam}))}
     </>},
-    {k:"🔥",titel:"Je hoogste serie",inhoud:<>
-      {groot(<Telop waarde={v.hoogste.car} dec={0}/>,"#ff9f40")}{sub("caramboles achter elkaar")}
-      {klein(fmtDatum(v.hoogste.datum)+" op de "+tafelLabel(v.hoogste.tafel)+", in beurt "+v.hoogste.beurt+".")}
+    {k:"🔥",titel:t("Je hoogste serie"),inhoud:<>
+      {groot(<Telop waarde={v.hoogste.car} dec={0}/>,"#ff9f40")}{sub(t("caramboles achter elkaar"))}
+      {klein(t("{d} op de {tafel}, in beurt {b}.",{d:fmtDatum(v.hoogste.datum),tafel:tafelLabel(v.hoogste.tafel),b:v.hoogste.beurt}))}
     </>},
-    {k:"🏆",titel:"Je beste partij",inhoud:<>
-      {groot(<Telop waarde={v.beste.gem} dec={dec} komma={true}/>,GRNT)}{sub(v.beste.car+" caramboles in "+v.beste.beurten+" beurten")}
-      {klein(fmtDatum(v.beste.datum)+" op de "+tafelLabel(v.beste.tafel)+".")}
+    {k:"🏆",titel:t("Je beste partij"),inhoud:<>
+      {groot(<Telop waarde={v.beste.gem} dec={dec} komma={true}/>,GRNT)}{sub(t("{c} caramboles in {b} beurten",{c:v.beste.car,b:v.beste.beurten}))}
+      {klein(t("{d} op de {tafel}.",{d:fmtDatum(v.beste.datum),tafel:tafelLabel(v.beste.tafel)}))}
     </>},
-    {k:"⭕",titel:"Je poedels",inhoud:v.poedelVerloop?<>
+    {k:"⭕",titel:t("Je poedels"),inhoud:v.poedelVerloop?<>
       {groot(<Telop waarde={Math.abs(v.poedelVerloop.eerst-v.poedelVerloop.nu)} dec={1} komma={true}/>,v.poedelVerloop.nu<=v.poedelVerloop.eerst?GRNT:ROOD)}
-      {sub(v.poedelVerloop.nu<=v.poedelVerloop.eerst?"poedel per partij minder dan aan het begin":"poedel per partij meer dan aan het begin")}
-      {klein("Eerste helft van het seizoen "+kommaGetal(v.poedelVerloop.eerst,1)+" per partij, tweede helft "+kommaGetal(v.poedelVerloop.nu,1)+".")}
+      {sub(t(v.poedelVerloop.nu<=v.poedelVerloop.eerst?"poedel per partij minder dan aan het begin":"poedel per partij meer dan aan het begin"))}
+      {klein(t("Eerste helft van het seizoen {a} per partij, tweede helft {b}.",{a:kommaGetal(v.poedelVerloop.eerst,1),b:kommaGetal(v.poedelVerloop.nu,1)}))}
     </>:<>
-      {groot(<Telop waarde={v.poedelsPerPartij} dec={1} komma={true}/>,ROOD)}{sub("poedels per partij")}
+      {groot(<Telop waarde={v.poedelsPerPartij} dec={1} komma={true}/>,ROOD)}{sub(t("poedels per partij"))}
     </>},
-    v.besteMaand&&{k:"📅",titel:"Je beste maand",inhoud:<>
-      <div style={{fontSize:52,fontWeight:"bold",color:GOUDL}}>{v.besteMaand.naam}</div>
-      {sub("gemiddeld "+kommaGetal(v.besteMaand.gem,dec)+" in "+v.besteMaand.partijen+" partijen")}
+    v.besteMaand&&{k:"📅",titel:t("Je beste maand"),inhoud:<>
+      <div style={{fontSize:52,fontWeight:"bold",color:GOUDL}}>{maandTekst(v.besteMaand.naam)}</div>
+      {sub(t("gemiddeld {g} in {n} partijen",{g:kommaGetal(v.besteMaand.gem,dec),n:v.besteMaand.partijen}))}
     </>},
-    {k:"🎉",titel:"Op naar meer!",inhoud:<>
+    {k:"🎉",titel:t("Op naar meer!"),inhoud:<>
       <div style={{fontSize:64,marginBottom:6}}>{v.niveau.emoji}</div>
       <div style={{fontSize:30,fontWeight:"bold",color:GOUD}}>{v.niveau.naam}</div>
-      {sub("Deel je seizoen met je club of je biljartmaten.")}
+      {sub(t("Deel je seizoen met je club of je biljartmaten."))}
       <button onClick={async function(e){e.stopPropagation();setBezig(true);
-          try{await deelAfbeelding(maakSeizoenKaart(v,discipline),"seizoen-"+v.seizoen.id+".png");}catch(err){if(!/cancel|abort/i.test(String(err&&(err.message||err))))alert("Delen lukte niet: "+(err&&err.message||err));}
+          try{await deelAfbeelding(maakSeizoenKaart(v,discipline),"seizoen-"+v.seizoen.id+".png");}catch(err){if(!/cancel|abort/i.test(String(err&&(err.message||err))))alert(t("Delen lukte niet: {f}",{f:err&&err.message||err}));}
           setBezig(false);}}
         style={{marginTop:22,padding:"14px 26px",background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>
-        {bezig?"Bezig…":"📤 Deel je seizoen"}
+        {bezig?t("Bezig…"):"📤 "+t("Deel je seizoen")}
       </button>
     </>}
   ].filter(Boolean);
@@ -281,7 +281,7 @@ function SeizoenVerhaal({seizoen,alleP,discipline,onClose}){
         {kaarten.map(function(_,j){return <div key={j} style={{flex:1,height:3,borderRadius:2,background:j<=i?GOUD:"rgba(255,255,255,0.2)",transition:"background 0.3s"}}/>;})}
       </div>
       <div style={{display:"flex",justifyContent:"flex-end",padding:"8px 14px 0"}}>
-        <button onClick={onClose} aria-label="Sluiten" style={{background:"rgba(0,0,0,0.3)",border:"1px solid "+KBDR,borderRadius:20,color:WIT,fontSize:16,width:36,height:36,cursor:"pointer"}}>✕</button>
+        <button onClick={onClose} aria-label={t("Sluiten")} style={{background:"rgba(0,0,0,0.3)",border:"1px solid "+KBDR,borderRadius:20,color:WIT,fontSize:16,width:36,height:36,cursor:"pointer"}}>✕</button>
       </div>
       <div style={{flex:1,position:"relative",display:"flex",alignItems:"center",justifyContent:"center",padding:"0 28px"}}>
         {/* Tikzones: links terug, rechts verder */}
@@ -332,20 +332,20 @@ function KalenderPaneel({partijen,discipline}){
   const nu=new Date(),maanden=[];
   const eerste=(partijen||[]).reduce(function(m,p){const d=new Date(p.datum);return !m||d<m?d:m;},null)||nu;
   for(let d=new Date(eerste.getFullYear(),eerste.getMonth(),1);d<=nu;d=new Date(d.getFullYear(),d.getMonth()+1,1))maanden.push(d);
-  const MND=["januari","februari","maart","april","mei","juni","juli","augustus","september","oktober","november","december"];
+  const MND=[0,1,2,3,4,5,6,7,8,9,10,11].map(maandNaam);
   const speeldagen=Object.keys(perDag).filter(function(k){const p=k.split("-").map(Number);return new Date(p[0],p[1],p[2])>=maanden[0];}).length;
   const sel=gekozen?perDag[gekozen]:null;
   // Details van de gekozen dag: als hele rij direct onder de rij met die maand
   const detail=sel&&(
     <div key="detail" ref={detailRef} data-kalender-detail="" style={{gridColumn:"1 / -1",background:"rgba(201,168,76,0.08)",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 12px",scrollMarginTop:120,scrollMarginBottom:12}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
-        <span style={{fontSize:14,color:GOUD,fontWeight:"bold"}}>{new Date(sel.partijen[0].datum).toLocaleDateString("nl-NL",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span>
+        <span style={{fontSize:14,color:GOUD,fontWeight:"bold"}}>{new Date(sel.partijen[0].datum).toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</span>
         <span onClick={function(){setGekozen(null);}} style={{color:WITD,cursor:"pointer",fontSize:16}}>✕</span>
       </div>
       {sel.partijen.map(function(p,j){
         const bt=p.beurten.map(function(b){return b.caramboles;}),c=bt.reduce(function(s,x){return s+x;},0);
         return <div key={j} style={{fontSize:13,color:WIT,padding:"3px 0",borderTop:j?"1px solid rgba(255,255,255,0.06)":"none"}}>
-          {tafelLabel(p.tafel||"230")} · <b style={{color:gemKleur(c/bt.length,grenzen)}}>{kommaGetal(c/bt.length,dec)}</b> · {c} car. in {bt.length} beurten · hoogste {Math.max.apply(null,bt)}
+          {tafelLabel(p.tafel||"230")} · <b style={{color:gemKleur(c/bt.length,grenzen)}}>{kommaGetal(c/bt.length,dec)}</b> · {t("{c} car. in {b} beurten · hoogste {m}",{c:c,b:bt.length,m:Math.max.apply(null,bt)})}
         </div>;
       })}
     </div>
@@ -356,8 +356,8 @@ function KalenderPaneel({partijen,discipline}){
   return(
     <div>
       <div style={{fontSize:13,color:WITD,lineHeight:1.5,marginBottom:10}}>
-        <b style={{color:WIT}}>{speeldagen}</b> speeldag{speeldagen===1?"":"en"} sinds {MND[maanden[0].getMonth()]} {maanden[0].getFullYear()}. Kleur = je gemiddelde die dag:
-        <span style={{color:GRNT}}> ■ goed</span><span style={{color:GOUD}}> ■ gemiddeld</span><span style={{color:ROOD}}> ■ minder</span>. Tik op een dag voor de partijen.
+        <b style={{color:WIT}}>{speeldagen}</b> {t(speeldagen===1?"speeldag sinds {m}. Kleur = je gemiddelde die dag:":"speeldagen sinds {m}. Kleur = je gemiddelde die dag:",{m:MND[maanden[0].getMonth()]+" "+maanden[0].getFullYear()})}
+        <span style={{color:GRNT}}> ■ {t("goed")}</span><span style={{color:GOUD}}> ■ {t("gemiddeld")}</span><span style={{color:ROOD}}> ■ {t("minder")}</span>. {t("Tik op een dag voor de partijen.")}
       </div>
       <div ref={rasterRef} style={{display:"grid",gridTemplateColumns:"repeat("+kolommen+",minmax(0,1fr))",gap:12}}>
         {rijen.map(function(m,mi){
@@ -375,7 +375,7 @@ function KalenderPaneel({partijen,discipline}){
             <div key={m.getTime()} style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"8px 9px"}}>
               <div style={{fontSize:12,color:GOUD,marginBottom:5,textTransform:"capitalize"}}>{MND[m.getMonth()]} {m.getFullYear()}</div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2,marginBottom:2}}>
-                {["m","d","w","d","v","z","z"].map(function(l,j){return <div key={j} style={{fontSize:8,color:WITD,opacity:0.7,textAlign:"center"}}>{l}</div>;})}
+                {weekdagLetters().map(function(l,j){return <div key={j} style={{fontSize:8,color:WITD,opacity:0.7,textAlign:"center"}}>{l}</div>;})}
               </div>
               <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:2}}>{cellen}</div>
             </div>
@@ -399,7 +399,7 @@ function DoelRing({doel,vorm,discipline,onWijzig}){
   const dec=discipline==="driebanden"?3:2,pct=doel.gehaald?1:doelVoortgang(doel,vorm);
   const dagen=Math.ceil((new Date(doel.datum+"T23:59:59")-new Date())/86400000);
   const r=22,omtrek=2*Math.PI*r;
-  const stand=doel.gehaald?"🎉 Doel gehaald!":dagen<0?"Datum verstreken":dagen<14?"nog "+dagen+" dag"+(dagen===1?"":"en"):"nog "+Math.round(dagen/7)+" weken";
+  const stand=doel.gehaald?"🎉 "+t("Doel gehaald!"):dagen<0?t("Datum verstreken"):dagen<14?t(dagen===1?"nog {n} dag":"nog {n} dagen",{n:dagen}):t("nog {n} weken",{n:Math.round(dagen/7)});
   return(
     <div onClick={onWijzig} style={{display:"flex",alignItems:"center",gap:12,background:KBG,border:"1px solid "+(doel.gehaald?GRNT:GOUD),borderRadius:12,padding:"9px 12px",cursor:"pointer"}}>
       <svg width="56" height="56" viewBox="0 0 56 56" style={{flexShrink:0}}>
@@ -409,8 +409,8 @@ function DoelRing({doel,vorm,discipline,onWijzig}){
         <text x="28" y="32" textAnchor="middle" style={{fill:WIT,fontSize:12,fontWeight:"bold",fontFamily:"Georgia,serif"}}>{Math.round(pct*100)}%</text>
       </svg>
       <div style={{flex:1,minWidth:0}}>
-        <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>🎯 Doel {kommaGetal(doel.waarde,dec)}</div>
-        <div style={{fontSize:14,color:WIT,marginTop:2}}>Nu <b>{kommaGetal(vorm,dec)}</b>{doel.start!=null&&!doel.gehaald?<span> · begon op {kommaGetal(doel.start,dec)}</span>:null} · {stand}</div>
+        <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>🎯 {t("Doel {g}",{g:kommaGetal(doel.waarde,dec)})}</div>
+        <div style={{fontSize:14,color:WIT,marginTop:2}}>{t("Nu")} <b>{kommaGetal(vorm,dec)}</b>{doel.start!=null&&!doel.gehaald?<span> · {t("begon op {g}",{g:kommaGetal(doel.start,dec)})}</span>:null} · {stand}</div>
       </div>
       <span style={{color:WITD,fontSize:18}}>›</span>
     </div>
@@ -426,21 +426,21 @@ function DoelInstellen({doel,vorm,discipline,onOpslaan,onVerwijder,onClose}){
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.8)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,padding:"18px 16px",maxWidth:380,width:"100%"}}>
-        <div style={{fontSize:19,fontWeight:"bold",color:GOUD,marginBottom:6}}>🎯 Je doel</div>
-        <div style={{fontSize:13,color:WITD,marginBottom:14,lineHeight:1.45}}>Welke vorm wil je halen, en wanneer? Je vorm is nu <b style={{color:WIT}}>{kommaGetal(vorm,dec)}</b>. De ring bovenaan Spelen laat zien hoe ver je bent.</div>
+        <div style={{fontSize:19,fontWeight:"bold",color:GOUD,marginBottom:6}}>🎯 {t("Je doel")}</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:14,lineHeight:1.45}}>{t("Welke vorm wil je halen, en wanneer? Je vorm is nu {v}. De ring laat zien hoe ver je bent.",{v:kommaGetal(vorm,dec)})}</div>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:18,marginBottom:14}}>
           <button style={knop} onClick={function(){setWaarde(Math.max(stap,+(waarde-stap).toFixed(3)));}}>−</button>
           <div style={{fontSize:40,fontWeight:"bold",color:GOUDL,minWidth:110,textAlign:"center"}}>{kommaGetal(waarde,dec)}</div>
           <button style={knop} onClick={function(){setWaarde(+(waarde+stap).toFixed(3));}}>+</button>
         </div>
-        <label style={{display:"block",fontSize:12,color:WITD}}>Vóór
+        <label style={{display:"block",fontSize:12,color:WITD}}>{t("Vóór")}
           <input type="date" value={datum} min={iso(new Date())} onChange={function(e){setDatum(e.target.value);}}
             style={{display:"block",width:"100%",marginTop:4,padding:"10px",borderRadius:8,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:16,fontFamily:"inherit",colorScheme:"dark",minHeight:44}}/>
         </label>
         <div style={{display:"flex",gap:8,marginTop:16}}>
-          {doel&&<button onClick={onVerwijder} style={{flex:1,padding:12,background:"none",border:"1px solid #7a3030",borderRadius:10,color:"#e06060",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Geen doel</button>}
+          {doel&&<button onClick={onVerwijder} style={{flex:1,padding:12,background:"none",border:"1px solid #7a3030",borderRadius:10,color:"#e06060",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Geen doel")}</button>}
           <button onClick={function(){onOpslaan({waarde:waarde,datum:datum,start:vorm,gehaald:false,gezet:new Date().toISOString()});}}
-            style={{flex:2,padding:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:10,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>Doel opslaan</button>
+            style={{flex:2,padding:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:10,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>{t("Doel opslaan")}</button>
         </div>
       </div>
     </div>

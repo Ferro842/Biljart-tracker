@@ -85,13 +85,21 @@ function procentTekst(x){const n=Math.round(x*100);return TAAL==="tr"?"%"+n:n+"%
 // Dubbele punt tussen twee stukken tekst: Frans met spatie ervoor (" : "), Japans de brede "："
 function dubbelePunt(){return TAAL==="fr"?" : ":TAAL==="ja"?"：":": ";}
 function getalTekst(x,dec){
-  const s=Number(x).toFixed(dec);
+  const n=Number(x);
+  if(x===null||x===undefined||x===""||!isFinite(n))return String(x===undefined?"":x); // "—" e.d. blijven staan
+  const s=n.toFixed(dec);
   return decimaalPunt()?s:s.replace(".",",");
+}
+// Getal of getaltekst met een decimale punt ("0.64", 1.06) in de notatie van de taal; andere tekst ("44%", "—") blijft
+function decTekst(v){
+  if(decimaalPunt()||v===null||v===undefined)return v;
+  if(typeof v==="number"||(typeof v==="string"&&/^[−+-]?\d+\.\d+$/.test(v)))return String(v).replace(".",",");
+  return v;
 }
 // Engels, Koreaans en Japans schrijven een decimale punt, de andere talen een komma
 function decimaalPunt(){return TAAL==="en"||TAAL==="ko"||TAAL==="ja";}
 // Tekst die al een decimaalkomma heeft (gemDrempelTekst, opgeslagen badgelabels) in de notatie van de taal
-function kommaTekst(s){return decimaalPunt()?String(s).replace(",","."):String(s);}
+function kommaTekst(s){return decimaalPunt()?String(s).replace(/,/g,"."):String(s);}
 
 // Namen van disciplines, klassen, tafels en mijlpalen worden overal getoond via .naam; die geeft voortaan de
 // vertaalde naam (de Nederlandse blijft als _naam bewaard). Zo hoeft niet elke plek t() te gebruiken.
@@ -104,6 +112,13 @@ function kommaTekst(s){return decimaalPunt()?String(s).replace(",","."):String(s
     Object.defineProperty(o,"naam",{get:function(){return t(nl);},enumerable:true,configurable:true});
   };
   Object.keys(DISCIPLINES).forEach(function(k){vertaalbaar(DISCIPLINES[k]);(DISCIPLINES[k].niveaus||[]).forEach(vertaalbaar);});
-  Object.keys(TAFELS).forEach(function(k){vertaalbaar(TAFELS[k]);});
+  Object.keys(TAFELS).forEach(function(k){
+    vertaalbaar(TAFELS[k]);
+    // Maten ("2,10", "2,10 x 1,05") in de notatie van de taal: Engels, Koreaans en Japans met een punt
+    ["label","vol"].forEach(function(veld){
+      const nl=TAFELS[k][veld];
+      Object.defineProperty(TAFELS[k],veld,{get:function(){return kommaTekst(nl);},enumerable:true,configurable:true});
+    });
+  });
   (MIJLPALEN||[]).forEach(vertaalbaar);
 })();

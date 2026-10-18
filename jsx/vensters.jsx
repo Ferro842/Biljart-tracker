@@ -30,7 +30,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
           <div style={{background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",borderRadius:14,padding:"14px",marginBottom:14,textAlign:"center",animation:"badgePopIn 0.5s cubic-bezier(0.34,1.56,0.64,1)",boxShadow:"0 0 30px "+GOUD+"aa"}}>
             <div style={{fontSize:28}}>🎉🥇🎉</div>
             <div style={{fontSize:15,fontWeight:"bold",color:G,marginTop:4}}>{t("Slechtste-partij-drop ontgrendeld!")}</div>
-            <div style={{fontSize:13,color:G,marginTop:4}}>{t("p{n} (gem {g}) is geschrapt uit je gemiddelde",{n:nieuweDrop.nr,g:nieuweDrop.gem.toFixed(dec)})}</div>
+            <div style={{fontSize:13,color:G,marginTop:4}}>{t("p{n} (gem {g}) is geschrapt uit je gemiddelde",{n:nieuweDrop.nr,g:getalTekst(nieuweDrop.gem,dec)})}</div>
           </div>
         )}
         <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>{t("Partij afgesloten")}</div>
@@ -41,7 +41,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
             <div style={{fontSize:11,color:WITD}}>{t("caramboles")}</div>
           </div>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
-            <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.gemPerBeurt}</div>
+            <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{decTekst(st.gemPerBeurt)}</div>
             <div style={{fontSize:11,color:WITD}}>{t("gemiddelde")}</div>
           </div>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
@@ -54,7 +54,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
           <div style={{marginBottom:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
               <span style={{fontSize:12,color:WITD}}>📊 {t("Je vorm nu")}</span>
-              <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{infoNa.effectiefGemiddelde.toFixed(dec)}</span>
+              <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{getalTekst(infoNa.effectiefGemiddelde,dec)}</span>
             </div>
             <div style={{fontSize:11,color:WITD,marginTop:-3,marginBottom:6}}>{vormUitleg(infoNa,dec)}</div>
             {spel&&<>
@@ -581,7 +581,7 @@ function SeizoenArchief({seizoenen,alleP,discipline,onClose,onOngedaan,onVerhaal
                   </div>
                 </div>
                 <div style={{fontSize:13,color:WITD}}>
-                  {t("{n} partijen · gem {g}",{n:stats.aantalPartijen,g:stats.gemiddelde.toFixed(discipline==="driebanden"?3:2)})} · {spel&&<>{stats.badgePunten}pt · </>}<span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
+                  {t("{n} partijen · gem {g}",{n:stats.aantalPartijen,g:getalTekst(stats.gemiddelde,discipline==="driebanden"?3:2)})} · {spel&&<>{stats.badgePunten}pt · </>}<span style={{color:stats.niveau.kleur,fontWeight:"bold"}}>{stats.niveau.naam}</span>
                 </div>
                 {onVerhaal&&<button onClick={function(){onVerhaal(s);}} style={{marginTop:8,padding:"6px 12px",background:"none",border:"1px solid "+GOUD,borderRadius:8,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:13}}>🎬 {t("Bekijk dit seizoen")}</button>}
                 {stats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginTop:2}}>{t("Gemiddelde")} {gemUitleg(stats,discipline==="driebanden"?3:2,t(" van dit seizoen"))}</div>}
@@ -693,7 +693,7 @@ function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenste
                 </div>
                 <div style={{flex:1}}>
                   <div style={{fontSize:14,fontWeight:"bold",color:isHuidig?GOUD:WIT}}>{n.naam}{isHuidig&&<span style={{fontSize:12,color:WITD,fontWeight:"normal"}}> — {t("jouw niveau")}</span>}</div>
-                  <div style={{fontSize:12,color:WITD}}>{t("vanaf gemiddelde {g}",{g:n.gemDrempel.toFixed(decimalen)})}</div>
+                  <div style={{fontSize:12,color:WITD}}>{t("vanaf gemiddelde {g}",{g:getalTekst(n.gemDrempel,decimalen)})}</div>
                 </div>
                 <div style={{fontSize:14}}>{bereikt?"✅":toekomstig?"🔒":""}</div>
               </div>

@@ -254,7 +254,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           <div style={{flex:1,minWidth:0}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
               <span style={{fontSize:14,fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.huidig.naam}</span>
-              <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</span>
+              <span style={{fontSize:15,fontWeight:"bold",color:GOUD}}>{getalTekst(niveau.effectiefGemiddelde,dec)}</span>
             </div>
             <div style={{fontSize:12,letterSpacing:1}}>{"★".repeat(niveau.sterren)}{"☆".repeat(5-niveau.sterren)}</div>
             {niveau.moyenne!==undefined&&<div style={{fontSize:11,color:WITD,marginTop:2}}>{vormUitleg(niveau,dec)}</div>}
@@ -264,7 +264,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={6}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:3,fontSize:11,color:WITD}}>
             <span>{niveau.progressPct}%</span>
-            <span>{niveau.volgende.emoji} {niveau.volgende.naam} · {t("gem")} {niveau.volgende.gemDrempel.toFixed(dec)}</span>
+            <span>{niveau.volgende.emoji} {niveau.volgende.naam} · {t("gem")} {getalTekst(niveau.volgende.gemDrempel,dec)}</span>
           </div>
         </div>}
       </div>
@@ -282,7 +282,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
         </div>
         <div style={{marginLeft:"auto",textAlign:"right"}}>
           <div style={{fontSize:12,color:WITD}}>{!niveau.venster&&!niveau.aantalDrops&&niveau.moyenne!==undefined?t("moyenne"):t("vorm")}</div>
-          <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{niveau.effectiefGemiddelde.toFixed(dec)}</div>
+          <div style={{fontSize:16,fontWeight:"bold",color:GOUD}}>{getalTekst(niveau.effectiefGemiddelde,dec)}</div>
         </div>
       </div>
       {/* Uitleg over de volle breedte (naast de klasse werd het bij grote tekst een smal, lang kolommetje) */}
@@ -291,8 +291,8 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
         ?<>
           <DashBalk pct={niveau.progressPct} kleur={niveau.huidig.kleur} hoogte={9}/>
           <div style={{display:"flex",justifyContent:"space-between",marginTop:5,fontSize:13}}>
-            <span style={{fontWeight:"bold",color:niveau.huidig.kleur}}>{niveau.effectiefGemiddelde.toFixed(dec)}</span>
-            <span style={{fontSize:12,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · {t("gem")} {niveau.volgende.gemDrempel.toFixed(dec)}</span>
+            <span style={{fontWeight:"bold",color:niveau.huidig.kleur}}>{getalTekst(niveau.effectiefGemiddelde,dec)}</span>
+            <span style={{fontSize:12,color:WITD}}>{niveau.volgende.emoji} {niveau.volgende.naam} · {t("gem")} {getalTekst(niveau.volgende.gemDrempel,dec)}</span>
           </div>
         </>
         :<div style={{textAlign:"center",fontSize:13,color:niveau.huidig.kleur,fontWeight:"bold"}}>{t("Hoogste niveau bereikt!")} 💎</div>
@@ -316,7 +316,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
                     <span style={{fontSize:12,color:GOUD,fontWeight:"bold"}}>{(i+1)*PUNTEN_PER_DROP}pt</span>
                   </div>
                   <div style={{fontSize:11,color:WITD,marginTop:2,textDecoration:"line-through",opacity:0.8}}>
-                    p{p.nr} · {t("gem")} {p.gem.toFixed(dec)}
+                    p{p.nr} · {t("gem")} {getalTekst(p.gem,dec)}
                   </div>
                   <div style={{fontSize:10,color:"#ff9f80",marginTop:1}}>{t("telt niet mee")}</div>
                 </div>
@@ -336,7 +336,7 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
 
       {spel&&niveau.volgendeKandidaatId&&(
         <div style={{marginTop:8,textAlign:"center",fontSize:11,color:"#ff9f80"}}>
-          🎯 {t("Eerstvolgende partij die vervalt: p{n} (gem {g})",{n:niveau.volgendeKandidaatNr,g:niveau.volgendeKandidaatGem.toFixed(dec)})}
+          🎯 {t("Eerstvolgende partij die vervalt: p{n} (gem {g})",{n:niveau.volgendeKandidaatNr,g:getalTekst(niveau.volgendeKandidaatGem,dec)})}
         </div>
       )}
       {niveau.voorspelling&&niveau.volgende&&(
@@ -344,8 +344,8 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           {niveau.voorspelling.recenteVorm===null
             ?"📈 "+t("Nog te weinig recente partijen voor een voorspelling")
             :niveau.voorspelling.mogelijk===false
-              ?"📈 "+t("Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}",{v:niveau.voorspelling.recenteVorm.toFixed(dec),d:niveau.volgende.gemDrempel.toFixed(dec),k:niveau.volgende.naam})
-              :"📈 "+t("Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen",{v:niveau.voorspelling.recenteVorm.toFixed(dec),k:niveau.volgende.naam,n:niveau.voorspelling.aantalPartijen})}
+              ?"📈 "+t("Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}",{v:getalTekst(niveau.voorspelling.recenteVorm,dec),d:getalTekst(niveau.volgende.gemDrempel,dec),k:niveau.volgende.naam})
+              :"📈 "+t("Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen",{v:getalTekst(niveau.voorspelling.recenteVorm,dec),k:niveau.volgende.naam,n:niveau.voorspelling.aantalPartijen})}
         </div>
       )}
     </div>
@@ -394,7 +394,7 @@ function DashGrafiek({data,h=70,grenzen}){
           const k=grenzen?gemKleur(v,grenzen):v>=2.5?GRNT:v>=2?GOUD:v>=1.5?WITD:ROOD;
           return <g key={i}>
             <circle cx={cx} cy={cy} r={3} fill={k}/>
-            <text x={cx} y={cy-6} textAnchor="middle" fontSize="8" fill={k} fontFamily="Georgia">{v}</text>
+            <text x={cx} y={cy-6} textAnchor="middle" fontSize="8" fill={k} fontFamily="Georgia">{decTekst(v)}</text>
           </g>;
         })}
       </svg>

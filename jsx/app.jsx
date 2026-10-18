@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-18.22";
+const APP_VERSIE="2026-10-18.24";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -559,7 +559,7 @@ function BiljartTracker(){
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,padding:20}}>
           <div style={{background:"var(--c-1a2e1a)",border:"2px solid "+GOUD,borderRadius:14,padding:24,maxWidth:320,width:"100%"}}>
             <div style={{fontSize:15,color:WIT,marginBottom:6,textAlign:"center"}}>{t("Partij opslaan?")}</div>
-            <div style={{fontSize:14,color:WITD,marginBottom:18,textAlign:"center"}}>{t("{n} beurten - {c} car",{n:lp.length,c:totCarLp})}{stL?" - "+t("gem")+" "+stL.gemPerBeurt:""}</div>
+            <div style={{fontSize:14,color:WITD,marginBottom:18,textAlign:"center"}}>{t("{n} beurten - {c} car",{n:lp.length,c:totCarLp})}{stL?" - "+t("gem")+" "+decTekst(stL.gemPerBeurt):""}</div>
             <div style={{display:"flex",gap:10}}>
               <button style={{flex:1,padding:14,background:GRNT,border:"none",borderRadius:8,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={sluit}>{t("Opslaan")}</button>
               <button style={{flex:1,padding:14,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={function(){setConfPartij(false);}}>{t("Annuleer")}</button>

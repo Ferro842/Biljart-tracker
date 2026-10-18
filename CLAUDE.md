@@ -217,7 +217,10 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (Babel maakte er `
   `node test/vertalingen-node.js` (zoekt `t("...")` en `t(cond?"a":"b")` in de code; teksten via een andere variabele ziet hij
   niet en staan dan als "overbodig"). Ontbreekt een vertaling, dan valt `t()` terug op Engels en daarna Nederlands.
 - Hulpjes in `js/taal.js`: `badgeLabel()`, `seizoenNaam()` ("Seizoen 2" → taal), `taalLocale()` (voor toLocaleDateString),
-  `getalTekst()` (punt in en/ko/ja, anders komma), `procentTekst()` (Turks "%43"), `dubbelePunt()` (Frans " : "), `maandTekst()` (maandKey "mrt 2026" → taal), `maandNaam()`, `weekdagLetters()`.
+  `getalTekst(x,dec)` (punt in en/ko/ja, anders komma; ook in het Nederlands overal een komma, sinds 18 okt 2026), `decTekst()`
+  (zet een getal of getaltekst als `stat().gemPerBeurt` "0.64" om, laat "44%"/"—" staan), `kommaTekst()` (omgekeerd: tekst met komma, zoals
+  `gemDrempelTekst` en tafelmaten; `TAFELS[..].label`/`.vol` zijn getters die dat al doen). Getallen nooit met kale `toFixed()` tonen;
+  intern (stat, badgelabels, vergelijkingen) blijven ze zoals ze waren, `procentTekst()` (Turks "%43"), `dubbelePunt()` (Frans " : "), `maandTekst()` (maandKey "mrt 2026" → taal), `maandNaam()`, `weekdagLetters()`.
 - `BRIEFJE_PROMPT` wordt vertaald met `t(BRIEFJE_PROMPT)`; de trefwoorden SPELER/TE MAKEN/BEURTEN/DATUM blijven Nederlands
   (de vertaalde vraag zegt dat), want `leesBriefje()` zoekt daarop.
 - Opgeslagen gegevens blijven Nederlands (opmerkingen, badge-labels, seizoennamen): alleen bij tonen `t(label)`. `.naam` van

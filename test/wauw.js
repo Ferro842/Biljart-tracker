@@ -13,7 +13,7 @@
   // Optellende cijfers: eindwaarde klopt (tests draaien zonder animatie)
   k("Stats").click();await w(300);
   const vormVak=Array.from(document.querySelectorAll("#root div")).find(function(x){return x.children.length===0&&x.textContent.indexOf("vorm · ")===0;});
-  uit.telop=!!vormVak&&/^\d+\.\d{2}$/.test(vormVak.previousElementSibling.textContent);
+  uit.telop=!!vormVak&&/^\d+[.,]\d{2}$/.test(vormVak.previousElementSibling.textContent);
   // Doel instellen via het klasse-overzicht (knop rechtsboven)
   document.querySelector("[data-kop] button").click();await w(300);
   kb("🎯 Stel een doel").click();await w(250);

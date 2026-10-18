@@ -127,7 +127,7 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
       const gemE=eerste.reduce(function(a,b){return a+b.caramboles;},0)/eerste.length;
       const gemT=tweede.reduce(function(a,b){return a+b.caramboles;},0)/tweede.length;
       if(gemT>gemE&&totaalGemTotDan!==null&&gem>totaalGemTotDan){
-        badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit",detail:t("1e helft: {a} · 2e helft: {b} · partijgemiddelde {g} boven totaalgemiddelde{v} {t}",{a:gemE.toFixed(2),b:gemT.toFixed(2),g:gem.toFixed(2),v:vensterLabel,t:totaalGemTotDan.toFixed(2)})});
+        badges.push({label:"Sterke afsluiting",emoji:"📈",aantal:1,punten:15,categorie:"Mentaliteit",detail:t("1e helft: {a} · 2e helft: {b} · partijgemiddelde {g} boven totaalgemiddelde{v} {t}",{a:getalTekst(gemE,2),b:getalTekst(gemT,2),g:getalTekst(gem,2),v:vensterLabel,t:getalTekst(totaalGemTotDan,2)})});
       }
     }
 
@@ -136,31 +136,31 @@ function berekenPrestaties(partijen,tijdsvensterMaanden,discipline){
     const drempel1=gemDrempelBoven(basis,stap);
     const drempel2=Math.round((drempel1+stap)*1000)/1000;
     if(gem>=drempel2){
-      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel2,stap),emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:t("Partijgemiddelde: {g} (persoonlijke drempel: {d}, op basis van je totaalgemiddelde{v} {b})",{g:gem.toFixed(2),d:drempel2.toFixed(2),v:vensterLabel,b:basis.toFixed(2)})});
+      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel2,stap),emoji:"⭐",aantal:1,punten:30,categorie:"Doel & totaal",detail:t("Partijgemiddelde: {g} (persoonlijke drempel: {d}, op basis van je totaalgemiddelde{v} {b})",{g:getalTekst(gem,2),d:getalTekst(drempel2,2),v:vensterLabel,b:getalTekst(basis,2)})});
     }else if(gem>=drempel1){
-      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel1,stap),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:t("Partijgemiddelde: {g} (persoonlijke drempel: {d}, op basis van je totaalgemiddelde{v} {b})",{g:gem.toFixed(2),d:drempel1.toFixed(2),v:vensterLabel,b:basis.toFixed(2)})});
+      badges.push({label:"Gemiddelde boven "+gemDrempelTekst(drempel1,stap),emoji:"⭐",aantal:1,punten:15,categorie:"Doel & totaal",detail:t("Partijgemiddelde: {g} (persoonlijke drempel: {d}, op basis van je totaalgemiddelde{v} {b})",{g:getalTekst(gem,2),d:getalTekst(drempel1,2),v:vensterLabel,b:getalTekst(basis,2)})});
     }
 
     const vensterBestGem=verwerkt.length?Math.max.apply(null,verwerkt.map(function(w){return w.gem;})):0;
     if(gem>vensterBestGem&&vensterBestGem>0){
-      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:t("Nieuw record: {g} (vorig record ooit: {v})",{g:gem.toFixed(2),v:vensterBestGem.toFixed(2)})});
+      badges.push({label:"Nieuw beste gemiddelde ooit",emoji:"👑",aantal:1,punten:60,categorie:"Doel & totaal",detail:t("Nieuw record: {g} (vorig record ooit: {v})",{g:getalTekst(gem,2),v:getalTekst(vensterBestGem,2)})});
     }
 
     const tafelKey=p.tafel||"230";
     const vensterTafel=verwerkt.filter(function(w){return w.tafel===tafelKey;});
     const vensterTafelBest=vensterTafel.length?Math.max.apply(null,vensterTafel.map(function(w){return w.gem;})):0;
     if(gem>vensterTafelBest&&vensterTafelBest>0){
-      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🔝",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:t("Nieuw record op {tafel}-tafel: {g} (vorig: {v})",{tafel:tafelLabel(tafelKey),g:gem.toFixed(2),v:vensterTafelBest.toFixed(2)})});
+      badges.push({label:"Beste partij ooit op deze tafel",emoji:"🔝",aantal:1,punten:40,categorie:"Tafel-specifiek",detail:t("Nieuw record op {tafel}-tafel: {g} (vorig: {v})",{tafel:tafelLabel(tafelKey),g:getalTekst(gem,2),v:getalTekst(vensterTafelBest,2)})});
     }
 
     if(totaalGemTotDan!==null){
-      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking",detail:t("Deze partij: {g} vs totaalgemiddelde{v} {t}",{g:gem.toFixed(2),v:vensterLabel,t:totaalGemTotDan.toFixed(2)})});
+      if(gem>totaalGemTotDan)badges.push({label:"Beter dan je totaalgemiddelde",emoji:"📊",aantal:1,punten:10,categorie:"Vergelijking",detail:t("Deze partij: {g} vs totaalgemiddelde{v} {t}",{g:getalTekst(gem,2),v:vensterLabel,t:getalTekst(totaalGemTotDan,2)})});
     }
     const laatste5=verwerkt.slice(-5);
     if(laatste5.length>=5){
       const rC=laatste5.reduce(function(a,r){return a+r.tot;},0),rN=laatste5.reduce(function(a,r){return a+r.n;},0);
       const rollingGem=rC/rN;
-      if(gem>rollingGem)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking",detail:t("Deze partij: {g} vs 5-partij rolling: {r}",{g:gem.toFixed(2),r:rollingGem.toFixed(2)})});
+      if(gem>rollingGem)badges.push({label:"Beter dan je 5-partij rolling gemiddelde",emoji:"📉",aantal:1,punten:15,categorie:"Vergelijking",detail:t("Deze partij: {g} vs 5-partij rolling: {r}",{g:getalTekst(gem,2),r:getalTekst(rollingGem,2)})});
     }
 
     const totaalPunten=badges.reduce(function(a,b){return a+b.punten;},0);
@@ -441,7 +441,7 @@ function vormUitleg(info,dec){
 }
 function gemUitleg(info,dec,periode){
   if(!info.aantalDrops)return t("alle partijen tellen mee");
-  return(info.aantalDrops===1?t("zonder je slechtste partij"):t("zonder je {n} slechtste partijen",{n:info.aantalDrops}))+(periode||"")+t(" (met alle partijen: {g})",{g:info.totaalGemiddelde.toFixed(dec)});
+  return(info.aantalDrops===1?t("zonder je slechtste partij"):t("zonder je {n} slechtste partijen",{n:info.aantalDrops}))+(periode||"")+t(" (met alle partijen: {g})",{g:getalTekst(info.totaalGemiddelde,dec)});
 }
 
 // Kleurgrenzen voor een gemiddelde, per discipline en op basis van je huidige klasse: groen vanaf de

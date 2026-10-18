@@ -27,7 +27,7 @@
   // Vorm zonder schrappen = gewoon het gemiddelde van de laatste 20 libre-partijen
   const libre=data().partijen.filter(function(p){return(p.discipline||"libre")==="libre";}).slice(-20);
   let c=0,n=0;libre.forEach(function(p){p.beurten.forEach(function(b){c+=b.caramboles;n++;});});
-  const ruw=(c/n).toFixed(2);
+  const ruw=getalTekst(c/n,2); // zoals getoond (Nederlands: komma)
   // Vorm in Stats (vakje "vorm · laatste ..."), direct uit de DOM
   const vormVak=Array.from(document.querySelectorAll("#root div")).find(function(x){return x.children.length===0&&x.textContent.indexOf("vorm · ")===0;});
   const kaartGem=vormVak&&vormVak.previousElementSibling?vormVak.previousElementSibling.textContent:null;

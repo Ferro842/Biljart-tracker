@@ -65,14 +65,14 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
   function bouwTekst(){
     const stA=stat(alleP.flatMap(function(p){return p.beurten;}),huidigeDiscipline);
     const r=[t("BILJART DATA")+" — "+new Date().toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long",year:"numeric"}),"========================================"];
-    if(stA)r.push(t("TOTAAL: {n} partijen · {c} car · gem {g} · max {m} · {p} poedels",{n:alleP.length,c:stA.totCar,g:stA.gemPerBeurt,m:stA.max,p:stA.poedels}));
+    if(stA)r.push(t("TOTAAL: {n} partijen · {c} car · gem {g} · max {m} · {p} poedels",{n:alleP.length,c:stA.totCar,g:decTekst(stA.gemPerBeurt),m:stA.max,p:stA.poedels}));
     var alleOmgekeerd=[].concat(alleP).reverse();
     const dTxt=beurtDrempels(huidigeDiscipline);
     alleOmgekeerd.forEach(function(p,i){
       const st=stat(p.beurten,huidigeDiscipline);
       r.push("");
       r.push(t("Partij {n}",{n:alleP.length-i})+" · "+new Date(p.datum).toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long"})+(p.tafel?" · "+t("Tafel")+" "+tafelVol(p.tafel):""));
-      if(st)r.push(t("{b} beurten · max {m} · gem {g} · {p}x poedel · {o}x {min}+",{b:st.aantalBeurten,m:st.max,g:st.gemPerBeurt,p:st.poedels,o:st.opbouw5,min:dTxt.opbouwMin}));
+      if(st)r.push(t("{b} beurten · max {m} · gem {g} · {p}x poedel · {o}x {min}+",{b:st.aantalBeurten,m:st.max,g:decTekst(st.gemPerBeurt),p:st.poedels,o:st.opbouw5,min:dTxt.opbouwMin}));
       p.beurten.forEach(function(b,j){
         const g=(b.gemist||[]).map(function(l){return t(l);}).join(", ");
         const gd=(b.goed||[]).map(function(l){return t(l);}).join(", ");
@@ -175,7 +175,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
           return(
             <div>
               <div style={{fontSize:14,color:WIT,marginBottom:2}}>{seizoenNaam(huidig)} <span style={{fontSize:13,color:WITD}}>({huidig.startDatum?t("sinds {d}",{d:new Date(huidig.startDatum).toLocaleDateString(taalLocale(),{day:"numeric",month:"short",year:"numeric"})}):t("sinds het begin")})</span></div>
-              <div style={{fontSize:13,color:WITD,marginBottom:huidigStats.aantalDrops>0?2:10}}>{t("{n} partijen · gem {g}",{n:huidigStats.aantalPartijen,g:huidigStats.gemiddelde.toFixed(huidigeDiscipline==="driebanden"?3:2)})} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
+              <div style={{fontSize:13,color:WITD,marginBottom:huidigStats.aantalDrops>0?2:10}}>{t("{n} partijen · gem {g}",{n:huidigStats.aantalPartijen,g:getalTekst(huidigStats.gemiddelde,huidigeDiscipline==="driebanden"?3:2)})} · {huidigStats.niveau.emoji} {huidigStats.niveau.naam}</div>
               {huidigStats.aantalDrops>0&&<div style={{fontSize:11,color:WITD,opacity:0.8,marginBottom:10}}>{t("Gemiddelde")} {gemUitleg(huidigStats,huidigeDiscipline==="driebanden"?3:2,t(" van dit seizoen"))}. {t("Elk seizoen telt zijn eigen badge-punten.")}</div>}
               <div style={{display:"flex",gap:6}}>
                 {!confSeizoenAfsluiten
@@ -279,7 +279,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Alle {n} partijen",{n:alleP.length})}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
-            {[[t("Car."),stA.totCar],[t("Max"),stA.max],[t("Gem. alle partijen"),stA.gemPerBeurt],[t("Beurten"),stA.aantalBeurten],[t("Poedels"),stA.poedels],[t("Partijen"),alleP.length]].map(function(arr){
+            {[[t("Car."),stA.totCar],[t("Max"),stA.max],[t("Gem. alle partijen"),decTekst(stA.gemPerBeurt)],[t("Beurten"),stA.aantalBeurten],[t("Poedels"),stA.poedels],[t("Partijen"),alleP.length]].map(function(arr){
               return(
                 <div key={arr[0]} style={{textAlign:"center",background:"var(--c-1a3019)",borderRadius:8,padding:"8px 4px"}}>
                   <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}>{arr[1]}</div>

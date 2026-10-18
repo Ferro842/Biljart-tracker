@@ -155,7 +155,7 @@ function InvoerScherm({spel}){
           <span style={{fontSize:12,color:WITD}}>{t("Totaal:")} <strong style={{color:GOUD}}>{(niveau.badgePuntenTotaal!==undefined?niveau.badgePuntenTotaal:niveau.badgePunten)+partijPunten}pt</strong></span>
         </div>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
-          {[[t("Gespeeld"),lp.length,WIT],[t("Caramboles"),isVierbal&&strafLp>0?<>{totCarLp}<span style={{fontSize:12,color:ROOD}}> −{strafLp}</span></>:(stL?stL.totCar:0),GOUD],[t("Gem."),stL?stL.gemPerBeurt:"0.00",GOUDL],[t("Max"),stL?stL.max:0,"#e8a84c"]].map(function(arr){
+          {[[t("Gespeeld"),lp.length,WIT],[t("Caramboles"),isVierbal&&strafLp>0?<>{totCarLp}<span style={{fontSize:12,color:ROOD}}> −{strafLp}</span></>:(stL?stL.totCar:0),GOUD],[t("Gem."),decTekst(stL?stL.gemPerBeurt:"0.00"),GOUDL],[t("Max"),stL?stL.max:0,"#e8a84c"]].map(function(arr){
             return(
               <div key={arr[0]} style={{textAlign:"center",background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 2px"}}>
                 <div style={{fontSize:20,fontWeight:"bold",color:arr[2],lineHeight:1}}>{arr[1]}</div>
@@ -253,24 +253,24 @@ function InvoerScherm({spel}){
             if(gemNu<drempel2Nu){
               const drempel=gemNu<drempel1Nu?drempel1Nu:drempel2Nu;
               const afstand=drempel-gemNu;
-              if(afstand<stapNu)hints.push(spelAan&&"⭐ "+t("Nog {a} tot gemiddelde {g}",{a:afstand.toFixed(2),g:kommaTekst(gemDrempelTekst(drempel,stapNu))}));
+              if(afstand<stapNu)hints.push(spelAan&&"⭐ "+t("Nog {a} tot gemiddelde {g}",{a:getalTekst(afstand,2),g:kommaTekst(gemDrempelTekst(drempel,stapNu))}));
             }
             if(huidigeRecords.allTimeBestGem>0){
               const afstandRecord=huidigeRecords.allTimeBestGem-gemNu;
-              if(afstandRecord>0&&afstandRecord<0.3)hints.push("👑 "+t("Nog {a} tot je beste gem. ooit ({g})",{a:afstandRecord.toFixed(2),g:huidigeRecords.allTimeBestGem.toFixed(2)}));
+              if(afstandRecord>0&&afstandRecord<0.3)hints.push("👑 "+t("Nog {a} tot je beste gem. ooit ({g})",{a:getalTekst(afstandRecord,2),g:getalTekst(huidigeRecords.allTimeBestGem,2)}));
             }
             const tafelRecord=huidigeRecords.tafelBest[tafel];
             if(tafelRecord&&tafelRecord>0){
               const afstandTafel=tafelRecord-gemNu;
-              if(afstandTafel>0&&afstandTafel<0.3)hints.push("🔝 "+t("Nog {a} tot je tafelrecord ({g})",{a:afstandTafel.toFixed(2),g:tafelRecord.toFixed(2)}));
+              if(afstandTafel>0&&afstandTafel<0.3)hints.push("🔝 "+t("Nog {a} tot je tafelrecord ({g})",{a:getalTekst(afstandTafel,2),g:getalTekst(tafelRecord,2)}));
             }
             if(huidigeRecords.totaalGem!==null){
               const afstandTotaal=huidigeRecords.totaalGem-gemNu;
-              if(afstandTotaal>0&&afstandTotaal<0.3)hints.push("📊 "+t("Nog {a} tot je moyenne ({g})",{a:afstandTotaal.toFixed(2),g:huidigeRecords.totaalGem.toFixed(2)}));
+              if(afstandTotaal>0&&afstandTotaal<0.3)hints.push("📊 "+t("Nog {a} tot je moyenne ({g})",{a:getalTekst(afstandTotaal,2),g:getalTekst(huidigeRecords.totaalGem,2)}));
             }
             if(huidigeRecords.rolling5p!==null){
               const afstandRolling=huidigeRecords.rolling5p-gemNu;
-              if(afstandRolling>0&&afstandRolling<0.3)hints.push("📉 "+t("Nog {a} tot je gem. laatste 5 partijen ({g})",{a:afstandRolling.toFixed(2),g:huidigeRecords.rolling5p.toFixed(2)}));
+              if(afstandRolling>0&&afstandRolling<0.3)hints.push("📉 "+t("Nog {a} tot je gem. laatste 5 partijen ({g})",{a:getalTekst(afstandRolling,2),g:getalTekst(huidigeRecords.rolling5p,2)}));
             }
           }
           if(lp.length>=3){
@@ -293,7 +293,7 @@ function InvoerScherm({spel}){
             const gemENu=eersteNu.reduce(function(a,b){return a+b.caramboles;},0)/eersteNu.length;
             const gemTNu=tweedeNu.reduce(function(a,b){return a+b.caramboles;},0)/tweedeNu.length;
             if(gemTNu>gemENu&&stL&&parseFloat(stL.gemPerBeurt)>huidigeRecords.totaalGem){
-              hints.push(spelAan&&"📈 "+t("Sterke 2e helft:")+" "+gemENu.toFixed(2)+" → "+gemTNu.toFixed(2));
+              hints.push(spelAan&&"📈 "+t("Sterke 2e helft:")+" "+getalTekst(gemENu,2)+" → "+getalTekst(gemTNu,2));
             }
           }
           if(doel&&doelType==="caramboles"){

@@ -27,8 +27,7 @@ function Telop({waarde,dec=2,duur=650,komma=false}){
     const zeker=setTimeout(function(){setToon(waarde);},duur+150);
     return function(){cancelAnimationFrame(raf);clearTimeout(zeker);};
   },[waarde]);
-  const tekst=Number(toon).toFixed(dec);
-  return <span>{komma?getalTekst(toon,dec):tekst}</span>;
+  return <span>{getalTekst(toon,dec)}</span>;
 }
 
 // Korte tik in je hand (iOS-app met Haptics-plugin; anders trillen waar dat kan, bijv. Android)

@@ -24,7 +24,7 @@
     const vorm=getal("vorm · ");
     const moy=getal("moyenne · alle");
     moyennes.push(moy);
-    uit["vorm_"+keuze[1]]={getoond:vorm,verwacht:info.effectiefGemiddelde.toFixed(2),opgeslagen:data().vormVenster===keuze[1]};
+    uit["vorm_"+keuze[1]]={getoond:vorm,verwacht:getalTekst(info.effectiefGemiddelde,2),opgeslagen:data().vormVenster===keuze[1]};
   }
   uit.moyenneGelijk=moyennes.every(function(m){return m&&m===moyennes[0];});
   // Schrappen uit (klasse-overzicht) + Alle: je vorm is je moyenne en heet ook zo; daarna schrappen weer aan
@@ -47,8 +47,8 @@
   tafelKnop("2,10").click();await w(250);
   const op210=libre().filter(function(p){return p.tafel==="210";});
   const info210=berekenNiveauInfo(op210,false,{venster:20});
-  uit.tafel210={getoond:getal("vorm · "),verwacht:info210.effectiefGemiddelde.toFixed(2),
-    moyenne:getal("moyenne · alle"),moyenneVerwacht:info210.moyenne.toFixed(2),
+  uit.tafel210={getoond:getal("vorm · "),verwacht:getalTekst(info210.effectiefGemiddelde,2),
+    moyenne:getal("moyenne · alle"),moyenneVerwacht:getalTekst(info210.moyenne,2),
     melding:tekst().indexOf("Alleen je partijen op de 2,10")!==-1};
   tafelKnop("Alle tafels").click();await w(250);
   uit.terugNaarAlle=tekst().indexOf("Alleen je partijen op de")===-1;

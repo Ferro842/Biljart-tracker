@@ -240,12 +240,12 @@ function BeurtenTijdlijn({partijen,nummers,discipline,niveau}){
             {alle[sel.van].pi!==alle[sel.tot].pi?" · "+t("{n} partijen",{n:alle[sel.tot].pi-alle[sel.van].pi+1}):""}
           </div>
           <div style={{display:"flex",alignItems:"baseline",gap:10,marginBottom:10}}>
-            <span style={{fontSize:30,fontWeight:"bold",color:GOUD,lineHeight:1}}>{selStats.gemiddelde.toFixed(dec)}</span>
+            <span style={{fontSize:30,fontWeight:"bold",color:GOUD,lineHeight:1}}>{getalTekst(selStats.gemiddelde,dec)}</span>
             <span style={{fontSize:12,color:WITD}}>{t("gemiddelde")}</span>
             {(function(){
               const verschil=selStats.gemiddelde-basisGem;
               return <span style={{marginLeft:"auto",fontSize:13,fontWeight:"bold",color:verschil>=0?GRNT:ROOD}}>
-                {verschil>=0?"▲ +":"▼ "}{verschil.toFixed(dec)} <span style={{fontWeight:"normal",color:WITD,fontSize:11}}>{t("t.o.v. je vorm {g}",{g:basisGem.toFixed(dec)})}</span>
+                {verschil>=0?"▲ +":"▼ "}{getalTekst(verschil,dec)} <span style={{fontWeight:"normal",color:WITD,fontSize:11}}>{t("t.o.v. je vorm {g}",{g:getalTekst(basisGem,dec)})}</span>
               </span>;
             })()}
           </div>
@@ -446,7 +446,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
   const kaart=(label,waarde,sub,kleur=GOUD)=>(
     <div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
       <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>{label}</div>
-      <div style={{fontSize:26,fontWeight:"bold",color:kleur,lineHeight:1}}>{waarde}</div>
+      <div style={{fontSize:26,fontWeight:"bold",color:kleur,lineHeight:1}}>{decTekst(waarde)}</div>
       {sub&&<div style={{fontSize:12,color:WITD,marginTop:3}}>{sub}</div>}
     </div>
   );
@@ -581,13 +581,13 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             </div>
             <DashGrafiek data={rolGems} grenzen={grenzen}/>
             <div style={{fontSize:11,color:WITD,marginTop:4,display:"flex",gap:10,flexWrap:"wrap"}}>
-              <span style={{color:GRNT}}>● {t("vanaf")} {grenzen.hoog.toFixed(decD)}{grenzen.volgendeNaam?" ("+grenzen.volgendeNaam+")":""}</span>
-              <span style={{color:GOUD}}>● {grenzen.laag.toFixed(decD)}–{grenzen.hoog.toFixed(decD)}{grenzen.volgendeNaam?" ("+grenzen.huidigNaam+")":""}</span>
-              <span style={{color:ROOD}}>● {t("onder")} {grenzen.laag.toFixed(decD)}</span>
+              <span style={{color:GRNT}}>● {t("vanaf")} {getalTekst(grenzen.hoog,decD)}{grenzen.volgendeNaam?" ("+grenzen.volgendeNaam+")":""}</span>
+              <span style={{color:GOUD}}>● {getalTekst(grenzen.laag,decD)}–{getalTekst(grenzen.hoog,decD)}{grenzen.volgendeNaam?" ("+grenzen.huidigNaam+")":""}</span>
+              <span style={{color:ROOD}}>● {t("onder")} {getalTekst(grenzen.laag,decD)}</span>
             </div>
             {((filt.length>=3&&w3)||(filt.length>=5&&w5))&&<div style={{marginTop:6,display:"flex",gap:12,fontSize:13}}>
-              {filt.length>=3&&w3&&<span style={{color:GOUD}}>{t("3p nu:")} <strong>{r3.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
-              {filt.length>=5&&w5&&<span style={{color:WIT}}>{t("5p nu:")} <strong>{r5.filter(v=>v!==null).slice(-1)[0]}</strong></span>}
+              {filt.length>=3&&w3&&<span style={{color:GOUD}}>{t("3p nu:")} <strong>{decTekst(r3.filter(v=>v!==null).slice(-1)[0])}</strong></span>}
+              {filt.length>=5&&w5&&<span style={{color:WIT}}>{t("5p nu:")} <strong>{decTekst(r5.filter(v=>v!==null).slice(-1)[0])}</strong></span>}
             </div>}
           </div>
 
@@ -607,7 +607,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
             </div>
             <div style={{textAlign:"center",background:"var(--c-1a3019)",borderRadius:8,padding:"8px"}}>
               <span style={{fontSize:13,color:WITD}}>{t("Gefilterd gemiddelde:")} </span>
-              <span style={{fontSize:20,fontWeight:"bold",color:parseFloat(gemGem)>=grenzen.laag?GOUD:WITD}}>{gemGem}</span>
+              <span style={{fontSize:20,fontWeight:"bold",color:parseFloat(gemGem)>=grenzen.laag?GOUD:WITD}}>{decTekst(gemGem)}</span>
             </div>
           </div>
           {sel.length>0&&<div style={{background:KBG,border:`1px solid ${KBDR}`,borderRadius:10,padding:"12px"}}>
@@ -642,7 +642,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               {[...filt].sort((a,b)=>b.gem-a.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
                   <span style={{fontSize:13,color:WITD}}>p{p.nr} {fmtDatum(p.datum)}</span>
-                  <span style={{fontSize:14,fontWeight:"bold",color:GRNT}}>{p.gem}</span>
+                  <span style={{fontSize:14,fontWeight:"bold",color:GRNT}}>{decTekst(p.gem)}</span>
                 </div>
               ))}
             </div>
@@ -651,7 +651,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               {[...filt].sort((a,b)=>a.gem-b.gem).slice(0,5).map(p=>(
                 <div key={p.id} style={{display:"flex",justifyContent:"space-between",padding:"3px 0",borderBottom:`1px solid ${KBDR}`}}>
                   <span style={{fontSize:13,color:WITD}}>p{p.nr} {fmtDatum(p.datum)}</span>
-                  <span style={{fontSize:14,fontWeight:"bold",color:ROOD}}>{p.gem}</span>
+                  <span style={{fontSize:14,fontWeight:"bold",color:ROOD}}>{decTekst(p.gem)}</span>
                 </div>
               ))}
             </div>
@@ -744,16 +744,16 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
               {[[`p1–p${h}`,g1,h1],[`p${h+1}–p${sel.length}`,g2,h2]].map(([label,gem,ps])=>(
                 <div key={label} style={{background:"var(--c-1a3019)",borderRadius:8,padding:"12px",textAlign:"center"}}>
                   <div style={{fontSize:13,color:WITD,marginBottom:4}}>{label}</div>
-                  <div style={{fontSize:28,fontWeight:"bold",color:gemKleur(parseFloat(gem),grenzen)}}>{gem}</div>
+                  <div style={{fontSize:28,fontWeight:"bold",color:gemKleur(parseFloat(gem),grenzen)}}>{decTekst(gem)}</div>
                   <div style={{fontSize:12,color:WITD,marginTop:4}}>{t("{n} partijen",{n:ps.length})}</div>
-                  <div style={{fontSize:12,color:GRNT}}>{Math.round(ps.filter(p=>p.gem>=grenzen.hoog).length/Math.max(ps.length,1)*100)}% {t("vanaf")} {grenzen.hoog.toFixed(decD)}</div>
+                  <div style={{fontSize:12,color:GRNT}}>{Math.round(ps.filter(p=>p.gem>=grenzen.hoog).length/Math.max(ps.length,1)*100)}% {t("vanaf")} {getalTekst(grenzen.hoog,decD)}</div>
                 </div>
               ))}
             </div>
             <div style={{textAlign:"center",padding:"8px",background:"var(--c-1a3019)",borderRadius:8}}>
               {parseFloat(g2)>parseFloat(g1)
-                ?<span style={{color:GRNT}}>↑ {t("Tweede helft {v} hoger — progressie!",{v:(g2-g1).toFixed(2)})}</span>
-                :<span style={{color:ROOD}}>↓ {t("Eerste helft {v} hoger",{v:(parseFloat(g1)-parseFloat(g2)).toFixed(2)})}</span>
+                ?<span style={{color:GRNT}}>↑ {t("Tweede helft {v} hoger — progressie!",{v:getalTekst(g2-g1,2)})}</span>
+                :<span style={{color:ROOD}}>↓ {t("Eerste helft {v} hoger",{v:getalTekst(parseFloat(g1)-parseFloat(g2),2)})}</span>
               }
             </div>
           </div>
@@ -766,7 +766,7 @@ function Dashboard({partijen,niveau,tijdsvensterMaanden,discipline}){
                 <div key={naam} style={{marginBottom:10}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
                     <span style={{fontSize:14,color:WITD}}>{maandTekst(naam)} <span style={{fontSize:12,color:WITD}}>({ps.length}p)</span></span>
-                    <span style={{fontSize:14,fontWeight:"bold",color:k}}>{gem}</span>
+                    <span style={{fontSize:14,fontWeight:"bold",color:k}}>{decTekst(gem)}</span>
                   </div>
                   <DashBalk pct={parseFloat(gem)/maandSchaal*100} kleur={k}/>
                 </div>

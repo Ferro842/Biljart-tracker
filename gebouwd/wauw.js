@@ -29,8 +29,7 @@ function Telop({ waarde, dec = 2, duur = 650, komma = false }) {
       clearTimeout(zeker);
     };
   }, [waarde]);
-  const tekst2 = Number(toon).toFixed(dec);
-  return /* @__PURE__ */ React.createElement("span", null, komma ? getalTekst(toon, dec) : tekst2);
+  return /* @__PURE__ */ React.createElement("span", null, getalTekst(toon, dec));
 }
 function tik() {
   try {

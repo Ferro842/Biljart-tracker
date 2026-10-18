@@ -1,5 +1,8 @@
 # Winkelteksten in het Engels, Frans en Duits
 
+Naam, ondertitel, trefwoorden en Play-titel/korte beschrijving: zie `store/aso.md` (gaat vóór wat hieronder staat).
+De promotieteksten en beschrijvingen hieronder blijven gelden.
+
 De app zelf is er in het Nederlands, Engels, Frans en Duits (Info → Weergave → Taal). Hieronder dezelfde winkelteksten
 als in `app-store.md` en `play-store.md`, per taal. Maximum aantal tekens tussen haakjes; `node store/controleer-lengtes.js`
 controleert ze.

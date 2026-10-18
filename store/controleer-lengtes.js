@@ -20,4 +20,28 @@ delen.forEach(function(d){
   meld(taal,"Beschrijving",blok("Beschrijving"),4000);
   const kw=/```\n([^`]*)\n```/.exec(d);meld(taal,"Trefwoorden",kw?kw[1]:"",100);
 });
-process.exit(fout?1:0);
+if(fout)process.exitCode=1;
+
+// store/aso.md: naam, ondertitel, Play-titel, korte beschrijving en trefwoorden per taal, plus dubbele woorden
+// (woorden uit naam/ondertitel nog eens in de trefwoorden levert bij Apple niets op)
+(function(){
+  const aso=fs.readFileSync(path.join(__dirname,"aso.md"),"utf8");
+  let asoFout=false;
+  aso.split(/^## /m).filter(function(d){return/^(Nederlands|Engels|Frans|Duits|Spaans|Turks|Koreaans)/.test(d);}).forEach(function(d){
+    const taal=d.split("\n")[0].trim();
+    const rij=function(naam){const m=new RegExp("\\| "+naam.replace(/[()]/g,"\\$&")+" \\| (.*) \\|").exec(d);return m?m[1]:null;};
+    const tel=function(veld,tekst,max){if(tekst===null)return;const n=[...tekst].length;if(n>max)asoFout=true;console.log((n<=max?"OK  ":"TE LANG ")+"aso "+taal+" · "+veld+": "+n+"/"+max);};
+    tel("Naam",rij("Naam (30)"),30);tel("Ondertitel",rij("Ondertitel (30)"),30);
+    tel("Play titel",rij("Play: titel (30)"),30);tel("Play kort",rij("Play: korte beschrijving (80)"),80);
+    const kw=/```\n([^`]*)\n```/.exec(d);
+    if(kw){
+      tel("Trefwoorden",kw[1],100);
+      if(/, /.test(kw[1])){asoFout=true;console.log("FOUT aso "+taal+": spatie na komma in trefwoorden");}
+      const woorden=((rij("Naam (30)")||"")+" "+(rij("Ondertitel (30)")||"")).toLowerCase().split(/[\s:·,&]+/).filter(Boolean);
+      const dubbel=kw[1].toLowerCase().split(",").filter(function(w){return woorden.indexOf(w)!==-1;});
+      const zelf=kw[1].toLowerCase().split(",").filter(function(w,i,a){return a.indexOf(w)!==i;});
+      if(dubbel.length||zelf.length){asoFout=true;console.log("DUBBEL aso "+taal+": "+dubbel.concat(zelf).join(", "));}
+    }
+  });
+  if(asoFout)process.exitCode=1;
+})();

@@ -13,6 +13,13 @@ controleren zijn.
   (Gradle 8.14 werkt niet met Java 25). Emulator `Pixel_9` (API 36): `~/Library/Android/sdk/emulator/emulator -avd Pixel_9`.
   Systeembalken donkergroen via `res/values/styles.xml` + `colors.xml`; witte icoontjes via `SystemBars.style = DARK` in
   `capacitor.config.json` (geldt ook voor iOS). Play-schermafbeeldingen max. 2:1 → `store/screenshots/android/play/` (1080×2160).
+- Vindbaarheid (ASO): `store/aso.md` gaat vóór naam/ondertitel/trefwoorden in `app-store.md` en `talen.md` (per taal,
+  plus English (U.K.) en Spanish (Mexico) voor extra trefwoorden; controle met `node store/controleer-lengtes.js`, ook op
+  dubbele woorden). Merknaam nog niet gekozen (voorkeur "Carom Tracker"). Website: `<title>`, meta description, Open Graph
+  en JSON-LD in de kop van `index.html`, plus `<noscript>`-tekst.
+- Beoordeling vragen: `beoordelingMoment()`/`vraagBeoordeling()` in `js/opslag.js`, aangeroepen in `bewaarPartij` (record,
+  beste partij, hogere klasse, gehaald doel; vanaf 5 partijen, hoogstens eens per 120 dagen en 3 keer; `data.beoordelingGevraagd`).
+  Werkt alleen met de InAppReview-plugin (@capacitor-community/in-app-review); zonder plugin gebeurt er niets.
 - Store-materiaal in `store/`: teksten (`app-store.md`, `play-store.md`), voorbeelddata voor schermafbeeldingen
   (`node store/maak-demodata.js` → `demodata.json`, geen echte namen), Play-pictogram en feature graphic (`store/play/`).
 - Privacybeleid (voor App Store Connect): `privacy.html`

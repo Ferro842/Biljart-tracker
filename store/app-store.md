@@ -1,5 +1,7 @@
 # App Store Connect – Biljart Tracker
 
+Naam, ondertitel en trefwoorden: zie `store/aso.md` (gaat vóór wat hieronder staat). De beschrijving hieronder blijft gelden.
+
 Alles om in App Store Connect in te vullen (Nederlands als hoofdtaal). Tekens tussen haakjes = maximum van Apple.
 
 ## App-informatie

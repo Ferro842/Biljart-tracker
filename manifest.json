@@ -1,7 +1,7 @@
 {
   "name": "Biljart Tracker",
   "short_name": "Biljart",
-  "description": "Carambole-serie registratie met KNBB-niveaus, badges en mijlpalen.",
+  "description": "Carambole bijhouden: driebanden, libre, kader en vierbal met moyenne, series en klasse. Carom billiards scorekeeper.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

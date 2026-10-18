@@ -221,3 +221,26 @@ async function vraagBlijvendeOpslag(){
   if(IS_NATIVE||!navigator.storage||!navigator.storage.persist)return;
   try{if(!(await navigator.storage.persisted()))await navigator.storage.persist();}catch(e){}
 }
+
+// Beoordeling vragen (alleen in de iOS-/Android-app), via Apple en Google zelf: de InAppReview-plugin
+// (@capacitor-community/in-app-review). Een eigen "Vind je de app leuk?"-venster mag niet (Apple-richtlijn 5.6.1).
+// Alleen op een goed moment (record, beste partij, hogere klasse, gehaald doel), vanaf 5 partijen, hoogstens eens per
+// 4 maanden en hoogstens 3 keer; Apple toont het venster zelf hoogstens 3 keer per jaar.
+const BEOORDELING_MIN_PARTIJEN=5,BEOORDELING_MAX=3,BEOORDELING_TUSSEN_DAGEN=120;
+function beoordelingPlugin(){
+  const P=typeof window!=="undefined"&&window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.InAppReview;
+  return P&&P.requestReview?P:null;
+}
+function beoordelingMoment(data,goedMoment,nu,kan){
+  if(kan===undefined)kan=IS_NATIVE&&!!beoordelingPlugin();
+  if(!kan||!goedMoment)return false;
+  if(((data&&data.partijen)||[]).length<BEOORDELING_MIN_PARTIJEN)return false;
+  const g=(data&&data.beoordelingGevraagd)||[];
+  if(g.length>=BEOORDELING_MAX)return false;
+  if(g.length&&(nu||Date.now())-new Date(g[g.length-1]).getTime()<BEOORDELING_TUSSEN_DAGEN*86400000)return false;
+  return true;
+}
+function vraagBeoordeling(){
+  const P=beoordelingPlugin();
+  if(P)P.requestReview().catch(function(e){console.log("Beoordeling:",e);});
+}

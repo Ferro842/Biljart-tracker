@@ -200,7 +200,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 - Fase 1 klaar (kop, tabbladen, Spelen, opmerkingen, Info, welkom). Fase 2 klaar (Stats, Log, partijregels, vensters, uitleg,
   badges, vormUitleg, wauw: doel, kalender, seizoen in beeld, deelkaarten). Fase 3 klaar (Dash, Inzicht, coachzinnen en
   omstandigheden in `berekenInzicht`; titels van omstandigheden blijven Nederlands in de data, want de code vergelijkt erop,
-  en worden getoond met `t(o.titel)`). Nog te doen: fase 4 store-teksten per taal; daarna nieuwe talen.
+  en worden getoond met `t(o.titel)`). Fase 4 klaar: winkelteksten Engels/Frans/Duits in `store/talen.md` (lengtes:
+  `node store/controleer-lengtes.js`; knopnamen in de teksten gelijk houden aan de vertalingen in de app). Daarna nieuwe talen.
   Na een tekstwijziging in `berekenInzicht`: Nederlandse uitkomst oud tegenover nieuw vergelijken (de snapshot-hash
   bevat de coachzinnen niet).
 

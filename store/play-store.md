@@ -28,6 +28,8 @@ Alles om in de Play Console in te vullen (Nederlands als standaardtaal).
 
 **Volledige beschrijving (4000):** dezelfde tekst als bij de App Store (`store/app-store.md`, Beschrijving).
 
+**Andere talen:** Engels, Frans en Duits staan in `store/talen.md` (Winkelvermelding → Vertalingen beheren).
+
 ## Afbeeldingen
 
 | Wat | Maat | Bestand |

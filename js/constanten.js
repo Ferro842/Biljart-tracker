@@ -105,7 +105,9 @@ const NIVEAUS_BANDSTOTEN=[
 // tabellen, geen letterlijke KNBB-klassenaam. Genummerd aflopend (3→2→1), net als bij Driebanden en
 // Bandstoten, zodat medaille en klassenummer overeenkomen (🥉=3, 🥈=2, 🥇=1).
 // 38/2 en 47/2 hebben 9 (grotere) vakken en zijn de instapvarianten; 57/2 en 71/2 hebben 6 (kleinere,
-// dus lastigere) vakken en liggen een niveau hoger.
+// dus lastigere) vakken en liggen een niveau hoger. De Duitse varianten op het kleine biljart volgen
+// hun Nederlandse tegenhanger: 35/2 (9 vakken) als 38/2, 52/2 (6 vakken) als 57/2. 47/1 (groot biljart,
+// maar 1 carambole per vak) is de lastigste en volgt 71/2.
 const NIVEAUS_KADER38=[
   {naam:"Klasse 3",gemDrempel:0,emoji:"🥉",kleur:"#c9915a"},
   {naam:"Klasse 2",gemDrempel:2.00,emoji:"🥈",kleur:"#c4c4cf"},
@@ -134,6 +136,9 @@ const NIVEAUS_KADER71=[
   {naam:"Hoofdklasse*",gemDrempel:3.50,emoji:"🏆",kleur:"#7fd8e0"},
   {naam:"Ereklasse*",gemDrempel:5.50,emoji:"💎",kleur:"#ff9fd1"}
 ];
+const NIVEAUS_KADER35=NIVEAUS_KADER38.map(function(n){return Object.assign({},n);});
+const NIVEAUS_KADER52=NIVEAUS_KADER57.map(function(n){return Object.assign({},n);});
+const NIVEAUS_KADER471=NIVEAUS_KADER71.map(function(n){return Object.assign({},n);});
 const DISCIPLINES={
   libre:{naam:"Libre",niveaus:NIVEAUS_LIBRE},
   driebanden:{naam:"Driebanden",niveaus:NIVEAUS_DRIEBANDEN},
@@ -141,12 +146,18 @@ const DISCIPLINES={
   kader38:{naam:"Kader 38/2",niveaus:NIVEAUS_KADER38,groep:"kader"},
   kader47:{naam:"Kader 47/2",niveaus:NIVEAUS_KADER47,groep:"kader"},
   kader57:{naam:"Kader 57/2",niveaus:NIVEAUS_KADER57,groep:"kader"},
-  kader71:{naam:"Kader 71/2",niveaus:NIVEAUS_KADER71,groep:"kader"}
+  kader71:{naam:"Kader 71/2",niveaus:NIVEAUS_KADER71,groep:"kader"},
+  kader35:{naam:"Kader 35/2",niveaus:NIVEAUS_KADER35,groep:"kader"},
+  kader471:{naam:"Kader 47/1",niveaus:NIVEAUS_KADER471,groep:"kader"},
+  kader52:{naam:"Kader 52/2",niveaus:NIVEAUS_KADER52,groep:"kader"}
 };
 // De hoofdknoppen bovenin de app: Libre/Driebanden/Bandstoten zijn losse disciplines, Kader is één
 // knop die daarna een sub-keuze toont tussen de vier varianten.
 const HOOFDDISCIPLINES=["libre","driebanden","bandstoten"];
-const KADER_VARIANTEN=["kader38","kader47","kader57","kader71"];
+// Op volgorde van de getallen (35/2 en 52/2: Duits klein biljart; 47/1: groot biljart)
+const KADER_VARIANTEN=["kader35","kader38","kader471","kader47","kader52","kader57","kader71"];
+// Kadervarianten met kleinere vakken of 1 carambole per vak: lagere drempels, zoals Bandstoten
+const KADER_LAAG=["kader52","kader57","kader471","kader71"];
 const MAX_SCHRAP_AANDEEL=0.1; // nooit meer dan 1 op de 10 partijen schrappen, hoeveel punten je ook hebt
 const PUNTEN_PER_DROP=1000; // elke 1000 badge-punten ontgrendelt het schrappen van 1 extra slechte partij
 

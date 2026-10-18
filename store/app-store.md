@@ -42,7 +42,7 @@ Is de naam "Biljart Tracker" al bezet, kies dan bijvoorbeeld "Biljart Tracker �
 > • Inzicht: welke stoten je goed beheerst en waar je serie meestal eindigt
 >
 > VOOR ELKE SPELVORM
-> • Libre, driebanden, bandstoten en kader 38/2, 47/2, 57/2 en 71/2
+> • Libre, driebanden, bandstoten en kader 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 en 71/2
 > • Elke spelvorm met een eigen moyenne, klasse en kleur
 >
 > EXTRA

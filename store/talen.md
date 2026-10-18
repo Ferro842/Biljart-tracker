@@ -47,7 +47,7 @@ controleert ze.
 > • Insight: which shots you master and where your runs usually end
 >
 > FOR EVERY DISCIPLINE
-> • Straight rail, three-cushion, one-cushion and balkline 38/2, 47/2, 57/2 and 71/2
+> • Straight rail, three-cushion, one-cushion and balkline 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 and 71/2
 > • Each discipline with its own average, class and colour
 >
 > EXTRAS
@@ -97,7 +97,7 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 > • Analyse : les coups que tu maîtrises et là où tes séries s'arrêtent le plus souvent
 >
 > POUR CHAQUE DISCIPLINE
-> • Libre, trois bandes, une bande et cadre 38/2, 47/2, 57/2 et 71/2
+> • Libre, trois bandes, une bande et cadre 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 et 71/2
 > • Chaque discipline avec sa propre moyenne, sa classe et sa couleur
 >
 > EN PLUS
@@ -147,7 +147,7 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 > • Einblick: welche Stöße du beherrschst und wo deine Serie meist endet
 >
 > FÜR JEDE DISZIPLIN
-> • Freie Partie, Dreiband, Einband und Cadre 38/2, 47/2, 57/2 und 71/2
+> • Freie Partie, Dreiband, Einband und Cadre 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 und 71/2
 > • Jede Disziplin mit eigenem Durchschnitt, eigener Klasse und Farbe
 >
 > EXTRAS

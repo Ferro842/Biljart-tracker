@@ -123,11 +123,14 @@ async function laadData(){
 }
 
 async function laadWebData(){
-  // Eerst localStorage
+  // Eerst localStorage. Zonder partijen (nieuwe speler: alleen instellingen, welkomstscherm gezien of een
+  // eerste lopende partij) bewaren we hem als terugval: een kopie mét partijen in window.storage gaat voor.
+  let zonderPartijen=null;
   try{
     const s=localStorage.getItem(SK);
     if(s){
       const d=JSON.parse(s);
+      if(d&&Array.isArray(d.partijen)&&d.partijen.length===0)zonderPartijen=d;
       if(d&&d.partijen&&d.partijen.length>0){
         console.log("Geladen uit localStorage: "+d.partijen.length+" partijen");
         let changed=migreerTafels(d);
@@ -157,6 +160,11 @@ async function laadWebData(){
       }
     }
   }catch(e){console.log("window.storage fout:",e);}
+  if(zonderPartijen){
+    console.log("Geladen uit localStorage: instellingen, nog geen partijen");
+    if(!zonderPartijen.huidigeId)zonderPartijen.huidigeId=1;
+    return zonderPartijen;
+  }
   // Alleen leeg beginnen als er ECHT geen data is
   console.log("Geen opgeslagen data gevonden, start leeg");
   return{huidigeId:1,partijen:[]};

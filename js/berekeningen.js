@@ -3,29 +3,29 @@
 // na js/constanten.js en vóór de Babel-code in index.html. Puur rekenwerk: leest of schrijft geen opslag.
 
 // Wat een "goede", "sterke" en "top"-beurt is, verschilt enorm per discipline — bij Driebanden is
-// 1 carambole al een prestatie, bij Libre pas 5+. Kader 38/2 en 47/2 (grotere vakken) liggen dicht bij
-// Libre; Kader 57/2 en 71/2 (kleinere vakken) zitten lager, net als Bandstoten.
+// 1 carambole al een prestatie, bij Libre pas 5+. Kader 35/2, 38/2 en 47/2 (grotere vakken) liggen dicht bij
+// Libre; KADER_LAAG (52/2, 57/2, 71/2 en 47/1) zit lager, net als Bandstoten.
 function beurtDrempels(discipline){
   if(discipline==="driebanden")return{opbouwMin:1,opbouwMax:1,sterkMin:2,sterkMax:2,topMin:3};
   if(discipline==="bandstoten")return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
-  if(discipline==="kader57"||discipline==="kader71")return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
-  return{opbouwMin:5,opbouwMax:7,sterkMin:8,sterkMax:9,topMin:10}; // libre, kader38, kader47
+  if(KADER_LAAG.indexOf(discipline)!==-1)return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
+  return{opbouwMin:5,opbouwMax:7,sterkMin:8,sterkMax:9,topMin:10}; // libre, kader35, kader38, kader47
 }
 // Buckets voor de caramboles-verdeling-histogram (Patronen-tab) — dezelfde indeling-logica als
 // beurtDrempels, maar dan als volledige reeks bakjes in plaats van drie drempels.
 function histogramBuckets(discipline){
   if(discipline==="driebanden")return[["0 (poedel)",0,0],["1",1,1],["2",2,2],["3",3,3],["4",4,4],["5+",5,Infinity]];
-  if(discipline==="bandstoten"||discipline==="kader57"||discipline==="kader71")
+  if(discipline==="bandstoten"||KADER_LAAG.indexOf(discipline)!==-1)
     return[["0 (poedel)",0,0],["1",1,1],["2",2,2],["3-4",3,4],["5-6",5,6],["7+",7,Infinity]];
-  return[["0 (poedel)",0,0],["1-2",1,2],["3-4",3,4],["5-7",5,7],["8-9",8,9],["10+",10,Infinity]]; // libre, kader38, kader47
+  return[["0 (poedel)",0,0],["1-2",1,2],["3-4",3,4],["5-7",5,7],["8-9",8,9],["10+",10,Infinity]]; // libre, kader35, kader38, kader47
 }
 
 // Stapgrootte van de meeschuivende gemiddelde-drempels (⭐-badge, hint tijdens het spelen, Consistentie in
 // Dash): ongeveer een kwart van een gangbaar gemiddelde in die discipline.
 function gemStap(discipline){
   if(discipline==="driebanden")return 0.1;
-  if(discipline==="bandstoten"||discipline==="kader57"||discipline==="kader71")return 0.25;
-  return 0.5; // libre, kader38, kader47
+  if(discipline==="bandstoten"||KADER_LAAG.indexOf(discipline)!==-1)return 0.25;
+  return 0.5; // libre, kader35, kader38, kader47
 }
 // Eerstvolgende drempel boven `basis` in stappen van `stap` (afgerond tegen rekenfoutjes als 0,30000000004)
 function gemDrempelBoven(basis,stap){return Math.round((Math.floor(basis/stap)*stap+stap)*1000)/1000;}

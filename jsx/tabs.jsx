@@ -23,7 +23,7 @@ function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij
 // Back-up en gegevens (in de Info-tab): AI-analyse-prompts, leesbare tekstexport en back-up (exporteren/importeren als JSON)
 function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
   const [gekopieerd,setGekopieerd]=useState("");
-  const [toonData,setToonData]=useState(false);
+  const [handmatig,setHandmatig]=useState(null); // tekst die niet automatisch gekopieerd kon worden
 
   async function exporteerData(){
     if(await maakBackupBestand(data)&&onBackup)onBackup();
@@ -93,10 +93,12 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
     el.style.left="-9999px";
     document.body.appendChild(el);
     el.select();
-    document.execCommand("copy");
+    var ok=false;
+    try{ok=document.execCommand("copy");}catch(e){}
     document.body.removeChild(el);
-    setGekopieerd(key);
-    setTimeout(function(){setGekopieerd("");},2500);
+    // Gelukt: alleen even "Gekopieerd!". Mislukt: de tekst in beeld om zelf te kopiëren
+    if(ok){setGekopieerd(key);setHandmatig(null);setTimeout(function(){setGekopieerd("");},2500);}
+    else setHandmatig(tekst);
   }
 
   const dataTekst=bouwTekst();
@@ -117,13 +119,13 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
         </div>
       </div>
       <button style={{width:"100%",padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:10,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",marginBottom:12}}
-        onClick={function(){kopieer(dataTekst,"data");setToonData(function(v){return !v;});}}>
+        onClick={function(){kopieer(dataTekst,"data");}}>
         {gekopieerd==="data"?t("Gekopieerd!"):t("Kopieer data")}
       </button>
-      {toonData&&(
-        <div>
-          <div style={{fontSize:13,color:WITD,marginBottom:6}}>{t("Selecteer alles hieronder en kopieer:")}</div>
-          <textarea readOnly value={dataTekst}
+      {handmatig&&(
+        <div data-handmatig-kopieren="">
+          <div style={{fontSize:13,color:WITD,marginBottom:6}}>{t("Kopiëren lukte niet. Selecteer de tekst hieronder en kopieer hem zelf:")}</div>
+          <textarea readOnly value={handmatig}
             onClick={function(e){e.target.select();}}
             style={{width:"100%",height:220,background:"var(--c-0d1f0d)",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:13,padding:8,fontFamily:"monospace",resize:"none"}}/>
         </div>

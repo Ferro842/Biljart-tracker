@@ -46,7 +46,9 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 
 ## Data
 
-- Web: localStorage (en `window.storage` als dat bestaat) onder sleutel `biljart-tracker-v2`.
+- Web: localStorage (en `window.storage` als dat bestaat) onder sleutel `biljart-tracker-v2`. `laadWebData()` gebruikt
+  ook data zonder partijen (nieuwe speler: instellingen, welkomstscherm gezien, eerste lopende partij); een kopie mét
+  partijen in `window.storage` gaat dan voor. (Tot 18 okt 2026 werd zo'n kopie genegeerd: na herladen weer welkomstscherm.)
 - iOS-app: bestand `biljart-data.json` in de Library-map (atomisch via `.tmp` + rename), localStorage als
   extra kopie. Zonder bestand wordt eenmalig de localStorage-data overgezet.
 - Structuur: `{ partijen:[{id,datum,tafel,doel,doelType,discipline,beurten:[{id,caramboles,gemist[],goed[],tijd}],
@@ -67,7 +69,12 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 
 ## Domein
 
-- Disciplines: libre, driebanden, bandstoten, kader38/47/57/71; elk eigen partijen, gemiddelde, niveau, badges.
+- Disciplines: libre, driebanden, bandstoten, kader35/38/471/47/52/57/71 (`KADER_VARIANTEN`, op volgorde van de getallen);
+  elk eigen partijen, gemiddelde, niveau, badges. 35/2 en 52/2 = Duits klein biljart (volgen 38/2 en 57/2), 47/1 = groot
+  biljart (volgt 71/2). Lagere drempels voor `KADER_LAAG` (52/2, 57/2, 47/1, 71/2), zoals Bandstoten.
+  Welkomstscherm: Kader aantikken kiest meteen Kader 38/2 (laken rood), daarna eventueel een andere variant.
+- Info → Kopieer data / AI-prompts: na gelukt kopiëren alleen "Gekopieerd!"; alleen als kopiëren mislukt staat de tekst
+  in beeld om zelf te kopiëren (`handmatig`, `data-handmatig-kopieren`).
 - Tafels: "210", "230", "255", "284" (KNBB-maten).
 - Niveaus: libre volgt de KNBB-tabel; kader is een eigen praktische indeling, geen officiële KNBB-klassen.
 - Badge-drempels per discipline uit `beurtDrempels()`/`histogramBuckets()`; nooit libre-waarden hardcoden.

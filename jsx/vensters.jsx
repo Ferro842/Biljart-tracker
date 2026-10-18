@@ -98,7 +98,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
     },
     {
       titel:t("Kies je discipline"),
-      body:t("Libre, Driebanden, Bandstoten en Kader (38/2, 47/2, 57/2 en 71/2) zijn losse trajecten — elk met een eigen gemiddelde en niveau, helemaal gescheiden van elkaar. Je kunt in de app altijd van discipline wisselen."),
+      body:t("Libre, Driebanden, Bandstoten en Kader (35/2, 38/2, 47/1, 47/2, 52/2, 57/2 en 71/2) zijn losse trajecten — elk met een eigen gemiddelde en niveau, helemaal gescheiden van elkaar. Je kunt in de app altijd van discipline wisselen."),
       kies:true
     },
     {
@@ -113,7 +113,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
     },
     {
       titel:t("De tabbladen"),
-      body:t("Alles wat je invoert wordt direct automatisch op je telefoon bewaard. Via de tabbladen bovenin bekijk je het:"),
+      body:t("Alles wat je invoert wordt direct automatisch op dit toestel bewaard. Via de tabbladen bovenin bekijk je het:"),
       lijst:[
         [t("Stats"),t("Je niveau, elke partij met badges en je seizoenen.")],
         [t("Dash"),t("Grafieken van trend, consistentie, patronen, vergelijking en punten.")],
@@ -124,7 +124,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
     },
     {
       titel:t("Hoe niveau werkt"),
-      body:t("Je niveau volgt je vorm: het gemiddelde van je laatste 20 partijen, met de officiële KNBB-klassegrenzen. Je moyenne over al je partijen zie je ernaast. Speel je goed, dan verdien je badges — genoeg badge-punten en je slechtste partij telt niet mee voor je vorm (hoogstens 1 op de 10).")
+      body:t("Je niveau volgt je vorm: het gemiddelde van je laatste partijen (standaard 20; ook 10, 30 of alle, in te stellen bij je klasse rechtsboven), met de officiële KNBB-klassegrenzen. Je moyenne over al je partijen zie je ernaast. Speel je goed, dan verdien je badges — genoeg badge-punten en je slechtste partij telt niet mee voor je vorm (hoogstens 1 op de 10).")
     },
     {
       titel:t("Klaar om te beginnen!"),
@@ -156,13 +156,14 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
                   </button>
                 );
               })}
-              <button onClick={function(){setKaderOpen(function(v){return !v;});}}
+              {/* Kader kiezen = meteen kader (laken rood, Kader actief), daarna eventueel een andere variant */}
+              <button onClick={function(){if(!kaderActief){wisselDiscipline("kader38");setKaderOpen(true);}else setKaderOpen(function(v){return !v;});}}
                 style={{padding:"9px 4px",background:kaderActief?"var(--c-2d4a1e)":"none",border:"1px solid "+(kaderActief||kaderOpen?GOUD:KBDR),borderRadius:8,color:kaderActief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
                 {kaderActief?DISCIPLINES[discipline].naam:t("Kader")} {kaderOpen?"▴":"▾"}
               </button>
             </div>
             {kaderOpen&&(
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,marginTop:6}}>
+              <div data-welkom-kader="" style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6,marginTop:6}}>
                 {KADER_VARIANTEN.map(function(k){
                   const actief=discipline===k;
                   return(
@@ -279,7 +280,7 @@ function UitlegVenster({eenvoudig,onClose}){
     ]],
     ["💾",t("Je gegevens"),[
       t("Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail. De app herinnert je eraan na 10 nieuwe partijen of een maand."),
-      t("Nieuwe telefoon of opnieuw installeren? Info → Importeer zet de back-up terug.")
+      t("Nieuw toestel of opnieuw installeren? Info → Importeer zet de back-up terug.")
     ]]
   ];
   return(

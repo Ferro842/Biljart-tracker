@@ -265,33 +265,41 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
   `VOORAF` in `sw.js` zetten; `node test/sw-node.js` controleert dat en test online/offline/traag.
 - Na een push: `npm run ios` en opnieuw installeren is nodig om de iOS-app bij te werken.
 
-## Open punten
+## Open punten (stand 18 okt 2026)
 
-### Na goedkeuring van het Apple Developer-account (staat op "Pending", paspoort is ingestuurd)
+### Bij de eigenaar
+1. **App Store 1.0**: ingediend; Apple vroeg om uitleg (2.1), antwoord met video staat in de Notes. Controleren of
+   Update Review/Resubmit is gedaan, dan wachten op goedkeuring. TestFlight-uitnodiging staat nog op "Invited".
+2. **Google Play**: ontwikkelaarsaccount (25 dollar) en 12 testers met Android; daarna 14 dagen gesloten test.
+3. **Vertalingen laten nalezen**: Spaans, Turks, Koreaans en de Koreaanse handicapgrenzen (vierbal), door iemand die
+   de taal of de praktijk kent.
 
-1. **App Store klaarmaken**: ontwikkelteam kiezen in Xcode (Signing & Capabilities), Product → Archive →
-   Distribute App → App Store Connect; in App Store Connect schermafbeeldingen (kunnen uit de simulator),
-   beschrijving, privacy-URL (`privacy.html`) en App Privacy "Data Not Collected". Na publicatie
-   `APP_STORE_URL` in `js/constanten.js` invullen (voor "Deel deze app").
-2. **Automatische back-up naar iCloud Drive** (alleen iOS-app), zodat je nooit meer zelf hoeft te exporteren:
+### Samen, na goedkeuring van 1.0
+4. **Versie 1.1 naar de App Store**: zeven talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
+   systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen Engels/Frans/Duits staan in
+   `store/screenshots/ios-en|fr|de` (en iCloud Drive "Biljart Tracker store"). Eventueel nog Spaans/Turks/Koreaans maken.
+5. **`APP_STORE_URL`** in `js/constanten.js` invullen na publicatie (voor "Deel deze app").
+6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
+   (zie `store/play-store.md`).
+
+### Later
+7. **Automatische back-up naar iCloud Drive** (alleen iOS-app), zodat je nooit meer zelf hoeft te exporteren:
    - De app zet zelf een kopie van de data in de iCloud Drive van de gebruiker, map "Biljart Tracker",
      bijgewerkt na elke partij (laatste paar versies bewaren). Blijft bestaan als de app verwijderd wordt en
      is zichtbaar op iPad/Mac.
    - Iedere gebruiker gebruikt zijn eigen iCloud (eigen Apple ID); niets gaat naar de maker of een server.
      Geen externe dienst, dus binnen de harde regels.
    - Nodig: iCloud-capability (iCloud Documents/ubiquity container) in Xcode en een klein eigen Swift-
-     plugin, omdat `@capacitor/filesystem` iCloud Drive niet ondersteunt. Kan pas met het betaalde account.
-   - Werkt alleen als iCloud Drive aan staat. Zo niet: app werkt zoals nu (data alleen op de telefoon) en
-     valt terug op de back-upherinnering hieronder.
-   - In het Info-tabblad (Back-up en gegevens) tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
-   - `privacy.html` aanpassen: er komt een reservekopie in je eigen iCloud Drive waar alleen jij bij kunt.
-     "Data Not Collected" in App Store Connect blijft kloppen.
-   - De eigen data van de eigenaar gaat één keer over van de website naar de app via Exporteer/Importeer.
-3. **Back-upherinnering**: gebouwd (17 okt 2026): `backupNodig()`/`maakBackupBestand()` in `js/opslag.js`, kaartje
-   bovenaan Spelen, laatste back-up in Info, `navigator.storage.persist()` op de website. Straks niet tonen als de
-   automatische iCloud Drive-back-up werkt.
-
-### Overig
-
-- Sneller opstarten: JSX vooraf laten vertalen (bijv. esbuild) in plaats van Babel in de browser; vraagt
-  een ontwikkelpakket, dus alleen met akkoord van de eigenaar.
+     plugin, omdat `@capacitor/filesystem` iCloud Drive niet ondersteunt.
+   - Werkt alleen als iCloud Drive aan staat. Zo niet: app werkt zoals nu en valt terug op de back-upherinnering
+     (gebouwd 17 okt 2026: `backupNodig()`/`maakBackupBestand()` in `js/opslag.js`; dan niet meer tonen).
+   - In Info (Back-up en gegevens) tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
+   - `privacy.html` aanpassen: reservekopie in je eigen iCloud Drive waar alleen jij bij kunt. "Data Not Collected"
+     blijft kloppen.
+8. **Meer talen**: Japans (vierbal staat dan vanzelf in de balk, zie `vierbalZichtbaar`) en Vietnamees.
+9. **Inkomsten** (alleen als de eigenaar dat wil): eerst gratis houden; later eventueel een eenmalige Pro-aankoop of
+   fooienpot via Apple/Google zelf (geen externe dienst). Geen advertenties of abonnement.
+10. **Wedstrijdbriefje op de iPhone zelf herkennen** (Apple Vision, eigen plugin), met hetzelfde controlescherm.
+11. **Sneller opstarten**: JSX vooraf laten vertalen (bijv. esbuild) in plaats van Babel in de browser; vraagt een
+    ontwikkelpakket, dus alleen met akkoord van de eigenaar.
+12. **Eigen domeinnaam** in plaats van ferro842.github.io (ook in `WEB_URL`, privacy-URL en store-teksten).

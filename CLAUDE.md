@@ -78,6 +78,15 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (Babel maakte er `
   het nieuwe seizoen (standaard nu; eerder kan, bijv. om een grens te herstellen). "Laatste seizoensgrens ongedaan
   maken" staat in het archiefvenster (niet direct onder de knoppen: was per ongeluk aan te tikken).
 - Back-up: Info → Exporteer/Importeer (JSON). "Kopieer data" is alleen een leesbare tekstexport.
+- iCloud-back-up (alleen iOS-app, 18 okt 2026): eigen plugin `ICloudBackup` (`ios/App/App/ICloudBackupPlugin.swift`,
+  geregistreerd in `MainViewController.swift`, dat SceneDelegate als hoofdweergave gebruikt; entitlements `App/App.entitlements`,
+  `NSUbiquitousContainers` in Info.plist met mapnaam "Carom Tracker"). JS in `js/opslag.js` (`ICLOUD`, `icloudStatus()`,
+  `icloudBackupLater()`): na elke `slaOp` (3 s rust) en bij het opstarten een kopie zonder `lopendePartij`, alleen als er iets
+  veranderd is; de plugin schrijft `carom-tracker-backup.json` plus één `carom-tracker-JJJJ-MM-DD.json` per dag (laatste 7).
+  Aanroepen via `Capacitor.nativePromise` (de plugin staat niet in `Capacitor.Plugins`: die lijst wordt vóór het registreren
+  gemaakt; `registerPlugin` bestaat niet zonder @capacitor/core). Met iCloud aan: geen back-upherinnering (`backupNodig`) en
+  in Info "Back-up: automatisch in iCloud Drive ✓" (`data-icloud`). Terugzetten = Importeer data, bestand kiezen in iCloud Drive.
+  Niet op Android en de website (`icloudPlugin()` geeft daar null).
 
 ## Domein
 
@@ -307,19 +316,11 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    de 2,10 zijn gezet; zo nodig de tafel aanpassen.
 
 ### Later
-7. **Automatische back-up naar iCloud Drive** (alleen iOS-app), zodat je nooit meer zelf hoeft te exporteren:
-   - De app zet zelf een kopie van de data in de iCloud Drive van de gebruiker, map "Carom Tracker",
-     bijgewerkt na elke partij (laatste paar versies bewaren). Blijft bestaan als de app verwijderd wordt en
-     is zichtbaar op iPad/Mac.
-   - Iedere gebruiker gebruikt zijn eigen iCloud (eigen Apple ID); niets gaat naar de maker of een server.
-     Geen externe dienst, dus binnen de harde regels.
-   - Nodig: iCloud-capability (iCloud Documents/ubiquity container) in Xcode en een klein eigen Swift-
-     plugin, omdat `@capacitor/filesystem` iCloud Drive niet ondersteunt.
-   - Werkt alleen als iCloud Drive aan staat. Zo niet: app werkt zoals nu en valt terug op de back-upherinnering
-     (gebouwd 17 okt 2026: `backupNodig()`/`maakBackupBestand()` in `js/opslag.js`; dan niet meer tonen).
-   - In Info (Back-up en gegevens) tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
-   - `privacy.html` aanpassen: reservekopie in je eigen iCloud Drive waar alleen jij bij kunt. "Data Not Collected"
-     blijft kloppen.
+7. **iCloud-back-up op de iPhone van de eigenaar aanzetten** (gebouwd 18 okt 2026, zie Data): in Xcode → target App →
+   Signing & Capabilities controleren dat iCloud (iCloud Documents, container `iCloud.nl.ferrovandam.biljarttracker`) er
+   zonder rode fout staat (zo nodig container met "+" aanmaken), dan op de iPhone zetten en kijken of Info "Back-up:
+   automatisch in iCloud Drive ✓" toont en in Bestanden → iCloud Drive de map "Carom Tracker" staat. In de simulator
+   (zonder Apple ID) is alleen "iCloud Drive staat uit" te testen.
 8. **Japans, Vietnamees en Portugees** (18 okt 2026): app, winkelteksten en schermafbeeldingen (`store/screenshots/ios-ja|vi|pt`,
    driebanden-voorbeelddata) klaar; alleen nog laten nalezen (punt 3).
 9. **Inkomsten** (alleen als de eigenaar dat wil): eerst gratis houden; later eventueel een eenmalige Pro-aankoop of

@@ -143,7 +143,15 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
             <input type="file" accept=".json,application/json" onChange={importeerData} style={{display:"none"}}/>
           </label>
         </div>
-        <div style={{fontSize:12,color:WITD,marginTop:8}}>{data.laatsteBackup?t("Laatste back-up: {d}",{d:new Date(data.laatsteBackup).toLocaleDateString(taalLocale(),{day:"numeric",month:"long",year:"numeric"})}):t("Je hebt nog geen back-up gemaakt.")}</div>
+        {icloudPlugin()&&ICLOUD.beschikbaar===true&&<div data-icloud="aan" style={{fontSize:13,color:GRNT,marginTop:10,lineHeight:1.5}}>
+          ☁️ {t("Back-up: automatisch in iCloud Drive ✓")}
+          {ICLOUD.laatste&&<div style={{fontSize:12,color:WITD}}>{t("Laatste kopie: {d}",{d:new Date(ICLOUD.laatste).toLocaleString(taalLocale(),{day:"numeric",month:"long",hour:"2-digit",minute:"2-digit"})})}</div>}
+          <div style={{fontSize:12,color:WITD}}>{t("Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.")}</div>
+        </div>}
+        {icloudPlugin()&&ICLOUD.beschikbaar===false&&<div data-icloud="uit" style={{fontSize:12,color:WITD,marginTop:10,lineHeight:1.5}}>
+          ☁️ {t("iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.")}
+        </div>}
+        {!(ICLOUD.beschikbaar&&!data.laatsteBackup)&&<div style={{fontSize:12,color:WITD,marginTop:8}}>{data.laatsteBackup?t("Laatste back-up: {d}",{d:new Date(data.laatsteBackup).toLocaleDateString(taalLocale(),{day:"numeric",month:"long",year:"numeric"})}):t("Je hebt nog geen back-up gemaakt.")}</div>}
       </div>
     </div>
   );

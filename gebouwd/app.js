@@ -1,5 +1,5 @@
 // Gebouwd uit jsx/app.jsx door bouw-jsx.js; niet zelf aanpassen.
-const APP_VERSIE = "2026-10-18.25";
+const APP_VERSIE = "2026-10-18.27";
 function BiljartTracker() {
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("spelen");
@@ -18,6 +18,20 @@ function BiljartTracker() {
   const [confPartij, setConfPartij] = useState(false);
   const [seizoenArchiefOpen, setSeizoenArchiefOpen] = useState(false);
   const [onboardingStap, setOnboardingStap] = useState(0);
+  const [, setIcloudTik] = useState(0);
+  useEffect(function() {
+    const f = function() {
+      setIcloudTik(function(x) {
+        return x + 1;
+      });
+    };
+    ICLOUD.luisteraars.push(f);
+    return function() {
+      ICLOUD.luisteraars = ICLOUD.luisteraars.filter(function(g) {
+        return g !== f;
+      });
+    };
+  }, []);
   const [kaderKiezerOpen, setKaderKiezerOpen] = useState(false);
   const inputRef = useRef(null);
   const [toastGroep, setToastGroep] = useState(null);

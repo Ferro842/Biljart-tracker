@@ -844,5 +844,11 @@ VERTALING.ja={
   "kort:Kader 47/2":"ボーク 47/2",
   "kort:Kader 52/2":"ボーク 52/2",
   "kort:Kader 57/2":"ボーク 57/2",
-  "kort:Kader 71/2":"ボーク 71/2"
+  "kort:Kader 71/2":"ボーク 71/2",
+  // iCloud-back-up (alleen iOS-app)
+  "Back-up: automatisch in iCloud Drive ✓":"バックアップ：iCloud Drive に自動保存 ✓",
+  "Laatste kopie: {d}":"最新のコピー：{d}",
+  "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"iCloud Drive の「Carom Tracker」フォルダ（ファイルアプリ）。復元するには「データをインポート」でそのファイルを選んでください。",
+  "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive がオフです。オンにすると（設定 → 自分の名前 → iCloud → iCloud Drive）、アプリが自動でバックアップします。",
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone アプリでは、iCloud Drive がオンなら自動で iCloud Drive（Carom Tracker フォルダ）にコピーが保存されます。復元するには：情報 → データをインポート で iCloud Drive のファイルを選んでください。"
 };

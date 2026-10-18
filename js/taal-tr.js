@@ -835,5 +835,11 @@ VERTALING.tr={
   "Handicap 400":"Handikap 400",
   "Handicap 500":"Handikap 500",
   "Handicap 700":"Handikap 700",
-  "Handicap 1000":"Handikap 1000"
+  "Handicap 1000":"Handikap 1000",
+  // iCloud-back-up (alleen iOS-app)
+  "Back-up: automatisch in iCloud Drive ✓":"Yedek: iCloud Drive'da otomatik ✓",
+  "Laatste kopie: {d}":"Son kopya: {d}",
+  "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"iCloud Drive'da \"Carom Tracker\" klasörü (Dosyalar uygulaması). Geri yüklemek için: Verileri içe aktar ve dosyayı oradan seç.",
+  "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive kapalı. Açarsan (Ayarlar → adın → iCloud → iCloud Drive) uygulama otomatik yedek alır.",
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone uygulamasında iCloud Drive açıksa bir kopya otomatik olarak iCloud Drive'ına gider (Carom Tracker klasörü). Geri yüklemek için: Bilgi → Verileri içe aktar ve dosyayı iCloud Drive'dan seç."
 };

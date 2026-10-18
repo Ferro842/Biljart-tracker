@@ -836,5 +836,11 @@ VERTALING.pt={
   "Handicap 500":"Handicap 500",
   "Handicap 700":"Handicap 700",
   "Handicap 1000":"Handicap 1000",
-  "kort:Vierbal":"4 bolas"
+  "kort:Vierbal":"4 bolas",
+  // iCloud-back-up (alleen iOS-app)
+  "Back-up: automatisch in iCloud Drive ✓":"Backup: automático no iCloud Drive ✓",
+  "Laatste kopie: {d}":"Última cópia: {d}",
+  "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"Pasta \"Carom Tracker\" no iCloud Drive (app Arquivos). Para restaurar: Importar dados e escolha o arquivo lá.",
+  "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"O iCloud Drive está desligado. Ligue-o (Ajustes → seu nome → iCloud → iCloud Drive) e o app fará backup sozinho.",
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"No app para iPhone, uma cópia vai automaticamente para o seu iCloud Drive (pasta Carom Tracker), se o iCloud Drive estiver ligado. Para restaurar: Info → Importar dados e escolha o arquivo no iCloud Drive."
 };

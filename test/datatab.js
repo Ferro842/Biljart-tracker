@@ -64,6 +64,20 @@
   const na=JSON.parse(localStorage.getItem("biljart-tracker-v2"));
   uit.geimporteerd=na.partijen.length===1&&na.partijen[0].tafel==="230"&&na.huidigeId===5;
   k("Stats").click();await w(200);uit.statsNaImport=document.body.textContent.indexOf("Alle 1 partijen")!==-1;
-  uit.goed=uit.backupRegels&&uit.backupKaart&&uit.backupDatumRegel&&uit.gekopieerd&&uit.tekstExport&&uit.handmatig&&uit.ladenZonderPartijen&&uit.beoordelingRegels&&uit.tafelsBewaard&&uit.promptKnop&&uit.geimporteerd&&uit.statsNaImport;
+  // iCloud-back-up (iOS-app): weergave in Info bij iCloud Drive uit en aan, en geen herinnering als het vanzelf gaat.
+  // Op de website is er geen plugin; we doen alsof (icloudPlugin tijdelijk vervangen).
+  const oudPlugin=window.icloudPlugin,oudIcloud=Object.assign({},ICLOUD);
+  uit.icloudWebUit=icloudPlugin()===null&&!document.querySelector("[data-icloud]");
+  window.icloudPlugin=function(){return{};};
+  k("Info").click();await w(250);
+  ICLOUD.beschikbaar=false;ICLOUD.laatste=null;icloudMeld();await w(200);
+  const icUit=document.querySelector("[data-icloud]");
+  ICLOUD.beschikbaar=true;ICLOUD.laatste=new Date().toISOString();icloudMeld();await w(200);
+  const icAan=document.querySelector("[data-icloud]");
+  const veel={partijen:Array.from({length:20},function(){return{datum:"2026-01-01"};})};
+  uit.icloud=!!icUit&&icUit.dataset.icloud==="uit"&&!!icAan&&icAan.dataset.icloud==="aan"&&backupNodig(veel)===null;
+  window.icloudPlugin=oudPlugin;Object.assign(ICLOUD,oudIcloud);icloudMeld();await w(150);
+  uit.icloud=uit.icloud&&backupNodig(veel)!==null;
+  uit.goed=uit.backupRegels&&uit.icloudWebUit&&uit.icloud&&uit.backupKaart&&uit.backupDatumRegel&&uit.gekopieerd&&uit.tekstExport&&uit.handmatig&&uit.ladenZonderPartijen&&uit.beoordelingRegels&&uit.tafelsBewaard&&uit.promptKnop&&uit.geimporteerd&&uit.statsNaImport;
   return uit;
 })()

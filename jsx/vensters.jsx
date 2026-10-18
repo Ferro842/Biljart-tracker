@@ -282,7 +282,7 @@ function UitlegVenster({eenvoudig,onClose}){
     ["💾",t("Je gegevens"),[
       t("Alles staat alleen op dit toestel. Maak af en toe een back-up: Info → Exporteer, en bewaar die bijvoorbeeld in iCloud Drive of je mail. De app herinnert je eraan na 10 nieuwe partijen of een maand."),
       t("Nieuw toestel of opnieuw installeren? Info → Importeer zet de back-up terug.")
-    ]]
+    ].concat(icloudPlugin()?[t("In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.")]:[])]
   ];
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.85)",zIndex:300,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"20px 14px",overflowY:"auto"}}>

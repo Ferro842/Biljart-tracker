@@ -831,5 +831,11 @@ VERTALING.de={
   "Handicap 400":"Handicap 400",
   "Handicap 500":"Handicap 500",
   "Handicap 700":"Handicap 700",
-  "Handicap 1000":"Handicap 1000"
+  "Handicap 1000":"Handicap 1000",
+  // iCloud-back-up (alleen iOS-app)
+  "Back-up: automatisch in iCloud Drive ✓":"Backup: automatisch in iCloud Drive ✓",
+  "Laatste kopie: {d}":"Letzte Kopie: {d}",
+  "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"Ordner „Carom Tracker“ in iCloud Drive (App Dateien). Wiederherstellen: Daten importieren und dort die Datei wählen.",
+  "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive ist aus. Schalte es ein (Einstellungen → dein Name → iCloud → iCloud Drive), dann sichert die App automatisch.",
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"In der iPhone-App geht automatisch eine Kopie in dein iCloud Drive (Ordner Carom Tracker), wenn iCloud Drive an ist. Wiederherstellen: Info → Daten importieren und die Datei in iCloud Drive wählen."
 };

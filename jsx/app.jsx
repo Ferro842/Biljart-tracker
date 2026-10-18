@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-18.25";
+const APP_VERSIE="2026-10-18.27";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -19,6 +19,13 @@ function BiljartTracker(){
   const [confPartij,setConfPartij]=useState(false);
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
+  // iCloud-back-up (js/opslag.js): opnieuw tekenen als de status of de laatste kopie verandert
+  const [,setIcloudTik]=useState(0);
+  useEffect(function(){
+    const f=function(){setIcloudTik(function(x){return x+1;});};
+    ICLOUD.luisteraars.push(f);
+    return function(){ICLOUD.luisteraars=ICLOUD.luisteraars.filter(function(g){return g!==f;});};
+  },[]);
   const [kaderKiezerOpen,setKaderKiezerOpen]=useState(false);
   const inputRef=useRef(null);
   const [toastGroep,setToastGroep]=useState(null);

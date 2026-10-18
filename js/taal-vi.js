@@ -836,5 +836,11 @@ VERTALING.vi={
   "Handicap 500":"Handicap 500",
   "Handicap 700":"Handicap 700",
   "Handicap 1000":"Handicap 1000",
-  "kort:Vierbal":"4 bi"
+  "kort:Vierbal":"4 bi",
+  // iCloud-back-up (alleen iOS-app)
+  "Back-up: automatisch in iCloud Drive ✓":"Sao lưu: tự động vào iCloud Drive ✓",
+  "Laatste kopie: {d}":"Bản sao gần nhất: {d}",
+  "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"Thư mục \"Carom Tracker\" trong iCloud Drive (ứng dụng Tệp). Để khôi phục: Nhập dữ liệu và chọn tệp ở đó.",
+  "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive đang tắt. Hãy bật lên (Cài đặt → tên của bạn → iCloud → iCloud Drive), ứng dụng sẽ tự sao lưu.",
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"Trong ứng dụng iPhone, một bản sao tự động được lưu vào iCloud Drive của bạn (thư mục Carom Tracker) nếu iCloud Drive đang bật. Để khôi phục: Thông tin → Nhập dữ liệu và chọn tệp trong iCloud Drive."
 };

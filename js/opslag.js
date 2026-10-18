@@ -105,6 +105,7 @@ async function laadData(){
   if(IS_NATIVE){
     // Het tijdelijke bestand is de fallback voor als de app crashte tussen verwijderen en hernoemen
     const d=(await leesNative(DATA_BESTAND))||(await leesNative(DATA_TMP));
+    icloudStatus().then(function(){if(d)icloudBackupLater(d);}); // meteen een kopie, ook zonder nieuwe partij
     if(d){
       console.log("Geladen uit native bestand: "+d.partijen.length+" partijen");
       let changed=migreerTafels(d);
@@ -173,7 +174,7 @@ async function laadWebData(){
   return{huidigeId:1,partijen:[]};
 }
 async function slaOp(d){
-  if(IS_NATIVE)await schrijfNative(JSON.stringify(d));
+  if(IS_NATIVE){await schrijfNative(JSON.stringify(d));icloudBackupLater(d);}
   try{localStorage.setItem(SK,JSON.stringify(d));}catch(e){console.log("Opslaan mislukt:",e);}
   try{if(window.storage)await window.storage.set(SK,JSON.stringify(d));}catch(e){}
 }
@@ -207,6 +208,7 @@ async function maakBackupBestand(data){
 // data.laatsteBackup (datum) en data.laatsteBackupAantal (aantal partijen toen) worden gezet bij elke export.
 const BACKUP_NA_PARTIJEN=10,BACKUP_NA_DAGEN=30;
 function backupNodig(data){
+  if(ICLOUD.beschikbaar&&ICLOUD.laatste)return null; // iOS-app met iCloud Drive: gaat vanzelf
   const ps=(data&&data.partijen)||[];
   if(ps.length<3)return null;
   const nu=Date.now();
@@ -217,6 +219,51 @@ function backupNodig(data){
   const dagen=Math.floor((nu-sinds)/86400000);
   if(nieuw>=BACKUP_NA_PARTIJEN||(nieuw>=1&&dagen>=BACKUP_NA_DAGEN))return{nieuw:nieuw,dagen:dagen,ooit:!!data.laatsteBackup};
   return null;
+}
+
+// Automatische back-up naar iCloud Drive (alleen de iOS-app): eigen plugin ICloudBackup
+// (ios/App/App/ICloudBackupPlugin.swift, geregistreerd in MainViewController.swift). Na elke opgeslagen wijziging
+// (na ICLOUD_WACHT_MS rust, zodat niet elke beurt meteen een kopie maakt) zet de plugin een kopie in de map
+// "Carom Tracker" in de iCloud Drive van de gebruiker: de nieuwste plus één per dag (laatste 7 dagen). De lopende
+// partij gaat niet mee (verandert elke beurt). Terugzetten = Info → Importeer data, bestand kiezen in iCloud Drive.
+// ICLOUD.beschikbaar: null = nog onbekend/geen iOS-app, false = iCloud Drive uit, true = aan.
+const ICLOUD={beschikbaar:null,laatste:null,luisteraars:[]},ICLOUD_WACHT_MS=3000;
+// De plugin wordt pas na het opstarten van de brug geregistreerd en staat daardoor niet in Capacitor.Plugins; daarom
+// rechtstreeks via Capacitor.nativePromise (de native kant zoekt de plugin bij elke aanroep op naam op).
+function icloudPlugin(){
+  try{
+    const C=IS_NATIVE&&window.Capacitor;
+    if(!C||!C.nativePromise||(C.getPlatform&&C.getPlatform()!=="ios"))return null;
+    if(!ICLOUD.plugin)ICLOUD.plugin=(C.Plugins&&C.Plugins.ICloudBackup)||{
+      status:function(){return C.nativePromise("ICloudBackup","status",{});},
+      bewaar:function(o){return C.nativePromise("ICloudBackup","bewaar",o);}
+    };
+    return ICLOUD.plugin;
+  }catch(e){return null;}
+}
+function icloudMeld(){ICLOUD.luisteraars.forEach(function(f){try{f();}catch(e){}});}
+async function icloudStatus(){
+  const P=icloudPlugin();if(!P)return ICLOUD;
+  try{const r=await P.status();ICLOUD.beschikbaar=!!r.beschikbaar;ICLOUD.laatste=r.laatste||null;}
+  catch(e){ICLOUD.beschikbaar=null;console.log("iCloud-status onbekend:",e&&e.message);} // bijv. oude app zonder plugin
+  icloudMeld();
+  return ICLOUD;
+}
+let icloudTimer=null,icloudVorige=null;
+function icloudBackupLater(d){
+  const P=icloudPlugin();if(!P||ICLOUD.beschikbaar===false||!d||!Array.isArray(d.partijen))return;
+  const kopie=Object.assign({},d);delete kopie.lopendePartij;
+  const json=JSON.stringify(kopie);
+  if(json===icloudVorige)return;
+  clearTimeout(icloudTimer);
+  icloudTimer=setTimeout(async function(){
+    try{
+      const r=await P.bewaar({data:json});
+      ICLOUD.beschikbaar=!!r.beschikbaar;
+      if(r.ok){icloudVorige=json;ICLOUD.laatste=r.laatste||new Date().toISOString();}
+    }catch(e){console.log("iCloud-back-up mislukt:",e&&e.message);}
+    icloudMeld();
+  },ICLOUD_WACHT_MS);
 }
 
 // Website: vraag de browser om de opslag niet zomaar op te ruimen (bijv. bij weinig ruimte). In de app niet nodig.

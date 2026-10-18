@@ -9,8 +9,8 @@ beschrijvingen daar blijven gelden. Lengtes: `node store/controleer-lengtes.js`.
   lange beschrijving telt niet mee. Regels voor het trefwoordenveld: komma's zonder spaties, geen woorden herhalen die al in
   naam of ondertitel staan, enkelvoud volstaat, geen merknamen van anderen.
 - In sommige landen kijkt Apple naar meer dan één taal (in de VS bijvoorbeeld ook naar Spaans (Mexico)). Elke extra taal is
-  dus extra trefwoorden. Daarom ook **English (U.K.)** en **Spanish (Mexico)** invullen, met andere trefwoorden dan
-  English (U.S.) en Spanish (Spain).
+  dus extra trefwoorden. Daarom ook **English (U.K.)**, **Spanish (Mexico)** en **Portuguese (Portugal)** invullen, met andere trefwoorden
+  dan English (U.S.), Spanish (Spain) en Portuguese (Brazil).
 - **Google Play** zoekt in titel (30), korte beschrijving (80) én de lange beschrijving. Zoekwoorden daar natuurlijk een
   paar keer noemen, niet opsommen (Google straft "keyword stuffing").
 - Het zwaarst wegen **downloads en beoordelingen**. Daarom vraagt de app op een goed moment om een beoordeling (zie onder).
@@ -164,6 +164,64 @@ serbest,ortalama,seri,istaka,isteka,sayaç,kulüp,lig,istatistik,dört,top,maç,
 
 ```
 당구점수,당구계산,쓰리쿠션,사구,하이런,핸디,이닝,공타,당구장,큐,스코어,기록장,당구앱
+```
+
+## Japans (日本語)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Carom Tracker: ビリヤード |
+| Ondertitel (30) | 四つ球・スリークッションの記録 |
+| Play: titel (30) | Carom Tracker: ビリヤード |
+| Play: korte beschrijving (80) | キャロムビリヤードの記録：四つ球、スリークッション、アベレージ、ハイラン。 |
+
+**Trefwoorden (100)**
+
+```
+キャロム,ボークライン,アベレージ,ハイラン,スコア,スコアボード,点数,カウンター,イニング,キュー,ビリヤード場,3C,練習
+```
+
+## Vietnamees (Tiếng Việt)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Carom Tracker: Bida |
+| Ondertitel (30) | Ghi điểm 3 băng, 4 bi, libre |
+| Play: titel (30) | Carom Tracker: Bida |
+| Play: korte beschrijving (80) | Ghi điểm bida carom 3 băng, 4 bi và libre: trung bình, seri và lượt trắng. |
+
+**Trefwoorden (100)**
+
+```
+bi-a,phăng,balkline,trung bình,seri,bảng điểm,đếm điểm,câu lạc bộ,giải đấu,cơ,lượt,thống kê,kỷ lục
+```
+
+## Portugees (Português, Brasil)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Carom Tracker: Bilhar |
+| Ondertitel (30) | Carambola e três tabelas |
+| Play: titel (30) | Carom Tracker: Bilhar |
+| Play: korte beschrijving (80) | Bilhar carambola e três tabelas: anote entradas, média, séries e muito mais. |
+
+**Trefwoorden (100)**
+
+```
+livre,quadro,banda,média,série,placar,marcador,clube,liga,taco,estatística,partida,entrada,zero
+```
+
+## Portugees (Português, Portugal) — extra trefwoorden voor Portugal
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Carom Tracker: Bilhar |
+| Ondertitel (30) | Marcador de bilhar carambola |
+
+**Trefwoorden (100)**
+
+```
+três,tabelas,carambolas,anotador,quadro,recorde,mesa,campeonato,torneio,treinador,quatro,bolas,fpb
 ```
 
 ---

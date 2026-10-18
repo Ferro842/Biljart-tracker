@@ -52,7 +52,7 @@ Is de naam "Carom Tracker" al bezet, kies dan bijvoorbeeld "Carom Tracker – Ca
 > • Doelen stellen en bijhouden, badges en punten als je dat leuk vindt (uit te zetten)
 > • Deel een partij of je seizoen als mooie kaart
 > • Eenvoudige modus en extra grote tekst voor wie het rustig wil
-> • Beschikbaar in het Nederlands, Engels, Frans, Duits, Spaans, Turks en Koreaans
+> • Beschikbaar in het Nederlands, Engels, Frans, Duits, Spaans, Portugees, Turks, Vietnamees, Koreaans en Japans
 >
 > PRIVACY
 > Geen account, geen advertenties, geen tracking. Al je gegevens blijven op je eigen telefoon. Maak zelf een back-up via Info → Exporteer; de app herinnert je eraan.

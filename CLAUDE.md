@@ -205,17 +205,19 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (Babel maakte er `
 
 ## Talen (vanaf 18 okt 2026)
 
-- Nederlands, Engels, Frans, Duits, Spaans, Turks, Koreaans (18 okt 2026); later eventueel Japans en Vietnamees. Nieuwe taal:
+- Tien talen (18 okt 2026; even aantal, het taaloverzicht staat in rijen van twee): Nederlands, Engels, Frans, Duits, Spaans,
+  Portugees (Braziliaans, `pt-BR`), Turks, Vietnamees, Koreaans, Japans. Nieuwe taal:
   `js/taal-<code>.js` + `TALEN` en `taalLocale()` in `js/taal.js` + script-tag in index.html + `VOORAF` in sw.js (en het aantal
   in `test/sw-node.js`); de controle vindt taalbestanden zelf. Dash-tabs moeten op 440 breed op één regel passen (meten;
-  Frans/Spaans/Engels hebben daarom kortere tabnamen). Keuze: Info → Weergave → Taal en het eerste
+  Frans/Spaans/Engels/Vietnamees/Portugees hebben daarom kortere tabnamen). Disciplinebalk meten op 375 breed met vierbal aan
+  en Kader 47/1 gekozen; Japans heeft daarvoor eigen `kort:Kader 35/2` … `kort:Kader 71/2` ("ボーク 47/1"). Keuze: Info → Weergave → Taal en het eerste
   welkomstscherm (`data.taal`). Zonder keuze: Nederlands voor bestaande gebruikers (onboardingGezien/partijen), anders de taal
   van het toestel (`taalVoorData`). `zetTaal()` draait bovenaan de render van BiljartTracker; `t()` leest de globale `TAAL`.
 - Nieuwe tekst altijd als `t("Nederlandse tekst",{n:..})` en vertalen in alle `js/taal-*.js`; controle:
   `node test/vertalingen-node.js` (zoekt `t("...")` en `t(cond?"a":"b")` in de code; teksten via een andere variabele ziet hij
   niet en staan dan als "overbodig"). Ontbreekt een vertaling, dan valt `t()` terug op Engels en daarna Nederlands.
 - Hulpjes in `js/taal.js`: `badgeLabel()`, `seizoenNaam()` ("Seizoen 2" → taal), `taalLocale()` (voor toLocaleDateString),
-  `getalTekst()` (komma/punt), `procentTekst()` (Turks "%43"), `dubbelePunt()` (Frans " : "), `maandTekst()` (maandKey "mrt 2026" → taal), `maandNaam()`, `weekdagLetters()`.
+  `getalTekst()` (punt in en/ko/ja, anders komma), `procentTekst()` (Turks "%43"), `dubbelePunt()` (Frans " : "), `maandTekst()` (maandKey "mrt 2026" → taal), `maandNaam()`, `weekdagLetters()`.
 - `BRIEFJE_PROMPT` wordt vertaald met `t(BRIEFJE_PROMPT)`; de trefwoorden SPELER/TE MAKEN/BEURTEN/DATUM blijven Nederlands
   (de vertaalde vraag zegt dat), want `leesBriefje()` zoekt daarop.
 - Opgeslagen gegevens blijven Nederlands (opmerkingen, badge-labels, seizoennamen): alleen bij tonen `t(label)`. `.naam` van
@@ -225,7 +227,10 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (Babel maakte er `
 - Termen: beurt = inning / reprise / Aufnahme; serie = run / série / Serie; poedel = miss / reprise blanche / Nuller;
   libre/driebanden/bandstoten/kader = straight rail, three-cushion, one-cushion, balkline / libre, trois bandes, une bande, cadre /
   Freie Partie, Dreiband, Einband, Cadre. Spaans: entrada, serie, cero, carambolas, promedio; Libre, Tres bandas, Una banda,
-  Cuadro. Turks: istaka, seri, sıfır, sayı, ortalama; Serbest, Üç Bant, Tek Bant, Kadr.
+  Cuadro. Turks: istaka, seri, sıfır, sayı, ortalama; Serbest, Üç Bant, Tek Bant, Kadr. Portugees: entrada, série, zero,
+  pontos, média; Livre, Três tabelas, Uma tabela, Quadro, Quatro bolas. Vietnamees: lượt, seri, lượt trắng, điểm, trung bình;
+  Libre, 3 băng, 1 băng, Balkline, 4 bi. Japans: イニング, 連続得点, ゼロ, 点, アベレージ; ストレートレール, スリークッション,
+  ワンクッション, ボークライン, 四つ球.
 - Fase 1 klaar (kop, tabbladen, Spelen, opmerkingen, Info, welkom). Fase 2 klaar (Stats, Log, partijregels, vensters, uitleg,
   badges, vormUitleg, wauw: doel, kalender, seizoen in beeld, deelkaarten). Fase 3 klaar (Dash, Inzicht, coachzinnen en
   omstandigheden in `berekenInzicht`; titels van omstandigheden blijven Nederlands in de data, want de code vergelijkt erop,
@@ -284,7 +289,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 1. **App Store 1.0**: ingediend; Apple vroeg om uitleg (2.1), antwoord met video staat in de Notes. Controleren of
    Update Review/Resubmit is gedaan, dan wachten op goedkeuring. TestFlight-uitnodiging staat nog op "Invited".
 2. **Google Play**: ontwikkelaarsaccount (25 dollar) en 12 testers met Android; daarna 14 dagen gesloten test.
-3. **Vertalingen laten nalezen**: Spaans, Turks, Koreaans en de Koreaanse handicapgrenzen (vierbal), door iemand die
+3. **Vertalingen laten nalezen**: Spaans, Turks, Koreaans, Japans, Vietnamees, Portugees en de Koreaanse handicapgrenzen (vierbal), door iemand die
    de taal of de praktijk kent.
 
 ### Samen, na goedkeuring van 1.0
@@ -312,10 +317,8 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    - In Info (Back-up en gegevens) tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
    - `privacy.html` aanpassen: reservekopie in je eigen iCloud Drive waar alleen jij bij kunt. "Data Not Collected"
      blijft kloppen.
-8. **Meer talen (bezig)**: Japans (vierbal staat dan vanzelf in de balk, zie `vierbalZichtbaar`), Vietnamees en
-   Portugees, samen tien talen (even aantal, netjes in het taaloverzicht). Per taal: `js/taal-<code>.js`, `TALEN` en
-   `taalLocale`, scripttag en `VOORAF`, briefje-prompt, winkelteksten in `store/talen.md` en `store/aso.md`, tests,
-   meten of tabs en balk passen, daarna schermafbeeldingen.
+8. **Japans, Vietnamees en Portugees** (18 okt 2026 in de app en winkelteksten): nog schermafbeeldingen maken
+   (`store/screenshots/ios-ja|vi|pt`, Japans met vierbal of driebanden als voorbeeld) en laten nalezen (punt 3).
 9. **Inkomsten** (alleen als de eigenaar dat wil): eerst gratis houden; later eventueel een eenmalige Pro-aankoop of
    fooienpot via Apple/Google zelf (geen externe dienst). Geen advertenties of abonnement.
 10. **Wedstrijdbriefje op de iPhone zelf herkennen** (Apple Vision, eigen plugin), met hetzelfde controlescherm.

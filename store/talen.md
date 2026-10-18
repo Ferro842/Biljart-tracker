@@ -15,7 +15,7 @@ controleert ze.
   Schermafbeeldingen: Engelse staan in `store/screenshots/ios-en/` (6,9 inch, 1320 × 2868) en `ios-en-6.3/` (1206 × 2622),
   ook in iCloud Drive → "Biljart Tracker store" → "English 6,9 inch" / "English 6,3 inch". Zonder eigen schermafbeeldingen
   gebruikt Apple per taal de Nederlandse. Frans, Duits, Spaans, Turks en Koreaans op dezelfde manier: `ios-fr/`, `ios-de/`,
-  `ios-es/`, `ios-tr/`, `ios-ko/` (elk ook `-6.3/`; iCloud: "Français …", "Deutsch …", "Español …", "Türkçe …", "한국어 …").
+  `ios-es/`, `ios-tr/`, `ios-ko/`; Japans, Vietnamees en Portugees (`ios-ja/`, `ios-vi/`, `ios-pt/`) nog te maken (elk ook `-6.3/`; iCloud: "Français …", "Deutsch …", "Español …", "Türkçe …", "한국어 …").
 - Play Console: Winkelvermelding → Vertalingen beheren → talen toevoegen (en-GB/en-US, fr-FR, de-DE) en per taal
   app-naam, korte beschrijving en volledige beschrijving invullen.
 
@@ -58,7 +58,7 @@ controleert ze.
 > • Set and track goals, badges and points if you enjoy that (can be switched off)
 > • Share a game or your season as a nice card
 > • Simple mode and extra large text if you want to keep it easy
-> • Available in English, Dutch, French, German, Spanish, Turkish and Korean
+> • Available in English, Dutch, French, German, Spanish, Portuguese, Turkish, Vietnamese, Korean and Japanese
 >
 > PRIVACY
 > No account, no ads, no tracking. All your data stays on your own phone. Make your own backup via Info → Export; the app reminds you.
@@ -108,7 +108,7 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 > • Fixe et suis des objectifs, badges et points si cela te plaît (désactivable)
 > • Partage une partie ou ta saison sous forme de belle carte
 > • Mode simple et très grand texte pour plus de tranquillité
-> • Disponible en français, anglais, néerlandais, allemand, espagnol, turc et coréen
+> • Disponible en français, anglais, néerlandais, allemand, espagnol, portugais, turc, vietnamien, coréen et japonais
 >
 > CONFIDENTIALITÉ
 > Pas de compte, pas de publicité, pas de suivi. Toutes tes données restent sur ton téléphone. Fais ta propre sauvegarde via Info → Exporter ; l'appli te le rappelle.
@@ -158,7 +158,7 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 > • Ziele setzen und verfolgen, Badges und Punkte, wenn dir das gefällt (abschaltbar)
 > • Teile eine Partie oder deine Saison als schöne Karte
 > • Einfacher Modus und extra große Schrift für alle, die es ruhig mögen
-> • Verfügbar auf Deutsch, Englisch, Niederländisch, Französisch, Spanisch, Türkisch und Koreanisch
+> • Verfügbar auf Deutsch, Englisch, Niederländisch, Französisch, Spanisch, Portugiesisch, Türkisch, Vietnamesisch, Koreanisch und Japanisch
 >
 > DATENSCHUTZ
 > Kein Konto, keine Werbung, kein Tracking. Alle Daten bleiben auf deinem Handy. Mach selbst ein Backup über Info → Exportieren; die App erinnert dich daran.
@@ -208,7 +208,7 @@ Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme
 > • Fija y sigue objetivos, insignias y puntos si te gusta (se puede desactivar)
 > • Comparte una partida o tu temporada como una bonita tarjeta
 > • Modo sencillo y letra muy grande para quien lo prefiera tranquilo
-> • Disponible en español, inglés, neerlandés, francés, alemán, turco y coreano
+> • Disponible en español, inglés, neerlandés, francés, alemán, portugués, turco, vietnamita, coreano y japonés
 >
 > PRIVACIDAD
 > Sin cuenta, sin anuncios, sin seguimiento. Todos tus datos se quedan en tu propio teléfono. Haz tu propia copia de seguridad en Info → Exportar; la app te lo recuerda.
@@ -258,7 +258,7 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 > • Hedef belirle ve takip et; istersen rozetler ve puanlar (kapatılabilir)
 > • Bir maçı ya da sezonunu güzel bir kart olarak paylaş
 > • Sakin kullanım isteyenler için basit mod ve çok büyük yazı
-> • Türkçe, İngilizce, Felemenkçe, Fransızca, Almanca, İspanyolca ve Korece dillerinde
+> • Türkçe, İngilizce, Felemenkçe, Fransızca, Almanca, İspanyolca, Portekizce, Vietnamca, Korece ve Japonca dillerinde
 >
 > GİZLİLİK
 > Hesap yok, reklam yok, takip yok. Tüm verilerin kendi telefonunda kalır. Bilgi → Dışa aktar ile kendi yedeğini al; uygulama sana hatırlatır.
@@ -310,7 +310,7 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > • 목표 설정과 진행 링, 원하면 배지와 포인트 (끌 수 있음)
 > • 경기나 시즌을 멋진 카드로 공유
 > • 간단 모드와 아주 큰 글자
-> • 한국어, 영어, 네덜란드어, 프랑스어, 독일어, 스페인어, 터키어 지원
+> • 한국어, 영어, 일본어, 네덜란드어, 프랑스어, 독일어, 스페인어, 포르투갈어, 터키어, 베트남어 지원
 >
 > 개인정보
 > 계정 없음, 광고 없음, 추적 없음. 모든 데이터는 내 휴대폰에만 있어요. 정보 → 내보내기로 직접 백업하세요. 앱이 때때로 알려 줘요.
@@ -319,6 +319,155 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 
 ```
 당구,4구,3쿠션,캐롬,에버리지,하이런,핸디,당구기록,당구점수,이닝,공타,큐
+```
+
+---
+
+## Japans (日本語)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Carom Tracker |
+| Ondertitel (30) | 四つ球・スリークッションの記録 |
+| Play: korte beschrijving (80) | キャロムのゲームをイニングごとに記録：アベレージ、ハイラン、ゼロ、クラスまで。 |
+
+**Promotietekst (170)**
+
+> 四つ球とスリークッションのゲームをイニングごとに記録。アベレージ、ハイラン、そしてどこで点を落としているかがひと目でわかります。データはすべてあなたのスマホの中だけ。
+
+**Beschrijving (4000)**
+
+> Carom Tracker は、キャロムプレーヤーがキャロムプレーヤーのために作ったアプリです。プレーしながらイニングごとに得点を入れ、ゲームの流れをすぐに確認できます。
+>
+> ゲーム中
+> • イニングごとに ＋ と − で得点、「記録」をワンタップ
+> • 必要なら、連続得点が終わった理由とうまくいったことにチェック
+> • アベレージ、ハイラン、ゼロ、連続得点がリアルタイムで更新
+> • 四つ球：相手の手球に当たったら −1 ペナルティを記録（ゲームのスコアから引かれます）
+> • 大きく見やすいボタン、特大の文字でも1画面に収まります
+>
+> あなたの記録
+> • 直近10・20・30ゲームのフォームと通算アベレージ
+> • 台ごとのハイラン、ゼロ、推移グラフ
+> • ゲームカレンダー、シーズン、台のサイズ別の整理
+> • 分析：得意なショットと、連続得点が途切れやすいところ
+>
+> すべての種目
+> • 四つ球、スリークッション、ワンクッション、ストレートレール、ボークライン 35/2、38/2、47/1、47/2、52/2、57/2、71/2
+> • 種目ごとにアベレージ、レベル、色が別々
+>
+> その他の機能
+> • スコアシートの写真を自分のAIチャットで読み取って入力
+> • 目標設定と進み具合のリング、お好みでバッジとポイント（オフにできます）
+> • ゲームやシーズンをきれいなカードで共有
+> • シンプルモードと特大の文字
+> • 日本語、英語、韓国語、オランダ語、フランス語、ドイツ語、スペイン語、ポルトガル語、トルコ語、ベトナム語に対応
+>
+> プライバシー
+> アカウントなし、広告なし、トラッキングなし。データはすべてあなたのスマホの中だけにあります。情報 → エクスポート で自分でバックアップできます。アプリがときどきお知らせします。
+
+**Trefwoorden (100)**
+
+```
+ビリヤード,キャロム,四つ球,スリークッション,アベレージ,ハイラン,スコア,記録,イニング,キュー
+```
+
+## Vietnamees (Tiếng Việt)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Carom Tracker |
+| Ondertitel (30) | Ghi điểm bida 3 băng và 4 bi |
+| Play: korte beschrijving (80) | Ghi lại từng lượt bida carom: điểm trung bình, seri cao nhất, lượt trắng, hạng. |
+
+**Promotietekst (170)**
+
+> Ghi lại từng lượt trong ván bida 3 băng hay 4 bi. Xem ngay điểm trung bình, seri cao nhất và chỗ bạn đang mất điểm. Mọi dữ liệu chỉ nằm trên điện thoại của bạn.
+
+**Beschrijving (4000)**
+
+> Carom Tracker do một người chơi carom làm ra cho những người chơi carom. Nhập điểm từng lượt ngay khi chơi và xem ngay diễn biến của ván.
+>
+> Trong ván
+> • Mỗi lượt chỉnh điểm bằng + và −, chạm Ghi một lần
+> • Nếu muốn, đánh dấu lý do seri kết thúc và điều gì làm tốt
+> • Trung bình, seri cao nhất, lượt trắng và chuỗi cập nhật trực tiếp
+> • 4 bi: ghi −1 điểm phạt khi chạm bi cái đối thủ (trừ vào điểm ván)
+> • Nút lớn, rõ ràng, vừa một màn hình kể cả với chữ rất lớn
+>
+> Thành tích của bạn
+> • Phong độ 10, 20, 30 ván gần nhất và trung bình chung
+> • Seri cao nhất, lượt trắng và biểu đồ xu hướng theo từng bàn
+> • Lịch thi đấu, mùa giải, sắp xếp theo cỡ bàn
+> • Nhận định: cú bạn đánh tốt và chỗ seri hay bị ngắt
+>
+> Mọi nội dung
+> • 3 băng, 1 băng, 4 bi, Libre, Balkline 35/2, 38/2, 47/1, 47/2, 52/2, 57/2, 71/2
+> • Mỗi nội dung có trung bình, cấp độ và màu riêng
+>
+> Thêm nữa
+> • Đọc ảnh phiếu ghi điểm bằng AI chat của chính bạn để nhập ván
+> • Đặt mục tiêu với vòng tiến độ, huy hiệu và điểm thưởng nếu thích (có thể tắt)
+> • Chia sẻ ván hoặc mùa giải dưới dạng thẻ đẹp
+> • Chế độ đơn giản và chữ rất lớn
+> • Tiếng Việt, tiếng Anh, tiếng Hàn, tiếng Nhật, tiếng Hà Lan, tiếng Pháp, tiếng Đức, tiếng Tây Ban Nha, tiếng Bồ Đào Nha, tiếng Thổ Nhĩ Kỳ
+>
+> Quyền riêng tư
+> Không tài khoản, không quảng cáo, không theo dõi. Mọi dữ liệu chỉ nằm trên điện thoại của bạn. Tự sao lưu qua Thông tin → Xuất; ứng dụng sẽ thỉnh thoảng nhắc bạn.
+
+**Trefwoorden (100)**
+
+```
+bida,carom,3 băng,4 bi,libre,điểm trung bình,seri,ghi điểm,bi-a,lượt,cơ
+```
+
+## Portugees (Português, Brasil)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Carom Tracker |
+| Ondertitel (30) | Bilhar carambola: três tabelas |
+| Play: korte beschrijving (80) | Registre cada entrada no bilhar carambola: média, maior série, zeros e classe. |
+
+**Promotietekst (170)**
+
+> Anote cada entrada das suas partidas de três tabelas e livre. Veja na hora sua média, sua maior série e onde você está perdendo pontos. Tudo fica só no seu celular.
+
+**Beschrijving (4000)**
+
+> O Carom Tracker foi feito por um jogador de carambola para jogadores de carambola. Digite seus pontos a cada entrada enquanto joga e veja na hora como a partida está indo.
+>
+> Durante a partida
+> • A cada entrada, pontos com + e − e um toque em Anotar
+> • Se quiser, marque por que a série terminou e o que deu certo
+> • Média, maior série, zeros e sequências atualizados ao vivo
+> • Quatro bolas: registre −1 ponto de falta ao acertar a bola do adversário (sai da pontuação)
+> • Botões grandes e claros, tudo numa tela mesmo com letras extra grandes
+>
+> Seus números
+> • Forma das últimas 10, 20 ou 30 partidas e média geral
+> • Maior série, zeros e gráfico de tendência por mesa
+> • Calendário de jogos, temporadas e organização por tamanho de mesa
+> • Análise: as tacadas em que você vai bem e onde suas séries costumam acabar
+>
+> Todas as modalidades
+> • Três tabelas, Uma tabela, Livre, Quadro 35/2, 38/2, 47/1, 47/2, 52/2, 57/2, 71/2 e Quatro bolas
+> • Cada modalidade com média, nível e cor próprios
+>
+> Extras
+> • Leia a foto da súmula com o seu próprio chat de IA para registrar a partida
+> • Metas com anel de progresso, medalhas e pontos se quiser (dá para desligar)
+> • Compartilhe partidas ou temporadas como cartões bonitos
+> • Modo simples e letras extra grandes
+> • Em português, inglês, espanhol, francês, alemão, holandês, turco, coreano, japonês e vietnamita
+>
+> Privacidade
+> Sem conta, sem anúncios, sem rastreamento. Todos os dados ficam só no seu celular. Faça backup você mesmo em Info → Exportar; o app lembra você de vez em quando.
+
+**Trefwoorden (100)**
+
+```
+bilhar,carambola,três tabelas,sinuca,média,série,placar,tabela,quadro,taco,livre
 ```
 
 ---

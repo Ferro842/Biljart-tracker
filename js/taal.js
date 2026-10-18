@@ -10,8 +10,11 @@ const TALEN=[
   {code:"fr",naam:"Français",vlag:"🇫🇷"},
   {code:"de",naam:"Deutsch",vlag:"🇩🇪"},
   {code:"es",naam:"Español",vlag:"🇪🇸"},
+  {code:"pt",naam:"Português",vlag:"🇧🇷"},
   {code:"tr",naam:"Türkçe",vlag:"🇹🇷"},
-  {code:"ko",naam:"한국어",vlag:"🇰🇷"}
+  {code:"vi",naam:"Tiếng Việt",vlag:"🇻🇳"},
+  {code:"ko",naam:"한국어",vlag:"🇰🇷"},
+  {code:"ja",naam:"日本語",vlag:"🇯🇵"}
 ];
 const VERTALING={};
 let TAAL="nl";
@@ -57,7 +60,7 @@ function badgeLabel(l){
   return m?t("Gemiddelde boven {g}",{g:m[1]}):t(l);
 }
 // Datumnotatie van de taal (voor toLocaleDateString)
-function taalLocale(){return{nl:"nl-NL",en:"en-GB",fr:"fr-FR",de:"de-DE",es:"es-ES",tr:"tr-TR",ko:"ko-KR"}[TAAL]||"nl-NL";}
+function taalLocale(){return{nl:"nl-NL",en:"en-GB",fr:"fr-FR",de:"de-DE",es:"es-ES",tr:"tr-TR",ko:"ko-KR",ja:"ja-JP",vi:"vi-VN",pt:"pt-BR"}[TAAL]||"nl-NL";}
 // Seizoennamen worden als "Seizoen 2" opgeslagen; zo tonen ze in de gekozen taal (een eigen naam blijft staan)
 function seizoenNaam(s){
   const m=/^Seizoen (\d+)$/.exec((s&&s.naam)||"");
@@ -83,7 +86,7 @@ function procentTekst(x){const n=Math.round(x*100);return TAAL==="tr"?"%"+n:n+"%
 function dubbelePunt(){return TAAL==="fr"?" : ":": ";}
 function getalTekst(x,dec){
   const s=Number(x).toFixed(dec);
-  return TAAL==="en"||TAAL==="ko"?s:s.replace(".",","); // Engels en Koreaans: decimale punt
+  return TAAL==="en"||TAAL==="ko"||TAAL==="ja"?s:s.replace(".",","); // Engels, Koreaans en Japans: decimale punt
 }
 
 // Namen van disciplines, klassen, tafels en mijlpalen worden overal getoond via .naam; die geeft voortaan de

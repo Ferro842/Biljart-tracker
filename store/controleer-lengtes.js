@@ -2,7 +2,7 @@
 // Gebruik: node store/controleer-lengtes.js
 const fs=require("fs"),path=require("path");
 const md=fs.readFileSync(path.join(__dirname,"talen.md"),"utf8");
-const delen=md.split(/^## /m).filter(function(d){return/^(Engels|Frans|Duits|Spaans|Turks|Koreaans)/.test(d);});
+const delen=md.split(/^## /m).filter(function(d){return/^(Engels|Frans|Duits|Spaans|Turks|Koreaans|Japans|Vietnamees|Portugees)/.test(d);});
 let fout=false;
 const meld=function(taal,veld,tekst,max){
   const n=[...tekst].length,ok=n<=max;if(!ok)fout=true;
@@ -27,7 +27,7 @@ if(fout)process.exitCode=1;
 (function(){
   const aso=fs.readFileSync(path.join(__dirname,"aso.md"),"utf8");
   let asoFout=false;
-  aso.split(/^## /m).filter(function(d){return/^(Nederlands|Engels|Frans|Duits|Spaans|Turks|Koreaans)/.test(d);}).forEach(function(d){
+  aso.split(/^## /m).filter(function(d){return/^(Nederlands|Engels|Frans|Duits|Spaans|Turks|Koreaans|Japans|Vietnamees|Portugees)/.test(d);}).forEach(function(d){
     const taal=d.split("\n")[0].trim();
     const rij=function(naam){const m=new RegExp("\\| "+naam.replace(/[()]/g,"\\$&")+" \\| (.*) \\|").exec(d);return m?m[1]:null;};
     const tel=function(veld,tekst,max){if(tekst===null)return;const n=[...tekst].length;if(n>max)asoFout=true;console.log((n<=max?"OK  ":"TE LANG ")+"aso "+taal+" · "+veld+": "+n+"/"+max);};

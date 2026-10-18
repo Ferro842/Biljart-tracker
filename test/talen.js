@@ -1,5 +1,6 @@
 // Test van de talen: wisselen via Info → Weergave → Taal, vertaalde knoppen (en korte disciplinenamen in de balk),
 // opmerkingen blijven intern Nederlands, en weer terug naar Nederlands. Overschrijft de opslag; alles.js zet testdata terug.
+// Ook Spaans, Turks, Koreaans, Japans, Vietnamees en Portugees.
 // Draaien: await eval(await fetch("/test/talen.js").then(r=>r.text()))
 (async function(){
   const w=function(ms){return new Promise(function(r){setTimeout(r,ms);});};
@@ -34,11 +35,20 @@
   kb("한국어").click();await w(300);
   const segKo=Array.from(document.querySelectorAll("#root button.seg-knop")).map(function(b){return b.textContent.trim();});
   uit.koreaans=segKo.indexOf("4구")!==-1&&getalTekst(2.5,2)==="2.50"&&tekst().indexOf("화면")!==-1;
+  // Japans: ook vierbal (四つ球) in de balk, decimale punt; Vietnamees en Portugees: decimale komma
+  kb("日本語").click();await w(300);
+  const segJa=Array.from(document.querySelectorAll("#root button.seg-knop")).map(function(b){return b.textContent.trim();});
+  uit.japans=segJa.indexOf("四つ球")!==-1&&getalTekst(2.5,2)==="2.50"&&tekst().indexOf("表示")!==-1;
+  kb("Tiếng Việt").click();await w(300);
+  uit.vietnamees=!!k("3 băng")&&tekst().indexOf("Hiển thị")!==-1&&getalTekst(2.5,2)==="2,50"&&segJa.length>0&&
+    Array.from(document.querySelectorAll("#root button.seg-knop")).every(function(b){return b.textContent.trim()!=="4 bi";});
+  kb("Português").click();await w(300);
+  uit.portugees=!!k("3 tabelas")&&tekst().indexOf("Exibição")!==-1&&t("Gemist door")==="Errou por";
   kb("Nederlands").click();await w(300);
   uit.turks=uit.turks&&procentTekst(0.43)==="43%";
   uit.koreaans=uit.koreaans&&Array.from(document.querySelectorAll("#root button.seg-knop")).every(function(b){return b.textContent.trim()!=="Vierbal";});
   uit.terug=data().taal==="nl"&&tekst().indexOf("Weergave")!==-1;
   k("Spelen").click();await w(200);
-  uit.goed=uit.keuze&&uit.engelsBewaard&&uit.engels&&uit.labelNederlands&&uit.frans&&uit.duits&&uit.spaans&&uit.turks&&uit.koreaans&&uit.terug;
+  uit.goed=uit.keuze&&uit.engelsBewaard&&uit.engels&&uit.labelNederlands&&uit.frans&&uit.duits&&uit.spaans&&uit.turks&&uit.koreaans&&uit.japans&&uit.vietnamees&&uit.portugees&&uit.terug;
   return uit;
 })()

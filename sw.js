@@ -14,7 +14,7 @@ var VOORAF = [
   "./", "index.html", "manifest.json", "icon192.png", "icon512.png", "icon180.png", "logo.png",
   "css/app.css",
   "vendor/react.production.min.js", "vendor/react-dom.production.min.js",
-  "js/constanten.js", "js/taal.js", "js/taal-en.js", "js/taal-fr.js", "js/taal-de.js", "js/taal-es.js", "js/taal-tr.js", "js/taal-ko.js", "js/berekeningen.js", "js/opslag.js",
+  "js/constanten.js", "js/taal.js", "js/taal-en.js", "js/taal-fr.js", "js/taal-de.js", "js/taal-es.js", "js/taal-tr.js", "js/taal-ko.js", "js/taal-ja.js", "js/taal-vi.js", "js/taal-pt.js", "js/berekeningen.js", "js/opslag.js",
   "gebouwd/onderdelen.js", "gebouwd/wauw.js", "gebouwd/vensters.js", "gebouwd/partijrij.js", "gebouwd/inzicht.js",
   "gebouwd/dashboard.js", "gebouwd/tabs.js", "gebouwd/spelen.js", "gebouwd/app.js"
 ];

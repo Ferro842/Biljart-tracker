@@ -14,12 +14,12 @@ function SetupScherm({spel}){
       {bevestigNieuw&&(
         <div onClick={function(){setBevestigNieuw(false);}} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:300,display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
           <div onClick={function(e){e.stopPropagation();}} style={{background:"var(--c-1a2e1a)",border:"2px solid "+GOUD,borderRadius:14,padding:20,maxWidth:340,width:"100%"}}>
-            <div style={{fontSize:16,color:WIT,fontWeight:"bold",marginBottom:6,textAlign:"center"}}>Je hebt nog een lopende partij</div>
-            <div style={{fontSize:14,color:WITD,marginBottom:16,textAlign:"center",lineHeight:1.45}}>{lp.length} beurten · {totCarLp} car. Begin je een nieuwe partij, dan gaat deze verloren. Wil je hem bewaren, kies dan Doorgaan en daarna Afsluiten.</div>
+            <div style={{fontSize:16,color:WIT,fontWeight:"bold",marginBottom:6,textAlign:"center"}}>{t("Je hebt nog een lopende partij")}</div>
+            <div style={{fontSize:14,color:WITD,marginBottom:16,textAlign:"center",lineHeight:1.45}}>{t("{n} beurten · {c} car. Begin je een nieuwe partij, dan gaat deze verloren. Wil je hem bewaren, kies dan Doorgaan en daarna Afsluiten.",{n:lp.length,c:totCarLp})}</div>
             <div style={{display:"flex",flexDirection:"column",gap:8}}>
-              <button onClick={function(){setBevestigNieuw(false);setFase("invoer");}} style={{padding:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>Doorgaan met lopende partij</button>
-              <button onClick={startNieuw} style={{padding:12,background:"#7a3030",border:"none",borderRadius:8,color:WIT,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Toch nieuwe partij beginnen</button>
-              <button onClick={function(){setBevestigNieuw(false);}} style={{padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Annuleer</button>
+              <button onClick={function(){setBevestigNieuw(false);setFase("invoer");}} style={{padding:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>{t("Doorgaan met lopende partij")}</button>
+              <button onClick={startNieuw} style={{padding:12,background:"#7a3030",border:"none",borderRadius:8,color:WIT,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Toch nieuwe partij beginnen")}</button>
+              <button onClick={function(){setBevestigNieuw(false);}} style={{padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Annuleer")}</button>
             </div>
           </div>
         </div>
@@ -28,71 +28,71 @@ function SetupScherm({spel}){
       {/* Lopende partij bovenaan, zodat Doorgaan meteen in beeld is (niet verstopt achter Start partij) */}
       {lp.length>0&&(
         <div style={{background:"var(--c-1a2e10)",border:"1px solid "+GOUD,borderRadius:10,padding:"10px 14px",fontSize:14,color:WITD}}>
-          Lopende partij: {lp.length} beurten - {totCarLp} car - tafel {tafelLabel(tafel)}
+          {t("Lopende partij: {n} beurten - {c} car - tafel {tafel}",{n:lp.length,c:totCarLp,tafel:tafelLabel(tafel)})}
           <div style={{display:"flex",gap:8,marginTop:8}}>
             <button style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:6,color:G,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",fontSize:15}}
-              onClick={function(){setFase("invoer");}}>Doorgaan</button>
+              onClick={function(){setFase("invoer");}}>{t("Doorgaan")}</button>
             <button style={{flex:1,padding:8,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
-              onClick={function(){setConfPartij(true);}}>Afsluiten</button>
+              onClick={function(){setConfPartij(true);}}>{t("Afsluiten")}</button>
           </div>
         </div>
       )}
       {/* Back-upherinnering: je partijen staan alleen op dit toestel */}
       {backupHerinnering&&lp.length===0&&(
         <div data-backup-herinnering="" style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
-          <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>💾 Tijd voor een back-up</div>
+          <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>💾 {t("Tijd voor een back-up")}</div>
           <div style={{fontSize:14,color:WIT,lineHeight:1.5,marginBottom:10}}>
             {backupHerinnering.ooit
-              ?backupHerinnering.nieuw+" nieuwe partij"+(backupHerinnering.nieuw===1?"":"en")+" sinds je laatste back-up ("+backupHerinnering.dagen+" dagen geleden)."
-              :"Je hebt nog geen back-up gemaakt."} Je partijen staan alleen op dit toestel; raakt het kwijt of verwijder je de app, dan zijn ze weg. Bewaar een kopie in Bestanden, iCloud Drive of je mail.
+              ?t(backupHerinnering.nieuw===1?"1 nieuwe partij sinds je laatste back-up ({d} dagen geleden).":"{n} nieuwe partijen sinds je laatste back-up ({d} dagen geleden).",{n:backupHerinnering.nieuw,d:backupHerinnering.dagen})
+              :t("Je hebt nog geen back-up gemaakt.")} {t("Je partijen staan alleen op dit toestel; raakt het kwijt of verwijder je de app, dan zijn ze weg. Bewaar een kopie in Bestanden, iCloud Drive of je mail.")}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={maakBackupNu} style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Back-up maken</button>
-            <button onClick={backupLater} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Later</button>
+            <button onClick={maakBackupNu} style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Back-up maken")}</button>
+            <button onClick={backupLater} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Later")}</button>
           </div>
         </div>
       )}
       {weergaveTip&&(
         <div style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
-          <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>🔎 Nieuw: kies zelf hoe je de app ziet</div>
+          <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>🔎 {t("Nieuw: kies zelf hoe je de app ziet")}</div>
           <div style={{fontSize:14,color:WIT,lineHeight:1.5,marginBottom:10}}>
-            Grotere letters en knoppen, of een eenvoudige weergave met alleen het belangrijkste. Standaard staat alles aan; je vindt het altijd bij Info → Weergave.
+            {t("Grotere letters en knoppen, of een eenvoudige weergave met alleen het belangrijkste. Standaard staat alles aan; je vindt het altijd bij Info → Weergave.")}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={function(){zieWeergaveTip(true);}} style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Bekijken</button>
-            <button onClick={function(){zieWeergaveTip(false);}} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>Niet nodig</button>
+            <button onClick={function(){zieWeergaveTip(true);}} style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Bekijken")}</button>
+            <button onClick={function(){zieWeergaveTip(false);}} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Niet nodig")}</button>
           </div>
         </div>
       )}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>Tafelmaat</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>{t("Tafelmaat")}</div>
         {/* Eén rij van vier: zo past het hele scherm ook bij de grootste tekst */}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
-          {Object.keys(TAFELS).map(function(t){
+          {Object.keys(TAFELS).map(function(tk){
             return(
-              <button key={t} style={{padding:"7px 2px",background:tafel===t?"var(--c-2d4a1e)":"none",border:"1px solid "+(tafel===t?GOUD:KBDR),borderRadius:8,color:tafel===t?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
-                onClick={function(){setTafel(t);}}>
-                <div style={{fontSize:15,fontWeight:tafel===t?"bold":"normal"}}>{TAFELS[t].label}</div>
-                <div style={{fontSize:10,opacity:0.8}}>× {TAFELS[t].vol.split(" x ")[1]}</div>
+              <button key={tk} style={{padding:"7px 2px",background:tafel===tk?"var(--c-2d4a1e)":"none",border:"1px solid "+(tafel===tk?GOUD:KBDR),borderRadius:8,color:tafel===tk?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}
+                onClick={function(){setTafel(tk);}}>
+                <div style={{fontSize:15,fontWeight:tafel===tk?"bold":"normal"}}>{TAFELS[tk].label}</div>
+                <div style={{fontSize:10,opacity:0.8}}>× {TAFELS[tk].vol.split(" x ")[1]}</div>
               </button>
             );
           })}
         </div>
       </div>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"10px 14px"}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:6}}>Partij doel</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:6}}>{t("Partij doel")}</div>
         <div style={{display:"flex",gap:8,marginBottom:10}}>
           <button style={{flex:1,padding:"8px 8px",background:doelType==="beurten"?"var(--c-2d4a1e)":"none",border:"1px solid "+(doelType==="beurten"?GOUD:KBDR),borderRadius:8,color:doelType==="beurten"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
-            onClick={function(){setDoelType("beurten");}}>Beurten</button>
+            onClick={function(){setDoelType("beurten");}}>{t("Beurten")}</button>
           <button style={{flex:1,padding:"8px 8px",background:doelType==="caramboles"?"var(--c-2d4a1e)":"none",border:"1px solid "+(doelType==="caramboles"?GOUD:KBDR),borderRadius:8,color:doelType==="caramboles"?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:15}}
-            onClick={function(){setDoelType("caramboles");}}>Caramboles</button>
+            onClick={function(){setDoelType("caramboles");}}>{t("Caramboles")}</button>
         </div>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:20,marginBottom:10}}>
           <button className="plusmin-btn" style={{width:38,height:38,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:22,cursor:"pointer"}}
             onClick={function(){setDoel(function(n){return Math.max(5,n-5);});}}>-</button>
           <div style={{textAlign:"center",width:100}}>
             <div style={{fontSize:32,fontWeight:"bold",color:WIT,lineHeight:1}}>{doel}</div>
-            <div style={{fontSize:13,color:WITD,marginTop:2}}>{doelType==="beurten"?"beurten":"caramboles"}</div>
+            <div style={{fontSize:13,color:WITD,marginTop:2}}>{doelType==="beurten"?t("beurten"):t("caramboles")}</div>
           </div>
           <button className="plusmin-btn" style={{width:38,height:38,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:22,cursor:"pointer"}}
             onClick={function(){setDoel(function(n){return n+5;});}}>+</button>
@@ -107,15 +107,15 @@ function SetupScherm({spel}){
       {/* Start partij blijft onderaan in beeld, ook als het scherm te klein is (bijv. iPhone SE met extra grote tekst) */}
       <button style={{position:"sticky",bottom:0,zIndex:2,flexShrink:0,padding:18,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",boxShadow:"0 -6px 14px "+G}}
         onClick={function(){if(lp.length>0)setBevestigNieuw(true);else startNieuw();}}>
-        Start partij
+        {t("Start partij")}
       </button>
       <button onClick={function(){setBriefjeOpen(true);}}
         style={{padding:"11px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>
-        📷 Partij van een wedstrijdbriefje
+        📷 {t("Partij van een wedstrijdbriefje")}
       </button>
       <button onClick={function(){setUitlegOpen(true);}}
         style={{padding:"8px",background:"none",border:"none",color:WIT,fontSize:15,cursor:"pointer",fontFamily:"inherit",textDecoration:"underline",textUnderlineOffset:3}}>
-        ℹ️ Zo werkt de app
+        ℹ️ {t("Zo werkt de app")}
       </button>
     </div>
   );
@@ -148,11 +148,11 @@ function InvoerScherm({spel}){
       </div>
       <div style={{padding:"10px 12px 6px",flexShrink:0}}>
         {spelAan&&<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",background:"var(--c-182e14)",border:"1px solid "+GOUD,borderRadius:8,padding:"7px 10px",marginBottom:6}}>
-          <span style={{fontSize:12,color:WITD}}>🎖️ Deze partij: <strong style={{color:GOUD}}>{partijPunten}pt</strong></span>
-          <span style={{fontSize:12,color:WITD}}>Totaal: <strong style={{color:GOUD}}>{(niveau.badgePuntenTotaal!==undefined?niveau.badgePuntenTotaal:niveau.badgePunten)+partijPunten}pt</strong></span>
+          <span style={{fontSize:12,color:WITD}}>🎖️ {t("Deze partij:")} <strong style={{color:GOUD}}>{partijPunten}pt</strong></span>
+          <span style={{fontSize:12,color:WITD}}>{t("Totaal:")} <strong style={{color:GOUD}}>{(niveau.badgePuntenTotaal!==undefined?niveau.badgePuntenTotaal:niveau.badgePunten)+partijPunten}pt</strong></span>
         </div>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
-          {[["Gespeeld",lp.length,WIT],["Caramboles",stL?stL.totCar:0,GOUD],["Gem.",stL?stL.gemPerBeurt:"0.00",GOUDL],["Max",stL?stL.max:0,"#e8a84c"]].map(function(arr){
+          {[[t("Gespeeld"),lp.length,WIT],[t("Caramboles"),stL?stL.totCar:0,GOUD],[t("Gem."),stL?stL.gemPerBeurt:"0.00",GOUDL],[t("Max"),stL?stL.max:0,"#e8a84c"]].map(function(arr){
             return(
               <div key={arr[0]} style={{textAlign:"center",background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 2px"}}>
                 <div style={{fontSize:20,fontWeight:"bold",color:arr[2],lineHeight:1}}>{arr[1]}</div>
@@ -164,14 +164,14 @@ function InvoerScherm({spel}){
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 2fr",gap:6}}>
           <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GRNT,lineHeight:1}}>{stL?stL.opbouw5:0}x <span style={{fontSize:13,fontWeight:"normal"}}>{opbouwPct}%</span></div>
-            <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Opbouw {dInv.opbouwMin}+</div>
+            <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{t("Opbouw {n}+",{n:dInv.opbouwMin})}</div>
           </div>
           <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 6px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:poedels>0?"#e08055":WITD,lineHeight:1}}>{poedels}x <span style={{fontSize:13,fontWeight:"normal"}}>{poedelPct}%</span></div>
-            <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>Poedels</div>
+            <div style={{fontSize:11,color:WITD,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{t("Poedels")}</div>
           </div>
           <div style={{background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 8px"}}>
-            <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:1}}>Series</div>
+            <div style={{fontSize:11,color:WITD,textTransform:"uppercase",letterSpacing:0.5,marginBottom:1}}>{t("Series")}</div>
             <div style={{display:"flex",gap:4,justifyContent:"space-around",lineHeight:1.15}}>
               {[[dInv.opbouwMin+"-"+dInv.opbouwMax,s57,"#4caf50"],[dInv.sterkMin+"-"+dInv.sterkMax,s89,"#e8c96a"],[dInv.topMin+"+",s10,"#ff9f40"]].map(function(arr){
                 return(
@@ -190,7 +190,7 @@ function InvoerScherm({spel}){
           <button className="plusmin-btn" style={{width:60,height:60,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
             onClick={function(){const n=Math.max(0,car-1);setCar(n);setInp(String(n));}}>-</button>
           <div style={{textAlign:"center"}}>
-            <div style={{fontSize:13,color:WITD,marginBottom:4}}>{beurtNr}e Beurt</div>
+            <div style={{fontSize:13,color:WITD,marginBottom:4}}>{t("{n}e Beurt",{n:beurtNr})}</div>
             <input ref={inputRef} type="number" inputMode="numeric" pattern="[0-9]*" value={inp}
               onChange={function(e){const v=e.target.value;if(v===""||v==="-"){setInp(v);return;}const n=parseInt(v);if(!isNaN(n)&&n>=0){setCar(n);setInp(String(n));};}}
               onFocus={function(e){e.target.select();}}
@@ -198,7 +198,7 @@ function InvoerScherm({spel}){
               style={{width:86,fontSize:48,fontWeight:"bold",color:WIT,background:"transparent",border:"none",borderBottom:"3px solid "+(car>=dInv.opbouwMin?GRNT:GOUD),textAlign:"center",fontFamily:"Georgia,serif",outline:"none",paddingBottom:3}}
             />
             <div style={{fontSize:13,color:car>=dInv.opbouwMin?GRNT:GOUD,marginTop:4,height:18,lineHeight:"18px"}}>
-              {car===0?"Poedel":car>=dInv.topMin?"💫 Topserie!":car>=dInv.sterkMin?"🔥 Sterke serie!":car>=dInv.opbouwMin?"🎯 Opbouw!":""}
+              {car===0?t("Poedel"):car>=dInv.topMin?"💫 "+t("Topserie!"):car>=dInv.sterkMin?"🔥 "+t("Sterke serie!"):car>=dInv.opbouwMin?"🎯 "+t("Opbouw!"):""}
             </div>
           </div>
           <button className="plusmin-btn" style={{width:60,height:60,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
@@ -206,12 +206,12 @@ function InvoerScherm({spel}){
         </div>
         <div style={{display:"flex",gap:8,marginTop:10}}>
           <button className="plusmin-btn" style={{flex:1,padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
-            onClick={volgende}>Noteer</button>
+            onClick={volgende}>{t("Noteer")}</button>
           {/* Eenvoudige modus: wil je bij deze beurt toch iets aanvinken, dan via de gewone opmerkingen-stap */}
           {eenvoudig&&<button style={{padding:"14px 11px",background:"none",border:"1px solid "+GOUD,borderRadius:12,color:GOUD,fontSize:14,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}
-            onClick={function(){setFase("gemist");}}>+ opmerking</button>}
+            onClick={function(){setFase("gemist");}}>+ {t("opmerking")}</button>}
           <button style={{padding:"14px 13px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:15,cursor:"pointer",fontFamily:"inherit"}}
-            onClick={function(){if(lp.length){setLp(function(p){return p.slice(0,-1);});setBeurtNr(function(n){return Math.max(1,n-1);});}else{setFase("setup");}}}>terug</button>
+            onClick={function(){if(lp.length){setLp(function(p){return p.slice(0,-1);});setBeurtNr(function(n){return Math.max(1,n-1);});}else{setFase("setup");}}}>{t("terug")}</button>
         </div>
       </div>
       {/* Onder Noteer: eerst je beurten (grafiek), daaronder de meldingen van het spelelement */}
@@ -229,11 +229,11 @@ function InvoerScherm({spel}){
           }
           const hints=[];
           if(huidigeStreak>0&&huidigeStreak<8){
-            if(huidigeStreak<5)hints.push(spelAan&&"⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(5-huidigeStreak)+" tot 15pt)");
-            else hints.push(spelAan&&"⛓️ Reeks zonder poedel: "+huidigeStreak+" (nog "+(8-huidigeStreak)+" tot 25pt)");
+            if(huidigeStreak<5)hints.push(spelAan&&"⛓️ "+t("Reeks zonder poedel: {n} (nog {r} tot {p}pt)",{n:huidigeStreak,r:5-huidigeStreak,p:15}));
+            else hints.push(spelAan&&"⛓️ "+t("Reeks zonder poedel: {n} (nog {r} tot {p}pt)",{n:huidigeStreak,r:8-huidigeStreak,p:25}));
           }
           if(lp.length>0&&lp[lp.length-1].caramboles===0){
-            hints.push(spelAan&&"💪 Volgende beurt "+dInv.opbouwMin+"+ car = sterk herstel (+15pt)");
+            hints.push(spelAan&&"💪 "+t("Volgende beurt {n}+ car = sterk herstel (+15pt)",{n:dInv.opbouwMin}));
           }
           if(stL){
             const gemNu=parseFloat(stL.gemPerBeurt);
@@ -244,39 +244,39 @@ function InvoerScherm({spel}){
             if(gemNu<drempel2Nu){
               const drempel=gemNu<drempel1Nu?drempel1Nu:drempel2Nu;
               const afstand=drempel-gemNu;
-              if(afstand<stapNu)hints.push(spelAan&&"⭐ Nog "+afstand.toFixed(2)+" tot gemiddelde "+gemDrempelTekst(drempel,stapNu));
+              if(afstand<stapNu)hints.push(spelAan&&"⭐ "+t("Nog {a} tot gemiddelde {g}",{a:afstand.toFixed(2),g:gemDrempelTekst(drempel,stapNu)}));
             }
             if(huidigeRecords.allTimeBestGem>0){
               const afstandRecord=huidigeRecords.allTimeBestGem-gemNu;
-              if(afstandRecord>0&&afstandRecord<0.3)hints.push("👑 Nog "+afstandRecord.toFixed(2)+" tot je beste gem. ooit ("+huidigeRecords.allTimeBestGem.toFixed(2)+")");
+              if(afstandRecord>0&&afstandRecord<0.3)hints.push("👑 "+t("Nog {a} tot je beste gem. ooit ({g})",{a:afstandRecord.toFixed(2),g:huidigeRecords.allTimeBestGem.toFixed(2)}));
             }
             const tafelRecord=huidigeRecords.tafelBest[tafel];
             if(tafelRecord&&tafelRecord>0){
               const afstandTafel=tafelRecord-gemNu;
-              if(afstandTafel>0&&afstandTafel<0.3)hints.push("🔝 Nog "+afstandTafel.toFixed(2)+" tot je tafelrecord ("+tafelRecord.toFixed(2)+")");
+              if(afstandTafel>0&&afstandTafel<0.3)hints.push("🔝 "+t("Nog {a} tot je tafelrecord ({g})",{a:afstandTafel.toFixed(2),g:tafelRecord.toFixed(2)}));
             }
             if(huidigeRecords.totaalGem!==null){
               const afstandTotaal=huidigeRecords.totaalGem-gemNu;
-              if(afstandTotaal>0&&afstandTotaal<0.3)hints.push("📊 Nog "+afstandTotaal.toFixed(2)+" tot je moyenne ("+huidigeRecords.totaalGem.toFixed(2)+")");
+              if(afstandTotaal>0&&afstandTotaal<0.3)hints.push("📊 "+t("Nog {a} tot je moyenne ({g})",{a:afstandTotaal.toFixed(2),g:huidigeRecords.totaalGem.toFixed(2)}));
             }
             if(huidigeRecords.rolling5p!==null){
               const afstandRolling=huidigeRecords.rolling5p-gemNu;
-              if(afstandRolling>0&&afstandRolling<0.3)hints.push("📉 Nog "+afstandRolling.toFixed(2)+" tot je gem. laatste 5 partijen ("+huidigeRecords.rolling5p.toFixed(2)+")");
+              if(afstandRolling>0&&afstandRolling<0.3)hints.push("📉 "+t("Nog {a} tot je gem. laatste 5 partijen ({g})",{a:afstandRolling.toFixed(2),g:huidigeRecords.rolling5p.toFixed(2)}));
             }
           }
           if(lp.length>=3){
             const poedelsNu=lp.filter(function(x){return x.caramboles===0;}).length;
             if(poedelsNu===0){
-              hints.push(spelAan&&"🛡️ 0 poedels in "+lp.length+" beurten: houd vol voor +30pt");
+              hints.push(spelAan&&"🛡️ "+t("0 poedels in {n} beurten: houd vol voor +30pt",{n:lp.length}));
             }else{
               const poedelPctNu=poedelsNu/lp.length*100;
-              if(poedelPctNu<20)hints.push(spelAan&&"✅ "+Math.round(poedelPctNu)+"% poedels (onder 20%)");
+              if(poedelPctNu<20)hints.push(spelAan&&"✅ "+t("{p}% poedels (onder 20%)",{p:Math.round(poedelPctNu)}));
             }
           }
           if(lp.length>0&&huidigeRecords.allTimeMaxBeurt>0){
             const maxInPartij=Math.max.apply(null,lp.map(function(x){return x.caramboles;}));
             const afstandMax=huidigeRecords.allTimeMaxBeurt-maxInPartij;
-            if(afstandMax>0&&afstandMax<=3)hints.push("🏆 Hoogste beurt nu "+maxInPartij+" (record "+huidigeRecords.allTimeMaxBeurt+")");
+            if(afstandMax>0&&afstandMax<=3)hints.push("🏆 "+t("Hoogste beurt nu {n} (record {r})",{n:maxInPartij,r:huidigeRecords.allTimeMaxBeurt}));
           }
           const helftNu=Math.floor(lp.length/2);
           if(helftNu>=3&&huidigeRecords.totaalGem!==null){
@@ -284,11 +284,11 @@ function InvoerScherm({spel}){
             const gemENu=eersteNu.reduce(function(a,b){return a+b.caramboles;},0)/eersteNu.length;
             const gemTNu=tweedeNu.reduce(function(a,b){return a+b.caramboles;},0)/tweedeNu.length;
             if(gemTNu>gemENu&&stL&&parseFloat(stL.gemPerBeurt)>huidigeRecords.totaalGem){
-              hints.push(spelAan&&"📈 Sterke 2e helft: "+gemENu.toFixed(2)+" → "+gemTNu.toFixed(2));
+              hints.push(spelAan&&"📈 "+t("Sterke 2e helft:")+" "+gemENu.toFixed(2)+" → "+gemTNu.toFixed(2));
             }
           }
           if(doel&&doelType==="caramboles"){
-            if(totCarLp<doel)hints.push("🎯 Nog "+(doel-totCarLp)+" caramboles tot je doel");
+            if(totCarLp<doel)hints.push("🎯 "+t("Nog {n} caramboles tot je doel",{n:doel-totCarLp}));
           }
           const zichtbaar=hints.filter(Boolean); // badge-hints zijn false als het spelelement uit staat
           if(zichtbaar.length===0)return null;
@@ -317,15 +317,15 @@ function GemistScherm({spel}){
       <div style={{flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
         <div style={{padding:"10px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div style={{fontSize:19,color:ROOD,fontWeight:"bold"}}>Gemist door</div>
+            <div style={{fontSize:19,color:ROOD,fontWeight:"bold"}}>{t("Gemist door")}</div>
             {gs.length>0&&<span style={{fontSize:15,color:ROOD,fontWeight:"bold"}}>{gs.length}x</span>}
           </div>
-          <div style={{fontSize:12,color:WITD,marginTop:2}}>Tik om te selecteren — je kunt er meerdere kiezen</div>
+          <div style={{fontSize:12,color:WITD,marginTop:2}}>{t("Tik om te selecteren — je kunt er meerdere kiezen")}</div>
         </div>
         <OpmGrid lijst={GEMIST} prefix="G__" kleur={ROOD} geselecteerd={sel} toggle={toggle} vullen={true}/>
         <div style={{padding:"0 12px 8px",flexShrink:0}}>
           <input type="text" value={andersGemist} onChange={function(e){setAndersGemist(e.target.value);}}
-            placeholder="Anders... (typ zelf iets)"
+            placeholder={t("Anders... (typ zelf iets)")}
             style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
         </div>
       </div>
@@ -333,10 +333,10 @@ function GemistScherm({spel}){
       <div style={STAP_KNOPPEN}>
         <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GOUD+","+GOUDL+")":"rgba(224,96,96,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(224,96,96,0.45)"),borderRadius:12,color:heeftSelectie?G:"#e0a0a0",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
           onClick={function(){if(car===0){noteer();}else{setFase("goed");}}}>
-        {car===0?"Opslaan":"Volgende stap"}
+        {car===0?t("Opslaan"):t("Volgende stap")}
       </button>
         <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-          onClick={function(){setFase("invoer");}}>terug</button>
+          onClick={function(){setFase("invoer");}}>{t("terug")}</button>
       </div>
     </div>
   );
@@ -353,24 +353,24 @@ function GoedScherm({spel}){
       <div style={{flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
         <div style={{padding:"10px 14px 8px",borderBottom:"1px solid "+KBDR,flexShrink:0}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <div style={{fontSize:19,color:GRNT,fontWeight:"bold"}}>Wat ging goed?</div>
+            <div style={{fontSize:19,color:GRNT,fontWeight:"bold"}}>{t("Wat ging goed?")}</div>
             {gs.length>0&&<span style={{fontSize:15,color:GRNT,fontWeight:"bold"}}>{gs.length}x</span>}
           </div>
-          <div style={{fontSize:12,color:WITD,marginTop:2}}>Tik om te selecteren — je kunt er meerdere kiezen</div>
+          <div style={{fontSize:12,color:WITD,marginTop:2}}>{t("Tik om te selecteren — je kunt er meerdere kiezen")}</div>
         </div>
         <OpmGrid lijst={GOED} prefix="P__" kleur={GRNT} geselecteerd={sel} toggle={toggle} vullen={true}/>
         <div style={{padding:"0 12px 8px",flexShrink:0}}>
           <input type="text" value={andersGoed} onChange={function(e){setAndersGoed(e.target.value);}}
-            placeholder="Anders... (typ zelf iets)"
+            placeholder={t("Anders... (typ zelf iets)")}
             style={{width:"100%",padding:"8px 10px",background:"var(--c-1c3019)",border:"1px solid "+KBDR,borderRadius:8,color:WIT,fontSize:13,fontFamily:"inherit"}}/>
         </div>
       </div>
       {/* Vervolgknoppen vast onderaan: altijd in beeld, ook bij grote tekst */}
       <div style={STAP_KNOPPEN}>
         <button style={{flex:1,padding:15,background:heeftSelectie?"linear-gradient(135deg,"+GRNT+",#66bb6a)":"rgba(102,187,106,0.08)",border:"1px solid "+(heeftSelectie?"transparent":"rgba(102,187,106,0.45)"),borderRadius:12,color:heeftSelectie?WIT:"#a8d5aa",fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit",transition:"all 0.25s"}}
-          onClick={noteer}>Beurt opslaan</button>
+          onClick={noteer}>{t("Beurt opslaan")}</button>
         <button style={{padding:"15px 12px",background:"none",border:"1px solid "+KBDR,borderRadius:12,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}
-          onClick={function(){setFase("gemist");}}>terug</button>
+          onClick={function(){setFase("gemist");}}>{t("terug")}</button>
       </div>
     </div>
   );

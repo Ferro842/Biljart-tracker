@@ -82,53 +82,53 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
 function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgrootte,eenvoudig,setWeergave}){
   const schermen=[
     {
-      titel:"Welkom! Hoe wil je het zien?",
-      body:"Kies de tekstgrootte die prettig leest; je ziet het meteen. Eenvoudige modus houdt alleen het belangrijkste over: per beurt je caramboles en Noteer. Standaard staat alles aan. Je kunt dit later altijd wijzigen bij Info → Weergave.",
+      titel:t("Welkom! Hoe wil je het zien?"),
+      body:t("Kies de tekstgrootte die prettig leest; je ziet het meteen. Eenvoudige modus houdt alleen het belangrijkste over: per beurt je caramboles en Noteer. Standaard staat alles aan. Je kunt dit later altijd wijzigen bij Info → Weergave."),
       weergave:true
     },
     {
-      titel:"Zet de app op je beginscherm",
-      body:"Voor het beste gebruik installeer je de app als een normale app-icoon op je beginscherm — dat opent sneller dan steeds de link opzoeken, en voelt als een echte app. Na de eerste keer opent de app ook zonder internet.",
+      titel:t("Zet de app op je beginscherm"),
+      body:t("Voor het beste gebruik installeer je de app als een normale app-icoon op je beginscherm — dat opent sneller dan steeds de link opzoeken, en voelt als een echte app. Na de eerste keer opent de app ook zonder internet."),
       installeer:true,
       alleenWeb:true
     },
     {
-      titel:"Welkom bij Biljart Tracker",
-      body:"Een app om je carambole-partijen bij te houden — met niveaus op basis van de echte KNBB-klassen, en een spelelement dat je motiveert om net dat beetje boven je eigen niveau uit te blijven presteren."
+      titel:t("Welkom bij Biljart Tracker"),
+      body:t("Een app om je carambole-partijen bij te houden — met niveaus op basis van de echte KNBB-klassen, en een spelelement dat je motiveert om net dat beetje boven je eigen niveau uit te blijven presteren.")
     },
     {
-      titel:"Kies je discipline",
-      body:"Libre, Driebanden, Bandstoten en Kader (38/2, 47/2, 57/2 en 71/2) zijn losse trajecten — elk met een eigen gemiddelde en niveau, helemaal gescheiden van elkaar. Je kunt in de app altijd van discipline wisselen.",
+      titel:t("Kies je discipline"),
+      body:t("Libre, Driebanden, Bandstoten en Kader (38/2, 47/2, 57/2 en 71/2) zijn losse trajecten — elk met een eigen gemiddelde en niveau, helemaal gescheiden van elkaar. Je kunt in de app altijd van discipline wisselen."),
       kies:true
     },
     {
-      titel:"Een partij invoeren",
-      body:"Zo noteer je een partij, beurt voor beurt:",
+      titel:t("Een partij invoeren"),
+      body:t("Zo noteer je een partij, beurt voor beurt:"),
       lijst:[
-        ["Start","Kies tafelmaat en doel en tik op Start partij."],
-        ["Per beurt","Vul je caramboles in en tik op Noteer. Kies daarna waardoor de serie eindigde, en bij caramboles ook wat goed ging."],
-        ["Klaar","Tik rechtsboven op Afsluiten en dan op Opslaan."]
+        [t("Start"),t("Kies tafelmaat en doel en tik op Start partij.")],
+        [t("Per beurt"),t("Vul je caramboles in en tik op Noteer. Kies daarna waardoor de serie eindigde, en bij caramboles ook wat goed ging.")],
+        [t("Klaar"),t("Tik rechtsboven op Afsluiten en dan op Opslaan.")]
       ],
       alleenApp:true
     },
     {
-      titel:"De tabbladen",
-      body:"Alles wat je invoert wordt direct automatisch op je iPhone bewaard. Via de tabbladen bovenin bekijk je het:",
+      titel:t("De tabbladen"),
+      body:t("Alles wat je invoert wordt direct automatisch op je telefoon bewaard. Via de tabbladen bovenin bekijk je het:"),
       lijst:[
-        ["Stats","Je niveau, elke partij met badges en je seizoenen."],
-        ["Dash","Grafieken van trend, consistentie, patronen, vergelijking en punten."],
-        ["Log","Al je partijen beurt voor beurt terugkijken, met notities."],
-        ["Info","Uitleg, weergave en instellingen, AI-analyse, en Exporteer/Importeer data voor een extra kopie of om over te zetten."]
+        [t("Stats"),t("Je niveau, elke partij met badges en je seizoenen.")],
+        [t("Dash"),t("Grafieken van trend, consistentie, patronen, vergelijking en punten.")],
+        [t("Log"),t("Al je partijen beurt voor beurt terugkijken, met notities.")],
+        [t("Info"),t("Uitleg, weergave en instellingen, AI-analyse, en Exporteer/Importeer data voor een extra kopie of om over te zetten.")]
       ],
       alleenApp:true
     },
     {
-      titel:"Hoe niveau werkt",
-      body:"Je niveau volgt je vorm: het gemiddelde van je laatste 20 partijen, met de officiële KNBB-klassegrenzen. Je moyenne over al je partijen zie je ernaast. Speel je goed, dan verdien je badges — genoeg badge-punten en je slechtste partij telt niet mee voor je vorm (hoogstens 1 op de 10)."
+      titel:t("Hoe niveau werkt"),
+      body:t("Je niveau volgt je vorm: het gemiddelde van je laatste 20 partijen, met de officiële KNBB-klassegrenzen. Je moyenne over al je partijen zie je ernaast. Speel je goed, dan verdien je badges — genoeg badge-punten en je slechtste partij telt niet mee voor je vorm (hoogstens 1 op de 10).")
     },
     {
-      titel:"Klaar om te beginnen!",
-      body:"Dat is het zo'n beetje — de rest ontdek je vanzelf tijdens het spelen. Kom je er niet uit? Onder Start partij staat altijd ℹ️ Zo werkt de app. Veel plezier!"
+      titel:t("Klaar om te beginnen!"),
+      body:t("Dat is het zo'n beetje — de rest ontdek je vanzelf tijdens het spelen. Kom je er niet uit? Onder Start partij staat altijd ℹ️ Zo werkt de app. Veel plezier!")
     }
   ].filter(function(s){return IS_NATIVE?!s.alleenWeb:!s.alleenApp;});
   const s=schermen[stap];
@@ -158,7 +158,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
               })}
               <button onClick={function(){setKaderOpen(function(v){return !v;});}}
                 style={{padding:"9px 4px",background:kaderActief?"var(--c-2d4a1e)":"none",border:"1px solid "+(kaderActief||kaderOpen?GOUD:KBDR),borderRadius:8,color:kaderActief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
-                {kaderActief?DISCIPLINES[discipline].naam:"Kader"} {kaderOpen?"▴":"▾"}
+                {kaderActief?DISCIPLINES[discipline].naam:t("Kader")} {kaderOpen?"▴":"▾"}
               </button>
             </div>
             {kaderOpen&&(
@@ -168,7 +168,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
                   return(
                     <button key={k} onClick={function(){wisselDiscipline(k);}}
                       style={{padding:"8px 2px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
-                      {DISCIPLINES[k].naam.replace("Kader ","")}
+                      {DISCIPLINES[k].naam.replace(/^\D+/,"")}
                     </button>
                   );
                 })}
@@ -178,17 +178,26 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
         )}
         {s.weergave&&(
           <div style={{marginBottom:16}}>
-            <div style={{fontSize:13,color:WIT,marginBottom:6}}>Tekstgrootte</div>
+            {/* Taal: standaard die van de telefoon */}
+            <div style={{fontSize:13,color:WIT,marginBottom:6}}>{t("Taal")}{TAAL!=="en"?" · Language":""}</div>
+            <div data-taalkeuze="" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:12}}>
+              {TALEN.map(function(x){
+                const actief=TAAL===x.code;
+                return <button key={x.code} onClick={function(){setWeergave("taal",x.code);}}
+                  style={{padding:"9px 2px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit",whiteSpace:"nowrap"}}>{x.vlag} {x.naam}</button>;
+              })}
+            </div>
+            <div style={{fontSize:13,color:WIT,marginBottom:6}}>{t("Tekstgrootte")}</div>
             <div style={{display:"flex",gap:6,marginBottom:12}}>
               {TEKSTGROOTTES.map(function(x){
                 const actief=tekstgrootte===x[0];
                 return <button key={x[0]} onClick={function(){setWeergave("tekstgrootte",x[0]);}}
-                  style={{flex:1,padding:"10px 2px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:12+(x[2]-1)*20,cursor:"pointer",fontFamily:"inherit"}}>{x[1]}</button>;
+                  style={{flex:1,padding:"10px 2px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:12+(x[2]-1)*20,cursor:"pointer",fontFamily:"inherit"}}>{t(x[1])}</button>;
               })}
             </div>
-            <div style={{fontSize:13,color:WIT,marginBottom:6}}>Eenvoudige modus</div>
+            <div style={{fontSize:13,color:WIT,marginBottom:6}}>{t("Eenvoudige modus")}</div>
             <div style={{display:"flex",gap:6}}>
-              {[[false,"Alles laten zien"],[true,"Eenvoudig"]].map(function(x){
+              {[[false,t("Alles laten zien")],[true,t("Eenvoudig")]].map(function(x){
                 const actief=eenvoudig===x[0];
                 return <button key={x[1]} onClick={function(){setWeergave("eenvoudig",x[0]);}}
                   style={{flex:1,padding:"10px 2px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>{x[1]}</button>;
@@ -206,20 +215,20 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
         {s.installeer&&(
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"12px 12px",marginBottom:16,fontSize:13,color:WITD,lineHeight:1.6}}>
             <div style={{color:GOUD,fontWeight:"bold",marginBottom:4}}>📱 iPhone/iPad (Safari)</div>
-            <div style={{marginBottom:10}}>Tik rechtsonderin op •••  (of het deel-icoontje) → "Deel" → eventueel "Toon meer" → "Zet op beginscherm" → "Voeg toe"</div>
+            <div style={{marginBottom:10}}>{t("Tik rechtsonderin op •••  (of het deel-icoontje) → \"Deel\" → eventueel \"Toon meer\" → \"Zet op beginscherm\" → \"Voeg toe\"")}</div>
             <div style={{color:GOUD,fontWeight:"bold",marginBottom:4}}>🤖 Android (Chrome)</div>
-            <div>Menu (⋮) rechtsboven → "App installeren" (verschijnt soms ook automatisch als balkje onderin)</div>
+            <div>{t("Menu (⋮) rechtsboven → \"App installeren\" (verschijnt soms ook automatisch als balkje onderin)")}</div>
           </div>
         )}
         <div style={{display:"flex",gap:8}}>
           {!laatste&&(
             <button onClick={onKlaar} style={{padding:"12px 10px",background:"none",border:"none",color:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit",opacity:0.7}}>
-              Overslaan
+              {t("Overslaan")}
             </button>
           )}
           <button className="plusmin-btn" onClick={function(){laatste?onKlaar():setStap(function(n){return n+1;});}}
             style={{flex:1,padding:13,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:15,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>
-            {laatste?"Eerste partij starten":"Volgende"}
+            {laatste?t("Eerste partij starten"):t("Volgende")}
           </button>
         </div>
       </div>

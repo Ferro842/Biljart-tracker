@@ -307,46 +307,54 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
     // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link (zodra die
     // er is) of anders de website.
     const url=IS_NATIVE?(APP_STORE_URL||WEB_URL):window.location.href;
-    const tekst="Ik gebruik deze Biljart Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?";
+    const tekst=t("Ik gebruik deze Biljart Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?");
     if(navigator.share){
       navigator.share({title:"Biljart Tracker",text:tekst,url:url}).catch(function(){});
     }else if(navigator.clipboard){
       navigator.clipboard.writeText(url).then(function(){
-        setDeelResultaat("Link gekopieerd naar klembord!");
+        setDeelResultaat(t("Link gekopieerd naar klembord!"));
         setTimeout(function(){setDeelResultaat("");},2500);
       }).catch(function(){
-        setDeelResultaat("Kopiëren mislukt — kopieer de link handmatig uit de adresbalk.");
+        setDeelResultaat(t("Kopiëren mislukt — kopieer de link handmatig uit de adresbalk."));
       });
     }else{
-      setDeelResultaat("Kopieer de link handmatig uit de adresbalk.");
+      setDeelResultaat(t("Kopieer de link handmatig uit de adresbalk."));
     }
   }
 
-  const kop=function(t){return <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUDL,margin:"18px 2px 8px"}}>{t}</div>;};
+  const kop=function(tekst){return <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUDL,margin:"18px 2px 8px"}}>{tekst}</div>;};
   return(
     <div className="scrollvak" style={{overflowY:"auto",padding:kopBlok?"0 14px 12px":"12px 14px",height:"100%"}}>
       {kopBlok&&kopBlok({rand:14,onder:12})}
       <button onClick={openUitleg} style={{width:"100%",padding:"16px",marginBottom:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:17,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}>
-        ℹ️ Zo werkt de app
+        ℹ️ {t("Zo werkt de app")}
       </button>
 
-      {/* Weergave: tekstgrootte en eenvoudige modus (voor wie het groter en rustiger wil) */}
+      {/* Weergave: taal, tekstgrootte en eenvoudige modus (voor wie het groter en rustiger wil) */}
       <div style={{background:KBG,border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>Weergave</div>
-        <div style={{fontSize:14,color:WIT,marginBottom:6}}>Tekstgrootte</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Weergave")}</div>
+        <div style={{fontSize:14,color:WIT,marginBottom:6}}>{t("Taal")}{TAAL!=="en"?" · Language":""}</div>
+        <div data-taalkeuze="" style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6,marginBottom:12}}>
+          {TALEN.map(function(x){
+            const actief=TAAL===x.code;
+            return <button key={x.code} onClick={function(){if(!actief)setWeergave("taal",x.code);}}
+              style={{padding:"9px 4px",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14,whiteSpace:"nowrap"}}>{x.vlag} {x.naam}</button>;
+          })}
+        </div>
+        <div style={{fontSize:14,color:WIT,marginBottom:6}}>{t("Tekstgrootte")}</div>
         <div style={{display:"flex",gap:6,marginBottom:12}}>
           {TEKSTGROOTTES.map(function(x){
             const actief=(data.tekstgrootte||"normaal")===x[0];
             return <button key={x[0]} onClick={function(){setWeergave("tekstgrootte",x[0]);}}
-              style={{flex:1,padding:"10px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12+(x[2]-1)*20}}>{x[1]}</button>;
+              style={{flex:1,padding:"10px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:12+(x[2]-1)*20}}>{t(x[1])}</button>;
           })}
         </div>
-        <div style={{fontSize:14,color:WIT,marginBottom:4}}>Eenvoudige modus</div>
+        <div style={{fontSize:14,color:WIT,marginBottom:4}}>{t("Eenvoudige modus")}</div>
         <div style={{fontSize:13,color:WITD,marginBottom:8,lineHeight:1.5}}>
-          Alleen het belangrijkste: per beurt je caramboles invullen en Noteer, zonder de stap met opmerkingen. Wil je bij een beurt toch iets aanvinken, tik dan + opmerking. In Dash alleen het belangrijkste. Badges en punten zet je hieronder los aan of uit.
+          {t("Alleen het belangrijkste: per beurt je caramboles invullen en Noteer, zonder de stap met opmerkingen. Wil je bij een beurt toch iets aanvinken, tik dan + opmerking. In Dash alleen het belangrijkste. Badges en punten zet je hieronder los aan of uit.")}
         </div>
         <div style={{display:"flex",gap:6}}>
-          {[[true,"Aan"],[false,"Uit"]].map(function(x){
+          {[[true,t("Aan")],[false,t("Uit")]].map(function(x){
             const actief=eenvoudig===x[0];
             return <button key={x[1]} onClick={function(){if(!actief)setWeergave("eenvoudig",x[0]);}}
               style={{flex:1,padding:"10px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
@@ -356,10 +364,10 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
 
       {/* Animaties en vieringen (optellende cijfers, groeiende balken, vallende balletjes) */}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Animaties en vieringen</div>
-        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>Optellende cijfers, groeiende balken en een korte viering bij een topserie, record, hogere klasse of gehaald doel.</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Animaties en vieringen")}</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>{t("Optellende cijfers, groeiende balken en een korte viering bij een topserie, record, hogere klasse of gehaald doel.")}</div>
         <div style={{display:"flex",gap:6}}>
-          {[[true,"✨ Aan"],[false,"Uit"]].map(function(x){
+          {[[true,"✨ "+t("Aan")],[false,t("Uit")]].map(function(x){
             const actief=(data.animaties!==false)===x[0];
             return <button key={x[1]} onClick={function(){if(!actief)setWeergave("animaties",x[0]);}}
               style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
@@ -369,13 +377,13 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
 
       {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen (ook in eenvoudige modus) */}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Spelelement</div>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Spelelement")}</div>
         <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-          Badges, punten en het schrappen van je slechtste partijen uit je vorm (1 per {PUNTEN_PER_DROP} punten, hoogstens 1 op de 10 partijen). Werkt ook in de eenvoudige modus.
-          {spel?" Zet je het uit, dan zie je daar niets meer van en is je vorm gewoon het gemiddelde van die partijen.":" Staat uit: je vorm is gewoon het gemiddelde van die partijen, niets geschrapt. De punten worden op de achtergrond bijgehouden; zet je het weer aan, dan is alles direct terug."}
+          {t("Badges, punten en het schrappen van je slechtste partijen uit je vorm (1 per {n} punten, hoogstens 1 op de 10 partijen). Werkt ook in de eenvoudige modus.",{n:PUNTEN_PER_DROP})}
+          {" "}{spel?t("Zet je het uit, dan zie je daar niets meer van en is je vorm gewoon het gemiddelde van die partijen."):t("Staat uit: je vorm is gewoon het gemiddelde van die partijen, niets geschrapt. De punten worden op de achtergrond bijgehouden; zet je het weer aan, dan is alles direct terug.")}
         </div>
         <div style={{display:"flex",gap:6}}>
-          {[[true,"🎖️ Aan"],[false,"Uit"]].map(function(x){
+          {[[true,"🎖️ "+t("Aan")],[false,t("Uit")]].map(function(x){
             const actief=spel===x[0];
             return <button key={x[1]} onClick={function(){if(!actief)setSpelelement(x[0]);}}
               style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
@@ -383,31 +391,31 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
         </div>
       </div>
 
-      {kop("Back-up en gegevens")}
+      {kop(t("Back-up en gegevens"))}
       <DataTab data={data} alleP={alleP} huidigeDiscipline={huidigeDiscipline} vervangData={vervangData} ingebed={true} onBackup={backupGemaakt}/>
 
       {!confReset
         ?<button style={{width:"100%",padding:10,background:"none",border:"1px solid #7a3030",borderRadius:8,color:"#e06060",cursor:"pointer",fontSize:14,fontFamily:"inherit"}}
-          onClick={function(){setConfReset(true);}}>Alle data wissen</button>
+          onClick={function(){setConfReset(true);}}>{t("Alle data wissen")}</button>
         :<div style={{background:"#2a1515",border:"1px solid #7a3030",borderRadius:8,padding:"12px 14px"}}>
-          <div style={{fontSize:14,color:"#e06060",marginBottom:10}}>Weet je het zeker?</div>
+          <div style={{fontSize:14,color:"#e06060",marginBottom:10}}>{t("Weet je het zeker?")}</div>
           <div style={{display:"flex",gap:8}}>
-            <button style={{flex:1,padding:10,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={function(){resetAlles();setConfReset(false);}}>Ja, wis alles</button>
-            <button style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={function(){setConfReset(false);}}>Annuleer</button>
+            <button style={{flex:1,padding:10,background:"#7a3030",border:"none",borderRadius:6,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={function(){resetAlles();setConfReset(false);}}>{t("Ja, wis alles")}</button>
+            <button style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={function(){setConfReset(false);}}>{t("Annuleer")}</button>
           </div>
         </div>}
 
         <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>Over deze app</div>
+          <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Over deze app")}</div>
           <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
-            Biljart Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.
+            {t("Biljart Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.")}
           </div>
           <button onClick={deelApp} style={{width:"100%",padding:11,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit",marginBottom:8}}>
-            📤 Deel deze app
+            📤 {t("Deel deze app")}
           </button>
           {deelResultaat&&<div style={{textAlign:"center",fontSize:12,color:GRNT}}>{deelResultaat}</div>}
           <div style={{textAlign:"center",fontSize:11,color:WITD,opacity:0.6,marginTop:4}}>
-            Versie {APP_VERSIE} · <a href={WEB_URL+"privacy.html"} target="_blank" rel="noopener" style={{color:WITD}}>Privacybeleid</a>
+            {t("Versie")} {APP_VERSIE} · <a href={WEB_URL+"privacy.html"} target="_blank" rel="noopener" style={{color:WITD}}>{t("Privacybeleid")}</a>
           </div>
         </div>
     </div>

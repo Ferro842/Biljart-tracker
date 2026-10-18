@@ -142,7 +142,7 @@ function OpmGrid({lijst,prefix,kleur,geselecteerd,toggle,vullen}){
             style={{background:actief?(kleur===ROOD?"#3a1010":"var(--c-1a3a1a)"):"var(--c-1c3019)",border:"1px solid "+(actief?kleur:KBDR),borderRadius:8,padding:krap?"2px 3px":"7px 4px",color:actief?kleur:WITD,cursor:"pointer",
               fontSize:krap===2?11.5:13,lineHeight:1.15,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,fontFamily:"inherit",minHeight:0,overflow:"hidden"}}>
             {!krap&&<span style={{fontSize:14}}>{o.emoji}</span>}
-            <span>{o.label}</span>
+            <span>{t(o.label)}</span>
           </button>
         );
       })}

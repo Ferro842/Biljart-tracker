@@ -283,8 +283,8 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 
 ### Samen, na goedkeuring van 1.0
 4. **Versie 1.1 naar de App Store**: zeven talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
-   systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen Engels/Frans/Duits staan in
-   `store/screenshots/ios-en|fr|de` (en iCloud Drive "Biljart Tracker store"). Eventueel nog Spaans/Turks/Koreaans maken.
+   systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle zeven talen staan in
+   `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
 5. **`APP_STORE_URL`** in `js/constanten.js` invullen na publicatie (voor "Deel deze app").
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`).

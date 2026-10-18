@@ -840,7 +840,7 @@ function berekenInzicht(partijen,discipline){
 
   // 7. Coach: een paar zinnen, alleen bij genoeg voorbeelden
   const coach=[];
-  const k2=function(x){return getalTekst(x,2);},k1=function(x){return getalTekst(x,1);},pc=function(x){return Math.round(x*100)+"%";};
+  const k2=function(x){return getalTekst(x,2);},k1=function(x){return getalTekst(x,1);},pc=procentTekst;
   const teken=function(x){return(x>=0?"+":"−")+k2(Math.abs(x));};
   // Vorm in poedels en series: wat veranderde er concreet per partij, en wat leverde dat op
   if(helftLabels&&vergelijkingen.length){

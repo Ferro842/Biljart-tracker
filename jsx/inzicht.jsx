@@ -45,7 +45,7 @@ function InzichtPaneel({partijen,discipline}){
   const dec=discipline==="driebanden"?3:2;
   // Kaarten over opmerkingen: altijd, behalve in eenvoudige modus zonder één bijgehouden partij
   const metOpm=!eenvoudig||inz.dekking.bijgehouden>0;
-  const pctTekst=function(x){return Math.round(x*100)+"%";};
+  const pctTekst=procentTekst;
   const icoon={vorm:"📊",hoogste:"🏆",poedeltrend:"⭕",poedel:"⭕",sterk:"💪",werk:"🎯",motor:"⚙️",serie:"🔥",mentaal:"🧘",omstandigheid:"🧭",trend:"📈"};
   const spelZinnen=inz.coach.filter(function(c){return c.soort!=="omstandigheid";});
   const omstZinnen=inz.coach.filter(function(c){return c.soort==="omstandigheid";});

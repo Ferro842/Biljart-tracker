@@ -25,9 +25,15 @@
   uit.frans=!!k("Libre")&&!k("Straight")&&tekst().indexOf("Affichage")!==-1;
   kb("Deutsch").click();await w(300);
   uit.duits=!!k("Freie Partie")&&tekst().indexOf("Anzeige")!==-1;
+  // Spaans en Turks (Turks: procentteken vóór het getal)
+  kb("Español").click();await w(300);
+  uit.spaans=!!k("3 bandas")&&tekst().indexOf("Vista")!==-1&&t("Gemist door")==="Fallada por";
+  kb("Türkçe").click();await w(300);
+  uit.turks=!!k("Serbest")&&tekst().indexOf("Görünüm")!==-1&&procentTekst(0.43)==="%43";
   kb("Nederlands").click();await w(300);
+  uit.turks=uit.turks&&procentTekst(0.43)==="43%";
   uit.terug=data().taal==="nl"&&tekst().indexOf("Weergave")!==-1;
   k("Spelen").click();await w(200);
-  uit.goed=uit.keuze&&uit.engelsBewaard&&uit.engels&&uit.labelNederlands&&uit.frans&&uit.duits&&uit.terug;
+  uit.goed=uit.keuze&&uit.engelsBewaard&&uit.engels&&uit.labelNederlands&&uit.frans&&uit.duits&&uit.spaans&&uit.turks&&uit.terug;
   return uit;
 })()

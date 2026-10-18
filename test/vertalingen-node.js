@@ -38,7 +38,7 @@ sleutels.add(c.BRIEFJE_PROMPT);
 })();
 
 global.VERTALING={};
-["en","fr","de"].forEach(function(code){(new Function("VERTALING",fs.readFileSync(path.join(map,"js/taal-"+code+".js"),"utf8")))(global.VERTALING);});
+fs.readdirSync(path.join(map,"js")).filter(function(f){return/^taal-\w+\.js$/.test(f);}).map(function(f){return f.slice(5,-3);}).forEach(function(code){(new Function("VERTALING",fs.readFileSync(path.join(map,"js/taal-"+code+".js"),"utf8")))(global.VERTALING);});
 const vars=function(s){return(s.match(/\{\w+\}/g)||[]).sort().join(",");};
 const lijstTaal=process.argv.indexOf("--lijst")!==-1?process.argv[process.argv.indexOf("--lijst")+1]:null;
 let fout=false;

@@ -55,7 +55,7 @@ controleert ze.
 > • Set and track goals, badges and points if you enjoy that (can be switched off)
 > • Share a game or your season as a nice card
 > • Simple mode and extra large text if you want to keep it easy
-> • Available in English, Dutch, French and German
+> • Available in English, Dutch, French, German, Spanish and Turkish
 >
 > PRIVACY
 > No account, no ads, no tracking. All your data stays on your own phone. Make your own backup via Info → Export; the app reminds you.
@@ -105,7 +105,7 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 > • Fixe et suis des objectifs, badges et points si cela te plaît (désactivable)
 > • Partage une partie ou ta saison sous forme de belle carte
 > • Mode simple et très grand texte pour plus de tranquillité
-> • Disponible en français, anglais, néerlandais et allemand
+> • Disponible en français, anglais, néerlandais, allemand, espagnol et turc
 >
 > CONFIDENTIALITÉ
 > Pas de compte, pas de publicité, pas de suivi. Toutes tes données restent sur ton téléphone. Fais ta propre sauvegarde via Info → Exporter ; l'appli te le rappelle.
@@ -155,7 +155,7 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 > • Ziele setzen und verfolgen, Badges und Punkte, wenn dir das gefällt (abschaltbar)
 > • Teile eine Partie oder deine Saison als schöne Karte
 > • Einfacher Modus und extra große Schrift für alle, die es ruhig mögen
-> • Verfügbar auf Deutsch, Englisch, Niederländisch und Französisch
+> • Verfügbar auf Deutsch, Englisch, Niederländisch, Französisch, Spanisch und Türkisch
 >
 > DATENSCHUTZ
 > Kein Konto, keine Werbung, kein Tracking. Alle Daten bleiben auf deinem Handy. Mach selbst ein Backup über Info → Exportieren; die App erinnert dich daran.
@@ -164,6 +164,106 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 
 ```
 Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme,Punkte
+```
+
+---
+
+## Spaans (Español)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Biljart Tracker |
+| Ondertitel (30) | Carambola: series y promedio |
+| Play: korte beschrijving (80) | Registra tus partidas de carambola: cada entrada, promedio, series y categoría. |
+
+**Promotietekst (170)**
+
+> Registra cada partida de carambola, entrada por entrada. Ve tu promedio, tus series más altas y dónde pierdes carambolas. Todo se queda en tu propio teléfono.
+
+**Beschrijving (4000)**
+
+> Biljart Tracker está hecho por y para jugadores de carambola. Anota tus carambolas en cada entrada mientras juegas y ve al instante cómo va tu partida.
+>
+> MIENTRAS JUEGAS
+> • Tus carambolas por entrada con + y −, y un toque en Anotar
+> • Si quieres, marca por qué terminó tu serie y qué salió bien
+> • Tu promedio, tu serie más alta, tus ceros y tus series se actualizan en directo
+> • Botones grandes y claros; todo cabe en la pantalla, incluso con letra muy grande
+>
+> TUS CIFRAS
+> • Promedio general y forma (últimas 10, 20 o 30 partidas) con tu categoría, según las tablas de la federación neerlandesa (KNBB)
+> • Series más altas por mesa, ceros, construcción y tendencia en el tiempo
+> • Calendario de juego, temporadas y un resumen por tamaño de mesa
+> • Análisis: qué golpes dominas y dónde suele terminar tu serie
+>
+> PARA CADA MODALIDAD
+> • Libre, tres bandas, una banda y cuadro 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 y 71/2
+> • Cada modalidad con su propio promedio, categoría y color
+>
+> EXTRAS
+> • Pasar un acta: haz una foto, deja que tu propio chat de IA la lea y comprueba las entradas
+> • Fija y sigue objetivos, insignias y puntos si te gusta (se puede desactivar)
+> • Comparte una partida o tu temporada como una bonita tarjeta
+> • Modo sencillo y letra muy grande para quien lo prefiera tranquilo
+> • Disponible en español, inglés, neerlandés, francés, alemán y turco
+>
+> PRIVACIDAD
+> Sin cuenta, sin anuncios, sin seguimiento. Todos tus datos se quedan en tu propio teléfono. Haz tu propia copia de seguridad en Info → Exportar; la app te lo recuerda.
+
+**Trefwoorden (100)**
+
+```
+carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,partida,taco
+```
+
+---
+
+## Turks (Türkçe)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Biljart Tracker |
+| Ondertitel (30) | Karambol: seri ve ortalama |
+| Play: korte beschrijving (80) | Karambol maçlarını takip et: her istaka, ortalama, seriler ve sınıf. |
+
+**Promotietekst (170)**
+
+> Her karambol maçını istaka istaka takip et. Ortalamanı, en yüksek serilerini ve nerede sayı kaçırdığını gör. Her şey kendi telefonunda kalır.
+
+**Beschrijving (4000)**
+
+> Biljart Tracker, karambol oyuncuları tarafından karambol oyuncuları için yapıldı. Oynarken her istakada sayını gir ve maçının nasıl gittiğini hemen gör.
+>
+> OYNARKEN
+> • İstaka başına sayın + ve − ile, ve Kaydet'e tek dokunuş
+> • İstersen serinin neden bittiğini ve neyin iyi gittiğini işaretle
+> • Ortalaman, en yüksek serin, sıfırların ve serilerin canlı güncellenir
+> • Büyük, net düğmeler; çok büyük yazıyla bile her şey ekrana sığar
+>
+> RAKAMLARIN
+> • Genel ortalama ve form (son 10, 20 veya 30 maç) sınıfınla birlikte, Hollanda federasyonunun (KNBB) tablolarına göre
+> • Masa başına en yüksek seriler, sıfırlar, seri kurma ve zaman içindeki eğilim
+> • Oyun takvimi, sezonlar ve masa boyuna göre özet
+> • Analiz: hangi vuruşlara hâkim olduğun ve serinin genelde nerede bittiği
+>
+> HER DİSİPLİN İÇİN
+> • Serbest, üç bant, tek bant ve kadr 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 ve 71/2
+> • Her disiplinin kendi ortalaması, sınıfı ve rengi
+>
+> EKSTRALAR
+> • Maç cetvelini aktar: fotoğrafını çek, kendi yapay zekâ sohbetine okut ve istakaları kontrol et
+> • Hedef belirle ve takip et; istersen rozetler ve puanlar (kapatılabilir)
+> • Bir maçı ya da sezonunu güzel bir kart olarak paylaş
+> • Sakin kullanım isteyenler için basit mod ve çok büyük yazı
+> • Türkçe, İngilizce, Felemenkçe, Fransızca, Almanca ve İspanyolca dillerinde
+>
+> GİZLİLİK
+> Hesap yok, reklam yok, takip yok. Tüm verilerin kendi telefonunda kalır. Bilgi → Dışa aktar ile kendi yedeğini al; uygulama sana hatırlatır.
+
+**Trefwoorden (100)**
+
+```
+karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,isteka
 ```
 
 ---

@@ -8,7 +8,9 @@ const TALEN=[
   {code:"nl",naam:"Nederlands",vlag:"🇳🇱"},
   {code:"en",naam:"English",vlag:"🇬🇧"},
   {code:"fr",naam:"Français",vlag:"🇫🇷"},
-  {code:"de",naam:"Deutsch",vlag:"🇩🇪"}
+  {code:"de",naam:"Deutsch",vlag:"🇩🇪"},
+  {code:"es",naam:"Español",vlag:"🇪🇸"},
+  {code:"tr",naam:"Türkçe",vlag:"🇹🇷"}
 ];
 const VERTALING={};
 let TAAL="nl";
@@ -54,7 +56,7 @@ function badgeLabel(l){
   return m?t("Gemiddelde boven {g}",{g:m[1]}):t(l);
 }
 // Datumnotatie van de taal (voor toLocaleDateString)
-function taalLocale(){return{nl:"nl-NL",en:"en-GB",fr:"fr-FR",de:"de-DE"}[TAAL]||"nl-NL";}
+function taalLocale(){return{nl:"nl-NL",en:"en-GB",fr:"fr-FR",de:"de-DE",es:"es-ES",tr:"tr-TR"}[TAAL]||"nl-NL";}
 // Seizoennamen worden als "Seizoen 2" opgeslagen; zo tonen ze in de gekozen taal (een eigen naam blijft staan)
 function seizoenNaam(s){
   const m=/^Seizoen (\d+)$/.exec((s&&s.naam)||"");
@@ -74,6 +76,8 @@ function weekdagLetters(){
   return uit;
 }
 // Getal met de decimaalkomma of -punt van de taal (Engels: punt)
+// Percentage (0,43 → "43%"); Turks zet het procentteken ervoor ("%43")
+function procentTekst(x){const n=Math.round(x*100);return TAAL==="tr"?"%"+n:n+"%";}
 // Dubbele punt tussen twee stukken tekst: Frans met spatie ervoor (" : ")
 function dubbelePunt(){return TAAL==="fr"?" : ":": ";}
 function getalTekst(x,dec){

@@ -187,14 +187,17 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 
 ## Talen (vanaf 18 okt 2026)
 
-- Nederlands, Engels, Frans, Duits; later Spaans, Turks, Koreaans, Vietnamees. Keuze: Info → Weergave → Taal en het eerste
+- Nederlands, Engels, Frans, Duits, Spaans, Turks (18 okt 2026); daarna vierbal + Koreaans, later Vietnamees. Nieuwe taal:
+  `js/taal-<code>.js` + `TALEN` en `taalLocale()` in `js/taal.js` + script-tag in index.html + `VOORAF` in sw.js (en het aantal
+  in `test/sw-node.js`); de controle vindt taalbestanden zelf. Dash-tabs moeten op 440 breed op één regel passen (meten;
+  Frans/Spaans/Engels hebben daarom kortere tabnamen). Keuze: Info → Weergave → Taal en het eerste
   welkomstscherm (`data.taal`). Zonder keuze: Nederlands voor bestaande gebruikers (onboardingGezien/partijen), anders de taal
   van het toestel (`taalVoorData`). `zetTaal()` draait bovenaan de render van BiljartTracker; `t()` leest de globale `TAAL`.
 - Nieuwe tekst altijd als `t("Nederlandse tekst",{n:..})` en vertalen in alle `js/taal-*.js`; controle:
   `node test/vertalingen-node.js` (zoekt `t("...")` en `t(cond?"a":"b")` in de code; teksten via een andere variabele ziet hij
   niet en staan dan als "overbodig"). Ontbreekt een vertaling, dan valt `t()` terug op Engels en daarna Nederlands.
 - Hulpjes in `js/taal.js`: `badgeLabel()`, `seizoenNaam()` ("Seizoen 2" → taal), `taalLocale()` (voor toLocaleDateString),
-  `getalTekst()` (komma/punt), `maandTekst()` (maandKey "mrt 2026" → taal), `maandNaam()`, `weekdagLetters()`.
+  `getalTekst()` (komma/punt), `procentTekst()` (Turks "%43"), `dubbelePunt()` (Frans " : "), `maandTekst()` (maandKey "mrt 2026" → taal), `maandNaam()`, `weekdagLetters()`.
 - `BRIEFJE_PROMPT` wordt vertaald met `t(BRIEFJE_PROMPT)`; de trefwoorden SPELER/TE MAKEN/BEURTEN/DATUM blijven Nederlands
   (de vertaalde vraag zegt dat), want `leesBriefje()` zoekt daarop.
 - Opgeslagen gegevens blijven Nederlands (opmerkingen, badge-labels, seizoennamen): alleen bij tonen `t(label)`. `.naam` van
@@ -203,7 +206,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
   waar `t()` nodig is (overschaduwt de functie).
 - Termen: beurt = inning / reprise / Aufnahme; serie = run / série / Serie; poedel = miss / reprise blanche / Nuller;
   libre/driebanden/bandstoten/kader = straight rail, three-cushion, one-cushion, balkline / libre, trois bandes, une bande, cadre /
-  Freie Partie, Dreiband, Einband, Cadre.
+  Freie Partie, Dreiband, Einband, Cadre. Spaans: entrada, serie, cero, carambolas, promedio; Libre, Tres bandas, Una banda,
+  Cuadro. Turks: istaka, seri, sıfır, sayı, ortalama; Serbest, Üç Bant, Tek Bant, Kadr.
 - Fase 1 klaar (kop, tabbladen, Spelen, opmerkingen, Info, welkom). Fase 2 klaar (Stats, Log, partijregels, vensters, uitleg,
   badges, vormUitleg, wauw: doel, kalender, seizoen in beeld, deelkaarten). Fase 3 klaar (Dash, Inzicht, coachzinnen en
   omstandigheden in `berekenInzicht`; titels van omstandigheden blijven Nederlands in de data, want de code vergelijkt erop,

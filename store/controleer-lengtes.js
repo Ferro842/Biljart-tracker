@@ -2,7 +2,7 @@
 // Gebruik: node store/controleer-lengtes.js
 const fs=require("fs"),path=require("path");
 const md=fs.readFileSync(path.join(__dirname,"talen.md"),"utf8");
-const delen=md.split(/^## /m).filter(function(d){return/^(Engels|Frans|Duits|Spaans|Turks)/.test(d);});
+const delen=md.split(/^## /m).filter(function(d){return/^(Engels|Frans|Duits|Spaans|Turks|Koreaans)/.test(d);});
 let fout=false;
 const meld=function(taal,veld,tekst,max){
   const n=[...tekst].length,ok=n<=max;if(!ok)fout=true;

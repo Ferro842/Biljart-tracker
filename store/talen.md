@@ -55,7 +55,7 @@ controleert ze.
 > • Set and track goals, badges and points if you enjoy that (can be switched off)
 > • Share a game or your season as a nice card
 > • Simple mode and extra large text if you want to keep it easy
-> • Available in English, Dutch, French, German, Spanish and Turkish
+> • Available in English, Dutch, French, German, Spanish, Turkish and Korean
 >
 > PRIVACY
 > No account, no ads, no tracking. All your data stays on your own phone. Make your own backup via Info → Export; the app reminds you.
@@ -105,7 +105,7 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 > • Fixe et suis des objectifs, badges et points si cela te plaît (désactivable)
 > • Partage une partie ou ta saison sous forme de belle carte
 > • Mode simple et très grand texte pour plus de tranquillité
-> • Disponible en français, anglais, néerlandais, allemand, espagnol et turc
+> • Disponible en français, anglais, néerlandais, allemand, espagnol, turc et coréen
 >
 > CONFIDENTIALITÉ
 > Pas de compte, pas de publicité, pas de suivi. Toutes tes données restent sur ton téléphone. Fais ta propre sauvegarde via Info → Exporter ; l'appli te le rappelle.
@@ -155,7 +155,7 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 > • Ziele setzen und verfolgen, Badges und Punkte, wenn dir das gefällt (abschaltbar)
 > • Teile eine Partie oder deine Saison als schöne Karte
 > • Einfacher Modus und extra große Schrift für alle, die es ruhig mögen
-> • Verfügbar auf Deutsch, Englisch, Niederländisch, Französisch, Spanisch und Türkisch
+> • Verfügbar auf Deutsch, Englisch, Niederländisch, Französisch, Spanisch, Türkisch und Koreanisch
 >
 > DATENSCHUTZ
 > Kein Konto, keine Werbung, kein Tracking. Alle Daten bleiben auf deinem Handy. Mach selbst ein Backup über Info → Exportieren; die App erinnert dich daran.
@@ -205,7 +205,7 @@ Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme
 > • Fija y sigue objetivos, insignias y puntos si te gusta (se puede desactivar)
 > • Comparte una partida o tu temporada como una bonita tarjeta
 > • Modo sencillo y letra muy grande para quien lo prefiera tranquilo
-> • Disponible en español, inglés, neerlandés, francés, alemán y turco
+> • Disponible en español, inglés, neerlandés, francés, alemán, turco y coreano
 >
 > PRIVACIDAD
 > Sin cuenta, sin anuncios, sin seguimiento. Todos tus datos se quedan en tu propio teléfono. Haz tu propia copia de seguridad en Info → Exportar; la app te lo recuerda.
@@ -255,7 +255,7 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 > • Hedef belirle ve takip et; istersen rozetler ve puanlar (kapatılabilir)
 > • Bir maçı ya da sezonunu güzel bir kart olarak paylaş
 > • Sakin kullanım isteyenler için basit mod ve çok büyük yazı
-> • Türkçe, İngilizce, Felemenkçe, Fransızca, Almanca ve İspanyolca dillerinde
+> • Türkçe, İngilizce, Felemenkçe, Fransızca, Almanca, İspanyolca ve Korece dillerinde
 >
 > GİZLİLİK
 > Hesap yok, reklam yok, takip yok. Tüm verilerin kendi telefonunda kalır. Bilgi → Dışa aktar ile kendi yedeğini al; uygulama sana hatırlatır.
@@ -264,6 +264,58 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 
 ```
 karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,isteka
+```
+
+---
+
+## Koreaans (한국어)
+
+| Veld | Tekst |
+|---|---|
+| Naam (30) | Biljart Tracker |
+| Ondertitel (30) | 4구·3쿠션 경기 기록과 에버리지 |
+| Play: korte beschrijving (80) | 캐롬 경기를 이닝마다 기록하세요: 에버리지, 하이런, 공타, 등급까지. |
+
+**Promotietekst (170)**
+
+> 4구와 3쿠션 경기를 이닝마다 기록하세요. 에버리지, 하이런, 그리고 어디서 점수를 놓치는지 한눈에 볼 수 있어요. 모든 데이터는 내 휴대폰에만 저장돼요.
+
+**Beschrijving (4000)**
+
+> Biljart Tracker는 캐롬 선수가 캐롬 선수를 위해 만든 앱이에요. 치면서 이닝마다 득점을 입력하고 경기 흐름을 바로 확인하세요.
+>
+> 경기 중에
+> • 이닝마다 + 와 − 로 득점, 기록 버튼 한 번
+> • 원하면 연속 득점이 끝난 이유와 잘된 점을 체크
+> • 에버리지, 하이런, 공타, 연속 득점이 실시간으로 갱신
+> • 4구: 상대 수구를 맞히면 −1 벌점 기록 (경기 점수에서 차감)
+> • 크고 선명한 버튼, 아주 큰 글자에서도 한 화면에
+>
+> 내 기록
+> • 4구는 한국식 핸디(30~1000) 기준 등급
+> • 최근 10, 20, 30경기 폼과 전체 에버리지
+> • 테이블별 하이런, 공타, 추세 그래프
+> • 경기 캘린더, 시즌, 테이블 크기별 정리
+> • 분석: 잘 치는 샷과 연속 득점이 주로 끝나는 지점
+>
+> 모든 종목
+> • 4구, 3쿠션, 1쿠션, 프리, 보크라인 35/2, 38/2, 47/1, 47/2, 52/2, 57/2, 71/2
+> • 종목마다 에버리지, 등급, 색이 따로
+>
+> 추가 기능
+> • 경기 기록지 사진을 내 AI 채팅으로 읽어서 입력
+> • 목표 설정과 진행 링, 원하면 배지와 포인트 (끌 수 있음)
+> • 경기나 시즌을 멋진 카드로 공유
+> • 간단 모드와 아주 큰 글자
+> • 한국어, 영어, 네덜란드어, 프랑스어, 독일어, 스페인어, 터키어 지원
+>
+> 개인정보
+> 계정 없음, 광고 없음, 추적 없음. 모든 데이터는 내 휴대폰에만 있어요. 정보 → 내보내기로 직접 백업하세요. 앱이 때때로 알려 줘요.
+
+**Trefwoorden (100)**
+
+```
+당구,4구,3쿠션,캐롬,에버리지,하이런,핸디,당구기록,당구점수,이닝,공타,큐
 ```
 
 ---

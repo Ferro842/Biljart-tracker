@@ -30,10 +30,15 @@
   uit.spaans=!!k("3 bandas")&&tekst().indexOf("Vista")!==-1&&t("Gemist door")==="Fallada por";
   kb("Türkçe").click();await w(300);
   uit.turks=!!k("Serbest")&&tekst().indexOf("Görünüm")!==-1&&procentTekst(0.43)==="%43";
+  // Koreaans: vierbal (4구) staat standaard in de balk, decimale punt
+  kb("한국어").click();await w(300);
+  const segKo=Array.from(document.querySelectorAll("#root button.seg-knop")).map(function(b){return b.textContent.trim();});
+  uit.koreaans=segKo.indexOf("4구")!==-1&&getalTekst(2.5,2)==="2.50"&&tekst().indexOf("화면")!==-1;
   kb("Nederlands").click();await w(300);
   uit.turks=uit.turks&&procentTekst(0.43)==="43%";
+  uit.koreaans=uit.koreaans&&Array.from(document.querySelectorAll("#root button.seg-knop")).every(function(b){return b.textContent.trim()!=="Vierbal";});
   uit.terug=data().taal==="nl"&&tekst().indexOf("Weergave")!==-1;
   k("Spelen").click();await w(200);
-  uit.goed=uit.keuze&&uit.engelsBewaard&&uit.engels&&uit.labelNederlands&&uit.frans&&uit.duits&&uit.spaans&&uit.turks&&uit.terug;
+  uit.goed=uit.keuze&&uit.engelsBewaard&&uit.engels&&uit.labelNederlands&&uit.frans&&uit.duits&&uit.spaans&&uit.turks&&uit.koreaans&&uit.terug;
   return uit;
 })()

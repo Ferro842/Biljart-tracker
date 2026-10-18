@@ -8,14 +8,14 @@
 function beurtDrempels(discipline){
   if(discipline==="driebanden")return{opbouwMin:1,opbouwMax:1,sterkMin:2,sterkMax:2,topMin:3};
   if(discipline==="bandstoten")return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
-  if(KADER_LAAG.indexOf(discipline)!==-1)return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
+  if(KADER_LAAG.indexOf(discipline)!==-1||discipline==="vierbal")return{opbouwMin:3,opbouwMax:4,sterkMin:5,sterkMax:6,topMin:7};
   return{opbouwMin:5,opbouwMax:7,sterkMin:8,sterkMax:9,topMin:10}; // libre, kader35, kader38, kader47
 }
 // Buckets voor de caramboles-verdeling-histogram (Patronen-tab) — dezelfde indeling-logica als
 // beurtDrempels, maar dan als volledige reeks bakjes in plaats van drie drempels.
 function histogramBuckets(discipline){
   if(discipline==="driebanden")return[["0 (poedel)",0,0],["1",1,1],["2",2,2],["3",3,3],["4",4,4],["5+",5,Infinity]];
-  if(discipline==="bandstoten"||KADER_LAAG.indexOf(discipline)!==-1)
+  if(discipline==="bandstoten"||discipline==="vierbal"||KADER_LAAG.indexOf(discipline)!==-1)
     return[["0 (poedel)",0,0],["1",1,1],["2",2,2],["3-4",3,4],["5-6",5,6],["7+",7,Infinity]];
   return[["0 (poedel)",0,0],["1-2",1,2],["3-4",3,4],["5-7",5,7],["8-9",8,9],["10+",10,Infinity]]; // libre, kader35, kader38, kader47
 }
@@ -24,7 +24,7 @@ function histogramBuckets(discipline){
 // Dash): ongeveer een kwart van een gangbaar gemiddelde in die discipline.
 function gemStap(discipline){
   if(discipline==="driebanden")return 0.1;
-  if(discipline==="bandstoten"||KADER_LAAG.indexOf(discipline)!==-1)return 0.25;
+  if(discipline==="bandstoten"||discipline==="vierbal"||KADER_LAAG.indexOf(discipline)!==-1)return 0.25;
   return 0.5; // libre, kader35, kader38, kader47
 }
 // Eerstvolgende drempel boven `basis` in stappen van `stap` (afgerond tegen rekenfoutjes als 0,30000000004)
@@ -32,6 +32,9 @@ function gemDrempelBoven(basis,stap){return Math.round((Math.floor(basis/stap)*s
 // Drempel als tekst met komma: 1 decimaal bij stappen van 0,5, anders 2 (0,40 / 1,25)
 function gemDrempelTekst(v,stap){return(stap<0.5?v.toFixed(2):v.toFixed(1)).replace(".",",");}
 
+// Vierbal: strafpunten in een partij (speelbal raakte de speelbal van de tegenstander); tellen niet mee in het
+// gemiddelde, alleen in de partijscore
+function strafTotaal(p){return((p&&p.beurten)||[]).reduce(function(a,b){return a+(b.straf||0);},0);}
 function stat(beurten,discipline){
   if(!beurten||!beurten.length)return null;
   const d=beurtDrempels(discipline);

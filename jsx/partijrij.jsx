@@ -73,7 +73,7 @@ function PartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie}){
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"9px 0",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
           <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>{new Date(p.datum).toLocaleDateString(taalLocale(),{weekday:"short",day:"numeric",month:"short"})} · p{nr}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
-          <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{t("{c} car · {b}b · gem {g} · max {m} · {p}x poedel",{c:st.totCar,b:st.aantalBeurten,g:st.gemPerBeurt,m:st.max,p:st.poedels})} · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
+          <div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{t("{c} car · {b}b · gem {g} · max {m} · {p}x poedel",{c:st.totCar,b:st.aantalBeurten,g:st.gemPerBeurt,m:st.max,p:st.poedels})}{strafTotaal(p)>0&&<span style={{color:ROOD}}> · {t("{n}x straf",{n:strafTotaal(p)})}</span>} · <span style={{color:GRNT}}>🎯{st.opbouw5}x</span></div>
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
       </button>
@@ -110,7 +110,7 @@ function LogPartijRij({p,nr,prestatie,gedropt,discipline,onVerwijder,onNotitie})
         style={{width:"100%",background:"none",border:"none",color:"inherit",cursor:"pointer",fontFamily:"inherit",padding:"10px 14px",display:"flex",justifyContent:"space-between",alignItems:"center",textAlign:"left"}}>
         <div>
           <div style={{fontSize:15,color:GOUD,textDecoration:gedropt?"line-through":"none",opacity:gedropt?0.6:1}}>p{nr} - {new Date(p.datum).toLocaleDateString(taalLocale(),{weekday:"short",day:"numeric",month:"short"})}<PartijLabels p={p} punten={punten} gedropt={gedropt}/></div>
-          {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{t("{c} car - {b}b - gem {g} - max {m} - {p}x poedel",{c:st.totCar,b:st.aantalBeurten,g:st.gemPerBeurt,m:st.max,p:st.poedels})}</div>}
+          {st&&<div style={{fontSize:13,color:WITD,marginTop:2,opacity:gedropt?0.6:1}}>{t("{c} car - {b}b - gem {g} - max {m} - {p}x poedel",{c:st.totCar,b:st.aantalBeurten,g:st.gemPerBeurt,m:st.max,p:st.poedels})}{strafTotaal(p)>0&&<span style={{color:ROOD}}> - {t("{n}x straf",{n:strafTotaal(p)})}</span>}</div>}
         </div>
         <span style={{color:GOUD,fontSize:14,marginLeft:8}}>{open?"▲":"▼"}</span>
       </button>

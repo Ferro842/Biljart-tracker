@@ -18,6 +18,7 @@ function themaVan(discipline){
   if(discipline==="driebanden")return{tint:212,verz:1.35,licht:1.08};       // biljartblauw
   if(discipline==="bandstoten")return{tint:210,verz:0.18,licht:1.05};       // grijs
   if(String(discipline).indexOf("kader")===0)return{tint:356,verz:1.25,licht:1.05}; // rood
+  if(discipline==="vierbal")return{tint:272,verz:0.9,licht:1.1};            // paars
   return null;
 }
 function themaKleur(hex,th){
@@ -139,6 +140,15 @@ const NIVEAUS_KADER71=[
 const NIVEAUS_KADER35=NIVEAUS_KADER38.map(function(n){return Object.assign({},n);});
 const NIVEAUS_KADER52=NIVEAUS_KADER57.map(function(n){return Object.assign({},n);});
 const NIVEAUS_KADER471=NIVEAUS_KADER71.map(function(n){return Object.assign({},n);});
+// Vierbal (Korea "sagu", Japan "yotsudama"): klassen naar de Koreaanse handicap (다마). Een speler met handicap 150
+// moet 15 caramboles maken (1 carambole = 10 punten). Grens = handicap / 200 als gemiddelde per beurt: dat gaat uit
+// van ongeveer 20 beurten om je handicap uit te spelen. Een praktische schatting, geen officiële tabel.
+const VIERBAL_HANDICAPS=[30,50,80,100,120,150,200,250,300,400,500,700,1000];
+const NIVEAUS_VIERBAL=VIERBAL_HANDICAPS.map(function(h,i){
+  const kleuren=["#c9915a","#c9915a","#c4c4cf","#c4c4cf","#c4c4cf","#e8c96a","#e8c96a","#e8c96a","#7fd8e0","#7fd8e0","#ff9fd1","#ff9fd1","#ff9fd1"];
+  const emoji=["🥉","🥉","🥈","🥈","🥈","🥇","🥇","🥇","🏆","🏆","💎","💎","💎"];
+  return{naam:"Handicap "+h,gemDrempel:i===0?0:h/200,emoji:emoji[i],kleur:kleuren[i]};
+});
 const DISCIPLINES={
   libre:{naam:"Libre",niveaus:NIVEAUS_LIBRE},
   driebanden:{naam:"Driebanden",niveaus:NIVEAUS_DRIEBANDEN},
@@ -149,11 +159,22 @@ const DISCIPLINES={
   kader71:{naam:"Kader 71/2",niveaus:NIVEAUS_KADER71,groep:"kader"},
   kader35:{naam:"Kader 35/2",niveaus:NIVEAUS_KADER35,groep:"kader"},
   kader471:{naam:"Kader 47/1",niveaus:NIVEAUS_KADER471,groep:"kader"},
-  kader52:{naam:"Kader 52/2",niveaus:NIVEAUS_KADER52,groep:"kader"}
+  kader52:{naam:"Kader 52/2",niveaus:NIVEAUS_KADER52,groep:"kader"},
+  vierbal:{naam:"Vierbal",niveaus:NIVEAUS_VIERBAL}
 };
 // De hoofdknoppen bovenin de app: Libre/Driebanden/Bandstoten zijn losse disciplines, Kader is één
 // knop die daarna een sub-keuze toont tussen de vier varianten.
 const HOOFDDISCIPLINES=["libre","driebanden","bandstoten"];
+// Vierbal staat als extra knop in de balk: standaard in het Koreaans en Japans (daar wordt het veel gespeeld), voor
+// de rest aan te zetten in Info → Weergave (data.vierbal). Wie al op vierbal staat, ziet de knop altijd.
+function vierbalZichtbaar(data,discipline){
+  if(discipline==="vierbal")return true;
+  if(data&&data.vierbal!==undefined)return !!data.vierbal;
+  return typeof TAAL!=="undefined"&&(TAAL==="ko"||TAAL==="ja");
+}
+function hoofdDisciplines(data,discipline){
+  return vierbalZichtbaar(data,discipline)?HOOFDDISCIPLINES.concat(["vierbal"]):HOOFDDISCIPLINES;
+}
 // Op volgorde van de getallen (35/2 en 52/2: Duits klein biljart; 47/1: groot biljart)
 const KADER_VARIANTEN=["kader35","kader38","kader471","kader47","kader52","kader57","kader71"];
 // Kadervarianten met kleinere vakken of 1 carambole per vak: lagere drempels, zoals Bandstoten

@@ -162,6 +162,7 @@ function LogRij({b,nr,discipline}){
         <span style={{fontSize:20,fontWeight:"bold",color:b.caramboles>=beurtDrempels(discipline||"libre").opbouwMin?GOUDL:isPoedel?"#e08055":WIT,minWidth:26}}>{b.caramboles}</span>
         <div style={{flex:1,display:"flex",gap:3,flexWrap:"wrap",alignItems:"center"}}>
           {isPoedel&&<span style={{fontSize:13,background:"#3a1010",color:"#e08055",borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>{t("poedel")}</span>}
+          {b.straf>0&&<span style={{fontSize:13,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px",fontWeight:"bold"}}>−{b.straf} {t("straf")}</span>}
           {heeftGemist&&(b.gemist||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#3a1010",color:ROOD,borderRadius:3,padding:"2px 6px"}}>{t(o)}</span>;})}
           {!isPoedel&&heeftGoed&&(b.goed||[]).map(function(o){return <span key={o} style={{fontSize:13,background:"#0f2e14",color:GRNT,borderRadius:3,padding:"2px 6px"}}>{t(o)}</span>;})}
           {oudeOpm&&<span style={{fontSize:13,background:"var(--c-2a3d20)",color:GOUD,borderRadius:3,padding:"2px 6px"}}>{oudeOpm}</span>}

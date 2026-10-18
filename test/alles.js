@@ -20,11 +20,12 @@
   uit.briefje=await laad("briefje.js");
   uit.wauw=await laad("wauw.js");
   uit.talen=await laad("talen.js");
+  uit.vierbal=await laad("vierbal.js");
   window.__testRustig=false;
   const d=await fetch("/test/testdata.json").then(function(r){return r.json();});
   localStorage.setItem("biljart-tracker-v2",JSON.stringify(d));
   const v=uit.vensters;
   uit.allesGoed=uit.rondgang.fouten.length===0&&uit.rondgang.berekeningenGelijk&&uit.tijdlijn.goed
-    &&v.niveauOverzicht&&v.badgeCatalogus&&v.seizoensArchief&&v.partijSamenvatting&&uit.datatab.goed&&uit.statstab.goed&&uit.spelen.goed&&uit.partijrij.goed&&uit.spelelement.goed&&uit.niveau.goed&&uit.weergave.goed&&uit.briefje.goed&&uit.wauw.goed&&uit.talen.goed;
+    &&v.niveauOverzicht&&v.badgeCatalogus&&v.seizoensArchief&&v.partijSamenvatting&&uit.datatab.goed&&uit.statstab.goed&&uit.spelen.goed&&uit.partijrij.goed&&uit.spelelement.goed&&uit.niveau.goed&&uit.weergave.goed&&uit.briefje.goed&&uit.wauw.goed&&uit.talen.goed&&uit.vierbal.goed;
   return uit;
 })()

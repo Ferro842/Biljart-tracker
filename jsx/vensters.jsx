@@ -49,7 +49,7 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
             <div style={{fontSize:11,color:WITD}}>{t("hoogste beurt")}</div>
           </div>
         </div>
-        <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{t("{b} beurten · {p}x poedel",{b:st.aantalBeurten,p:st.poedels})}{spel&&<> · <span style={{color:GOUD,fontWeight:"bold"}}>{t("{n}pt aan badges",{n:punten})}</span></>}</div>
+        <div style={{textAlign:"center",fontSize:13,color:WITD,marginBottom:14}}>{t("{b} beurten · {p}x poedel",{b:st.aantalBeurten,p:st.poedels})}{strafTotaal(partij)>0&&<span style={{color:ROOD}}> · {t("{n}x straf",{n:strafTotaal(partij)})}</span>}{spel&&<> · <span style={{color:GOUD,fontWeight:"bold"}}>{t("{n}pt aan badges",{n:punten})}</span></>}</div>
         {infoNa&&(
           <div style={{marginBottom:14,background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"10px 12px"}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
@@ -148,7 +148,7 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
         {s.kies&&(
           <div style={{marginBottom:16}}>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-              {HOOFDDISCIPLINES.map(function(d){
+              {hoofdDisciplines(null,discipline).map(function(d){
                 return(
                   <button key={d} onClick={function(){wisselDiscipline(d);setKaderOpen(false);}}
                     style={{padding:"9px 4px",background:discipline===d?"var(--c-2d4a1e)":"none",border:"1px solid "+(discipline===d?GOUD:KBDR),borderRadius:8,color:discipline===d?GOUD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
@@ -271,7 +271,8 @@ function UitlegVenster({eenvoudig,onClose}){
       t("🎬 Je seizoen in beeld: Stats → Seizoen → Bekijk je seizoen (ook in het Archief). Tik rechts voor verder, links terug."),
       t("📅 Kalender: Dash → Kalender laat per dag zien wanneer je speelde, gekleurd naar je gemiddelde."),
       t("🎯 Doel: tik op je klasse rechtsboven → Stel een doel. Daar laat een ring zien hoe ver je bent, en kies je ook op hoeveel partijen je vorm gebaseerd is."),
-      t("🎉 Bij een topserie, record, hogere klasse of gehaald doel volgt een korte viering. Uitzetten kan bij Info → Weergave.")
+      t("🎉 Bij een topserie, record, hogere klasse of gehaald doel volgt een korte viering. Uitzetten kan bij Info → Weergave."),
+      t("🔴 Vierbal (Korea, Japan): aanzetten bij Info → Weergave. Met −1 strafpunt noteer je dat je speelbal die van je tegenstander raakte; dat gaat van je partijscore af, niet van je gemiddelde.")
     ]],
     ["🔎",t("Weergave"),[
       t("Info → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen."),
@@ -679,6 +680,7 @@ function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenste
             :<button onClick={openDoel} style={{width:"100%",padding:"11px 12px",background:"none",border:"1px dashed "+GOUD,borderRadius:12,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>🎯 {t("Stel een doel")}</button>}
         </div>}
         <div style={{fontSize:13,fontWeight:"bold",color:GOUD,marginTop:16,marginBottom:8,textAlign:"center",textTransform:"uppercase",letterSpacing:1}}>{t("Alle niveaus")} — {(DISCIPLINES[discipline]||DISCIPLINES.libre).naam}</div>
+        {discipline==="vierbal"&&<div style={{fontSize:12,color:WITD,textAlign:"center",lineHeight:1.45,marginBottom:8}}>{t("Koreaanse handicap: met handicap 150 maak je 15 caramboles (1 carambole = 10 punten). De grenzen zijn een schatting: handicap ÷ 200 als gemiddelde per beurt.")}</div>}
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           {niveaus.map(function(n,i){
             const bereikt=i<niveau.index;

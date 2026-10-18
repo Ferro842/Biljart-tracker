@@ -76,7 +76,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
       p.beurten.forEach(function(b,j){
         const g=(b.gemist||[]).map(function(l){return t(l);}).join(", ");
         const gd=(b.goed||[]).map(function(l){return t(l);}).join(", ");
-        var rule="  "+t("B{n}",{n:j+1})+dubbelePunt()+b.caramboles+" car"+(b.caramboles===0?" ["+t("poedel")+"]":"");
+        var rule="  "+t("B{n}",{n:j+1})+dubbelePunt()+b.caramboles+" car"+(b.caramboles===0?" ["+t("poedel")+"]":"")+(b.straf?" [−"+b.straf+" "+t("straf")+"]":"");
         if(g)rule+=" - "+t("Gemist")+dubbelePunt()+g;
         if(gd)rule+=" - "+t("Goed")+dubbelePunt()+gd;
         r.push(rule);
@@ -374,6 +374,19 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
           {[[true,"✨ "+t("Aan")],[false,t("Uit")]].map(function(x){
             const actief=(data.animaties!==false)===x[0];
             return <button key={x[1]} onClick={function(){if(!actief)setWeergave("animaties",x[0]);}}
+              style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+          })}
+        </div>
+      </div>
+
+      {/* Vierbal in de disciplinebalk (standaard alleen in het Koreaans en Japans; zie vierbalZichtbaar) */}
+      <div data-vierbal-keuze="" style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Vierbal")}</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>{t("Vierbal (twee rode ballen) wordt vooral in Korea en Japan gespeeld. Zet het aan om het als extra discipline bovenin te tonen.")}</div>
+        <div style={{display:"flex",gap:6}}>
+          {[[true,t("Tonen")],[false,t("Verbergen")]].map(function(x){
+            const actief=vierbalZichtbaar(data,null)===x[0];
+            return <button key={x[1]} onClick={function(){if(!actief)setWeergave("vierbal",x[0]);}}
               style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
           })}
         </div>

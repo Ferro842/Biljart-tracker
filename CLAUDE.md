@@ -69,6 +69,12 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 
 ## Domein
 
+- Vierbal (`vierbal`, 18 okt 2026; Korea "sagu"/4구, Japan): paars laken, klassen = Koreaanse handicap 30–1000
+  (`NIVEAUS_VIERBAL`, grens = handicap ÷ 200 als gemiddelde: een schatting), drempels zoals Bandstoten. In de balk via
+  `hoofdDisciplines(data,discipline)`/`vierbalZichtbaar()`: standaard alleen in het Koreaans (en Japans), anders Info →
+  Weergave → Vierbal (`data.vierbal`). Met vijf knoppen is de balk smaller (`vijfKnoppen`; gemeten op 375 breed in alle
+  talen, ook met "Kader 47/1"). Strafpunt (speelbal raakt die van de tegenstander): knop alleen bij vierbal, optioneel veld
+  `straf` op de beurt; gaat van de partijscore af (`totCarLp`, doel), niet van gemiddelde/niveau (`strafTotaal(p)`).
 - Disciplines: libre, driebanden, bandstoten, kader35/38/471/47/52/57/71 (`KADER_VARIANTEN`, op volgorde van de getallen);
   elk eigen partijen, gemiddelde, niveau, badges. 35/2 en 52/2 = Duits klein biljart (volgen 38/2 en 57/2), 47/1 = groot
   biljart (volgt 71/2). Lagere drempels voor `KADER_LAAG` (52/2, 57/2, 47/1, 71/2), zoals Bandstoten.
@@ -187,7 +193,7 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 
 ## Talen (vanaf 18 okt 2026)
 
-- Nederlands, Engels, Frans, Duits, Spaans, Turks (18 okt 2026); daarna vierbal + Koreaans, later Vietnamees. Nieuwe taal:
+- Nederlands, Engels, Frans, Duits, Spaans, Turks, Koreaans (18 okt 2026); later eventueel Japans en Vietnamees. Nieuwe taal:
   `js/taal-<code>.js` + `TALEN` en `taalLocale()` in `js/taal.js` + script-tag in index.html + `VOORAF` in sw.js (en het aantal
   in `test/sw-node.js`); de controle vindt taalbestanden zelf. Dash-tabs moeten op 440 breed op één regel passen (meten;
   Frans/Spaans/Engels hebben daarom kortere tabnamen). Keuze: Info → Weergave → Taal en het eerste

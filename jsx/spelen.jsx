@@ -124,7 +124,10 @@ function SetupScherm({spel}){
 // Spelen, tijdens de partij: tellers, caramboles invoeren, hints en grafiek van de lopende partij
 function InvoerScherm({spel}){
   const spelAan=useContext(SpelContext);
-  const {alleP,beurtNr,car,doel,doelType,eenvoudig,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,progPct,setBeurtNr,setCar,setFase,setInp,setLp,stL,tafel,tijdsvensterMaanden,totCarLp}=spel;
+  const {alleP,beurtNr,car,doel,doelType,eenvoudig,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,progPct,setBeurtNr,setCar,setFase,setInp,setLp,stL,tafel,tijdsvensterMaanden,totCarLp,straf,setStraf}=spel;
+  // Vierbal: strafpunten (speelbal raakte de speelbal van de tegenstander) gaan van de partijscore af
+  const isVierbal=huidigeDiscipline==="vierbal";
+  const strafLp=lp.reduce(function(a,b){return a+(b.straf||0);},0);
   // Eenvoudige modus: Noteer slaat de beurt meteen op, zonder de stap met opmerkingen
   const volgende=function(){if(eenvoudig)noteer();else setFase("gemist");};
   const dInv=beurtDrempels(huidigeDiscipline);
@@ -152,7 +155,7 @@ function InvoerScherm({spel}){
           <span style={{fontSize:12,color:WITD}}>{t("Totaal:")} <strong style={{color:GOUD}}>{(niveau.badgePuntenTotaal!==undefined?niveau.badgePuntenTotaal:niveau.badgePunten)+partijPunten}pt</strong></span>
         </div>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6,marginBottom:6}}>
-          {[[t("Gespeeld"),lp.length,WIT],[t("Caramboles"),stL?stL.totCar:0,GOUD],[t("Gem."),stL?stL.gemPerBeurt:"0.00",GOUDL],[t("Max"),stL?stL.max:0,"#e8a84c"]].map(function(arr){
+          {[[t("Gespeeld"),lp.length,WIT],[t("Caramboles"),isVierbal&&strafLp>0?<>{totCarLp}<span style={{fontSize:12,color:ROOD}}> −{strafLp}</span></>:(stL?stL.totCar:0),GOUD],[t("Gem."),stL?stL.gemPerBeurt:"0.00",GOUDL],[t("Max"),stL?stL.max:0,"#e8a84c"]].map(function(arr){
             return(
               <div key={arr[0]} style={{textAlign:"center",background:"var(--c-182e14)",border:"1px solid "+KBDR,borderRadius:8,padding:"7px 2px"}}>
                 <div style={{fontSize:20,fontWeight:"bold",color:arr[2],lineHeight:1}}>{arr[1]}</div>
@@ -204,6 +207,12 @@ function InvoerScherm({spel}){
           <button className="plusmin-btn" style={{width:60,height:60,borderRadius:"50%",background:"none",border:"2px solid "+GOUD,color:GOUD,fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}
             onClick={function(){const n=car+1;setCar(n);setInp(String(n));}}>+</button>
         </div>
+        {isVierbal&&(
+          <button data-straf="" onClick={function(){setStraf(straf>0?0:1);}}
+            style={{display:"block",margin:"8px auto 0",padding:"5px 14px",background:straf>0?"rgba(224,85,85,0.18)":"none",border:"1px solid "+(straf>0?ROOD:KBDR),borderRadius:16,color:straf>0?ROOD:WITD,fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
+            {straf>0?"⚠️ "+t("−1 strafpunt (tik om weg te halen)"):t("−1 strafpunt: speelbal tegenstander geraakt")}
+          </button>
+        )}
         <div style={{display:"flex",gap:8,marginTop:10}}>
           <button className="plusmin-btn" style={{flex:1,padding:14,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:12,color:G,fontSize:16,fontWeight:"bold",cursor:"pointer",fontFamily:"inherit"}}
             onClick={volgende}>{t("Noteer")}</button>

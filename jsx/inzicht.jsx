@@ -586,7 +586,7 @@ function InzichtPaneel({partijen,discipline}){
               const verschil=x.naPoedel-x.naScore;
               return(
                 <div key={x.tafel||"alle"} style={{fontSize:12,color:WITD,lineHeight:1.4}}>
-                  {x.tafel?tafelLabel(x.tafel)+": ":""}<strong style={{fontSize:15,color:verschil>=0.05?ROOD:verschil<=-0.03?GRNT:GOUDL}}>{pctTekst(x.naPoedel)}</strong> <span style={{fontSize:10}}>({t("na score {p}",{p:pctTekst(x.naScore)})})</span>
+                  {x.tafel?tafelLabel(x.tafel)+dubbelePunt():""}<strong style={{fontSize:15,color:verschil>=0.05?ROOD:verschil<=-0.03?GRNT:GOUDL}}>{pctTekst(x.naPoedel)}</strong> <span style={{fontSize:10}}>({t("na score {p}",{p:pctTekst(x.naScore)})})</span>
                 </div>
               );
             })}

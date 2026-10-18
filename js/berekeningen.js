@@ -855,11 +855,11 @@ function berekenInzicht(partijen,discipline){
       for(let j=2;j<v.bijdrage.length;j++)if(verschil>0?v.bijdrage[j]>v.bijdrage[i]:v.bijdrage[j]<v.bijdrage[i])i=j;
       const ge=e.groepen[i],gw=w.groepen[i];
       const begin=waar?t(verschil>0?"Op de {tafel} ga je vooruit":"Op de {tafel} zak je wat terug",{tafel:waar}):t(verschil>0?"Je gaat vooruit":"Je zakt wat terug");
-      return begin+": "+k2(e.gem)+" → "+k2(w.gem)+". "+
+      return begin+dubbelePunt()+k2(e.gem)+" → "+k2(w.gem)+". "+
         t(gw.perPartij>=ge.perPartij?"Per partij maak je {p} en vaker een serie van {s} ({a} → {b}); dat scheelt {v} op je gemiddelde.":"Per partij maak je {p} en minder vaak een serie van {s} ({a} → {b}); dat scheelt {v} op je gemiddelde.",
           {p:poedels,s:gw.label,a:k1(ge.perPartij),b:k1(gw.perPartij),v:teken(v.bijdrage[i])});
     });
-    coach.push({soort:"vorm",tekst:t("Eerder tegenover nu")+" ("+helftLabels.eerste+" → "+helftLabels.tweede+"): "+zinnen.join(" ")});
+    coach.push({soort:"vorm",tekst:t("Eerder tegenover nu")+" ("+helftLabels.eerste+" → "+helftLabels.tweede+")"+dubbelePunt()+zinnen.join(" ")});
   }
   // Poedels en de hefboom van één grote serie
   if(n>=50){
@@ -873,7 +873,7 @@ function berekenInzicht(partijen,discipline){
     hs.perTafel.filter(function(x){return x.record&&x.oordeel;}).forEach(function(x){
       const waar=hs.perTafel.length>1?" "+t("op de {tafel}",{tafel:tafelLabel(x.tafel)}):"";
       const richting={beter:t("dat gaat de goede kant op"),stabiel:t("dat blijft gelijk"),minder:t("daar is nog wat nodig")}[x.oordeel];
-      coach.push({soort:"hoogste",tekst:t("Hoogste serie")+waar+": "+t("record {r} ({d}). Je laatste {n} partijen gemiddeld {a}, ervoor {b}: {o}.",{r:x.record.car,d:fmtDatum(x.record.datum),n:x.aantal,a:k1(x.na.hoogste),b:k1(x.voor.hoogste),o:richting})});
+      coach.push({soort:"hoogste",tekst:t("Hoogste serie")+waar+dubbelePunt()+t("record {r} ({d}). Je laatste {n} partijen gemiddeld {a}, ervoor {b}: {o}.",{r:x.record.car,d:fmtDatum(x.record.datum),n:x.aantal,a:k1(x.na.hoogste),b:k1(x.voor.hoogste),o:richting})});
     });
   }
   // Poedels per tafel: gaat het de goede kant op (minder poedels)?
@@ -882,7 +882,7 @@ function berekenInzicht(partijen,discipline){
     pd.perTafel.filter(function(x){return x.oordeel;}).forEach(function(x){
       const waar=pd.perTafel.length>1?" "+t("op de {tafel}",{tafel:tafelLabel(x.tafel)}):"";
       const richting={beter:t("dat gaat de goede kant op"),stabiel:t("dat blijft gelijk"),minder:t("daar is nog wat nodig")}[x.oordeel];
-      coach.push({soort:"poedeltrend",tekst:t("Poedels")+waar+": "+t("je laatste {n} partijen {a} ({b} per partij), ervoor {c} ({d}): {o}.",{n:x.aantal,a:pc(x.na.pct),b:k1(x.na.perPartij),c:pc(x.voor.pct),d:k1(x.voor.perPartij),o:richting})});
+      coach.push({soort:"poedeltrend",tekst:t("Poedels")+waar+dubbelePunt()+t("je laatste {n} partijen {a} ({b} per partij), ervoor {c} ({d}): {o}.",{n:x.aantal,a:pc(x.na.pct),b:k1(x.na.perPartij),c:pc(x.voor.pct),d:k1(x.voor.perPartij),o:richting})});
     });
   }
   if(sterkste)coach.push({soort:"sterk",tekst:t("Je sterkste techniek is {l}: {a} van de {b} keer goed ({p}%, tegen gemiddeld {r}% over al je technieken).",{l:t(sterkste.label),a:sterkste.goed,b:sterkste.gebruik,p:Math.round(sterkste.pct*100),r:Math.round(refPct*100)})});
@@ -915,7 +915,7 @@ function berekenInzicht(partijen,discipline){
     if(spreiding>=0.15)opvallend.push({titel:o.titel,hoog:hoog,laag:laag,spreiding:spreiding});
   });
   opvallend.sort(function(a,b){return b.spreiding-a.spreiding;}).slice(0,3).forEach(function(x){
-    coach.push({soort:"omstandigheid",tekst:t(x.titel)+": "+t("{a} speel je {p}% beter dan {b} ({g} tegen {h}).",{a:x.hoog.label,p:Math.round(x.spreiding*100),b:x.laag.label,g:k2(x.hoog.gem),h:k2(x.laag.gem)})});
+    coach.push({soort:"omstandigheid",tekst:t(x.titel)+dubbelePunt()+t("{a} speel je {p}% beter dan {b} ({g} tegen {h}).",{a:x.hoog.label,p:Math.round(x.spreiding*100),b:x.laag.label,g:k2(x.hoog.gem),h:k2(x.laag.gem)})});
   });
   const beter=trend.filter(function(x){return x.verandering<=-0.3;}).sort(function(a,b){return a.verandering-b.verandering;})[0];
   if(beter)coach.push({soort:"trend",tekst:t("{l} kost je minder series dan eerst: van {a} naar {b} per 100 beurten.",{l:t(beter.label),a:k1(beter.voor),b:k1(beter.na)})});

@@ -46,7 +46,7 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
         const d=p.discipline||"libre";
         perDiscipline[d]=(perDiscipline[d]||0)+1;
       });
-      const overzicht=Object.keys(perDiscipline).map(function(d){return(DISCIPLINES[d]?DISCIPLINES[d].naam:d)+": "+perDiscipline[d];}).join(", ");
+      const overzicht=Object.keys(perDiscipline).map(function(d){return(DISCIPLINES[d]?DISCIPLINES[d].naam:d)+dubbelePunt()+perDiscipline[d];}).join(", ");
       if(!window.confirm(t("Gevonden: {n} partijen ({o}).\n\nDit vervangt ALLE huidige data ({h} partijen). Doorgaan?",{n:parsed.partijen.length,o:overzicht,h:data.partijen.length})))return;
       migreerTafels(parsed);
       herstelBeurten(parsed);
@@ -76,9 +76,9 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
       p.beurten.forEach(function(b,j){
         const g=(b.gemist||[]).map(function(l){return t(l);}).join(", ");
         const gd=(b.goed||[]).map(function(l){return t(l);}).join(", ");
-        var rule="  "+t("B{n}",{n:j+1})+": "+b.caramboles+" car"+(b.caramboles===0?" ["+t("poedel")+"]":"");
-        if(g)rule+=" - "+t("Gemist")+": "+g;
-        if(gd)rule+=" - "+t("Goed")+": "+gd;
+        var rule="  "+t("B{n}",{n:j+1})+dubbelePunt()+b.caramboles+" car"+(b.caramboles===0?" ["+t("poedel")+"]":"");
+        if(g)rule+=" - "+t("Gemist")+dubbelePunt()+g;
+        if(gd)rule+=" - "+t("Goed")+dubbelePunt()+gd;
         r.push(rule);
       });
     });

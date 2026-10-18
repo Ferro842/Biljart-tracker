@@ -74,6 +74,8 @@ function weekdagLetters(){
   return uit;
 }
 // Getal met de decimaalkomma of -punt van de taal (Engels: punt)
+// Dubbele punt tussen twee stukken tekst: Frans met spatie ervoor (" : ")
+function dubbelePunt(){return TAAL==="fr"?" : ":": ";}
 function getalTekst(x,dec){
   const s=Number(x).toFixed(dec);
   return TAAL==="en"?s:s.replace(".",",");

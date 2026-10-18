@@ -9,6 +9,7 @@ const IS_NATIVE=document.documentElement.classList.contains("native");
 // Vult tafelmaat aan voor partijen die dit veld nog niet hebben (oude data van vóór deze functie).
 // Regel: 25 beurten -> 2,10-tafel, alle overige -> 2,30-tafel.
 // Correctie: de partij met 40 beurten was ook op de 2,10-tafel.
+const TAFELKEUZE_SINDS="2026-07-16";
 function migreerTafels(d){
   let changed=false;
   (d.partijen||[]).forEach(function(p){
@@ -16,7 +17,9 @@ function migreerTafels(d){
       p.tafel=(p.beurten&&p.beurten.length===25)?"210":"230";
       changed=true;
     }
-    if(p.beurten&&p.beurten.length===40&&p.tafel!=="210"){
+    // Eenmalige correctie (15 jul 2026, toen de tafelkeuze kwam): oude partijen van 40 beurten waren op de 2,10 gespeeld.
+    // Alleen voor partijen van vóór die dag; latere partijen houden de tafel die de speler zelf koos.
+    if(p.beurten&&p.beurten.length===40&&p.tafel!=="210"&&String(p.datum)<TAFELKEUZE_SINDS){
       p.tafel="210";
       changed=true;
     }

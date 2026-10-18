@@ -64,7 +64,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 - `lopendePartij` (optioneel): `{beurten,tafel,doel,doelType}` van een nog niet afgesloten partij; wordt bij
   elke wijziging bewaard, bij het laden teruggezet en bij afsluiten in dezelfde opslag verwijderd.
   Op het startscherm staat hij bovenaan (Doorgaan/Afsluiten); Start partij met een lopende partij vraagt eerst bevestiging.
-- Partij zonder `discipline` = libre; zonder `tafel` wordt gemigreerd door `migreerTafels()`.
+- Partij zonder `discipline` = libre; zonder `tafel` wordt gemigreerd door `migreerTafels()`. De oude correctie "40 beurten = 2,10" geldt alleen voor
+  partijen van vóór `TAFELKEUZE_SINDS` (16 jul 2026); tot 18 okt 2026 draaide die op elke partij, ook latere op een andere tafel.
 - Eenmalige aanvulling: in partijen op de 2,30 van vóór `ACQUIT_AANVULLING_TOT` (15 okt 2026) begon iedereen
   met de acquit; `migreerAcquit()`/`vulAcquitAan()` zetten bij laden/importeren in beurt 1 "Acquit" bij Goed
   (caramboles) of Gemist (poedel). Alleen toevoegen, idempotent. Nieuwe partijen nooit automatisch (soms

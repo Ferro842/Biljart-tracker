@@ -44,6 +44,11 @@
     &&beoordelingMoment({partijen:pB,beoordelingGevraagd:[new Date(nu-130*dagB).toISOString()]},true,nu,true)
     &&!beoordelingMoment({partijen:pB,beoordelingGevraagd:["2025-01-01","2025-06-01","2025-11-01"]},true,nu,true)
     &&!beoordelingMoment({partijen:pB},true);
+  // Tafels: de oude 40-beurtencorrectie (2,10) geldt alleen voor partijen van vóór 16 jul 2026
+  const b40=Array.from({length:40},function(_,i){return{id:i,caramboles:1,gemist:[],goed:[]};});
+  const tafelData={partijen:[{datum:"2026-05-01T19:00:00.000Z",tafel:"230",beurten:b40},{datum:"2026-10-01T19:00:00.000Z",tafel:"284",beurten:b40}]};
+  migreerTafels(tafelData);
+  uit.tafelsBewaard=tafelData.partijen[0].tafel==="210"&&tafelData.partijen[1].tafel==="284";
   // Laden zonder partijen (nieuwe speler): instellingen en lopende partij blijven bewaard, niet leeg beginnen
   const bewaard=localStorage.getItem("biljart-tracker-v2");
   localStorage.setItem("biljart-tracker-v2",JSON.stringify({huidigeId:7,partijen:[],onboardingGezien:true,taal:"de",huidigeDiscipline:"kader471",lopendePartij:{tafel:"230",doel:30,doelType:"beurten",beurten:[{id:6,caramboles:2,gemist:[],goed:[]}]}}));
@@ -59,6 +64,6 @@
   const na=JSON.parse(localStorage.getItem("biljart-tracker-v2"));
   uit.geimporteerd=na.partijen.length===1&&na.partijen[0].tafel==="230"&&na.huidigeId===5;
   k("Stats").click();await w(200);uit.statsNaImport=document.body.textContent.indexOf("Alle 1 partijen")!==-1;
-  uit.goed=uit.backupRegels&&uit.backupKaart&&uit.backupDatumRegel&&uit.gekopieerd&&uit.tekstExport&&uit.handmatig&&uit.ladenZonderPartijen&&uit.beoordelingRegels&&uit.promptKnop&&uit.geimporteerd&&uit.statsNaImport;
+  uit.goed=uit.backupRegels&&uit.backupKaart&&uit.backupDatumRegel&&uit.gekopieerd&&uit.tekstExport&&uit.handmatig&&uit.ladenZonderPartijen&&uit.beoordelingRegels&&uit.tafelsBewaard&&uit.promptKnop&&uit.geimporteerd&&uit.statsNaImport;
   return uit;
 })()

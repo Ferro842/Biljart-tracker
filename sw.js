@@ -13,10 +13,10 @@ var NETWERK_WACHT_MS = 4000;
 var VOORAF = [
   "./", "index.html", "manifest.json", "icon192.png", "icon512.png", "icon180.png", "logo.png",
   "css/app.css",
-  "vendor/react.production.min.js", "vendor/react-dom.production.min.js", "vendor/babel.min.js",
+  "vendor/react.production.min.js", "vendor/react-dom.production.min.js",
   "js/constanten.js", "js/taal.js", "js/taal-en.js", "js/taal-fr.js", "js/taal-de.js", "js/taal-es.js", "js/taal-tr.js", "js/taal-ko.js", "js/berekeningen.js", "js/opslag.js",
-  "jsx/onderdelen.jsx", "jsx/wauw.jsx", "jsx/vensters.jsx", "jsx/partijrij.jsx", "jsx/inzicht.jsx", "jsx/dashboard.jsx",
-  "jsx/tabs.jsx", "jsx/spelen.jsx"
+  "gebouwd/onderdelen.js", "gebouwd/wauw.js", "gebouwd/vensters.js", "gebouwd/partijrij.js", "gebouwd/inzicht.js",
+  "gebouwd/dashboard.js", "gebouwd/tabs.js", "gebouwd/spelen.js", "gebouwd/app.js"
 ];
 
 self.addEventListener("install", function(event) {

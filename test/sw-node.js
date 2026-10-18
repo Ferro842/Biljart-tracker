@@ -61,7 +61,7 @@ function maakOmgeving(){
 
   // 1. Eerste bezoek: installeren slaat alle app-bestanden op, ook als er één ontbreekt
   let o=maakOmgeving();
-  o.netwerk.ontbreekt.add("jsx/spelen.jsx");
+  o.netwerk.ontbreekt.add("gebouwd/spelen.js");
   await o.event("install");
   const c=o.opslag.get("biljart-tracker-v1");
   check("installeren bewaart de app-bestanden",c&&c.size===28,c&&c.size);

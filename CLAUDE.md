@@ -26,19 +26,22 @@ controleren zijn.
 
 ## Opbouw
 
-React 18.2 en Babel standalone 7.23 draaien in de browser, zonder bundler. Ze staan lokaal in `vendor/`
-(identiek aan cdnjs), zodat de app geen externe scripts laadt en offline kan starten.
+React 18.2 staat lokaal in `vendor/` (identiek aan cdnjs), zodat de app geen externe scripts laadt en offline kan
+starten. JSX wordt vooraf omgezet met esbuild (ontwikkelpakket, 18 okt 2026): `npm run jsx` (= `node bouw-jsx.js`) maakt
+van elk `jsx/*.jsx` een los `gebouwd/*.js` (geen bundel, gedeelde globale scope). **Na elke wijziging in `jsx/` opnieuw
+bouwen**; `gebouwd/` wordt meegecommit (GitHub Pages bouwt niets). `vendor/babel.min.js` blijft nog even staan voor
+telefoons die vlak na de push een oud `index.html` laden; zit niet meer in de app of in `VOORAF`.
 
-Laadvolgorde in `index.html` (alles deelt de globale scope):
+Laadvolgorde in `index.html` (alles deelt de globale scope; de `jsx/`-bestanden als `gebouwd/<naam>.js`):
 
 | Bestand | Inhoud |
 |---|---|
 | `css/app.css` | Opmaak die niet inline staat (layout, safe area, animaties) |
 | `js/constanten.js` | Kleuren, opmerkingenlijsten `GEMIST`/`GOED`, `SK`, `WEB_URL`/`APP_STORE_URL`, `NIVEAUS_*`, `DISCIPLINES`, `TAFELS`, `MIJLPALEN` |
-| `js/taal.js`, `js/taal-en/fr/de.js` | Talen: `t("Nederlandse tekst",{vars})`, `TAAL`, `zetTaal`, `taalVoorData`, `kortNaam`, `getalTekst`; vertalingen per taal (sleutel = Nederlandse tekst) |
+| `js/taal.js`, `js/taal-<code>.js` | Talen: `t("Nederlandse tekst",{vars})`, `TAAL`, `zetTaal`, `taalVoorData`, `kortNaam`, `getalTekst`; vertalingen per taal (sleutel = Nederlandse tekst) |
 | `js/berekeningen.js` | Puur rekenwerk: `beurtDrempels`, `histogramBuckets`, `stat`, `berekenPrestaties` (badges), records, `berekenNiveauInfo` (drops), `bepaalNiveau`, voorspelling, seizoenen, mijlpalen, `reeksStats`, `besteVenster`, `gemUitleg`, `berekenInzicht` |
 | `js/opslag.js` | `IS_NATIVE`, `laadData`/`laadWebData`/`slaOp`, `migreerTafels`, native bestand-I/O |
-| `jsx/onderdelen.jsx` | Eerste Babel-script: React-hooks, `Grafiek`, `OpmGrid`, `LogRij`, `PrestatieOverzicht`, `NiveauKaart`, `DashBalk`, `DashGrafiek` |
+| `jsx/onderdelen.jsx` | Eerste JSX-bestand: React-hooks, `Grafiek`, `OpmGrid`, `LogRij`, `PrestatieOverzicht`, `NiveauKaart`, `DashBalk`, `DashGrafiek` |
 | `jsx/wauw.jsx` | Wauw-onderdelen: `Telop` (optellende cijfers), `vier()`/`VieringLaag`, `maakPartijKaart`/`maakSeizoenKaart` + `deelAfbeelding` (canvas → delen), `DeelKaartKnop`, `SeizoenVerhaal` ("Je seizoen in beeld"), `KalenderPaneel` (Dash → Kalender), `DoelRing`/`DoelInstellen` |
 | `jsx/vensters.jsx` | Overlays: `PartijSamenvatting`, `WelkomstFlow`, `SeizoenArchief`, `BadgeCatalogus`, `NiveauOverzicht` |
 | `jsx/partijrij.jsx` | `PartijRij` (Stats) en `LogPartijRij` (Log), met gedeelde `PartijLabels` en `PartijBeheer` |
@@ -46,10 +49,11 @@ Laadvolgorde in `index.html` (alles deelt de globale scope):
 | `jsx/dashboard.jsx` | `BeurtenTijdlijn` (beurtengrafiek met selecteren, beste/zwakste reeks) en `Dashboard` |
 | `jsx/tabs.jsx` | `LogTab`, `StatsTab` (seizoen, niveau, partijen), `InfoTab` (uitleg, weergave, spelelement, back-up via `DataTab ingebed`, wissen, over) |
 | `jsx/spelen.jsx` | `SetupScherm`, `InvoerScherm`, `GemistScherm`, `GoedScherm`; krijgen de spelstatus als object `spel` |
-| `index.html` | `APP_VERSIE` en `BiljartTracker`: alle app-status, acties, kop, disciplinekeuze, tabbladen |
+| `jsx/app.jsx` | Als laatste: `APP_VERSIE` en `BiljartTracker`: alle app-status, acties, kop, disciplinekeuze, tabbladen |
 
-Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX-bestanden krijgen een
-`<script type="text/babel" src=...>` vóór het inline Babel-script; volgorde telt.
+Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuw JSX-bestand: `npm run jsx`, dan
+`<script src="gebouwd/<naam>.js?v=...">` vóór `gebouwd/app.js` in `index.html` en in `VOORAF` (`sw.js`); volgorde telt.
+Top-level `const`/`let` moeten over alle bestanden uniek zijn (Babel maakte er `var` van, nu niet meer).
 
 ## Data
 
@@ -238,8 +242,8 @@ Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuwe JSX
 3. Geen grote base64-blokken in `<head>`, `manifest.json` of de code (gaf eerder een crash op Samsung Internet).
 4. `manifest.json`, `sw.js`, `icon192.png`, `icon512.png` niet hernoemen of verplaatsen.
 5. Geen API-sleutels, externe diensten of externe scripts. AI-analyse = kopieerbare prompt.
-6. Na elke wijziging testen (zie hieronder) en `APP_VERSIE` plus alle `?v=` in `index.html` ophogen
-   (formaat `JJJJ-MM-DD.n`); die staat onderaan Info, zo ziet de eigenaar welke versie geladen is.
+6. Na elke wijziging testen (zie hieronder) en `APP_VERSIE` (`jsx/app.jsx`) plus alle `?v=` in `index.html` ophogen
+   (formaat `JJJJ-MM-DD.n`) en `npm run jsx` draaien; die staat onderaan Info, zo ziet de eigenaar welke versie geladen is.
 7. Niets committen, pushen of installeren zonder akkoord van de eigenaar. Geen `sudo`.
 
 ## Testen
@@ -255,10 +259,11 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.
 - Zonder browser: `node test/snapshot-node.js` geeft dezelfde hash als `snapshot.js`; met `--details` de volledige
   uitkomst (handig om voor en na een rekenwijziging per discipline te vergelijken).
-- Tests die tekst zoeken: gebruik `#root`, niet `document.body` (daarin staat ook de broncode van het Babel-script).
+- Tests die tekst zoeken: gebruik `#root`, niet `document.body` (daarin kan ook andere tekst staan).
 - Na `alles.js` direct herladen, anders schrijft de app de geïmporteerde testback-up terug over de testdata.
+- Gebouwde JSX bijgewerkt: `node bouw-jsx.js --controle` (meldt verouderde of overbodige `gebouwd/`-bestanden).
 - Service worker: `node test/sw-node.js` (de ingebouwde browser ondersteunt geen service workers).
-- iOS: `npm run build && npx cap sync ios`, daarna bouwen voor de simulator of `npm run ios` (opent Xcode).
+- iOS: `npm run build && npx cap sync ios` (`build` bouwt ook de JSX), daarna bouwen voor de simulator of `npm run ios` (opent Xcode).
 
 ## Bekende eigenaardigheden
 
@@ -283,12 +288,15 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    de taal of de praktijk kent.
 
 ### Samen, na goedkeuring van 1.0
-4. **Versie 1.1 naar de App Store**: zeven talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
+4. **Versie 1.1 naar de App Store**: naam per taal uit `store/aso.md` (Carom Tracker: …), alle talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
    systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle zeven talen staan in
    `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
 5. **`APP_STORE_URL`** in `js/constanten.js` invullen na publicatie (voor "Deel deze app").
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
-   (zie `store/play-store.md`).
+   (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
+   Carom Tracker.
+6b. **Eigen partijen controleren** (eigenaar): partijen van 40 beurten ná 15 jul 2026 die vóór de tafelfix (f442036) op
+   de 2,10 zijn gezet; zo nodig de tafel aanpassen.
 
 ### Later
 7. **Automatische back-up naar iCloud Drive** (alleen iOS-app), zodat je nooit meer zelf hoeft te exporteren:
@@ -304,10 +312,13 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    - In Info (Back-up en gegevens) tonen: "Back-up: automatisch in iCloud Drive ✓" met de datum van de laatste kopie.
    - `privacy.html` aanpassen: reservekopie in je eigen iCloud Drive waar alleen jij bij kunt. "Data Not Collected"
      blijft kloppen.
-8. **Meer talen**: Japans (vierbal staat dan vanzelf in de balk, zie `vierbalZichtbaar`) en Vietnamees.
+8. **Meer talen (bezig)**: Japans (vierbal staat dan vanzelf in de balk, zie `vierbalZichtbaar`), Vietnamees en
+   Portugees, samen tien talen (even aantal, netjes in het taaloverzicht). Per taal: `js/taal-<code>.js`, `TALEN` en
+   `taalLocale`, scripttag en `VOORAF`, briefje-prompt, winkelteksten in `store/talen.md` en `store/aso.md`, tests,
+   meten of tabs en balk passen, daarna schermafbeeldingen.
 9. **Inkomsten** (alleen als de eigenaar dat wil): eerst gratis houden; later eventueel een eenmalige Pro-aankoop of
    fooienpot via Apple/Google zelf (geen externe dienst). Geen advertenties of abonnement.
 10. **Wedstrijdbriefje op de iPhone zelf herkennen** (Apple Vision, eigen plugin), met hetzelfde controlescherm.
-11. **Sneller opstarten**: JSX vooraf laten vertalen (bijv. esbuild) in plaats van Babel in de browser; vraagt een
-    ontwikkelpakket, dus alleen met akkoord van de eigenaar.
+11. **`vendor/babel.min.js` verwijderen** (en de oude `jsx/`-verwijzingen zijn dan ook niet meer nodig voor oude
+    pagina's) zodra versie 2026-10-18.17 een paar dagen online staat.
 12. **Eigen domeinnaam** in plaats van ferro842.github.io (ook in `WEB_URL`, privacy-URL en store-teksten).

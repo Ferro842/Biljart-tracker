@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "rm -rf www && mkdir www && cp index.html manifest.json sw.js icon192.png icon512.png icon180.png logo.png www/ && cp -R css js jsx vendor www/",
+    "build": "node bouw-jsx.js && rm -rf www && mkdir www && cp index.html manifest.json sw.js icon192.png icon512.png icon180.png logo.png www/ && cp -R css js gebouwd vendor www/ && rm -f www/vendor/babel.min.js",
     "ios": "npm run build && npx cap sync ios && npx cap open ios",
-    "android": "npm run build && npx cap sync android && npx cap open android"
+    "android": "npm run build && npx cap sync android && npx cap open android",
+    "jsx": "node bouw-jsx.js"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "@capacitor/share": "^8.0.2"
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.5.2"
+    "@capacitor/cli": "^8.5.2",
+    "esbuild": "0.28.2"
   }
 }

@@ -1,7 +1,7 @@
 // De vier schermen van de Spelen-tab (Setup -> Invoer -> Gemist -> Goed). Alle spelstatus leeft in
 // BiljartTracker (index.html), omdat ook de kop (Afsluiten) en het opslaan-venster die gebruiken; de
 // schermen krijgen die als één object `spel` mee en halen er bovenaan uit wat ze nodig hebben.
-// JSX via Babel, na jsx/tabs.jsx.
+// JSX (vooraf omgezet door bouw-jsx.js), na jsx/tabs.jsx.
 
 // Spelen, voor de start: tafelmaat, partijdoel en Start partij (je klasse staat rechtsboven in de kop)
 function SetupScherm({spel}){

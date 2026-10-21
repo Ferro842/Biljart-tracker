@@ -1,6 +1,6 @@
 // Kleine, herbruikbare UI-onderdelen van Carom Tracker: grafiekjes, balkjes, opmerkingen-raster,
-// beurtregel, prestatie-overzicht en niveaukaart. JSX: geladen via Babel (type="text/babel") als
-// eerste Babel-script, vóór de code in index.html. Alles hier is daarna overal beschikbaar.
+// beurtregel, prestatie-overzicht en niveaukaart. JSX (vooraf omgezet door bouw-jsx.js), geladen als
+// eerste JSX-bestand, vóór jsx/app.jsx. Alles hier is daarna overal beschikbaar.
 
 const {useState,useEffect,useRef,useMemo,useContext}=React;
 // Staat het spelelement (badges, punten, slechtste partijen schrappen) aan? Uit = niets daarvan tonen.

@@ -1,6 +1,6 @@
 // Uitklapbare partijregels: PartijRij in de Stats-tab (met grafiek en series) en LogPartijRij in de
 // Log-tab (beurt voor beurt). Beide gebruiken PartijLabels en PartijBeheer (notitie en verwijderen).
-// JSX via Babel, na jsx/vensters.jsx.
+// JSX (vooraf omgezet door bouw-jsx.js), na jsx/vensters.jsx.
 
 // Labels achter de datum van een partij: tafelmaat, badge-punten, geschrapt uit gemiddelde, notitie
 function PartijLabels({p,punten,gedropt}){

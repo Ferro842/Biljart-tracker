@@ -1,5 +1,5 @@
 // Vaste gegevens van Carom Tracker: kleuren, opmerkingenlijsten, opslagsleutel, niveaus per
-// discipline, tafelmaten en mijlpalen. Gewone JavaScript (geen JSX), geladen vóór de Babel-code in
+// discipline, tafelmaten en mijlpalen. Gewone JavaScript (geen JSX), geladen vóór de JSX-bestanden in
 // index.html; alles hier is daardoor overal in de app beschikbaar.
 
 // Laken-kleur per discipline: alle groentinten van de app zijn CSS-variabelen (--c-<hex>, standaard groen in
@@ -65,13 +65,12 @@ const GOED=[
 ];
 
 const SK="biljart-tracker-v2";
-// Openbare adressen van de app, o.a. voor "Deel deze app" vanuit de iOS-app. APP_STORE_URL invullen
-// zodra de app in de App Store staat (vorm: https://apps.apple.com/app/id1234567890).
+// Openbare adressen van de app, o.a. voor "Deel deze app" vanuit de iOS-app (App Store sinds 21 okt 2026).
 // Eenmalige aanvulling (14 okt 2026): in partijen op de 2,30 tot deze datum begon iedereen met de acquit,
 // dus beurt 1 is daar de acquit. Voor latere partijen geldt dat niet vanzelf (bijv. met z'n tweeën).
 const ACQUIT_AANVULLING_TOT="2026-10-15T00:00:00";
 const WEB_URL="https://ferro842.github.io/Biljart-tracker/";
-const APP_STORE_URL=null;
+const APP_STORE_URL="https://apps.apple.com/app/id6824048820";
 
 // Niveautabellen op basis van de officiële KNBB-klassegrenzen (moyennetabel dagbiljarten, libre/
 // driebanden/bandstoten klein). Boven de hoogste officiële "klein"-klasse (waar de top overstapt op

@@ -1,5 +1,5 @@
 // Dash > Inzicht: wat gaat goed, wat minder, en waar valt winst te halen. De cijfers komen uit
-// berekenInzicht() (js/berekeningen.js); dit bestand tekent ze. JSX via Babel, vóór jsx/dashboard.jsx.
+// berekenInzicht() (js/berekeningen.js); dit bestand tekent ze. JSX (vooraf omgezet door bouw-jsx.js), vóór jsx/dashboard.jsx.
 
 function komma(x,dec){return getalTekst(x,dec);}
 

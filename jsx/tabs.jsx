@@ -1,5 +1,5 @@
 // Tabbladen Log, Stats en Info (met de back-up uit DataTab) van Carom Tracker, als losse componenten. De gegevens en acties komen
-// als props uit BiljartTracker (index.html). JSX via Babel, na jsx/dashboard.jsx.
+// als props uit BiljartTracker (index.html). JSX (vooraf omgezet door bouw-jsx.js), na jsx/dashboard.jsx.
 
 // Log-tab: lopende partij en alle partijen beurt voor beurt
 function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij,slaNotitieOp}){

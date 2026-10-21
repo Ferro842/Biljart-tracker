@@ -1,7 +1,7 @@
 // "Wauw"-onderdelen van Carom Tracker: optellende cijfers (Telop), vieringen (vier/VieringLaag), deelbare
 // afbeeldingen (partijkaart en seizoenskaart via canvas), "Je seizoen in beeld" (SeizoenVerhaal), de
 // speelkalender (KalenderPaneel) en het doel met voortgangsring (DoelRing/DoelInstellen).
-// JSX via Babel, direct na jsx/onderdelen.jsx. Animaties staan uit als <html> de klasse "rustig" heeft
+// JSX (vooraf omgezet door bouw-jsx.js), direct na jsx/onderdelen.jsx. Animaties staan uit als <html> de klasse "rustig" heeft
 // (Info → Weergave → Animaties uit) of het toestel om minder beweging vraagt.
 
 function rustig(){

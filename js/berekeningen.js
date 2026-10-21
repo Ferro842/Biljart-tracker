@@ -1,6 +1,6 @@
 // Rekenlogica van Carom Tracker: statistiek per partij, badges (prestaties), records, niveau en
 // badge-drops, voorspelling, seizoenen en mijlpalen. Gewone JavaScript zonder React of JSX, geladen
-// na js/constanten.js en vóór de Babel-code in index.html. Puur rekenwerk: leest of schrijft geen opslag.
+// na js/constanten.js en vóór de JSX-bestanden (gebouwd/). Puur rekenwerk: leest of schrijft geen opslag.
 
 // Wat een "goede", "sterke" en "top"-beurt is, verschilt enorm per discipline — bij Driebanden is
 // 1 carambole al een prestatie, bij Libre pas 5+. Kader 35/2, 38/2 en 47/2 (grotere vakken) liggen dicht bij

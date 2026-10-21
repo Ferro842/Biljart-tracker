@@ -7,7 +7,7 @@
   const w=function(ms){return new Promise(function(r){setTimeout(r,ms);});};
   const k=function(t){return Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim()===t;});};
   const kb=function(t){return Array.from(document.querySelectorAll("button")).find(function(b){return b.textContent.trim().indexOf(t)===0;});};
-  // Alleen de app zelf (#root): document.body bevat ook de broncode van het inline Babel-script
+  // Alleen de app zelf (#root): document.body kan ook andere tekst bevatten
   const tekst=function(){return document.getElementById("root").textContent;};
   const data=function(){return JSON.parse(localStorage.getItem("biljart-tracker-v2"));};
   const sluit=function(){const o=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed";});if(o)o.click();};

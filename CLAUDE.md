@@ -29,8 +29,7 @@ controleren zijn.
 React 18.2 staat lokaal in `vendor/` (identiek aan cdnjs), zodat de app geen externe scripts laadt en offline kan
 starten. JSX wordt vooraf omgezet met esbuild (ontwikkelpakket, 18 okt 2026): `npm run jsx` (= `node bouw-jsx.js`) maakt
 van elk `jsx/*.jsx` een los `gebouwd/*.js` (geen bundel, gedeelde globale scope). **Na elke wijziging in `jsx/` opnieuw
-bouwen**; `gebouwd/` wordt meegecommit (GitHub Pages bouwt niets). `vendor/babel.min.js` blijft nog even staan voor
-telefoons die vlak na de push een oud `index.html` laden; zit niet meer in de app of in `VOORAF`.
+bouwen**; `gebouwd/` wordt meegecommit (GitHub Pages bouwt niets). Babel is weg (verwijderd 21 okt 2026).
 
 Laadvolgorde in `index.html` (alles deelt de globale scope; de `jsx/`-bestanden als `gebouwd/<naam>.js`):
 
@@ -53,7 +52,7 @@ Laadvolgorde in `index.html` (alles deelt de globale scope; de `jsx/`-bestanden 
 
 Gewone JavaScript (zonder JSX) hoort in `js/`, componenten in `jsx/`. Nieuw JSX-bestand: `npm run jsx`, dan
 `<script src="gebouwd/<naam>.js?v=...">` vóór `gebouwd/app.js` in `index.html` en in `VOORAF` (`sw.js`); volgorde telt.
-Top-level `const`/`let` moeten over alle bestanden uniek zijn (Babel maakte er `var` van, nu niet meer).
+Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout bij het laden).
 
 ## Data
 
@@ -300,17 +299,17 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 ## Open punten (stand 18 okt 2026)
 
 ### Bij de eigenaar
-1. **App Store 1.0**: ingediend; Apple vroeg om uitleg (2.1), antwoord met video staat in de Notes. Controleren of
-   Update Review/Resubmit is gedaan, dan wachten op goedkeuring. TestFlight-uitnodiging staat nog op "Invited".
+1. **App Store 1.0**: goedgekeurd en in de winkel (21 okt 2026), Apple ID 6824048820
+   (https://apps.apple.com/app/id6824048820, staat als `APP_STORE_URL` in `js/constanten.js`).
 2. **Google Play**: ontwikkelaarsaccount (25 dollar) en 12 testers met Android; daarna 14 dagen gesloten test.
 3. **Vertalingen laten nalezen**: Spaans, Turks, Koreaans, Japans, Vietnamees, Portugees en de Koreaanse handicapgrenzen (vierbal), door iemand die
    de taal of de praktijk kent.
 
-### Samen, na goedkeuring van 1.0
+### Samen, nu 1.0 is goedgekeurd
 4. **Versie 1.1 naar de App Store**: naam per taal uit `store/aso.md` (Carom Tracker: …), alle talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
    systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle tien talen staan in
    `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko|ja|vi|pt` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
-5. **`APP_STORE_URL`** in `js/constanten.js` invullen na publicatie (voor "Deel deze app").
+5. **Versie 1.1** staat klaar in de code (iOS `MARKETING_VERSION` 1.1, build 2; Android versionCode 2, versionName 1.1).
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
    Carom Tracker.
@@ -328,6 +327,4 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 9. **Inkomsten** (alleen als de eigenaar dat wil): eerst gratis houden; later eventueel een eenmalige Pro-aankoop of
    fooienpot via Apple/Google zelf (geen externe dienst). Geen advertenties of abonnement.
 10. **Wedstrijdbriefje op de iPhone zelf herkennen** (Apple Vision, eigen plugin), met hetzelfde controlescherm.
-11. **`vendor/babel.min.js` verwijderen** (en de oude `jsx/`-verwijzingen zijn dan ook niet meer nodig voor oude
-    pagina's) zodra versie 2026-10-18.17 een paar dagen online staat.
 12. **Eigen domeinnaam** in plaats van ferro842.github.io (ook in `WEB_URL`, privacy-URL en store-teksten).

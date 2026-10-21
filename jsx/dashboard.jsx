@@ -1,6 +1,6 @@
 // Dash-tab van Carom Tracker: BeurtenTijdlijn (doorlopende beurtengrafiek met selecteren en
 // beste/zwakste reeks) en Dashboard (Trend, Consistentie, Patronen, Vergelijk, Punten).
-// JSX via Babel, na jsx/partijrij.jsx.
+// JSX (vooraf omgezet door bouw-jsx.js), na jsx/partijrij.jsx.
 
 // Doorlopende grafiek met alle beurten van alle (geselecteerde) partijen achter elkaar, horizontaal
 // scrollbaar. Elke partij heeft een eigen band met nummer en datum; de eerste beurt van een partij

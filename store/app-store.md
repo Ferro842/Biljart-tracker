@@ -44,7 +44,7 @@ Is de naam "Carom Tracker" al bezet, kies dan bijvoorbeeld "Carom Tracker – Ca
 > • Inzicht: welke stoten je goed beheerst en waar je serie meestal eindigt
 >
 > VOOR ELKE SPELVORM
-> • Libre, driebanden, bandstoten en kader 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 en 71/2
+> • Libre, driebanden, bandstoten, vierbal en kader 35/2, 38/2, 47/1, 47/2, 52/2, 57/2 en 71/2
 > • Elke spelvorm met een eigen moyenne, klasse en kleur
 >
 > EXTRA
@@ -55,7 +55,17 @@ Is de naam "Carom Tracker" al bezet, kies dan bijvoorbeeld "Carom Tracker – Ca
 > • Beschikbaar in het Nederlands, Engels, Frans, Duits, Spaans, Portugees, Turks, Vietnamees, Koreaans en Japans
 >
 > PRIVACY
-> Geen account, geen advertenties, geen tracking. Al je gegevens blijven op je eigen telefoon. Maak zelf een back-up via Info → Exporteer; de app herinnert je eraan.
+> Geen account, geen advertenties, geen tracking. Je gegevens blijven bij jou: op je telefoon, met automatisch een reservekopie in je eigen iCloud Drive (als die aan staat).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> Nieuw in deze versie:
+> • Nieuwe naam: Carom Tracker
+> • Automatische back-up naar je eigen iCloud Drive, na elke partij
+> • Nu in 10 talen: Nederlands, Engels, Frans, Duits, Spaans, Portugees, Turks, Vietnamees, Koreaans en Japans
+> • Vierbal, met strafpunt en Koreaanse handicapklassen (aan te zetten bij Info → Weergave)
+> • Meer kadervarianten: 35/2, 47/1 en 52/2
+> • Getallen in de notatie van je taal, en kleine verbeteringen
 
 **Trefwoorden (100, komma's zonder spaties)**
 

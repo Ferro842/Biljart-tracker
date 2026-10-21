@@ -1,5 +1,5 @@
 // Vensters (overlays) van Carom Tracker: samenvatting na een partij, welkomstflow, seizoensarchief,
-// badgecatalogus en niveau-overzicht. JSX via Babel, geladen na jsx/onderdelen.jsx.
+// badgecatalogus en niveau-overzicht. JSX (vooraf omgezet door bouw-jsx.js), geladen na jsx/onderdelen.jsx.
 
 function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,discipline,onClose}){
   const spel=useContext(SpelContext);

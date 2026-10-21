@@ -62,7 +62,17 @@ controleert ze.
 > • Available in English, Dutch, French, German, Spanish, Portuguese, Turkish, Vietnamese, Korean and Japanese
 >
 > PRIVACY
-> No account, no ads, no tracking. All your data stays on your own phone. Make your own backup via Info → Export; the app reminds you.
+> No account, no ads, no tracking. Your data stays with you: on your phone, with an automatic backup copy in your own iCloud Drive (if it's switched on).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> What's new:
+> • New name: Carom Tracker
+> • Automatic backup to your own iCloud Drive after every game
+> • Now in 10 languages: English, Dutch, French, German, Spanish, Portuguese, Turkish, Vietnamese, Korean and Japanese
+> • Four-ball, with penalty points and Korean handicap levels (switch on in Info → Display)
+> • More balkline variants: 35/2, 47/1 and 52/2
+> • Numbers in your language's format, and small improvements
 
 **Trefwoorden (100)**
 
@@ -112,7 +122,17 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 > • Disponible en français, anglais, néerlandais, allemand, espagnol, portugais, turc, vietnamien, coréen et japonais
 >
 > CONFIDENTIALITÉ
-> Pas de compte, pas de publicité, pas de suivi. Toutes tes données restent sur ton téléphone. Fais ta propre sauvegarde via Info → Exporter ; l'appli te le rappelle.
+> Pas de compte, pas de publicité, pas de suivi. Tes données restent chez toi : sur ton téléphone, avec une copie de sauvegarde automatique dans ton propre iCloud Drive (s'il est activé).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> Nouveautés :
+> • Nouveau nom : Carom Tracker
+> • Sauvegarde automatique dans ton propre iCloud Drive après chaque partie
+> • Désormais en 10 langues : français, anglais, néerlandais, allemand, espagnol, portugais, turc, vietnamien, coréen et japonais
+> • Quatre billes, avec point de pénalité et niveaux de handicap coréens (à activer dans Info → Affichage)
+> • Plus de variantes de cadre : 35/2, 47/1 et 52/2
+> • Nombres au format de ta langue, et petites améliorations
 
 **Trefwoorden (100)**
 
@@ -162,7 +182,17 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 > • Verfügbar auf Deutsch, Englisch, Niederländisch, Französisch, Spanisch, Portugiesisch, Türkisch, Vietnamesisch, Koreanisch und Japanisch
 >
 > DATENSCHUTZ
-> Kein Konto, keine Werbung, kein Tracking. Alle Daten bleiben auf deinem Handy. Mach selbst ein Backup über Info → Exportieren; die App erinnert dich daran.
+> Kein Konto, keine Werbung, kein Tracking. Deine Daten bleiben bei dir: auf deinem Handy, mit einer automatischen Sicherungskopie in deinem eigenen iCloud Drive (wenn es eingeschaltet ist).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> Neu in dieser Version:
+> • Neuer Name: Carom Tracker
+> • Automatisches Backup in dein eigenes iCloud Drive nach jeder Partie
+> • Jetzt in 10 Sprachen: Deutsch, Englisch, Niederländisch, Französisch, Spanisch, Portugiesisch, Türkisch, Vietnamesisch, Koreanisch und Japanisch
+> • Vierball, mit Strafpunkt und koreanischen Handicap-Klassen (einschalten unter Info → Anzeige)
+> • Mehr Cadre-Varianten: 35/2, 47/1 und 52/2
+> • Zahlen im Format deiner Sprache und kleine Verbesserungen
 
 **Trefwoorden (100)**
 
@@ -212,7 +242,17 @@ Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme
 > • Disponible en español, inglés, neerlandés, francés, alemán, portugués, turco, vietnamita, coreano y japonés
 >
 > PRIVACIDAD
-> Sin cuenta, sin anuncios, sin seguimiento. Todos tus datos se quedan en tu propio teléfono. Haz tu propia copia de seguridad en Info → Exportar; la app te lo recuerda.
+> Sin cuenta, sin anuncios, sin seguimiento. Tus datos se quedan contigo: en tu teléfono, con una copia de seguridad automática en tu propio iCloud Drive (si está activado).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> Novedades:
+> • Nuevo nombre: Carom Tracker
+> • Copia de seguridad automática en tu propio iCloud Drive después de cada partida
+> • Ahora en 10 idiomas: español, inglés, neerlandés, francés, alemán, portugués, turco, vietnamita, coreano y japonés
+> • Cuatro bolas, con punto de penalización y niveles de hándicap coreanos (actívalo en Info → Vista)
+> • Más variantes de cuadro: 35/2, 47/1 y 52/2
+> • Números en el formato de tu idioma y pequeñas mejoras
 
 **Trefwoorden (100)**
 
@@ -262,7 +302,17 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 > • Türkçe, İngilizce, Felemenkçe, Fransızca, Almanca, İspanyolca, Portekizce, Vietnamca, Korece ve Japonca dillerinde
 >
 > GİZLİLİK
-> Hesap yok, reklam yok, takip yok. Tüm verilerin kendi telefonunda kalır. Bilgi → Dışa aktar ile kendi yedeğini al; uygulama sana hatırlatır.
+> Hesap yok, reklam yok, takip yok. Verilerin sende kalır: telefonunda, ayrıca kendi iCloud Drive'ında otomatik bir yedek kopyayla (açıksa).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> Bu sürümde yeni:
+> • Yeni ad: Carom Tracker
+> • Her maçtan sonra kendi iCloud Drive'ına otomatik yedek
+> • Artık 10 dilde: Türkçe, İngilizce, Felemenkçe, Fransızca, Almanca, İspanyolca, Portekizce, Vietnamca, Korece ve Japonca
+> • Dört top, ceza puanı ve Kore handikap seviyeleriyle (Bilgi → Görünüm'den açılır)
+> • Daha fazla kadr çeşidi: 35/2, 47/1 ve 52/2
+> • Sayılar dilinin biçiminde ve küçük iyileştirmeler
 
 **Trefwoorden (100)**
 
@@ -314,7 +364,17 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > • 한국어, 영어, 일본어, 네덜란드어, 프랑스어, 독일어, 스페인어, 포르투갈어, 터키어, 베트남어 지원
 >
 > 개인정보
-> 계정 없음, 광고 없음, 추적 없음. 모든 데이터는 내 휴대폰에만 있어요. 정보 → 내보내기로 직접 백업하세요. 앱이 때때로 알려 줘요.
+> 계정 없음, 광고 없음, 추적 없음. 데이터는 내 휴대폰에 있고, iCloud Drive가 켜져 있으면 내 iCloud Drive에 자동으로 백업돼요.
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> 새로운 기능:
+> • 새 이름: Carom Tracker
+> • 경기마다 내 iCloud Drive에 자동 백업
+> • 이제 10개 언어 지원: 한국어, 영어, 일본어, 네덜란드어, 프랑스어, 독일어, 스페인어, 포르투갈어, 터키어, 베트남어
+> • 4구: 벌점과 한국식 핸디 등급 지원
+> • 보크라인 종류 추가: 35/2, 47/1, 52/2
+> • 언어에 맞는 숫자 표기와 작은 개선
 
 **Trefwoorden (100)**
 
@@ -365,7 +425,17 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > • 日本語、英語、韓国語、オランダ語、フランス語、ドイツ語、スペイン語、ポルトガル語、トルコ語、ベトナム語に対応
 >
 > プライバシー
-> アカウントなし、広告なし、トラッキングなし。データはすべてあなたのスマホの中だけにあります。情報 → エクスポート で自分でバックアップできます。アプリがときどきお知らせします。
+> アカウントなし、広告なし、トラッキングなし。データはあなたのスマホに保存され、iCloud Drive がオンならあなた自身の iCloud Drive に自動でバックアップされます。
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> 新機能：
+> • 新しい名前：Carom Tracker
+> • ゲームごとに自分の iCloud Drive へ自動バックアップ
+> • 10か国語に対応：日本語、英語、韓国語、オランダ語、フランス語、ドイツ語、スペイン語、ポルトガル語、トルコ語、ベトナム語
+> • 四つ球：ペナルティと韓国式ハンディのクラスに対応
+> • ボークラインの種類を追加：35/2、47/1、52/2
+> • 言語に合わせた数字の表記と細かな改善
 
 **Trefwoorden (100)**
 
@@ -414,7 +484,17 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > • Tiếng Việt, tiếng Anh, tiếng Hàn, tiếng Nhật, tiếng Hà Lan, tiếng Pháp, tiếng Đức, tiếng Tây Ban Nha, tiếng Bồ Đào Nha, tiếng Thổ Nhĩ Kỳ
 >
 > Quyền riêng tư
-> Không tài khoản, không quảng cáo, không theo dõi. Mọi dữ liệu chỉ nằm trên điện thoại của bạn. Tự sao lưu qua Thông tin → Xuất; ứng dụng sẽ thỉnh thoảng nhắc bạn.
+> Không tài khoản, không quảng cáo, không theo dõi. Dữ liệu ở lại với bạn: trên điện thoại, kèm bản sao lưu tự động trong iCloud Drive của chính bạn (nếu đang bật).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> Có gì mới:
+> • Tên mới: Carom Tracker
+> • Tự động sao lưu vào iCloud Drive của chính bạn sau mỗi ván
+> • Nay có 10 ngôn ngữ: tiếng Việt, tiếng Anh, tiếng Hàn, tiếng Nhật, tiếng Hà Lan, tiếng Pháp, tiếng Đức, tiếng Tây Ban Nha, tiếng Bồ Đào Nha, tiếng Thổ Nhĩ Kỳ
+> • 4 bi, có điểm phạt và các hạng handicap kiểu Hàn Quốc (bật ở Thông tin → Hiển thị)
+> • Thêm các loại balkline: 35/2, 47/1 và 52/2
+> • Số theo định dạng ngôn ngữ của bạn và một số cải tiến nhỏ
 
 **Trefwoorden (100)**
 
@@ -463,7 +543,17 @@ bida,carom,3 băng,4 bi,libre,điểm trung bình,seri,ghi điểm,bi-a,lượt,
 > • Em português, inglês, espanhol, francês, alemão, holandês, turco, coreano, japonês e vietnamita
 >
 > Privacidade
-> Sem conta, sem anúncios, sem rastreamento. Todos os dados ficam só no seu celular. Faça backup você mesmo em Info → Exportar; o app lembra você de vez em quando.
+> Sem conta, sem anúncios, sem rastreamento. Seus dados ficam com você: no celular, com uma cópia de backup automática no seu próprio iCloud Drive (se estiver ligado).
+
+**Wat is er nieuw (versie 1.1, max. 4000)**
+
+> Novidades:
+> • Novo nome: Carom Tracker
+> • Backup automático no seu próprio iCloud Drive após cada partida
+> • Agora em 10 idiomas: português, inglês, espanhol, francês, alemão, holandês, turco, vietnamita, coreano e japonês
+> • Quatro bolas, com ponto de falta e níveis de handicap coreanos (ligue em Info → Exibição)
+> • Mais variantes de quadro: 35/2, 47/1 e 52/2
+> • Números no formato do seu idioma e pequenas melhorias
 
 **Trefwoorden (100)**
 

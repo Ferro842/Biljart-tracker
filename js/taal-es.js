@@ -846,7 +846,7 @@ VERTALING.es={
   // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
   "hoort bij {k}":"corresponde a {k}",
   "Vorm over":"Forma sobre",
-  "Gehaald met al je partijen op {d}":"Alcanzado con todas tus partidas el {d}",
-  "Gehaald met je laatste {n} partijen op {d}":"Alcanzado con tus últimas {n} partidas el {d}",
-  "Eerder gehaald op {d}":"Alcanzado antes, el {d}"
+  "Over al je partijen haal je dit doel wel":"Con todas tus partidas sí alcanzas este objetivo",
+  "Over je laatste {n} partijen haal je dit doel wel":"Con tus últimas {n} partidas sí alcanzas este objetivo",
+  "Op {d} al eens gehaald, maar met je huidige vorm nu niet":"Alcanzado una vez el {d}, pero no con tu forma actual"
 };

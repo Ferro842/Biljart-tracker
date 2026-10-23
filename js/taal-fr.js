@@ -842,7 +842,7 @@ VERTALING.fr={
   // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
   "hoort bij {k}":"imposé par le {k}",
   "Vorm over":"Forme sur",
-  "Gehaald met al je partijen op {d}":"Atteint avec toutes tes parties le {d}",
-  "Gehaald met je laatste {n} partijen op {d}":"Atteint avec tes {n} dernières parties le {d}",
-  "Eerder gehaald op {d}":"Déjà atteint le {d}"
+  "Over al je partijen haal je dit doel wel":"Sur toutes tes parties, tu atteins bien cet objectif",
+  "Over je laatste {n} partijen haal je dit doel wel":"Sur tes {n} dernières parties, tu atteins bien cet objectif",
+  "Op {d} al eens gehaald, maar met je huidige vorm nu niet":"Atteint une fois le {d}, mais pas avec ta forme actuelle"
 };

@@ -1,5 +1,5 @@
 // Gebouwd uit jsx/app.jsx door bouw-jsx.js; niet zelf aanpassen.
-const APP_VERSIE = "2026-10-23.1";
+const APP_VERSIE = "2026-10-23.2";
 function BiljartTracker() {
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("spelen");
@@ -80,7 +80,12 @@ function BiljartTracker() {
     const d = data && data.doelen && data.doelen[huidigeDiscplineVoorLading];
     if (!d) return null;
     const nuGehaald = niveau.effectiefGemiddelde >= d.waarde;
-    const live = { gehaald: nuGehaald, eerder: !nuGehaald && d.gehaald ? { op: d.gehaaldOp, venster: d.gehaaldVenster } : null };
+    const haaltMet = nuGehaald ? null : [10, 20, 30, "alles"].filter(function(x) {
+      return x !== vormVenster;
+    }).find(function(x) {
+      return berekenVorm(alleP, schrapt, x).effectiefGemiddelde >= d.waarde;
+    }) || null;
+    const live = { gehaald: nuGehaald, eerder: !nuGehaald && (haaltMet || d.gehaald) ? { op: d.gehaaldOp, venster: haaltMet } : null };
     if (!d.gezet) return Object.assign({}, d, live);
     const grens = new Date(d.gezet).getTime();
     const voor = alleP.filter(function(p) {
@@ -564,7 +569,9 @@ function BiljartTracker() {
       vormVenster,
       setVormVenster,
       schrappen: spelAan ? schrappenAan : null,
-      setSchrappen
+      setSchrappen,
+      alleP,
+      schrapt
     }
   ), seizoenArchiefOpen && /* @__PURE__ */ React.createElement(
     SeizoenArchief,

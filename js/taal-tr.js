@@ -845,7 +845,7 @@ VERTALING.tr={
   // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
   "hoort bij {k}":"{k} için sabit",
   "Vorm over":"Form:",
-  "Gehaald met al je partijen op {d}":"{d} tarihinde tüm maçlarınla ulaşıldı",
-  "Gehaald met je laatste {n} partijen op {d}":"{d} tarihinde son {n} maçınla ulaşıldı",
-  "Eerder gehaald op {d}":"Daha önce {d} tarihinde ulaşıldı"
+  "Over al je partijen haal je dit doel wel":"Tüm maçlarına göre bu hedefe ulaşıyorsun",
+  "Over je laatste {n} partijen haal je dit doel wel":"Son {n} maçına göre bu hedefe ulaşıyorsun",
+  "Op {d} al eens gehaald, maar met je huidige vorm nu niet":"{d} tarihinde bir kez ulaşıldı, ama şu anki formunla değil"
 };

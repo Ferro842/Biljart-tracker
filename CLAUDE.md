@@ -74,7 +74,10 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout b
   (caramboles) of Gemist (poedel). Alleen toevoegen, idempotent. Nieuwe partijen nooit automatisch (soms
   wordt de acquit als laatste beurt genomen). Telt niet mee voor "bijgehouden" in Inzicht.
 - Stats → Je niveau: rij "Vorm over 10/20/30/Alle" (`data-niveau-venster`, zelfde instelling als het klasse-overzicht) en
-  tafels aanvinken (`data-niveau-tafels`, meerdere tegelijk; niets of alles aangevinkt = alle tafels).
+  tafelkeuze `TafelKeuze` (`jsx/onderdelen.jsx`, `data-niveau-tafels`): met 2 gespeelde tafels springt een tik naar alleen
+  die tafel; vanaf 3 aanvinken (✓, meerdere tegelijk); niets of alles = alle tafels (`tafelSelectie`). Dezelfde keuze staat in
+  het klasse-overzicht (`NiveauOverzicht`, `berekenVolledigNiveau` op de deelverzameling, melding `data-overzicht-tafel`);
+  de doelring daar blijft over alle tafels.
 - Seizoenen: `data.seizoenen` [{id,naam,startDatum,eindDatum}]. "Seizoen afsluiten" (Stats) vraagt de begindatum van
   het nieuwe seizoen (standaard nu; eerder kan, bijv. om een grens te herstellen). "Laatste seizoensgrens ongedaan
   maken" staat in het archiefvenster (niet direct onder de knoppen: was per ongeluk aan te tikken).
@@ -179,7 +182,9 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout b
   (in `bewaarPartij`); `data.animaties===false` zet animaties en vieringen uit (klasse `rustig` op `<html>`).
   Doel per discipline in `data.doelen[discipline]` = {waarde,datum,start,gehaald,gehaaldOp,gehaaldVenster,gezet}. De opgeslagen
   `gehaald` zorgt alleen dat de viering één keer komt; `mijnDoel` (app.jsx) rekent `gehaald` steeds opnieuw met de huidige
-  vorm-instelling en geeft `eerder` ({op,venster}) als het eens met een andere instelling gehaald is (DoelRing toont dat); ring in het klasse-overzicht
+  vorm-instelling en geeft `eerder` ({op,venster}) als het nu niet gehaald is: `venster` = een andere vorm-instelling (10/20/30/alles)
+  die het doel nú wel haalt ("Over je laatste 10 partijen haal je dit doel wel"), anders alleen de datum ("Op {d} al eens gehaald,
+  maar met je huidige vorm nu niet"; DoelRing, `data-doel-eerder`); ring in het klasse-overzicht
   (`NiveauOverzicht`, knop rechtsboven; daar ook de keuze 10/20/30/alle voor je vorm) via `mijnDoel`; let op: `doel`/`setDoel` zijn het partijdoel). Het beginpunt rekent `mijnDoel` (index.html) steeds opnieuw uit
   met de huidige vorm-instelling over de partijen van vóór `gezet`; de bewaarde `start` alleen als terugval. Anders springt
   het percentage mee als je de vorm-instelling wisselt (gebeurde: begin over alle partijen, vorm over 10). "Je seizoen in beeld" opent vanzelf na Seizoen afsluiten

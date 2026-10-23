@@ -431,6 +431,12 @@ function vormOpties(vormVenster){return{venster:vormVenster==="alles"?null:vormV
 function berekenVorm(partijen,schrapt,vormVenster){
   return berekenNiveauInfo(partijen,!schrapt,vormOpties(vormVenster));
 }
+// Niveau zoals bovenin de app (klasse, vorm, moyenne, voorspelling), voor een willekeurige set partijen, bijv. één tafel
+function berekenVolledigNiveau(partijen,discipline,schrapt,vormVenster){
+  const info=berekenVorm(partijen,schrapt,vormVenster);
+  const voorspelling=berekenVoorspelling(partijen,discipline,!schrapt,vormOpties(vormVenster));
+  return Object.assign({},bepaalNiveau(info.effectiefGemiddelde,discipline),info,{voorspelling:voorspelling,schrapt:schrapt});
+}
 function vormUitleg(info,dec){
   const k=function(x){return getalTekst(x,dec);};
   if(!info.venster&&!info.aantalDrops)return t("Moyenne: al je {n} partijen, niets geschrapt. Je klasse is hierop gebaseerd.",{n:info.aantalPartijenTotaal});

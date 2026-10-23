@@ -167,6 +167,50 @@ function PrestatieOverzicht({ prestatie }) {
     })));
   })));
 }
+function tafelSelectie(gespeeld, keuze) {
+  const gekozen = gespeeld.filter(function(k) {
+    return (keuze || []).indexOf(k) !== -1;
+  });
+  return gekozen.length === 0 || gekozen.length === gespeeld.length ? "alle" : gekozen;
+}
+function tafelLabels(sel) {
+  return sel === "alle" ? "" : sel.map(tafelLabel).reduce(function(s, l, i, a) {
+    return s + (i === 0 ? "" : i === a.length - 1 ? " " + t("en") + " " : ", ") + l;
+  }, "");
+}
+function TafelKeuze({ gespeeld, keuze, setKeuze }) {
+  if (gespeeld.length < 2) return null;
+  const sel = tafelSelectie(gespeeld, keuze);
+  const meer = gespeeld.length > 2;
+  const tik = function(k) {
+    if (!meer) {
+      setKeuze([k]);
+      return;
+    }
+    const basis = sel === "alle" ? [] : sel;
+    setKeuze(basis.indexOf(k) !== -1 ? basis.filter(function(x) {
+      return x !== k;
+    }) : basis.concat([k]));
+  };
+  const chip = function(actief) {
+    return { flex: 1, padding: "7px 0", background: actief ? "var(--c-2d4a1e)" : "none", border: "1px solid " + (actief ? GOUD : KBDR), borderRadius: 8, color: actief ? GOUD : WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 13 };
+  };
+  return /* @__PURE__ */ React.createElement("div", { "data-niveau-tafels": true, style: { display: "flex", gap: 6, marginBottom: 10 } }, /* @__PURE__ */ React.createElement("button", { onClick: function() {
+    setKeuze([]);
+  }, style: chip(sel === "alle") }, t("Alle tafels")), gespeeld.map(function(k) {
+    const aan = sel !== "alle" && sel.indexOf(k) !== -1;
+    return /* @__PURE__ */ React.createElement("button", { key: k, onClick: function() {
+      tik(k);
+    }, style: chip(aan) }, aan && meer ? "✓ " : "", tafelLabel(k));
+  }));
+}
+function gespeeldeTafels(partijen) {
+  return Object.keys(TAFELS).filter(function(k) {
+    return (partijen || []).some(function(p) {
+      return (p.tafel || "230") === k;
+    });
+  });
+}
 function NiveauKaart({ niveau, compact, discipline, onClick }) {
   const spel = useContext(SpelContext);
   const dec = discipline === "driebanden" ? 3 : 2;

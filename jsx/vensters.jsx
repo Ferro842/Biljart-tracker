@@ -642,13 +642,23 @@ function BadgeCatalogus({discipline,onClose}){
 
 // Klasse-overzicht (knop rechtsboven): je klasse, waarop je vorm gebaseerd is (10/20/30/alle) en je doel, alles op één plek.
 // mijnDoel/openDoel/vormVenster/setVormVenster zijn optioneel (vanuit Dash → Punten alleen de klassen).
-function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenster,setVormVenster,schrappen,setSchrappen}){
+// Met alleP: tafels kiezen (TafelKeuze); dan klasse, vorm en de lijst voor alleen die tafels. Het doel blijft over alle tafels.
+function NiveauOverzicht({niveau:niveauAlle,discipline,onClose,mijnDoel,openDoel,vormVenster,setVormVenster,schrappen,setSchrappen,alleP,schrapt}){
+  const [tafelKeuze,setTafelKeuze]=useState([]);
+  const gespeeld=alleP?gespeeldeTafels(alleP):[];
+  const tafelSel=tafelSelectie(gespeeld,tafelKeuze);
+  const niveau=useMemo(function(){
+    if(tafelSel==="alle")return niveauAlle;
+    return berekenVolledigNiveau(alleP.filter(function(p){return tafelSel.indexOf(p.tafel||"230")!==-1;}),discipline,schrapt,vormVenster||20);
+  },[niveauAlle,tafelSel.toString(),alleP,discipline,schrapt,vormVenster]);
   const niveaus=(DISCIPLINES[discipline]||DISCIPLINES.libre).niveaus;
   const decimalen=discipline==="driebanden"?3:2;
   return(
     <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:20,cursor:"pointer"}}>
       <div onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:18,padding:"18px 16px",maxWidth:380,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",overflowY:"auto",boxShadow:"0 10px 40px rgba(0,0,0,0.6)"}}>
+        {alleP&&<TafelKeuze gespeeld={gespeeld} keuze={tafelKeuze} setKeuze={setTafelKeuze}/>}
         <NiveauKaart niveau={niveau} discipline={discipline}/>
+        {tafelSel!=="alle"&&<div data-overzicht-tafel style={{fontSize:11,color:GOUDL,marginTop:6,textAlign:"center"}}>{t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.",{tafel:tafelLabels(tafelSel)})}</div>}
         {setVormVenster&&<div style={{marginTop:12}}>
           <div style={{fontSize:13,color:WITD,marginBottom:6}}>{t("Je vorm (en klasse) volgt je laatste:")}</div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
@@ -676,7 +686,7 @@ function NiveauOverzicht({niveau,discipline,onClose,mijnDoel,openDoel,vormVenste
         </div>}
         {openDoel&&<div style={{marginTop:12}}>
           {mijnDoel
-            ?<DoelRing doel={mijnDoel} vorm={niveau.effectiefGemiddelde} discipline={discipline} onWijzig={openDoel}/>
+            ?<DoelRing doel={mijnDoel} vorm={niveauAlle.effectiefGemiddelde} discipline={discipline} onWijzig={openDoel}/>
             :<button onClick={openDoel} style={{width:"100%",padding:"11px 12px",background:"none",border:"1px dashed "+GOUD,borderRadius:12,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>🎯 {t("Stel een doel")}</button>}
         </div>}
         <div style={{fontSize:13,fontWeight:"bold",color:GOUD,marginTop:16,marginBottom:8,textAlign:"center",textTransform:"uppercase",letterSpacing:1}}>{t("Alle niveaus")} — {(DISCIPLINES[discipline]||DISCIPLINES.libre).naam}</div>

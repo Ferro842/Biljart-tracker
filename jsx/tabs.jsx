@@ -234,13 +234,10 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
           per tafel. Het niveau bovenin de app gaat altijd over alle tafels. */}
       {(function(){
         const dec=huidigeDiscipline==="driebanden"?3:2;
-        const gespeeld=Object.keys(TAFELS).filter(function(k){return alleP.some(function(p){return(p.tafel||"230")===k;});});
-        // Aangevinkte tafels (alleen gespeelde); niets of alles aangevinkt = alle tafels
-        const gekozen=gespeeld.filter(function(k){return niveauTafels.indexOf(k)!==-1;});
-        const tafel=gekozen.length===0||gekozen.length===gespeeld.length?"alle":gekozen;
-        const labels=tafel==="alle"?"":tafel.map(tafelLabel).reduce(function(s,l,i,a){return s+(i===0?"":i===a.length-1?" "+t("en")+" ":", ")+l;},"");
+        const gespeeld=gespeeldeTafels(alleP);
+        const tafel=tafelSelectie(gespeeld,niveauTafels); // "alle" of de gekozen tafels (TafelKeuze in jsx/onderdelen.jsx)
+        const labels=tafelLabels(tafel);
         const opTafel=tafel==="alle"?"":" "+t("op {tafel}",{tafel:labels});
-        const wissel=function(k){setNiveauTafels(function(oud){const basis=oud.filter(function(x){return gespeeld.indexOf(x)!==-1;});return basis.indexOf(k)!==-1?basis.filter(function(x){return x!==k;}):basis.concat([k]);});};
         // Voor een deel van de tafels: zelfde berekening, alleen met de partijen op die tafels
         const info=tafel==="alle"?niveau:berekenVorm(alleP.filter(function(p){return tafel.indexOf(p.tafel||"230")!==-1;}),spel&&data.schrappen!==false,vormVenster);
         const niv=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline);
@@ -258,16 +255,8 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                 })}
               </div>
             )}
-            {/* Tafels aanvinken (meerdere tegelijk); Alle tafels = alles weer aan */}
-            {gespeeld.length>1&&(
-              <div data-niveau-tafels style={{display:"flex",gap:6,marginBottom:10}}>
-                <button onClick={function(){setNiveauTafels([]);}} style={chip(tafel==="alle")}>{t("Alle tafels")}</button>
-                {gespeeld.map(function(k){
-                  const aan=tafel!=="alle"&&tafel.indexOf(k)!==-1;
-                  return <button key={k} onClick={function(){wissel(k);}} style={chip(aan)}>{aan?"✓ ":""}{tafelLabel(k)}</button>;
-                })}
-              </div>
-            )}
+            {/* Tafels kiezen: met twee tafels één tegelijk, vanaf drie aanvinken; Alle tafels = alles */}
+            <TafelKeuze gespeeld={gespeeld} keuze={niveauTafels} setKeuze={setNiveauTafels}/>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:tafel==="alle"?10:6}}>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
                 <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}><Telop waarde={info.effectiefGemiddelde} dec={dec}/></div>

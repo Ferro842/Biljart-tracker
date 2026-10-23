@@ -49,20 +49,33 @@
     tk[1].click();await w(200);
     const een=tekst().indexOf("Alleen je partijen op de")!==-1;
     Array.from(document.querySelectorAll("[data-niveau-tafels] button"))[2].click();await w(200);
-    // Twee aangevinkt: bij drie of meer gespeelde tafels twee vinkjes; bij precies twee is dat gewoon "Alle tafels"
+    // Vanaf drie tafels: twee vinkjes. Met precies twee tafels springt een tik naar alleen die andere tafel.
     const vinkjes=Array.from(document.querySelectorAll("[data-niveau-tafels] button")).filter(function(b){return b.textContent.indexOf("✓")===0;}).length;
-    const twee=tk.length>=4?vinkjes===2:vinkjes===0&&tekst().indexOf("Alleen je partijen op de")===-1;
+    const l2=tk[2].textContent.trim(),l1=tk[1].textContent.trim();
+    const twee=tk.length>=4?vinkjes===2:(tekst().indexOf("Alleen je partijen op de "+l2)!==-1&&tekst().indexOf("Alleen je partijen op de "+l1)===-1);
     Array.from(document.querySelectorAll("[data-niveau-tafels] button"))[0].click();await w(200);
     uit.tafelsAanvinken=een&&twee&&tekst().indexOf("Alleen je partijen op de")===-1;
   }else uit.tafelsAanvinken=true; // testdata met maar één tafel
   Array.from(document.querySelectorAll("[data-niveau-venster] button")).find(function(b){return b.textContent.trim()==="20";}).click();await w(250);
+
+  // 5b. Klasse-overzicht (rechtsboven): ook tafels kiezen
+  const klasseKnop=document.querySelector("[data-kop] button");
+  if(klasseKnop&&tk.length>=3){
+    klasseKnop.click();await w(300);
+    const laag=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed";});
+    const ov=laag?laag.querySelector("[data-niveau-tafels]"):null;
+    const kn=ov?Array.from(ov.querySelectorAll("button")):[];
+    if(kn.length>=2){kn[1].click();await w(250);}
+    uit.overzichtTafels=kn.length>=3&&!!document.querySelector("[data-overzicht-tafel]");
+    const o2=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed";});if(o2)o2.click();await w(200);
+  }else uit.overzichtTafels=true;
 
   // 6. Doel eerder gehaald met een andere instelling: de ring zegt het, zonder "Doel gehaald!"
   const doos=document.createElement("div");document.body.appendChild(doos);
   const wortel=ReactDOM.createRoot(doos);
   wortel.render(React.createElement(DoelRing,{doel:{waarde:2,datum:"2099-01-01",start:1.5,gehaald:false,eerder:{op:"2026-10-18T12:00:00Z",venster:10}},vorm:1.8,discipline:"libre"}));
   await w(200);
-  uit.doelEerder=!!doos.querySelector("[data-doel-eerder]")&&doos.textContent.indexOf("laatste 10 partijen")!==-1&&doos.textContent.indexOf("Doel gehaald!")===-1;
+  uit.doelEerder=!!doos.querySelector("[data-doel-eerder]")&&doos.textContent.indexOf("laatste 10 partijen haal je dit doel wel")!==-1&&doos.textContent.indexOf("Doel gehaald!")===-1;
   wortel.unmount();doos.remove();
 
   // 7. Seizoen in beeld: carambole-ballen in plaats van de poolbal
@@ -72,6 +85,6 @@
   w2.unmount();doos2.remove();
 
   k("Spelen").click();await w(200);
-  uit.goed=uit.vasteTafel&&uit.kaderTafel&&uit.libreKiest&&uit.volgordeInfo&&uit.voorspelling&&uit.vormKnoppen&&uit.vormGezet&&uit.tafelsAanvinken&&uit.doelEerder&&uit.caromBallen;
+  uit.goed=uit.vasteTafel&&uit.kaderTafel&&uit.libreKiest&&uit.volgordeInfo&&uit.voorspelling&&uit.vormKnoppen&&uit.vormGezet&&uit.tafelsAanvinken&&uit.overzichtTafels&&uit.doelEerder&&uit.caromBallen;
   return uit;
 })()

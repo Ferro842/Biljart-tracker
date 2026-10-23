@@ -846,7 +846,7 @@ VERTALING.ko={
   // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
   "hoort bij {k}":"{k} 전용",
   "Vorm over":"폼 기준",
-  "Gehaald met al je partijen op {d}":"{d}에 전체 경기로 달성",
-  "Gehaald met je laatste {n} partijen op {d}":"{d}에 최근 {n}경기로 달성",
-  "Eerder gehaald op {d}":"{d}에 이미 달성"
+  "Over al je partijen haal je dit doel wel":"전체 경기 기준으로는 이 목표를 달성했어요",
+  "Over je laatste {n} partijen haal je dit doel wel":"최근 {n}경기 기준으로는 이 목표를 달성했어요",
+  "Op {d} al eens gehaald, maar met je huidige vorm nu niet":"{d}에 한 번 달성했지만 현재 폼으로는 아니에요"
 };

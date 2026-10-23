@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-23.1";
+const APP_VERSIE="2026-10-23.2";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -82,13 +82,16 @@ function BiljartTracker(){
   // over de partijen van vóór het instellen. Anders vergelijkt de ring bijv. een vorm over 10 partijen met een begin
   // over al je partijen, en springt het percentage mee met de instelling. Oude doelen zonder "gezet": bewaarde start.
   // "Gehaald" volgt je vorm zoals je die nu bekijkt (10/20/30/alle): de opgeslagen vlag gehaald (met gehaaldOp en
-  // gehaaldVenster) onthoudt alleen dát het eens gehaald is, zodat de viering één keer komt. Gehaald met een andere
-  // instelling maar nu niet? Dan geeft eerder aan wanneer en met hoeveel partijen (DoelRing toont dat).
+  // gehaaldVenster) onthoudt alleen dát het eens gehaald is, zodat de viering één keer komt. Nu niet gehaald? Dan zegt
+  // eerder.venster met welke andere instelling je het nu wél haalt (10, 20, 30 of "alles"), of anders eerder.op wanneer
+  // het eens gehaald was (DoelRing toont dat).
   const mijnDoel=useMemo(function(){
     const d=data&&data.doelen&&data.doelen[huidigeDiscplineVoorLading];
     if(!d)return null;
     const nuGehaald=niveau.effectiefGemiddelde>=d.waarde;
-    const live={gehaald:nuGehaald,eerder:!nuGehaald&&d.gehaald?{op:d.gehaaldOp,venster:d.gehaaldVenster}:null};
+    const haaltMet=nuGehaald?null:[10,20,30,"alles"].filter(function(x){return x!==vormVenster;}).find(function(x){
+      return berekenVorm(alleP,schrapt,x).effectiefGemiddelde>=d.waarde;})||null;
+    const live={gehaald:nuGehaald,eerder:!nuGehaald&&(haaltMet||d.gehaald)?{op:d.gehaaldOp,venster:haaltMet}:null};
     if(!d.gezet)return Object.assign({},d,live);
     const grens=new Date(d.gezet).getTime();
     const voor=alleP.filter(function(p){return new Date(p.datum).getTime()<grens;});
@@ -512,7 +515,7 @@ function BiljartTracker(){
 
       {niveauOpen&&<NiveauOverzicht niveau={niveau} discipline={huidigeDiscipline} onClose={function(){setNiveauOpen(false);}}
         mijnDoel={mijnDoel} openDoel={function(){setDoelOpen(true);}} vormVenster={vormVenster} setVormVenster={setVormVenster}
-        schrappen={spelAan?schrappenAan:null} setSchrappen={setSchrappen}/>}
+        schrappen={spelAan?schrappenAan:null} setSchrappen={setSchrappen} alleP={alleP} schrapt={schrapt}/>}
 
       {seizoenArchiefOpen&&<SeizoenArchief seizoenen={data.seizoenen||[{id:1,naam:"Seizoen 1",startDatum:null,eindDatum:null}]} alleP={alleP} discipline={huidigeDiscipline} onClose={function(){setSeizoenArchiefOpen(false);}}
         onOngedaan={function(){seizoensplitsingOngedaanMaken();setSeizoenArchiefOpen(false);}}

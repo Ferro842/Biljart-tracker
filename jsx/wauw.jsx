@@ -398,7 +398,7 @@ function CaromBallen({maat}){
 
 // ── Doel met voortgangsring ──
 // doel = {waarde, datum (jjjj-mm-dd), start (vorm bij instellen), gehaald (met je huidige vorm-instelling),
-//   eerder ({op, venster}: ooit gehaald met een andere instelling, nu niet)} — zie mijnDoel in jsx/app.jsx
+//   eerder ({venster: met welke andere vorm-instelling je het nu wél haalt, op: wanneer het eens gehaald was})} — mijnDoel in jsx/app.jsx
 function doelVoortgang(doel,vorm){
   if(!doel)return 0;
   const start=doel.start!=null?doel.start:0;
@@ -425,8 +425,8 @@ function DoelRing({doel,vorm,discipline,onWijzig}){
         {doel.eerder&&(function(){
           const op=doel.eerder.op?new Date(doel.eerder.op).toLocaleDateString(taalLocale(),{day:"numeric",month:"short"}):"";
           const vn=doel.eerder.venster;
-          return <div data-doel-eerder style={{fontSize:12,color:GRNT,marginTop:2}}>✓ {vn==="alles"?t("Gehaald met al je partijen op {d}",{d:op})
-            :vn?t("Gehaald met je laatste {n} partijen op {d}",{n:vn,d:op}):t("Eerder gehaald op {d}",{d:op})}</div>;
+          return <div data-doel-eerder style={{fontSize:12,color:vn?GRNT:WITD,marginTop:2}}>{vn==="alles"?"✓ "+t("Over al je partijen haal je dit doel wel")
+            :vn?"✓ "+t("Over je laatste {n} partijen haal je dit doel wel",{n:vn}):t("Op {d} al eens gehaald, maar met je huidige vorm nu niet",{d:op})}</div>;
         })()}
       </div>
       <span style={{color:WITD,fontSize:18}}>›</span>

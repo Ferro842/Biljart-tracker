@@ -854,7 +854,7 @@ VERTALING.ja={
   // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
   "hoort bij {k}":"{k}専用",
   "Vorm over":"フォームの対象",
-  "Gehaald met al je partijen op {d}":"{d}にすべてのゲームで達成",
-  "Gehaald met je laatste {n} partijen op {d}":"{d}に直近{n}ゲームで達成",
-  "Eerder gehaald op {d}":"{d}に達成済み"
+  "Over al je partijen haal je dit doel wel":"すべてのゲームで見るとこの目標を達成しています",
+  "Over je laatste {n} partijen haal je dit doel wel":"直近{n}ゲームで見るとこの目標を達成しています",
+  "Op {d} al eens gehaald, maar met je huidige vorm nu niet":"{d}に一度達成しましたが、今のフォームではまだです"
 };

@@ -846,7 +846,7 @@ VERTALING.vi={
   // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
   "hoort bij {k}":"dành cho {k}",
   "Vorm over":"Phong độ theo",
-  "Gehaald met al je partijen op {d}":"Đã đạt với tất cả các ván vào {d}",
-  "Gehaald met je laatste {n} partijen op {d}":"Đã đạt với {n} ván gần nhất vào {d}",
-  "Eerder gehaald op {d}":"Đã đạt trước đó vào {d}"
+  "Over al je partijen haal je dit doel wel":"Tính trên tất cả các ván, bạn đã đạt mục tiêu này",
+  "Over je laatste {n} partijen haal je dit doel wel":"Tính trên {n} ván gần nhất, bạn đã đạt mục tiêu này",
+  "Op {d} al eens gehaald, maar met je huidige vorm nu niet":"Đã từng đạt vào {d}, nhưng với phong độ hiện tại thì chưa"
 };

@@ -152,13 +152,13 @@ const DISCIPLINES={
   libre:{naam:"Libre",niveaus:NIVEAUS_LIBRE},
   driebanden:{naam:"Driebanden",niveaus:NIVEAUS_DRIEBANDEN},
   bandstoten:{naam:"Bandstoten",niveaus:NIVEAUS_BANDSTOTEN},
-  kader38:{naam:"Kader 38/2",niveaus:NIVEAUS_KADER38,groep:"kader"},
-  kader47:{naam:"Kader 47/2",niveaus:NIVEAUS_KADER47,groep:"kader"},
-  kader57:{naam:"Kader 57/2",niveaus:NIVEAUS_KADER57,groep:"kader"},
-  kader71:{naam:"Kader 71/2",niveaus:NIVEAUS_KADER71,groep:"kader"},
-  kader35:{naam:"Kader 35/2",niveaus:NIVEAUS_KADER35,groep:"kader"},
-  kader471:{naam:"Kader 47/1",niveaus:NIVEAUS_KADER471,groep:"kader"},
-  kader52:{naam:"Kader 52/2",niveaus:NIVEAUS_KADER52,groep:"kader"},
+  kader38:{naam:"Kader 38/2",niveaus:NIVEAUS_KADER38,groep:"kader",tafel:"230"},
+  kader47:{naam:"Kader 47/2",niveaus:NIVEAUS_KADER47,groep:"kader",tafel:"284"},
+  kader57:{naam:"Kader 57/2",niveaus:NIVEAUS_KADER57,groep:"kader",tafel:"230"},
+  kader71:{naam:"Kader 71/2",niveaus:NIVEAUS_KADER71,groep:"kader",tafel:"284"},
+  kader35:{naam:"Kader 35/2",niveaus:NIVEAUS_KADER35,groep:"kader",tafel:"210"},
+  kader471:{naam:"Kader 47/1",niveaus:NIVEAUS_KADER471,groep:"kader",tafel:"284"},
+  kader52:{naam:"Kader 52/2",niveaus:NIVEAUS_KADER52,groep:"kader",tafel:"210"},
   vierbal:{naam:"Vierbal",niveaus:NIVEAUS_VIERBAL}
 };
 // De hoofdknoppen bovenin de app: Libre/Driebanden/Bandstoten zijn losse disciplines, Kader is één
@@ -176,6 +176,9 @@ function hoofdDisciplines(data,discipline){
 }
 // Op volgorde van de getallen (35/2 en 52/2: Duits klein biljart; 47/1: groot biljart)
 const KADER_VARIANTEN=["kader35","kader38","kader471","kader47","kader52","kader57","kader71"];
+// Elke kadervariant hoort bij één tafelmaat (KNBB/CEB): 47/1, 47/2 en 71/2 op de grote matchtafel, 38/2 en 57/2 op de
+// kleine matchtafel, 35/2 en 52/2 op het (Duitse) kleine biljart. Daar kies je de tafel dus niet zelf (DISCIPLINES[..].tafel).
+function vasteTafel(disc){const d=DISCIPLINES[disc];return d&&d.tafel?d.tafel:null;}
 // Kadervarianten met kleinere vakken of 1 carambole per vak: lagere drempels, zoals Bandstoten
 const KADER_LAAG=["kader52","kader57","kader471","kader71"];
 const MAX_SCHRAP_AANDEEL=0.1; // nooit meer dan 1 op de 10 partijen schrappen, hoeveel punten je ook hebt

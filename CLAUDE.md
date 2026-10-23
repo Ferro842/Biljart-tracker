@@ -73,6 +73,8 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout b
   met de acquit; `migreerAcquit()`/`vulAcquitAan()` zetten bij laden/importeren in beurt 1 "Acquit" bij Goed
   (caramboles) of Gemist (poedel). Alleen toevoegen, idempotent. Nieuwe partijen nooit automatisch (soms
   wordt de acquit als laatste beurt genomen). Telt niet mee voor "bijgehouden" in Inzicht.
+- Stats → Je niveau: rij "Vorm over 10/20/30/Alle" (`data-niveau-venster`, zelfde instelling als het klasse-overzicht) en
+  tafels aanvinken (`data-niveau-tafels`, meerdere tegelijk; niets of alles aangevinkt = alle tafels).
 - Seizoenen: `data.seizoenen` [{id,naam,startDatum,eindDatum}]. "Seizoen afsluiten" (Stats) vraagt de begindatum van
   het nieuwe seizoen (standaard nu; eerder kan, bijv. om een grens te herstellen). "Laatste seizoensgrens ongedaan
   maken" staat in het archiefvenster (niet direct onder de knoppen: was per ongeluk aan te tikken).
@@ -101,6 +103,9 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout b
   elk eigen partijen, gemiddelde, niveau, badges. 35/2 en 52/2 = Duits klein biljart (volgen 38/2 en 57/2), 47/1 = groot
   biljart (volgt 71/2). Lagere drempels voor `KADER_LAAG` (52/2, 57/2, 47/1, 71/2), zoals Bandstoten.
   Welkomstscherm: Kader aantikken kiest meteen Kader 38/2 (laken rood), daarna eventueel een andere variant.
+  Elke kadervariant heeft een vaste tafel (`DISCIPLINES[..].tafel`, `vasteTafel()`): 47/1, 47/2, 71/2 → 2,84; 38/2, 57/2 → 2,30;
+  35/2, 52/2 → 2,10. Dan geen tafelkeuze op Spelen (`data-vaste-tafel`); in app.jsx is `tafel` = vaste tafel of `tafelKeuze`.
+  38/1, 57/1 en "ankerkader" bewust niet toegevoegd (geen gangbare wedstrijdspelsoorten; ankers horen bij 47/1, 47/2, 71/2).
 - Info → Kopieer data / AI-prompts: na gelukt kopiëren alleen "Gekopieerd!"; alleen als kopiëren mislukt staat de tekst
   in beeld om zelf te kopiëren (`handmatig`, `data-handmatig-kopieren`).
 - Tafels: "210", "230", "255", "284" (KNBB-maten).
@@ -172,7 +177,9 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout b
   Later eventueel: herkenning op de iPhone zelf (Apple Vision, eigen plugin) met hetzelfde controlescherm.
 - Wauw (17 okt 2026): vieringen bij topserie/record (in `noteer`), hogere klasse, beste partij ooit en gehaald doel
   (in `bewaarPartij`); `data.animaties===false` zet animaties en vieringen uit (klasse `rustig` op `<html>`).
-  Doel per discipline in `data.doelen[discipline]` = {waarde,datum,start,gehaald,gezet}; ring in het klasse-overzicht
+  Doel per discipline in `data.doelen[discipline]` = {waarde,datum,start,gehaald,gehaaldOp,gehaaldVenster,gezet}. De opgeslagen
+  `gehaald` zorgt alleen dat de viering één keer komt; `mijnDoel` (app.jsx) rekent `gehaald` steeds opnieuw met de huidige
+  vorm-instelling en geeft `eerder` ({op,venster}) als het eens met een andere instelling gehaald is (DoelRing toont dat); ring in het klasse-overzicht
   (`NiveauOverzicht`, knop rechtsboven; daar ook de keuze 10/20/30/alle voor je vorm) via `mijnDoel`; let op: `doel`/`setDoel` zijn het partijdoel). Het beginpunt rekent `mijnDoel` (index.html) steeds opnieuw uit
   met de huidige vorm-instelling over de partijen van vóór `gezet`; de bewaarde `start` alleen als terugval. Anders springt
   het percentage mee als je de vorm-instelling wisselt (gebeurde: begin over alle partijen, vorm over 10). "Je seizoen in beeld" opent vanzelf na Seizoen afsluiten
@@ -271,7 +278,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Testdata laden (in de browserconsole), daarna herladen:
   `localStorage.setItem("biljart-tracker-v2", JSON.stringify(await fetch("/test/testdata.json").then(r=>r.json())))`
 - Alle tests (liefst op telefoonformaat 375 breed): `await eval(await fetch("/test/alles.js").then(r=>r.text()))`
-  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`, `weergave`, `briefje`, `wauw`, `talen`
+  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`, `weergave`, `briefje`, `wauw`, `talen`, `vierbal`, `wensen`
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.
@@ -309,7 +316,9 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 4. **Versie 1.1 naar de App Store**: naam per taal uit `store/aso.md` (Carom Tracker: …), alle talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
    systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle tien talen staan in
    `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko|ja|vi|pt` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
-5. **Versie 1.1** staat klaar in de code (iOS `MARKETING_VERSION` 1.1, build 2; Android versionCode 2, versionName 1.1).
+5. **Versie 1.1** (build 2) op 23 okt 2026 ingediend bij Apple, met alle teksten en schermafbeeldingen in 13 taalversies
+   (nl, en-US, en-GB, fr, de, es-ES, es-MX, pt-BR, pt-PT, tr, vi, ko, ja). Wacht op beoordeling. Volgende versie: kleine
+   aanpassingen van de eigenaar.
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
    Carom Tracker.

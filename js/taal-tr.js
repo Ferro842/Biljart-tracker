@@ -307,8 +307,8 @@ VERTALING.tr={
   "Maximaal 1 op de 10 partijen kan geschrapt worden.":"En fazla 10 maçta 1 maç çıkarılabilir.",
   "Eerstvolgende partij die vervalt: p{n} (gem {g})":"Sıradaki çıkacak maç: m{n} (ort {g})",
   "Nog te weinig recente partijen voor een voorspelling":"Tahmin için henüz yeterince yeni maç yok",
-  "Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}":"Son formun ({v}), {k} için gereken {d} değerinin altında",
-  "Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen":"Son formunla ({v}) yaklaşık {n} maçta {k} seviyesine ulaşırsın",
+  "Je recente vorm (laatste {p} partijen: {v}) ligt onder de {d} die nodig is voor {k}":"Son formun (son {p} maç: {v}), {k} için gereken {d} değerinin altında",
+  "Bij je recente vorm (laatste {p} partijen: {v}) bereik je {k} over ongeveer {n} partijen":"Son formunla (son {p} maç: {v}) yaklaşık {n} maçta {k} seviyesine ulaşırsın",
   "geschrapt uit je vorm":"formundan çıkarıldı",
   // Partijregels
   "Notitie":"Not",
@@ -841,5 +841,11 @@ VERTALING.tr={
   "Laatste kopie: {d}":"Son kopya: {d}",
   "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"iCloud Drive'da \"Carom Tracker\" klasörü (Dosyalar uygulaması). Geri yüklemek için: Verileri içe aktar ve dosyayı oradan seç.",
   "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive kapalı. Açarsan (Ayarlar → adın → iCloud → iCloud Drive) uygulama otomatik yedek alır.",
-  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone uygulamasında iCloud Drive açıksa bir kopya otomatik olarak iCloud Drive'ına gider (Carom Tracker klasörü). Geri yüklemek için: Bilgi → Verileri içe aktar ve dosyayı iCloud Drive'dan seç."
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone uygulamasında iCloud Drive açıksa bir kopya otomatik olarak iCloud Drive'ına gider (Carom Tracker klasörü). Geri yüklemek için: Bilgi → Verileri içe aktar ve dosyayı iCloud Drive'dan seç.",
+  // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
+  "hoort bij {k}":"{k} için sabit",
+  "Vorm over":"Form:",
+  "Gehaald met al je partijen op {d}":"{d} tarihinde tüm maçlarınla ulaşıldı",
+  "Gehaald met je laatste {n} partijen op {d}":"{d} tarihinde son {n} maçınla ulaşıldı",
+  "Eerder gehaald op {d}":"Daha önce {d} tarihinde ulaşıldı"
 };

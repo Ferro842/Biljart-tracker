@@ -173,7 +173,7 @@ function InzichtPaneel({partijen,discipline}){
                     return(
                       <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 9px",marginBottom:8}}>
                         <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",gap:8}}>
-                          <span style={{fontSize:12,color:WIT}}>p{p.nr} · {fmtDatum(p.datum)} · {t("gemiddelde")} {komma(p.gem,dec)}</span>
+                          <span style={{fontSize:12,color:WIT}}>p{p.nr} · {fmtDatum(p.datum)} · {t("{c} caramboles in {b} beurten",{c:p.car,b:p.n})} · {t("gemiddelde")} {komma(p.gem,dec)}</span>
                           <span onClick={function(){setStaaf(null);}} style={{fontSize:14,color:WITD,cursor:"pointer",padding:"0 2px"}}>✕</span>
                         </div>
                         {(function(){
@@ -316,7 +316,7 @@ function InzichtPaneel({partijen,discipline}){
                   {gekozenP&&(
                     <div style={{background:"rgba(255,255,255,0.05)",border:"1px solid "+KBDR,borderRadius:6,padding:"7px 9px",marginBottom:8}}>
                       <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",gap:8}}>
-                        <span style={{fontSize:12,color:WIT}}>p{gekozenP.nr} · {fmtDatum(gekozenP.datum)} · {t("gemiddelde")} {komma(gekozenP.gem,dec)}</span>
+                        <span style={{fontSize:12,color:WIT}}>p{gekozenP.nr} · {fmtDatum(gekozenP.datum)} · {t("{c} caramboles in {b} beurten",{c:gekozenP.totCar,b:gekozenP.n})} · {t("gemiddelde")} {komma(gekozenP.gem,dec)}</span>
                         <span onClick={function(){setPoedelStaaf(null);}} style={{fontSize:14,color:WITD,cursor:"pointer",padding:"0 2px"}}>✕</span>
                       </div>
                       <div style={{fontSize:12,color:WITD,marginTop:2}}>

@@ -307,8 +307,8 @@ VERTALING.ja={
   "Maximaal 1 op de 10 partijen kan geschrapt worden.":"外せるのは最大で10ゲームに1つです。",
   "Eerstvolgende partij die vervalt: p{n} (gem {g})":"次に外れるゲーム：G{n}（平均{g}）",
   "Nog te weinig recente partijen voor een voorspelling":"予測にはまだ最近のゲームが足りません",
-  "Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}":"最近のフォーム（{v}）は、{k}に必要な{d}を下回っています",
-  "Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen":"最近のフォーム（{v}）なら、約{n}ゲームで{k}に届きます",
+  "Je recente vorm (laatste {p} partijen: {v}) ligt onder de {d} die nodig is voor {k}":"最近のフォーム（直近{p}ゲーム：{v}）は、{k}に必要な{d}を下回っています",
+  "Bij je recente vorm (laatste {p} partijen: {v}) bereik je {k} over ongeveer {n} partijen":"最近のフォーム（直近{p}ゲーム：{v}）なら、約{n}ゲームで{k}に届きます",
   "geschrapt uit je vorm":"フォームから外したゲーム",
   // Partijregels
   "Notitie":"メモ",
@@ -850,5 +850,11 @@ VERTALING.ja={
   "Laatste kopie: {d}":"最新のコピー：{d}",
   "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"iCloud Drive の「Carom Tracker」フォルダ（ファイルアプリ）。復元するには「データをインポート」でそのファイルを選んでください。",
   "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive がオフです。オンにすると（設定 → 自分の名前 → iCloud → iCloud Drive）、アプリが自動でバックアップします。",
-  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone アプリでは、iCloud Drive がオンなら自動で iCloud Drive（Carom Tracker フォルダ）にコピーが保存されます。復元するには：情報 → データをインポート で iCloud Drive のファイルを選んでください。"
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone アプリでは、iCloud Drive がオンなら自動で iCloud Drive（Carom Tracker フォルダ）にコピーが保存されます。復元するには：情報 → データをインポート で iCloud Drive のファイルを選んでください。",
+  // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
+  "hoort bij {k}":"{k}専用",
+  "Vorm over":"フォームの対象",
+  "Gehaald met al je partijen op {d}":"{d}にすべてのゲームで達成",
+  "Gehaald met je laatste {n} partijen op {d}":"{d}に直近{n}ゲームで達成",
+  "Eerder gehaald op {d}":"{d}に達成済み"
 };

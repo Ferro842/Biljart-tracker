@@ -43,20 +43,23 @@ function SetupScherm({ spel }) {
     zieWeergaveTip(true);
   }, style: { flex: 1, padding: 10, background: "linear-gradient(135deg," + GOUD + "," + GOUDL + ")", border: "none", borderRadius: 8, color: G, fontWeight: "bold", fontSize: 14, cursor: "pointer", fontFamily: "inherit" } }, t("Bekijken")), /* @__PURE__ */ React.createElement("button", { onClick: function() {
     zieWeergaveTip(false);
-  }, style: { flex: 1, padding: 10, background: "none", border: "1px solid " + KBDR, borderRadius: 8, color: WITD, fontSize: 14, cursor: "pointer", fontFamily: "inherit" } }, t("Niet nodig")))), /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: WITD, marginBottom: 8 } }, t("Tafelmaat")), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 6 } }, Object.keys(TAFELS).map(function(tk) {
-    return /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        key: tk,
-        style: { padding: "7px 2px", background: tafel === tk ? "var(--c-2d4a1e)" : "none", border: "1px solid " + (tafel === tk ? GOUD : KBDR), borderRadius: 8, color: tafel === tk ? GOUD : WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 14 },
-        onClick: function() {
-          setTafel(tk);
-        }
-      },
-      /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, fontWeight: tafel === tk ? "bold" : "normal" } }, TAFELS[tk].label),
-      /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, opacity: 0.8 } }, "× ", TAFELS[tk].vol.split(" x ")[1])
-    );
-  }))), /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "10px 14px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: WITD, marginBottom: 6 } }, t("Partij doel")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 10 } }, /* @__PURE__ */ React.createElement(
+  }, style: { flex: 1, padding: 10, background: "none", border: "1px solid " + KBDR, borderRadius: 8, color: WITD, fontSize: 14, cursor: "pointer", fontFamily: "inherit" } }, t("Niet nodig")))), /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: WITD, marginBottom: 8 } }, t("Tafelmaat")), vasteTafel(huidigeDiscipline) ? /* @__PURE__ */ React.createElement("div", { "data-vaste-tafel": true, style: { fontSize: 15, color: WIT } }, /* @__PURE__ */ React.createElement("strong", { style: { color: GOUD } }, TAFELS[tafel].label), " × ", TAFELS[tafel].vol.split(" x ")[1], /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: WITD } }, " · ", t("hoort bij {k}", { k: DISCIPLINES[huidigeDiscipline].naam }))) : (
+    /* Eén rij van vier: zo past het hele scherm ook bij de grootste tekst */
+    /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 6 } }, Object.keys(TAFELS).map(function(tk) {
+      return /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          key: tk,
+          style: { padding: "7px 2px", background: tafel === tk ? "var(--c-2d4a1e)" : "none", border: "1px solid " + (tafel === tk ? GOUD : KBDR), borderRadius: 8, color: tafel === tk ? GOUD : WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 14 },
+          onClick: function() {
+            setTafel(tk);
+          }
+        },
+        /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, fontWeight: tafel === tk ? "bold" : "normal" } }, TAFELS[tk].label),
+        /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, opacity: 0.8 } }, "× ", TAFELS[tk].vol.split(" x ")[1])
+      );
+    }))
+  )), /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "10px 14px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: WITD, marginBottom: 6 } }, t("Partij doel")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 10 } }, /* @__PURE__ */ React.createElement(
     "button",
     {
       style: { flex: 1, padding: "8px 8px", background: doelType === "beurten" ? "var(--c-2d4a1e)" : "none", border: "1px solid " + (doelType === "beurten" ? GOUD : KBDR), borderRadius: 8, color: doelType === "beurten" ? GOUD : WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 15 },

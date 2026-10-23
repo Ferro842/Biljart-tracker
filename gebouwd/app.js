@@ -1,5 +1,5 @@
 // Gebouwd uit jsx/app.jsx door bouw-jsx.js; niet zelf aanpassen.
-const APP_VERSIE = "2026-10-21.1";
+const APP_VERSIE = "2026-10-23.1";
 function BiljartTracker() {
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("spelen");
@@ -14,7 +14,7 @@ function BiljartTracker() {
   const [lp, setLp] = useState([]);
   const [doel, setDoel] = useState(25);
   const [doelType, setDoelType] = useState("beurten");
-  const [tafel, setTafel] = useState("210");
+  const [tafelKeuze, setTafel] = useState("210");
   const [confPartij, setConfPartij] = useState(false);
   const [seizoenArchiefOpen, setSeizoenArchiefOpen] = useState(false);
   const [onboardingStap, setOnboardingStap] = useState(0);
@@ -45,6 +45,7 @@ function BiljartTracker() {
   const [niveauUpInfo, setNiveauUpInfo] = useState(null);
   const tijdsvensterMaanden = null;
   const huidigeDiscplineVoorLading = data && data.huidigeDiscipline || "libre";
+  const tafel = vasteTafel(huidigeDiscplineVoorLading) || tafelKeuze;
   const eenvoudig = !!(data && data.eenvoudig);
   const tekstgrootte = data && data.tekstgrootte || "normaal";
   zetTaal(taalVoorData(data));
@@ -77,15 +78,18 @@ function BiljartTracker() {
   }, [alleP, huidigeDiscplineVoorLading, schrapt, vormVenster]);
   const mijnDoel = useMemo(function() {
     const d = data && data.doelen && data.doelen[huidigeDiscplineVoorLading];
-    if (!d || !d.gezet) return d || null;
+    if (!d) return null;
+    const nuGehaald = niveau.effectiefGemiddelde >= d.waarde;
+    const live = { gehaald: nuGehaald, eerder: !nuGehaald && d.gehaald ? { op: d.gehaaldOp, venster: d.gehaaldVenster } : null };
+    if (!d.gezet) return Object.assign({}, d, live);
     const grens = new Date(d.gezet).getTime();
     const voor = alleP.filter(function(p) {
       return new Date(p.datum).getTime() < grens;
     });
-    if (!voor.length) return d;
+    if (!voor.length) return Object.assign({}, d, live);
     const info = berekenVorm(voor, schrapt, vormVenster);
-    return Object.assign({}, d, { start: info.effectiefGemiddelde });
-  }, [data, alleP, huidigeDiscplineVoorLading, schrapt, vormVenster]);
+    return Object.assign({}, d, live, { start: info.effectiefGemiddelde });
+  }, [data, alleP, huidigeDiscplineVoorLading, schrapt, vormVenster, niveau]);
   useEffect(function() {
     if (!data) return;
     if (data.laatstGezienNiveauIndex === void 0) {
@@ -242,7 +246,7 @@ function BiljartTracker() {
     const nd = Object.assign({}, data, { partijen: nieuwePartijen, huidigeId: Math.max(data.huidigeId, p.id) + 1, laatstGezienNiveauIndex: niveauNa.index });
     const doelNu = data.doelen && data.doelen[disc];
     const doelGehaald = doelNu && !doelNu.gehaald && infoNa.effectiefGemiddelde >= doelNu.waarde;
-    if (doelGehaald) nd.doelen = Object.assign({}, data.doelen, { [disc]: Object.assign({}, doelNu, { gehaald: true, gehaaldOp: (/* @__PURE__ */ new Date()).toISOString() }) });
+    if (doelGehaald) nd.doelen = Object.assign({}, data.doelen, { [disc]: Object.assign({}, doelNu, { gehaald: true, gehaaldOp: (/* @__PURE__ */ new Date()).toISOString(), gehaaldVenster: vormVenster }) });
     const besteOoit = prestatie && prestatie.badges && prestatie.badges.some(function(b) {
       return b.label === "Nieuw beste gemiddelde ooit";
     });
@@ -645,7 +649,8 @@ function BiljartTracker() {
       openVerhaal: function(s) {
         setVerhaalSeizoen(s);
       },
-      vormVenster
+      vormVenster,
+      setVormVenster
     }
   ), tab === "info" && /* @__PURE__ */ React.createElement(
     InfoTab,

@@ -230,7 +230,7 @@ function SeizoenVerhaal({seizoen,alleP,discipline,onClose}){
       {klein((DISCIPLINES[discipline]||DISCIPLINES.libre).naam+" · "+fmtDatum(v.van)+" – "+fmtDatum(v.totDatum))}
       {klein(t("Tik rechts voor verder, links om terug te gaan."))}
     </>},
-    {k:"🎱",titel:t("Aan tafel"),inhoud:<>
+    {k:<CaromBallen maat={44}/>,titel:t("Aan tafel"),inhoud:<>
       {groot(<Telop waarde={v.partijen} dec={0}/>)}{sub(t(v.speeldagen===1?"partijen, op {n} speeldag":"partijen, op {n} speeldagen",{n:v.speeldagen}))}
       {klein(<>{t("Samen")} <b style={{color:WIT}}><Telop waarde={v.caramboles} dec={0}/></b> {t("caramboles in {n} beurten.",{n:v.beurten})}</>)}
     </>},
@@ -385,8 +385,20 @@ function KalenderPaneel({partijen,discipline}){
   );
 }
 
+// Drie carambole-ballen (wit, geel, rood) als icoon; de emoji 🎱 is een poolbal en past niet bij carambole
+function CaromBallen({maat}){
+  const bal=function(cx,cy,kleur,rand){return(
+    <g><circle cx={cx} cy={cy} r="9" style={{fill:kleur,stroke:rand,strokeWidth:1}}/>
+      <circle cx={cx-3} cy={cy-3} r="2.6" style={{fill:"rgba(255,255,255,0.75)"}}/></g>);};
+  return(
+    <svg data-carom-ballen width={maat||40} height={maat||40} viewBox="0 0 40 40" style={{display:"inline-block",verticalAlign:"middle"}}>
+      {bal(12,26,"#f4f1e8","#c9c2ad")}{bal(28,26,"#f2c230","#b8901a")}{bal(20,12,"#d0342c","#962019")}
+    </svg>);
+}
+
 // ── Doel met voortgangsring ──
-// doel = {waarde, datum (jjjj-mm-dd), start (vorm bij instellen), gehaald}
+// doel = {waarde, datum (jjjj-mm-dd), start (vorm bij instellen), gehaald (met je huidige vorm-instelling),
+//   eerder ({op, venster}: ooit gehaald met een andere instelling, nu niet)} — zie mijnDoel in jsx/app.jsx
 function doelVoortgang(doel,vorm){
   if(!doel)return 0;
   const start=doel.start!=null?doel.start:0;
@@ -410,6 +422,12 @@ function DoelRing({doel,vorm,discipline,onWijzig}){
       <div style={{flex:1,minWidth:0}}>
         <div style={{fontSize:13,color:GOUD,textTransform:"uppercase",letterSpacing:1}}>🎯 {t("Doel {g}",{g:kommaGetal(doel.waarde,dec)})}</div>
         <div style={{fontSize:14,color:WIT,marginTop:2}}>{t("Nu")} <b>{kommaGetal(vorm,dec)}</b>{doel.start!=null&&!doel.gehaald?<span> · {t("begon op {g}",{g:kommaGetal(doel.start,dec)})}</span>:null} · {stand}</div>
+        {doel.eerder&&(function(){
+          const op=doel.eerder.op?new Date(doel.eerder.op).toLocaleDateString(taalLocale(),{day:"numeric",month:"short"}):"";
+          const vn=doel.eerder.venster;
+          return <div data-doel-eerder style={{fontSize:12,color:GRNT,marginTop:2}}>✓ {vn==="alles"?t("Gehaald met al je partijen op {d}",{d:op})
+            :vn?t("Gehaald met je laatste {n} partijen op {d}",{n:vn,d:op}):t("Eerder gehaald op {d}",{d:op})}</div>;
+        })()}
       </div>
       <span style={{color:WITD,fontSize:18}}>›</span>
     </div>

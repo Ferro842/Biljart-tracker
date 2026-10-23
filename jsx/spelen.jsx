@@ -66,7 +66,12 @@ function SetupScherm({spel}){
       )}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>{t("Tafelmaat")}</div>
-        {/* Eén rij van vier: zo past het hele scherm ook bij de grootste tekst */}
+        {/* Kadervariant: de tafel ligt vast (vasteTafel), dus geen keuze */}
+        {vasteTafel(huidigeDiscipline)?<div data-vaste-tafel style={{fontSize:15,color:WIT}}>
+          <strong style={{color:GOUD}}>{TAFELS[tafel].label}</strong> × {TAFELS[tafel].vol.split(" x ")[1]}
+          <span style={{fontSize:13,color:WITD}}> · {t("hoort bij {k}",{k:DISCIPLINES[huidigeDiscipline].naam})}</span>
+        </div>:
+        /* Eén rij van vier: zo past het hele scherm ook bij de grootste tekst */
         <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:6}}>
           {Object.keys(TAFELS).map(function(tk){
             return(
@@ -77,7 +82,7 @@ function SetupScherm({spel}){
               </button>
             );
           })}
-        </div>
+        </div>}
       </div>
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"10px 14px"}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:6}}>{t("Partij doel")}</div>

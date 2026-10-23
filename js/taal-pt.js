@@ -307,8 +307,8 @@ VERTALING.pt={
   "Maximaal 1 op de 10 partijen kan geschrapt worden.":"No máximo 1 em cada 10 partidas pode ser descartada.",
   "Eerstvolgende partij die vervalt: p{n} (gem {g})":"Próxima partida a sair: p{n} (méd {g})",
   "Nog te weinig recente partijen voor een voorspelling":"Ainda não há partidas recentes suficientes para uma previsão",
-  "Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}":"Sua forma recente ({v}) está abaixo dos {d} necessários para {k}",
-  "Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen":"Com sua forma recente ({v}) você chega a {k} em cerca de {n} partidas",
+  "Je recente vorm (laatste {p} partijen: {v}) ligt onder de {d} die nodig is voor {k}":"Sua forma recente (últimas {p} partidas: {v}) está abaixo dos {d} necessários para {k}",
+  "Bij je recente vorm (laatste {p} partijen: {v}) bereik je {k} over ongeveer {n} partijen":"Com sua forma recente (últimas {p} partidas: {v}) você chega a {k} em cerca de {n} partidas",
   "geschrapt uit je vorm":"descartada da sua forma",
   // Partijregels
   "Notitie":"Nota",
@@ -842,5 +842,11 @@ VERTALING.pt={
   "Laatste kopie: {d}":"Última cópia: {d}",
   "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"Pasta \"Carom Tracker\" no iCloud Drive (app Arquivos). Para restaurar: Importar dados e escolha o arquivo lá.",
   "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"O iCloud Drive está desligado. Ligue-o (Ajustes → seu nome → iCloud → iCloud Drive) e o app fará backup sozinho.",
-  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"No app para iPhone, uma cópia vai automaticamente para o seu iCloud Drive (pasta Carom Tracker), se o iCloud Drive estiver ligado. Para restaurar: Info → Importar dados e escolha o arquivo no iCloud Drive."
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"No app para iPhone, uma cópia vai automaticamente para o seu iCloud Drive (pasta Carom Tracker), se o iCloud Drive estiver ligado. Para restaurar: Info → Importar dados e escolha o arquivo no iCloud Drive.",
+  // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
+  "hoort bij {k}":"é da modalidade {k}",
+  "Vorm over":"Forma das",
+  "Gehaald met al je partijen op {d}":"Alcançada com todas as partidas em {d}",
+  "Gehaald met je laatste {n} partijen op {d}":"Alcançada com suas últimas {n} partidas em {d}",
+  "Eerder gehaald op {d}":"Alcançada antes, em {d}"
 };

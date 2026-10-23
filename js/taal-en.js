@@ -307,8 +307,8 @@ VERTALING.en={
   "Maximaal 1 op de 10 partijen kan geschrapt worden.":"At most 1 in 10 games can be dropped.",
   "Eerstvolgende partij die vervalt: p{n} (gem {g})":"Next game to drop: g{n} (avg {g})",
   "Nog te weinig recente partijen voor een voorspelling":"Not enough recent games for a prediction yet",
-  "Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}":"Your recent form ({v}) is below the {d} needed for {k}",
-  "Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen":"At your recent form ({v}) you'll reach {k} in about {n} games",
+  "Je recente vorm (laatste {p} partijen: {v}) ligt onder de {d} die nodig is voor {k}":"Your recent form (last {p} games: {v}) is below the {d} needed for {k}",
+  "Bij je recente vorm (laatste {p} partijen: {v}) bereik je {k} over ongeveer {n} partijen":"At your recent form (last {p} games: {v}) you'll reach {k} in about {n} games",
   "geschrapt uit je vorm":"dropped from your form",
   // Partijregels
   "Notitie":"Note",
@@ -842,5 +842,11 @@ VERTALING.en={
   "Laatste kopie: {d}":"Last copy: {d}",
   "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"Folder \"Carom Tracker\" in iCloud Drive (Files app). To restore: Import data and choose the file there.",
   "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive is off. Switch it on (Settings → your name → iCloud → iCloud Drive) and the app will back up automatically.",
-  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"In the iPhone app a copy goes to your iCloud Drive automatically (folder Carom Tracker), if iCloud Drive is on. To restore: Info → Import data and choose the file in iCloud Drive."
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"In the iPhone app a copy goes to your iCloud Drive automatically (folder Carom Tracker), if iCloud Drive is on. To restore: Info → Import data and choose the file in iCloud Drive.",
+  // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
+  "hoort bij {k}":"belongs to {k}",
+  "Vorm over":"Form over",
+  "Gehaald met al je partijen op {d}":"Reached with all your games on {d}",
+  "Gehaald met je laatste {n} partijen op {d}":"Reached with your last {n} games on {d}",
+  "Eerder gehaald op {d}":"Reached earlier on {d}"
 };

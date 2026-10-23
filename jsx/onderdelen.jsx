@@ -244,6 +244,7 @@ function PrestatieOverzicht({prestatie}){
 function NiveauKaart({niveau,compact,discipline,onClick}){
   const spel=useContext(SpelContext);
   const dec=discipline==="driebanden"?3:2;
+  const recentP=Math.min(5,niveau.aantalPartijenTotaal||5);
   if(compact){
     return(
       <div onClick={onClick} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+niveau.huidig.kleur,borderRadius:12,padding:"10px 12px",cursor:onClick?"pointer":"default"}}>
@@ -339,13 +340,14 @@ function NiveauKaart({niveau,compact,discipline,onClick}){
           🎯 {t("Eerstvolgende partij die vervalt: p{n} (gem {g})",{n:niveau.volgendeKandidaatNr,g:getalTekst(niveau.volgendeKandidaatGem,dec)})}
         </div>
       )}
+      {/* Recente vorm in de voorspelling = je laatste 5 partijen (berekenVoorspelling), of minder als je er nog geen 5 hebt */}
       {niveau.voorspelling&&niveau.volgende&&(
         <div style={{marginTop:8,textAlign:"center",fontSize:11,color:WITD}}>
           {niveau.voorspelling.recenteVorm===null
             ?"📈 "+t("Nog te weinig recente partijen voor een voorspelling")
             :niveau.voorspelling.mogelijk===false
-              ?"📈 "+t("Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}",{v:getalTekst(niveau.voorspelling.recenteVorm,dec),d:getalTekst(niveau.volgende.gemDrempel,dec),k:niveau.volgende.naam})
-              :"📈 "+t("Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen",{v:getalTekst(niveau.voorspelling.recenteVorm,dec),k:niveau.volgende.naam,n:niveau.voorspelling.aantalPartijen})}
+              ?"📈 "+t("Je recente vorm (laatste {p} partijen: {v}) ligt onder de {d} die nodig is voor {k}",{p:recentP,v:getalTekst(niveau.voorspelling.recenteVorm,dec),d:getalTekst(niveau.volgende.gemDrempel,dec),k:niveau.volgende.naam})
+              :"📈 "+t("Bij je recente vorm (laatste {p} partijen: {v}) bereik je {k} over ongeveer {n} partijen",{p:recentP,v:getalTekst(niveau.voorspelling.recenteVorm,dec),k:niveau.volgende.naam,n:niveau.voorspelling.aantalPartijen})}
         </div>
       )}
     </div>

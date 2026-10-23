@@ -307,8 +307,8 @@ VERTALING.vi={
   "Maximaal 1 op de 10 partijen kan geschrapt worden.":"Tối đa 1 trên 10 ván có thể bị loại.",
   "Eerstvolgende partij die vervalt: p{n} (gem {g})":"Ván tiếp theo sẽ bị loại: v{n} (TB {g})",
   "Nog te weinig recente partijen voor een voorspelling":"Chưa đủ ván gần đây để dự đoán",
-  "Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}":"Phong độ gần đây ({v}) thấp hơn mức {d} cần cho {k}",
-  "Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen":"Với phong độ gần đây ({v}) bạn sẽ đạt {k} sau khoảng {n} ván",
+  "Je recente vorm (laatste {p} partijen: {v}) ligt onder de {d} die nodig is voor {k}":"Phong độ gần đây ({p} ván gần nhất: {v}) thấp hơn mức {d} cần cho {k}",
+  "Bij je recente vorm (laatste {p} partijen: {v}) bereik je {k} over ongeveer {n} partijen":"Với phong độ gần đây ({p} ván gần nhất: {v}) bạn sẽ đạt {k} sau khoảng {n} ván",
   "geschrapt uit je vorm":"đã loại khỏi phong độ",
   // Partijregels
   "Notitie":"Ghi chú",
@@ -842,5 +842,11 @@ VERTALING.vi={
   "Laatste kopie: {d}":"Bản sao gần nhất: {d}",
   "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"Thư mục \"Carom Tracker\" trong iCloud Drive (ứng dụng Tệp). Để khôi phục: Nhập dữ liệu và chọn tệp ở đó.",
   "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive đang tắt. Hãy bật lên (Cài đặt → tên của bạn → iCloud → iCloud Drive), ứng dụng sẽ tự sao lưu.",
-  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"Trong ứng dụng iPhone, một bản sao tự động được lưu vào iCloud Drive của bạn (thư mục Carom Tracker) nếu iCloud Drive đang bật. Để khôi phục: Thông tin → Nhập dữ liệu và chọn tệp trong iCloud Drive."
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"Trong ứng dụng iPhone, một bản sao tự động được lưu vào iCloud Drive của bạn (thư mục Carom Tracker) nếu iCloud Drive đang bật. Để khôi phục: Thông tin → Nhập dữ liệu và chọn tệp trong iCloud Drive.",
+  // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
+  "hoort bij {k}":"dành cho {k}",
+  "Vorm over":"Phong độ theo",
+  "Gehaald met al je partijen op {d}":"Đã đạt với tất cả các ván vào {d}",
+  "Gehaald met je laatste {n} partijen op {d}":"Đã đạt với {n} ván gần nhất vào {d}",
+  "Eerder gehaald op {d}":"Đã đạt trước đó vào {d}"
 };

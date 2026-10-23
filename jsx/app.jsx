@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-21.1";
+const APP_VERSIE="2026-10-23.1";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -15,7 +15,7 @@ function BiljartTracker(){
   const [lp,setLp]=useState([]);
   const [doel,setDoel]=useState(25);
   const [doelType,setDoelType]=useState("beurten");
-  const [tafel,setTafel]=useState("210");
+  const [tafelKeuze,setTafel]=useState("210"); // gekozen tafel; een kadervariant heeft een vaste tafel (zie tafel hieronder)
   const [confPartij,setConfPartij]=useState(false);
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
@@ -42,6 +42,7 @@ function BiljartTracker(){
   // "Tijdvenster voor prestatie-drempels" is vervallen; een oude data.tijdsvenster wordt genegeerd.
   const tijdsvensterMaanden=null;
   const huidigeDiscplineVoorLading=(data&&data.huidigeDiscipline)||"libre";
+  const tafel=vasteTafel(huidigeDiscplineVoorLading)||tafelKeuze;
   // Spelelement (badges, punten, slechtste partijen schrappen); standaard aan, uit = data.spelelement false
   // Weergave voor wie het rustiger en groter wil: eenvoudige modus zet ook het spelelement uit
   const eenvoudig=!!(data&&data.eenvoudig);
@@ -80,15 +81,21 @@ function BiljartTracker(){
   // Je doel (Spelen → ring): het beginpunt wordt steeds opnieuw berekend met dezelfde vorm-instelling als je vorm nu,
   // over de partijen van vóór het instellen. Anders vergelijkt de ring bijv. een vorm over 10 partijen met een begin
   // over al je partijen, en springt het percentage mee met de instelling. Oude doelen zonder "gezet": bewaarde start.
+  // "Gehaald" volgt je vorm zoals je die nu bekijkt (10/20/30/alle): de opgeslagen vlag gehaald (met gehaaldOp en
+  // gehaaldVenster) onthoudt alleen dát het eens gehaald is, zodat de viering één keer komt. Gehaald met een andere
+  // instelling maar nu niet? Dan geeft eerder aan wanneer en met hoeveel partijen (DoelRing toont dat).
   const mijnDoel=useMemo(function(){
     const d=data&&data.doelen&&data.doelen[huidigeDiscplineVoorLading];
-    if(!d||!d.gezet)return d||null;
+    if(!d)return null;
+    const nuGehaald=niveau.effectiefGemiddelde>=d.waarde;
+    const live={gehaald:nuGehaald,eerder:!nuGehaald&&d.gehaald?{op:d.gehaaldOp,venster:d.gehaaldVenster}:null};
+    if(!d.gezet)return Object.assign({},d,live);
     const grens=new Date(d.gezet).getTime();
     const voor=alleP.filter(function(p){return new Date(p.datum).getTime()<grens;});
-    if(!voor.length)return d;
+    if(!voor.length)return Object.assign({},d,live);
     const info=berekenVorm(voor,schrapt,vormVenster);
-    return Object.assign({},d,{start:info.effectiefGemiddelde});
-  },[data,alleP,huidigeDiscplineVoorLading,schrapt,vormVenster]);
+    return Object.assign({},d,live,{start:info.effectiefGemiddelde});
+  },[data,alleP,huidigeDiscplineVoorLading,schrapt,vormVenster,niveau]);
 
   useEffect(function(){
     if(!data)return;
@@ -215,7 +222,7 @@ function BiljartTracker(){
     // Doel gehaald? Dan markeren en vieren
     const doelNu=data.doelen&&data.doelen[disc];
     const doelGehaald=doelNu&&!doelNu.gehaald&&infoNa.effectiefGemiddelde>=doelNu.waarde;
-    if(doelGehaald)nd.doelen=Object.assign({},data.doelen,{[disc]:Object.assign({},doelNu,{gehaald:true,gehaaldOp:new Date().toISOString()})});
+    if(doelGehaald)nd.doelen=Object.assign({},data.doelen,{[disc]:Object.assign({},doelNu,{gehaald:true,gehaaldOp:new Date().toISOString(),gehaaldVenster:vormVenster})});
     const besteOoit=prestatie&&prestatie.badges&&prestatie.badges.some(function(b){return b.label==="Nieuw beste gemiddelde ooit";});
     if(doelGehaald)vier({tekst:"🎯 "+t("Doel gehaald!"),sub:t("Je vorm is nu {v}",{v:getalTekst(infoNa.effectiefGemiddelde,disc==="driebanden"?3:2)})});
     else if(niveauOmhoog)vier({tekst:"🎉 "+niveauOmhoog.naar.naam+"!",sub:t("Je bent een klasse omhoog")});
@@ -609,7 +616,7 @@ function BiljartTracker(){
           prestatiesMap={prestatiesMap} seizoenAfsluiten={seizoenAfsluiten} seizoensplitsingOngedaanMaken={seizoensplitsingOngedaanMaken}
           openArchief={function(){setSeizoenArchiefOpen(true);}} verwijderPartij={verwijderPartij} slaNotitieOp={slaNotitieOp}
           openVerhaal={function(s){setVerhaalSeizoen(s);}}
-          vormVenster={vormVenster}/>}
+          vormVenster={vormVenster} setVormVenster={setVormVenster}/>}
         {tab==="info"&&<InfoTab data={data} alleP={alleP} huidigeDiscipline={huidigeDiscipline} niveau={niveau}
           resetAlles={resetAlles}
           setSpelelement={setSpelelement} setWeergave={setWeergave} openUitleg={function(){setUitlegOpen(true);}} vervangData={vervangData}

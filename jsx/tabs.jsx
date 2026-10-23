@@ -160,10 +160,10 @@ function DataTab({data,alleP,huidigeDiscipline,vervangData,ingebed,onBackup}){
 // Stats-tab: je cijfers. Seizoen, je niveau (vorm en moyenne), totalen en alle partijen. Instellingen,
 // uitleg en back-up staan in de Info-tab.
 function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsluiten,seizoensplitsingOngedaanMaken,
-  openArchief,verwijderPartij,slaNotitieOp,vormVenster,openVerhaal}){
+  openArchief,verwijderPartij,slaNotitieOp,vormVenster,setVormVenster,openVerhaal}){
   const kopBlok=useContext(KopContext);
   const spel=useContext(SpelContext);
-  const [niveauTafel,setNiveauTafel]=useState("alle"); // weergave in "Je niveau": alle tafels of één tafel
+  const [niveauTafels,setNiveauTafels]=useState([]); // weergave in "Je niveau": aangevinkte tafels; leeg = alle tafels
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   // Begindatum van het nieuwe seizoen bij afsluiten (jjjj-mm-dd, standaard vandaag)
   const vandaagStr=(function(){const d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);})();
@@ -235,19 +235,36 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
       {(function(){
         const dec=huidigeDiscipline==="driebanden"?3:2;
         const gespeeld=Object.keys(TAFELS).filter(function(k){return alleP.some(function(p){return(p.tafel||"230")===k;});});
-        const tafel=gespeeld.indexOf(niveauTafel)!==-1?niveauTafel:"alle";
-        const opTafel=tafel==="alle"?"":" "+t("op {tafel}",{tafel:tafelLabel(tafel)});
-        // Voor één tafel: zelfde berekening, alleen met de partijen op die tafel
-        const info=tafel==="alle"?niveau:berekenVorm(alleP.filter(function(p){return(p.tafel||"230")===tafel;}),spel&&data.schrappen!==false,vormVenster);
+        // Aangevinkte tafels (alleen gespeelde); niets of alles aangevinkt = alle tafels
+        const gekozen=gespeeld.filter(function(k){return niveauTafels.indexOf(k)!==-1;});
+        const tafel=gekozen.length===0||gekozen.length===gespeeld.length?"alle":gekozen;
+        const labels=tafel==="alle"?"":tafel.map(tafelLabel).reduce(function(s,l,i,a){return s+(i===0?"":i===a.length-1?" "+t("en")+" ":", ")+l;},"");
+        const opTafel=tafel==="alle"?"":" "+t("op {tafel}",{tafel:labels});
+        const wissel=function(k){setNiveauTafels(function(oud){const basis=oud.filter(function(x){return gespeeld.indexOf(x)!==-1;});return basis.indexOf(k)!==-1?basis.filter(function(x){return x!==k;}):basis.concat([k]);});};
+        // Voor een deel van de tafels: zelfde berekening, alleen met de partijen op die tafels
+        const info=tafel==="alle"?niveau:berekenVorm(alleP.filter(function(p){return tafel.indexOf(p.tafel||"230")!==-1;}),spel&&data.schrappen!==false,vormVenster);
         const niv=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline);
         const chip=function(actief){return{flex:1,padding:"7px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13};};
         return(
           <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
             <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Je niveau")}</div>
+            {/* Op hoeveel partijen je vorm gebaseerd is: dezelfde instelling als in het klasse-overzicht rechtsboven */}
+            {setVormVenster&&(
+              <div data-niveau-venster style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+                <span style={{fontSize:12,color:WITD,flexShrink:0}}>{t("Vorm over")}</span>
+                {[[10,"10"],[20,"20"],[30,"30"],["alles",t("Alle")]].map(function(x){
+                  const actief=vormVenster===x[0];
+                  return <button key={x[1]} onClick={function(){if(!actief)setVormVenster(x[0]);}} style={chip(actief)}>{x[1]}</button>;
+                })}
+              </div>
+            )}
+            {/* Tafels aanvinken (meerdere tegelijk); Alle tafels = alles weer aan */}
             {gespeeld.length>1&&(
-              <div style={{display:"flex",gap:6,marginBottom:10}}>
-                {[["alle",t("Alle tafels")]].concat(gespeeld.map(function(k){return[k,tafelLabel(k)];})).map(function(x){
-                  return <button key={x[0]} onClick={function(){setNiveauTafel(x[0]);}} style={chip(tafel===x[0])}>{x[1]}</button>;
+              <div data-niveau-tafels style={{display:"flex",gap:6,marginBottom:10}}>
+                <button onClick={function(){setNiveauTafels([]);}} style={chip(tafel==="alle")}>{t("Alle tafels")}</button>
+                {gespeeld.map(function(k){
+                  const aan=tafel!=="alle"&&tafel.indexOf(k)!==-1;
+                  return <button key={k} onClick={function(){wissel(k);}} style={chip(aan)}>{aan?"✓ ":""}{tafelLabel(k)}</button>;
                 })}
               </div>
             )}
@@ -269,7 +286,7 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
               </div>
             </div>
             {tafel!=="alle"&&(
-              <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>{t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.",{tafel:tafelLabel(tafel)})}</div>
+              <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>{t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.",{tafel:labels})}</div>
             )}
             <div style={{fontSize:11,color:WITD,opacity:0.8,lineHeight:1.45}}>
               {!niveau.venster&&!niveau.aantalDrops
@@ -387,19 +404,6 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
         </div>
       </div>
 
-      {/* Vierbal in de disciplinebalk (standaard alleen in het Koreaans en Japans; zie vierbalZichtbaar) */}
-      <div data-vierbal-keuze="" style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
-        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Vierbal")}</div>
-        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>{t("Vierbal (twee rode ballen) wordt vooral in Korea en Japan gespeeld. Zet het aan om het als extra discipline bovenin te tonen.")}</div>
-        <div style={{display:"flex",gap:6}}>
-          {[[true,t("Tonen")],[false,t("Verbergen")]].map(function(x){
-            const actief=vierbalZichtbaar(data,null)===x[0];
-            return <button key={x[1]} onClick={function(){if(!actief)setWeergave("vierbal",x[0]);}}
-              style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
-          })}
-        </div>
-      </div>
-
       {/* Spelelement aan/uit: badges, punten en het schrappen van slechtste partijen (ook in eenvoudige modus) */}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Spelelement")}</div>
@@ -411,6 +415,19 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
           {[[true,"🎖️ "+t("Aan")],[false,t("Uit")]].map(function(x){
             const actief=spel===x[0];
             return <button key={x[1]} onClick={function(){if(!actief)setSpelelement(x[0]);}}
+              style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
+          })}
+        </div>
+      </div>
+
+      {/* Vierbal in de disciplinebalk (standaard alleen in het Koreaans en Japans; zie vierbalZichtbaar) */}
+      <div data-vierbal-keuze="" style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
+        <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Vierbal")}</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>{t("Vierbal (twee rode ballen) wordt vooral in Korea en Japan gespeeld. Zet het aan om het als extra discipline bovenin te tonen.")}</div>
+        <div style={{display:"flex",gap:6}}>
+          {[[true,t("Tonen")],[false,t("Verbergen")]].map(function(x){
+            const actief=vierbalZichtbaar(data,null)===x[0];
+            return <button key={x[1]} onClick={function(){if(!actief)setWeergave("vierbal",x[0]);}}
               style={{flex:1,padding:"9px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{x[1]}</button>;
           })}
         </div>

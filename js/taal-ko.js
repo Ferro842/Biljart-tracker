@@ -307,8 +307,8 @@ VERTALING.ko={
   "Maximaal 1 op de 10 partijen kan geschrapt worden.":"최대 10경기 중 1경기까지 제외할 수 있어요.",
   "Eerstvolgende partij die vervalt: p{n} (gem {g})":"다음에 빠질 경기: {n}번 (평균 {g})",
   "Nog te weinig recente partijen voor een voorspelling":"예측하기엔 최근 경기가 아직 부족해요",
-  "Je recente vorm ({v}) ligt onder de {d} die nodig is voor {k}":"최근 폼({v})이 {k}에 필요한 {d}보다 낮아요",
-  "Bij je recente vorm ({v}) bereik je {k} over ongeveer {n} partijen":"최근 폼({v})이면 약 {n}경기 뒤 {k}에 도달해요",
+  "Je recente vorm (laatste {p} partijen: {v}) ligt onder de {d} die nodig is voor {k}":"최근 폼(최근 {p}경기: {v})이 {k}에 필요한 {d}보다 낮아요",
+  "Bij je recente vorm (laatste {p} partijen: {v}) bereik je {k} over ongeveer {n} partijen":"최근 폼(최근 {p}경기: {v})이면 약 {n}경기 뒤 {k}에 도달해요",
   "geschrapt uit je vorm":"폼에서 제외됨",
   // Partijregels
   "Notitie":"메모",
@@ -842,5 +842,11 @@ VERTALING.ko={
   "Laatste kopie: {d}":"마지막 복사본: {d}",
   "Map \"Carom Tracker\" in iCloud Drive (app Bestanden). Terugzetten: Importeer data en kies het bestand daar.":"iCloud Drive의 \"Carom Tracker\" 폴더 (파일 앱). 복원하려면: 데이터 가져오기에서 그 파일을 선택하세요.",
   "iCloud Drive staat uit. Zet het aan (Instellingen → je naam → iCloud → iCloud Drive), dan maakt de app vanzelf een back-up.":"iCloud Drive가 꺼져 있어요. 켜면 (설정 → 내 이름 → iCloud → iCloud Drive) 앱이 자동으로 백업해요.",
-  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone 앱에서는 iCloud Drive가 켜져 있으면 복사본이 자동으로 iCloud Drive(Carom Tracker 폴더)에 저장돼요. 복원하려면: 정보 → 데이터 가져오기에서 iCloud Drive의 파일을 선택하세요."
+  "In de iPhone-app gaat er vanzelf een kopie naar je iCloud Drive (map Carom Tracker), als iCloud Drive aan staat. Terugzetten: Info → Importeer data en kies het bestand in iCloud Drive.":"iPhone 앱에서는 iCloud Drive가 켜져 있으면 복사본이 자동으로 iCloud Drive(Carom Tracker 폴더)에 저장돼요. 복원하려면: 정보 → 데이터 가져오기에서 iCloud Drive의 파일을 선택하세요.",
+  // Vaste tafel bij kader, vormkeuze in Je niveau, doel eerder gehaald (23 okt 2026)
+  "hoort bij {k}":"{k} 전용",
+  "Vorm over":"폼 기준",
+  "Gehaald met al je partijen op {d}":"{d}에 전체 경기로 달성",
+  "Gehaald met je laatste {n} partijen op {d}":"{d}에 최근 {n}경기로 달성",
+  "Eerder gehaald op {d}":"{d}에 이미 달성"
 };

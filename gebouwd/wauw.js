@@ -305,7 +305,7 @@ function SeizoenVerhaal({ seizoen, alleP, discipline, onClose }) {
   };
   const kaarten = [
     { k: "🎬", titel: seizoenNaam(v.seizoen), inhoud: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { style: { margin: "10px auto 18px", display: "flex", justifyContent: "center" } }, /* @__PURE__ */ React.createElement(Logo, { maat: 110 })), sub(t("Jouw seizoen in beeld")), klein((DISCIPLINES[discipline] || DISCIPLINES.libre).naam + " · " + fmtDatum(v.van) + " – " + fmtDatum(v.totDatum)), klein(t("Tik rechts voor verder, links om terug te gaan."))) },
-    { k: "🎱", titel: t("Aan tafel"), inhoud: /* @__PURE__ */ React.createElement(React.Fragment, null, groot(/* @__PURE__ */ React.createElement(Telop, { waarde: v.partijen, dec: 0 })), sub(t(v.speeldagen === 1 ? "partijen, op {n} speeldag" : "partijen, op {n} speeldagen", { n: v.speeldagen })), klein(/* @__PURE__ */ React.createElement(React.Fragment, null, t("Samen"), " ", /* @__PURE__ */ React.createElement("b", { style: { color: WIT } }, /* @__PURE__ */ React.createElement(Telop, { waarde: v.caramboles, dec: 0 })), " ", t("caramboles in {n} beurten.", { n: v.beurten })))) },
+    { k: /* @__PURE__ */ React.createElement(CaromBallen, { maat: 44 }), titel: t("Aan tafel"), inhoud: /* @__PURE__ */ React.createElement(React.Fragment, null, groot(/* @__PURE__ */ React.createElement(Telop, { waarde: v.partijen, dec: 0 })), sub(t(v.speeldagen === 1 ? "partijen, op {n} speeldag" : "partijen, op {n} speeldagen", { n: v.speeldagen })), klein(/* @__PURE__ */ React.createElement(React.Fragment, null, t("Samen"), " ", /* @__PURE__ */ React.createElement("b", { style: { color: WIT } }, /* @__PURE__ */ React.createElement(Telop, { waarde: v.caramboles, dec: 0 })), " ", t("caramboles in {n} beurten.", { n: v.beurten })))) },
     { k: "📈", titel: t("Je gemiddelde"), inhoud: /* @__PURE__ */ React.createElement(React.Fragment, null, groot(/* @__PURE__ */ React.createElement(Telop, { waarde: v.gem, dec, komma: true })), sub(t("gemiddeld per beurt dit seizoen")), klein(t("Daarmee speel je in de {k}.", { k: v.niveau.naam }))) },
     { k: "🔥", titel: t("Je hoogste serie"), inhoud: /* @__PURE__ */ React.createElement(React.Fragment, null, groot(/* @__PURE__ */ React.createElement(Telop, { waarde: v.hoogste.car, dec: 0 }), "#ff9f40"), sub(t("caramboles achter elkaar")), klein(t("{d} op de {tafel}, in beurt {b}.", { d: fmtDatum(v.hoogste.datum), tafel: tafelLabel(v.hoogste.tafel), b: v.hoogste.beurt }))) },
     { k: "🏆", titel: t("Je beste partij"), inhoud: /* @__PURE__ */ React.createElement(React.Fragment, null, groot(/* @__PURE__ */ React.createElement(Telop, { waarde: v.beste.gem, dec, komma: true }), GRNT), sub(t("{c} caramboles in {b} beurten", { c: v.beste.car, b: v.beste.beurten })), klein(t("{d} op de {tafel}.", { d: fmtDatum(v.beste.datum), tafel: tafelLabel(v.beste.tafel) }))) },
@@ -464,6 +464,12 @@ function KalenderPaneel({ partijen, discipline }) {
     })), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 2 } }, cellen)), mi === naRij ? detail : null];
   })));
 }
+function CaromBallen({ maat }) {
+  const bal = function(cx, cy, kleur, rand) {
+    return /* @__PURE__ */ React.createElement("g", null, /* @__PURE__ */ React.createElement("circle", { cx, cy, r: "9", style: { fill: kleur, stroke: rand, strokeWidth: 1 } }), /* @__PURE__ */ React.createElement("circle", { cx: cx - 3, cy: cy - 3, r: "2.6", style: { fill: "rgba(255,255,255,0.75)" } }));
+  };
+  return /* @__PURE__ */ React.createElement("svg", { "data-carom-ballen": true, width: maat || 40, height: maat || 40, viewBox: "0 0 40 40", style: { display: "inline-block", verticalAlign: "middle" } }, bal(12, 26, "#f4f1e8", "#c9c2ad"), bal(28, 26, "#f2c230", "#b8901a"), bal(20, 12, "#d0342c", "#962019"));
+}
 function doelVoortgang(doel, vorm) {
   if (!doel) return 0;
   const start = doel.start != null ? doel.start : 0;
@@ -486,7 +492,11 @@ function DoelRing({ doel, vorm, discipline, onWijzig }) {
     transform: "rotate(-90deg)",
     transformOrigin: "50% 50%",
     transition: "stroke-dashoffset 0.8s ease"
-  } }), /* @__PURE__ */ React.createElement("text", { x: "28", y: "32", textAnchor: "middle", style: { fill: WIT, fontSize: 12, fontWeight: "bold", fontFamily: "Georgia,serif" } }, Math.round(pct * 100), "%")), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, minWidth: 0 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: GOUD, textTransform: "uppercase", letterSpacing: 1 } }, "🎯 ", t("Doel {g}", { g: kommaGetal(doel.waarde, dec) })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: WIT, marginTop: 2 } }, t("Nu"), " ", /* @__PURE__ */ React.createElement("b", null, kommaGetal(vorm, dec)), doel.start != null && !doel.gehaald ? /* @__PURE__ */ React.createElement("span", null, " · ", t("begon op {g}", { g: kommaGetal(doel.start, dec) })) : null, " · ", stand)), /* @__PURE__ */ React.createElement("span", { style: { color: WITD, fontSize: 18 } }, "›"));
+  } }), /* @__PURE__ */ React.createElement("text", { x: "28", y: "32", textAnchor: "middle", style: { fill: WIT, fontSize: 12, fontWeight: "bold", fontFamily: "Georgia,serif" } }, Math.round(pct * 100), "%")), /* @__PURE__ */ React.createElement("div", { style: { flex: 1, minWidth: 0 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: GOUD, textTransform: "uppercase", letterSpacing: 1 } }, "🎯 ", t("Doel {g}", { g: kommaGetal(doel.waarde, dec) })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: WIT, marginTop: 2 } }, t("Nu"), " ", /* @__PURE__ */ React.createElement("b", null, kommaGetal(vorm, dec)), doel.start != null && !doel.gehaald ? /* @__PURE__ */ React.createElement("span", null, " · ", t("begon op {g}", { g: kommaGetal(doel.start, dec) })) : null, " · ", stand), doel.eerder && (function() {
+    const op = doel.eerder.op ? new Date(doel.eerder.op).toLocaleDateString(taalLocale(), { day: "numeric", month: "short" }) : "";
+    const vn = doel.eerder.venster;
+    return /* @__PURE__ */ React.createElement("div", { "data-doel-eerder": true, style: { fontSize: 12, color: GRNT, marginTop: 2 } }, "✓ ", vn === "alles" ? t("Gehaald met al je partijen op {d}", { d: op }) : vn ? t("Gehaald met je laatste {n} partijen op {d}", { n: vn, d: op }) : t("Eerder gehaald op {d}", { d: op }));
+  })()), /* @__PURE__ */ React.createElement("span", { style: { color: WITD, fontSize: 18 } }, "›"));
 }
 function DoelInstellen({ doel, vorm, discipline, onOpslaan, onVerwijder, onClose }) {
   const dec = discipline === "driebanden" ? 3 : 2, stap = gemStap(discipline);

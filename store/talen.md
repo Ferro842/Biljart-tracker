@@ -64,6 +64,15 @@ controleert ze.
 > PRIVACY
 > No account, no ads, no tracking. Your data stays with you: on your phone, with an automatic backup copy in your own iCloud Drive (if it's switched on).
 
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> What's new:
+> • Your level and the level overview: choose how many games your form covers (10, 20, 30 or all) and which table
+> • Your goal: the ring shows which form setting reaches it
+> • Each balkline variant now has its own fixed table
+> • Insight: points and innings when you tap a game
+> • Small improvements
+
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
 > What's new:
@@ -123,6 +132,15 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 >
 > CONFIDENTIALITÉ
 > Pas de compte, pas de publicité, pas de suivi. Tes données restent chez toi : sur ton téléphone, avec une copie de sauvegarde automatique dans ton propre iCloud Drive (s'il est activé).
+
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> Nouveautés :
+> • Ton niveau et l'aperçu des niveaux : choisis sur combien de parties porte ta forme (10, 20, 30 ou toutes) et sur quel billard
+> • Ton objectif : l'anneau montre avec quel réglage de forme tu l'atteins
+> • Chaque variante de cadre a désormais son billard fixe
+> • Analyse : points et reprises en touchant une partie
+> • Petites améliorations
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
@@ -184,6 +202,15 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 > DATENSCHUTZ
 > Kein Konto, keine Werbung, kein Tracking. Deine Daten bleiben bei dir: auf deinem Handy, mit einer automatischen Sicherungskopie in deinem eigenen iCloud Drive (wenn es eingeschaltet ist).
 
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> Neu in dieser Version:
+> • Dein Niveau und die Niveauübersicht: wähle, über wie viele Partien deine Form geht (10, 20, 30 oder alle) und auf welchem Tisch
+> • Dein Ziel: der Ring zeigt, mit welcher Form-Einstellung du es erreichst
+> • Jede Cadre-Variante hat jetzt ihren festen Tisch
+> • Einblick: Punkte und Aufnahmen beim Antippen einer Partie
+> • Kleine Verbesserungen
+
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
 > Neu in dieser Version:
@@ -244,6 +271,15 @@ Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme
 > PRIVACIDAD
 > Sin cuenta, sin anuncios, sin seguimiento. Tus datos se quedan contigo: en tu teléfono, con una copia de seguridad automática en tu propio iCloud Drive (si está activado).
 
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> Novedades:
+> • Tu nivel y el resumen de niveles: elige cuántas partidas cubre tu forma (10, 20, 30 o todas) y en qué mesa
+> • Tu objetivo: el anillo muestra con qué ajuste de forma lo alcanzas
+> • Cada variante de cuadro tiene ahora su mesa fija
+> • Análisis: carambolas y entradas al tocar una partida
+> • Pequeñas mejoras
+
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
 > Novedades:
@@ -303,6 +339,15 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 >
 > GİZLİLİK
 > Hesap yok, reklam yok, takip yok. Verilerin sende kalır: telefonunda, ayrıca kendi iCloud Drive'ında otomatik bir yedek kopyayla (açıksa).
+
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> Yenilikler:
+> • Seviyen ve seviye özeti: formunun kaç maçı kapsadığını (10, 20, 30 veya tümü) ve hangi masayı seç
+> • Hedefin: halka, hangi form ayarıyla hedefe ulaştığını gösterir
+> • Her Kadr türünün artık kendi sabit masası var
+> • Analiz: bir maça dokununca sayı ve istaka sayısı
+> • Küçük iyileştirmeler
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
@@ -366,6 +411,15 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > 개인정보
 > 계정 없음, 광고 없음, 추적 없음. 데이터는 내 휴대폰에 있고, iCloud Drive가 켜져 있으면 내 iCloud Drive에 자동으로 백업돼요.
 
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> 새로운 기능:
+> • 내 등급과 등급 개요: 폼에 반영할 경기 수(10, 20, 30 또는 전체)와 테이블 선택
+> • 내 목표: 링이 어떤 폼 설정으로 목표에 도달하는지 보여줍니다
+> • 보크라인 종목마다 고정 테이블
+> • 분석: 경기를 탭하면 득점과 이닝 표시
+> • 작은 개선
+
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
 > 새로운 기능:
@@ -427,6 +481,15 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > プライバシー
 > アカウントなし、広告なし、トラッキングなし。データはあなたのスマホに保存され、iCloud Drive がオンならあなた自身の iCloud Drive に自動でバックアップされます。
 
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> 新機能：
+> • あなたのレベルとレベル一覧：フォームの対象試合数（10・20・30・すべて）と台を選べます
+> • 目標：どのフォーム設定で目標に届くかをリングで表示
+> • ボークラインの種目ごとに台を固定
+> • 分析：試合をタップすると得点とイニング数を表示
+> • 細かな改善
+
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
 > 新機能：
@@ -486,6 +549,15 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > Quyền riêng tư
 > Không tài khoản, không quảng cáo, không theo dõi. Dữ liệu ở lại với bạn: trên điện thoại, kèm bản sao lưu tự động trong iCloud Drive của chính bạn (nếu đang bật).
 
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> Có gì mới:
+> • Cấp độ của bạn và tổng quan cấp độ: chọn phong độ tính theo bao nhiêu trận (10, 20, 30 hoặc tất cả) và bàn nào
+> • Mục tiêu: vòng tròn cho biết cài đặt phong độ nào đạt mục tiêu
+> • Mỗi biến thể Balkline có bàn cố định riêng
+> • Nhận định: điểm và số lượt khi chạm vào một trận
+> • Cải tiến nhỏ
+
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
 > Có gì mới:
@@ -544,6 +616,15 @@ bida,carom,3 băng,4 bi,libre,điểm trung bình,seri,ghi điểm,bi-a,lượt,
 >
 > Privacidade
 > Sem conta, sem anúncios, sem rastreamento. Seus dados ficam com você: no celular, com uma cópia de backup automática no seu próprio iCloud Drive (se estiver ligado).
+
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> Novidades:
+> • Seu nível e a visão geral de níveis: escolha quantas partidas sua forma abrange (10, 20, 30 ou todas) e em qual mesa
+> • Sua meta: o anel mostra com qual ajuste de forma você a alcança
+> • Cada variante de quadro agora tem sua mesa fixa
+> • Análise: pontos e entradas ao tocar numa partida
+> • Pequenas melhorias
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
 

@@ -321,9 +321,10 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 4. **Versie 1.1 naar de App Store**: naam per taal uit `store/aso.md` (Carom Tracker: …), alle talen, vierbal, kader 35/2, 47/1 en 52/2, laden zonder partijen, groene
    systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle tien talen staan in
    `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko|ja|vi|pt` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
-5. **Versie 1.1** (build 2) op 23 okt 2026 ingediend bij Apple, met alle teksten en schermafbeeldingen in 13 taalversies
-   (nl, en-US, en-GB, fr, de, es-ES, es-MX, pt-BR, pt-PT, tr, vi, ko, ja). Wacht op beoordeling. Volgende versie: kleine
-   aanpassingen van de eigenaar.
+5. **Versie 1.1** (build 2) op 23 okt 2026 ingediend, op 24 okt goedgekeurd. **Versie 1.2** (build 3, ook Android
+   versionCode 3) klaargezet op 24 okt: vaste tafel per kadervariant, tafel- en vormkeuze in Je niveau en het klasse-overzicht,
+   doelring, caramboles in Inzicht. What's New 1.2 per taal in `store/app-store.md` en `store/talen.md`; de rest van de
+   winkelteksten en schermafbeeldingen blijft gelijk aan 1.1.
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
    Carom Tracker.

@@ -57,6 +57,15 @@ Is de naam "Carom Tracker" al bezet, kies dan bijvoorbeeld "Carom Tracker – Ca
 > PRIVACY
 > Geen account, geen advertenties, geen tracking. Je gegevens blijven bij jou: op je telefoon, met automatisch een reservekopie in je eigen iCloud Drive (als die aan staat).
 
+**Wat is er nieuw (versie 1.2, max. 4000)**
+
+> Nieuw in deze versie:
+> • Je niveau en het klasse-overzicht: kies over hoeveel partijen je vorm gaat (10, 20, 30 of alle) en op welke tafel
+> • Je doel: de ring laat zien met welke vorm-instelling je het haalt
+> • Elke kadervariant heeft zijn eigen vaste tafel
+> • Inzicht: caramboles en beurten bij een aangetikte partij
+> • Kleine verbeteringen
+
 **Wat is er nieuw (versie 1.1, max. 4000)**
 
 > Nieuw in deze versie:

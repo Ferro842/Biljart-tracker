@@ -78,6 +78,15 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout b
   die tafel; vanaf 3 aanvinken (✓, meerdere tegelijk); niets of alles = alle tafels (`tafelSelectie`). Dezelfde keuze staat in
   het klasse-overzicht (`NiveauOverzicht`, `berekenVolledigNiveau` op de deelverzameling, melding `data-overzicht-tafel`);
   de doelring daar blijft over alle tafels.
+- Wedstrijd of training (28 okt 2026): optioneel `p.soort` ("wedstrijd"/"training") en `p.tegen` ({car, doel?, naam?}).
+  Zonder soort: `bron:"briefje"` = wedstrijd, de rest training (`partijSoort()` in `js/berekeningen.js`; geen migratie). Keuze
+  op Spelen (`SoortKeuze`, onthouden in `data.laatsteSoort`, ook in `lopendePartij.soort`) en in het afsluitvenster
+  (`data-afsluiten`); bij een wedstrijd daar de tegenstander (`TegenstanderVelden`, alles optioneel; leeg te maken = jouw te
+  maken). `partijUitslag()`: met beide te maken het aandeel daarvan (handicap), anders de score; partijscore = `partijScore()`
+  (min strafpunten). Achteraf: partij → 🏆 Wedstrijd of training (`WedstrijdBewerken`) en "Wedstrijden aanvinken"
+  (`WedstrijdenAanvinken`, Log en Stats → Je niveau); opslaan via `PartijWijzigContext` = `wijzigPartijen({id:{soort,tegen}})`.
+  Stats → Je niveau: "Alle partijen / Alleen wedstrijden" (`data-niveau-soort`, pas met wedstrijden) en `wedstrijdOverzicht()`
+  (uitslagen, gemiddelde wedstrijd tegenover training). Je klasse bovenin blijft over alle partijen gaan.
 - Seizoenen: `data.seizoenen` [{id,naam,startDatum,eindDatum}]. "Seizoen afsluiten" (Stats) vraagt de begindatum van
   het nieuwe seizoen (standaard nu; eerder kan, bijv. om een grens te herstellen). "Laatste seizoensgrens ongedaan
   maken" staat in het archiefvenster (niet direct onder de knoppen: was per ongeluk aan te tikken).
@@ -283,7 +292,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
 - Testdata laden (in de browserconsole), daarna herladen:
   `localStorage.setItem("biljart-tracker-v2", JSON.stringify(await fetch("/test/testdata.json").then(r=>r.json())))`
 - Alle tests (liefst op telefoonformaat 375 breed): `await eval(await fetch("/test/alles.js").then(r=>r.text()))`
-  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`, `weergave`, `briefje`, `wauw`, `talen`, `vierbal`, `wensen`
+  → `allesGoed` moet `true` zijn. Draait `rondgang`, `tijdlijn`, `statstab`, `spelen`, `partijrij`, `spelelement`, `niveau`, `vensters`, `datatab`, `weergave`, `briefje`, `wauw`, `talen`, `vierbal`, `wensen`, `wedstrijd`
   en zet daarna de testdata terug.
 - `test/snapshot.js` bevat een referentie-hash van alle berekeningen op de testdata. Puur technische
   wijzigingen moeten die exact gelijk laten; alleen bij een bewuste rekenwijziging `REFERENTIE` bijwerken.
@@ -322,7 +331,7 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    systeembalken. Per taal de winkelteksten uit `store/talen.md` invullen; schermafbeeldingen in alle tien talen staan in
    `store/screenshots/ios` (nl) en `ios-en|fr|de|es|tr|ko|ja|vi|pt` (en iCloud Drive "Biljart Tracker store"), met de naam Carom Tracker.
 5. **Versie 1.1** (build 2) op 23 okt 2026 ingediend, op 24 okt goedgekeurd. **Versie 1.2** (build 3, ook Android
-   versionCode 3) klaargezet op 24 okt: vaste tafel per kadervariant, tafel- en vormkeuze in Je niveau en het klasse-overzicht,
+   versionCode 3) op 24 okt ingediend bij Apple (wacht op beoordeling): vaste tafel per kadervariant, tafel- en vormkeuze in Je niveau en het klasse-overzicht,
    doelring, caramboles in Inzicht. What's New 1.2 per taal in `store/app-store.md` en `store/talen.md`; de rest van de
    winkelteksten en schermafbeeldingen blijft gelijk aan 1.1.
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is

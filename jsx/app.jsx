@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-23.2";
+const APP_VERSIE="2026-10-28.1";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -17,6 +17,8 @@ function BiljartTracker(){
   const [doelType,setDoelType]=useState("beurten");
   const [tafelKeuze,setTafel]=useState("210"); // gekozen tafel; een kadervariant heeft een vaste tafel (zie tafel hieronder)
   const [confPartij,setConfPartij]=useState(false);
+  const [soort,setSoort]=useState("training"); // wedstrijd of training; begint met wat je de vorige keer koos (data.laatsteSoort)
+  const [tegenVelden,setTegenVelden]=useState({car:"",doel:"",naam:""}); // tegenstander, in te vullen bij Afsluiten
   const [seizoenArchiefOpen,setSeizoenArchiefOpen]=useState(false);
   const [onboardingStap,setOnboardingStap]=useState(0);
   // iCloud-back-up (js/opslag.js): opnieuw tekenen als de status of de laatste kopie verandert
@@ -118,24 +120,26 @@ function BiljartTracker(){
   // Bij het laden een onderbroken partij terugzetten (bijv. als de app tijdens het spelen werd gesloten)
   useEffect(function(){laadData().then(function(d){
     setData(d);
+    if(d.laatsteSoort==="wedstrijd")setSoort("wedstrijd");
     const lo=d.lopendePartij;
     if(lo&&Array.isArray(lo.beurten)&&lo.beurten.length>0){
       setLp(lo.beurten);setBeurtNr(lo.beurten.length+1);
       if(lo.tafel)setTafel(lo.tafel);
       if(lo.doel)setDoel(lo.doel);
       if(lo.doelType)setDoelType(lo.doelType);
+      if(lo.soort)setSoort(lo.soort);
     }
   });},[]);
   // De lopende partij staat in het optionele veld data.lopendePartij, zodat die een herstart overleeft.
   // Alleen opslaan als er echt iets veranderd is; zonder lopende partij verdwijnt het veld weer.
   useEffect(function(){
     if(!data)return;
-    const lopend=lp.length>0?{beurten:lp,tafel:tafel,doel:doel,doelType:doelType}:null;
+    const lopend=lp.length>0?Object.assign({beurten:lp,tafel:tafel,doel:doel,doelType:doelType},soort==="wedstrijd"?{soort:soort}:null):null;
     if(JSON.stringify(data.lopendePartij||null)===JSON.stringify(lopend))return;
     const nd=Object.assign({},data);
     if(lopend)nd.lopendePartij=lopend;else delete nd.lopendePartij;
     setData(nd);slaOp(nd);
-  },[data,lp,tafel,doel,doelType]);
+  },[data,lp,tafel,doel,doelType,soort]);
   // Laken-kleur van de gekozen discipline (vóór het tekenen, dus zonder groene flits); met het kader-keuzemenu
   // open al rood, bij annuleren weer terug
   const themaDiscipline=kaderKiezerOpen?"kader":huidigeDiscplineVoorLading;
@@ -230,7 +234,10 @@ function BiljartTracker(){
     if(doelGehaald)vier({tekst:"🎯 "+t("Doel gehaald!"),sub:t("Je vorm is nu {v}",{v:getalTekst(infoNa.effectiefGemiddelde,disc==="driebanden"?3:2)})});
     else if(niveauOmhoog)vier({tekst:"🎉 "+niveauOmhoog.naar.naam+"!",sub:t("Je bent een klasse omhoog")});
     else if(besteOoit)vier({tekst:"👑 "+t("Beste partij ooit!")});
-    if(opties&&opties.lopendeWeg)delete nd.lopendePartij; // in dezelfde opslag weg, zodat de partij nooit dubbel terugkomt
+    if(opties&&opties.lopendeWeg){
+      delete nd.lopendePartij; // in dezelfde opslag weg, zodat de partij nooit dubbel terugkomt
+      nd.laatsteSoort=partijSoort(p); // volgende partij begint weer met deze keuze
+    }
     // Goed moment voor een beoordeling (alleen in de app; zie beoordelingMoment in js/opslag.js): na de viering en samenvatting
     const beurtRecord=prestatie&&prestatie.badges&&prestatie.badges.some(function(b){return b.label==="Nieuw record beurt";});
     if(beoordelingMoment(nd,doelGehaald||niveauOmhoog||besteOoit||beurtRecord)){
@@ -244,8 +251,11 @@ function BiljartTracker(){
   function sluit(){
     if(!lp.length){setConfPartij(false);return;}
     const st=stat(lp,huidigeDiscipline);
-    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp},st);
+    const p=Object.assign({id:data.huidigeId,datum:new Date().toISOString(),tafel:tafel,doel:doel,doelType:doelType,discipline:huidigeDiscipline,beurten:lp,soort:soort},st);
+    const tegen=soort==="wedstrijd"?tegenVanVelden(tegenVelden,doelType==="caramboles"?doel:null):null;
+    if(tegen)p.tegen=tegen;
     bewaarPartij(p,{lopendeWeg:true});
+    setTegenVelden({car:"",doel:"",naam:""});
     setLp([]);setBeurtNr(1);setCar(0);setStraf(0);setInp("0");setSel(new Set());
     setConfPartij(false);setFase("setup");
   }
@@ -288,6 +298,19 @@ function BiljartTracker(){
       return Object.assign({},p,{beurten:p.beurten.map(function(b,i){
         const n=beurten[i];return n?Object.assign({},b,{gemist:n.gemist.slice(),goed:n.goed.slice()}):b;
       })});
+    })});
+    setData(nd);slaOp(nd);
+  }
+  // Soort (wedstrijd/training) en tegenstander van opgeslagen partijen wijzigen: wijzigingen = {id:{soort,tegen}};
+  // tegen null = weghalen. Via PartijWijzigContext (partij in Log/Stats, "Wedstrijden aanvinken").
+  function wijzigPartijen(wijzigingen){
+    const nd=Object.assign({},data,{partijen:data.partijen.map(function(p){
+      const w=wijzigingen[p.id];
+      if(!w)return p;
+      const n=Object.assign({},p);
+      if(w.soort)n.soort=w.soort;
+      if("tegen" in w){if(w.tegen)n.tegen=w.tegen;else delete n.tegen;}
+      return n;
     })});
     setData(nd);slaOp(nd);
   }
@@ -396,7 +419,7 @@ function BiljartTracker(){
   }
 
   // Alles wat de Spelen-schermen (jsx/spelen.jsx) nodig hebben
-  const spel={alleP,andersGemist,andersGoed,beurtNr,car,straf,setStraf,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,eenvoudig,progPct,sel,setAndersGemist,setAndersGoed,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,stL,weergaveTip,zieWeergaveTip,backupHerinnering,maakBackupNu,backupLater,tafel,tijdsvensterMaanden,toggle,totCarLp};
+  const spel={alleP,andersGemist,andersGoed,beurtNr,car,straf,setStraf,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,eenvoudig,progPct,sel,setAndersGemist,setAndersGoed,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,soort,setSoort,stL,weergaveTip,zieWeergaveTip,backupHerinnering,maakBackupNu,backupLater,tafel,tijdsvensterMaanden,toggle,totCarLp};
 
   // Naam in een segment: een onzichtbare vette kopie houdt de breedte vast, zodat er bij wisselen niets verspringt
   const segmentTekst=function(naam){
@@ -480,6 +503,7 @@ function BiljartTracker(){
 
   return(
     <OpmerkingenContext.Provider value={slaOpmerkingenOp}>
+    <PartijWijzigContext.Provider value={wijzigPartijen}>
     <KopContext.Provider value={inSpel?null:kopBlok}>
     <SpelContext.Provider value={spelAan}>
     <EenvoudigContext.Provider value={eenvoudig}>
@@ -574,9 +598,20 @@ function BiljartTracker(){
 
       {confPartij&&(
         <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:100,padding:20}}>
-          <div style={{background:"var(--c-1a2e1a)",border:"2px solid "+GOUD,borderRadius:14,padding:24,maxWidth:320,width:"100%"}}>
+          <div data-afsluiten style={{background:"var(--c-1a2e1a)",border:"2px solid "+GOUD,borderRadius:14,padding:20,maxWidth:340,width:"100%",maxHeight:"calc(90vh / var(--zoom,1))",overflowY:"auto"}}>
             <div style={{fontSize:15,color:WIT,marginBottom:6,textAlign:"center"}}>{t("Partij opslaan?")}</div>
-            <div style={{fontSize:14,color:WITD,marginBottom:18,textAlign:"center"}}>{t("{n} beurten - {c} car",{n:lp.length,c:totCarLp})}{stL?" - "+t("gem")+" "+decTekst(stL.gemPerBeurt):""}</div>
+            <div style={{fontSize:14,color:WITD,marginBottom:14,textAlign:"center"}}>{t("{n} beurten - {c} car",{n:lp.length,c:totCarLp})}{stL?" - "+t("gem")+" "+decTekst(stL.gemPerBeurt):""}</div>
+            {/* Wedstrijd of training; bij een wedstrijd eventueel de score van de tegenstander (alles optioneel) */}
+            <SoortKeuze soort={soort} setSoort={setSoort} stijl={{marginBottom:12}}/>
+            {soort==="wedstrijd"&&(function(){
+              const mijnDoel=doelType==="caramboles"?doel:null;
+              const tg=tegenVanVelden(tegenVelden,mijnDoel);
+              const u=tg?partijUitslag({soort:"wedstrijd",beurten:lp,doel:doel,doelType:doelType,tegen:tg}):null;
+              return <div style={{marginBottom:14}}>
+                <TegenstanderVelden velden={tegenVelden} setVelden={setTegenVelden} mijnDoel={mijnDoel}/>
+                {u&&<div data-uitslag-voorbeeld style={{marginTop:10,textAlign:"center",fontSize:16,fontWeight:"bold",color:uitslagKleur(u)}}>{uitslagNaam(u)} · {totCarLp}–{tg.car}</div>}
+              </div>;
+            })()}
             <div style={{display:"flex",gap:10}}>
               <button style={{flex:1,padding:14,background:GRNT,border:"none",borderRadius:8,color:WIT,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={sluit}>{t("Opslaan")}</button>
               <button style={{flex:1,padding:14,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}} onClick={function(){setConfPartij(false);}}>{t("Annuleer")}</button>
@@ -631,6 +666,7 @@ function BiljartTracker(){
     </EenvoudigContext.Provider>
     </SpelContext.Provider>
     </KopContext.Provider>
+    </PartijWijzigContext.Provider>
     </OpmerkingenContext.Provider>
   );
 }

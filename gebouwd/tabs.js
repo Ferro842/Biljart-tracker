@@ -1,7 +1,22 @@
 // Gebouwd uit jsx/tabs.jsx door bouw-jsx.js; niet zelf aanpassen.
 function LogTab({ lp, alleP, prestatiesMap, niveau, huidigeDiscipline, verwijderPartij, slaNotitieOp }) {
   const kopBlok = useContext(KopContext);
-  return /* @__PURE__ */ React.createElement("div", { className: "scrollvak", style: { overflowY: "auto", padding: kopBlok ? "0 14px 12px" : "12px 14px", height: "100%" } }, kopBlok && kopBlok({ rand: 14, onder: 12 }), lp.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "2px solid " + GOUD, borderRadius: 10, padding: "12px 14px", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 8 } }, t("Lopende partij")), [].concat(lp).reverse().map(function(b, i) {
+  const wijzig = useContext(PartijWijzigContext);
+  const [aanvinkOpen, setAanvinkOpen] = useState(false);
+  return /* @__PURE__ */ React.createElement("div", { className: "scrollvak", style: { overflowY: "auto", padding: kopBlok ? "0 14px 12px" : "12px 14px", height: "100%" } }, kopBlok && kopBlok({ rand: 14, onder: 12 }), aanvinkOpen && /* @__PURE__ */ React.createElement(WedstrijdenAanvinken, { partijen: alleP, discipline: huidigeDiscipline, onClose: function() {
+    setAanvinkOpen(false);
+  } }), wijzig && alleP.length > 0 && /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      "data-aanvinken-knop": true,
+      onClick: function() {
+        setAanvinkOpen(true);
+      },
+      style: { width: "100%", marginBottom: 10, padding: 9, background: "none", border: "1px solid " + KBDR, borderRadius: 8, color: WIT, cursor: "pointer", fontSize: 14, fontFamily: "inherit" }
+    },
+    "🏆 ",
+    t("Wedstrijden aanvinken")
+  ), lp.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "2px solid " + GOUD, borderRadius: 10, padding: "12px 14px", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 8 } }, t("Lopende partij")), [].concat(lp).reverse().map(function(b, i) {
     return /* @__PURE__ */ React.createElement(LogRij, { key: b.id, b, nr: lp.length - i, discipline: huidigeDiscipline });
   })), [].concat(alleP).reverse().map(function(p, pi) {
     return /* @__PURE__ */ React.createElement(LogPartijRij, { key: p.id, p, nr: alleP.length - pi, prestatie: prestatiesMap[p.id], gedropt: niveau.gedropteIds && niveau.gedropteIds.has(p.id), discipline: huidigeDiscipline, onVerwijder: verwijderPartij, onNotitie: slaNotitieOp });
@@ -171,6 +186,9 @@ function StatsTab({
   const kopBlok = useContext(KopContext);
   const spel = useContext(SpelContext);
   const [niveauTafels, setNiveauTafels] = useState([]);
+  const [niveauSoort, setNiveauSoort] = useState("alle");
+  const [aanvinkOpen, setAanvinkOpen] = useState(false);
+  const wijzig = useContext(PartijWijzigContext);
   const [confSeizoenAfsluiten, setConfSeizoenAfsluiten] = useState(false);
   const vandaagStr = (function() {
     const d = /* @__PURE__ */ new Date();
@@ -267,10 +285,16 @@ function StatsTab({
     const gespeeld = gespeeldeTafels(alleP);
     const tafel = tafelSelectie(gespeeld, niveauTafels);
     const labels = tafelLabels(tafel);
-    const opTafel = tafel === "alle" ? "" : " " + t("op {tafel}", { tafel: labels });
-    const info = tafel === "alle" ? niveau : berekenVorm(alleP.filter(function(p) {
-      return tafel.indexOf(p.tafel || "230") !== -1;
+    const wo = wedstrijdOverzicht(alleP);
+    const alleenW = niveauSoort === "wedstrijd" && wo.wedstrijden > 0;
+    const opTafel = (alleenW ? " · " + t("wedstrijden") : "") + (tafel === "alle" ? "" : " " + t("op {tafel}", { tafel: labels }));
+    const deel = tafel !== "alle" || alleenW;
+    const info = !deel ? niveau : berekenVorm(alleP.filter(function(p) {
+      return (tafel === "alle" || tafel.indexOf(p.tafel || "230") !== -1) && (!alleenW || partijSoort(p) === "wedstrijd");
     }), spel && data.schrappen !== false, vormVenster);
+    const decG = function(x) {
+      return x === null ? "–" : getalTekst(x, dec);
+    };
     const niv = bepaalNiveau(info.effectiefGemiddelde, huidigeDiscipline);
     const chip = function(actief) {
       return { flex: 1, padding: "7px 0", background: actief ? "var(--c-2d4a1e)" : "none", border: "1px solid " + (actief ? GOUD : KBDR), borderRadius: 8, color: actief ? GOUD : WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 13 };
@@ -280,7 +304,24 @@ function StatsTab({
       return /* @__PURE__ */ React.createElement("button", { key: x[1], onClick: function() {
         if (!actief) setVormVenster(x[0]);
       }, style: chip(actief) }, x[1]);
-    })), /* @__PURE__ */ React.createElement(TafelKeuze, { gespeeld, keuze: niveauTafels, setKeuze: setNiveauTafels }), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: tafel === "alle" ? 10 : 6 } }, /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(0,0,0,0.2)", borderRadius: 8, padding: "8px", textAlign: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: "bold", color: GOUD } }, /* @__PURE__ */ React.createElement(Telop, { waarde: info.effectiefGemiddelde, dec })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: WITD } }, t("vorm"), " · ", info.venster ? t("laatste {n}", { n: info.aantalPartijen }) : !info.aantalDrops ? t("alle partijen = moyenne") : t("alle partijen"), opTafel), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: spel && info.aantalDrops > 0 ? GOUD : WITD, marginTop: 2 } }, !spel ? t("niets geschrapt · spelelement uit") : info.aantalDrops > 0 ? info.aantalDrops === 1 ? t("zonder je slechtste · spelelement aan") : t("zonder je {n} slechtste · spelelement aan", { n: info.aantalDrops }) : t("nog niets geschrapt · spelelement aan")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: niv.huidig.kleur, marginTop: 2 } }, niv.huidig.emoji, " ", niv.huidig.naam, " ", niv.progressPct, "%")), /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(0,0,0,0.2)", borderRadius: 8, padding: "8px", textAlign: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: "bold", color: WIT } }, /* @__PURE__ */ React.createElement(Telop, { waarde: info.moyenne, dec })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: WITD } }, t("moyenne · alle {n}", { n: info.aantalPartijenTotaal }), opTafel), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: WITD, opacity: 0.7 } }, t("officieel, niets geschrapt")))), tafel !== "alle" && /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: GOUDL, marginBottom: 10 } }, t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.", { tafel: labels })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: WITD, opacity: 0.8, lineHeight: 1.45 } }, !niveau.venster && !niveau.aantalDrops ? t("Je klasse is nu gebaseerd op je moyenne: al je partijen, niets geschrapt.") : (niveau.venster ? t("Je vorm is het gemiddelde van je laatste {n} partijen", { n: vormVenster }) : t("Je vorm is het gemiddelde van al je partijen")) + (spel && data.schrappen !== false ? t(", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)") : "") + t("; je moyenne gaat altijd over al je partijen."), " ", t("Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij"), " ", /* @__PURE__ */ React.createElement("b", { style: { color: GOUD } }, t("je klasse rechtsboven")), "."));
+    })), /* @__PURE__ */ React.createElement(TafelKeuze, { gespeeld, keuze: niveauTafels, setKeuze: setNiveauTafels }), wo.wedstrijden > 0 && /* @__PURE__ */ React.createElement("div", { "data-niveau-soort": true, style: { display: "flex", gap: 6, marginBottom: 10 } }, /* @__PURE__ */ React.createElement("button", { onClick: function() {
+      setNiveauSoort("alle");
+    }, style: chip(!alleenW) }, t("Alle partijen")), /* @__PURE__ */ React.createElement("button", { onClick: function() {
+      setNiveauSoort("wedstrijd");
+    }, style: chip(alleenW) }, "🏆 ", t("Alleen wedstrijden"))), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: deel ? 6 : 10 } }, /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(0,0,0,0.2)", borderRadius: 8, padding: "8px", textAlign: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: "bold", color: GOUD } }, /* @__PURE__ */ React.createElement(Telop, { waarde: info.effectiefGemiddelde, dec })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: WITD } }, t("vorm"), " · ", info.venster ? t("laatste {n}", { n: info.aantalPartijen }) : !info.aantalDrops ? t("alle partijen = moyenne") : t("alle partijen"), opTafel), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: spel && info.aantalDrops > 0 ? GOUD : WITD, marginTop: 2 } }, !spel ? t("niets geschrapt · spelelement uit") : info.aantalDrops > 0 ? info.aantalDrops === 1 ? t("zonder je slechtste · spelelement aan") : t("zonder je {n} slechtste · spelelement aan", { n: info.aantalDrops }) : t("nog niets geschrapt · spelelement aan")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: niv.huidig.kleur, marginTop: 2 } }, niv.huidig.emoji, " ", niv.huidig.naam, " ", niv.progressPct, "%")), /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(0,0,0,0.2)", borderRadius: 8, padding: "8px", textAlign: "center" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: "bold", color: WIT } }, /* @__PURE__ */ React.createElement(Telop, { waarde: info.moyenne, dec })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: WITD } }, t("moyenne · alle {n}", { n: info.aantalPartijenTotaal }), opTafel), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 10, color: WITD, opacity: 0.7 } }, t("officieel, niets geschrapt")))), deel && /* @__PURE__ */ React.createElement("div", { "data-niveau-deel": true, style: { fontSize: 11, color: GOUDL, marginBottom: 10 } }, alleenW ? tafel === "alle" ? t("Alleen je wedstrijden. Je niveau bovenin de app gaat over al je partijen.") : t("Alleen je wedstrijden op de {tafel}. Je niveau bovenin de app gaat over al je partijen.", { tafel: labels }) : t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.", { tafel: labels })), wo.wedstrijden > 0 && /* @__PURE__ */ React.createElement("div", { "data-wedstrijd-overzicht": true, style: { background: "rgba(0,0,0,0.2)", borderRadius: 8, padding: "8px 10px", marginBottom: 10, fontSize: 13, color: WIT, lineHeight: 1.5 } }, /* @__PURE__ */ React.createElement("div", null, "🏆 ", t(wo.wedstrijden === 1 ? "1 wedstrijd" : "{n} wedstrijden", { n: wo.wedstrijden }), wo.gewonnen + wo.gelijk + wo.verloren > 0 && /* @__PURE__ */ React.createElement("span", null, " · ", /* @__PURE__ */ React.createElement("span", { style: { color: GRNT } }, t("{n} gewonnen", { n: wo.gewonnen })), " · ", /* @__PURE__ */ React.createElement("span", { style: { color: GOUD } }, t("{n} gelijk", { n: wo.gelijk })), " · ", /* @__PURE__ */ React.createElement("span", { style: { color: ROOD } }, t("{n} verloren", { n: wo.verloren })))), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 12, color: WITD } }, t("Gemiddelde in wedstrijden {w} · in trainingen {tr}", { w: decG(wo.gemWedstrijd), tr: decG(wo.gemTraining) }))), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 11, color: WITD, opacity: 0.8, lineHeight: 1.45 } }, !niveau.venster && !niveau.aantalDrops ? t("Je klasse is nu gebaseerd op je moyenne: al je partijen, niets geschrapt.") : (niveau.venster ? t("Je vorm is het gemiddelde van je laatste {n} partijen", { n: vormVenster }) : t("Je vorm is het gemiddelde van al je partijen")) + (spel && data.schrappen !== false ? t(", zonder je slechtste partijen die je met badge-punten hebt weggespeeld (hoogstens 1 op de 10)") : "") + t("; je moyenne gaat altijd over al je partijen."), " ", t("Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij"), " ", /* @__PURE__ */ React.createElement("b", { style: { color: GOUD } }, t("je klasse rechtsboven")), "."), wijzig && alleP.length > 0 && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        "data-aanvinken-knop": true,
+        onClick: function() {
+          setAanvinkOpen(true);
+        },
+        style: { marginTop: 10, width: "100%", padding: 8, background: "none", border: "1px solid " + KBDR, borderRadius: 6, color: WIT, cursor: "pointer", fontSize: 13, fontFamily: "inherit" }
+      },
+      "🏆 ",
+      t("Wedstrijden aanvinken")
+    ), aanvinkOpen && /* @__PURE__ */ React.createElement(WedstrijdenAanvinken, { partijen: alleP, discipline: huidigeDiscipline, onClose: function() {
+      setAanvinkOpen(false);
+    } }));
   })(), stA && /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 8 } }, t("Alle {n} partijen", { n: alleP.length })), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8, marginBottom: 8 } }, [[t("Car."), stA.totCar], [t("Max"), stA.max], [t("Gem. alle partijen"), decTekst(stA.gemPerBeurt)], [t("Beurten"), stA.aantalBeurten], [t("Poedels"), stA.poedels], [t("Partijen"), alleP.length]].map(function(arr) {
     return /* @__PURE__ */ React.createElement("div", { key: arr[0], style: { textAlign: "center", background: "var(--c-1a3019)", borderRadius: 8, padding: "8px 4px" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 22, fontWeight: "bold", color: GOUD } }, arr[1]), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: WITD } }, arr[0]));
   })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: GRNT } }, t("Opbouw: {a}/{b} beurten {n}+", { a: stA.opbouw5, b: stA.aantalBeurten, n: beurtDrempels(huidigeDiscipline).opbouwMin }))), /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 8 } }, t("Per partij")), [].concat(alleP).reverse().map(function(p, i) {

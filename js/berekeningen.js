@@ -35,6 +35,36 @@ function gemDrempelTekst(v,stap){return(stap<0.5?v.toFixed(2):v.toFixed(1)).repl
 // Vierbal: strafpunten in een partij (speelbal raakte de speelbal van de tegenstander); tellen niet mee in het
 // gemiddelde, alleen in de partijscore
 function strafTotaal(p){return((p&&p.beurten)||[]).reduce(function(a,b){return a+(b.straf||0);},0);}
+
+// Wedstrijd of training (optioneel veld p.soort, 28 okt 2026). Zonder soort: een wedstrijdbriefje is een wedstrijd,
+// al het andere training. Zo blijven oude partijen gewoon laden; aanpassen kan per partij of via "Wedstrijden aanvinken".
+function partijSoort(p){return p.soort==="wedstrijd"||p.soort==="training"?p.soort:(p.bron==="briefje"?"wedstrijd":"training");}
+// Jouw partijscore: caramboles min strafpunten (vierbal)
+function partijScore(p){return p.beurten.reduce(function(a,b){return a+b.caramboles-(b.straf||0);},0);}
+// Uitslag van een wedstrijd met ingevulde tegenstander (p.tegen = {car, doel?, naam?}): "gewonnen", "gelijk", "verloren"
+// of null. Met allebei een "te maken" telt het aandeel daarvan (handicap: wie verhoudingsgewijs het verst kwam), anders
+// de score zelf.
+function partijUitslag(p){
+  if(!p||partijSoort(p)!=="wedstrijd"||!p.tegen||typeof p.tegen.car!=="number")return null;
+  const mijnDoel=p.doelType==="caramboles"?p.doel:null,hunDoel=p.tegen.doel||null;
+  const a=mijnDoel&&hunDoel?partijScore(p)/mijnDoel:partijScore(p);
+  const b=mijnDoel&&hunDoel?p.tegen.car/hunDoel:p.tegen.car;
+  return Math.abs(a-b)<1e-9?"gelijk":a>b?"gewonnen":"verloren";
+}
+// Wedstrijden tegenover trainingen: aantallen, uitslagen en het gemiddelde (caramboles per beurt) van elk
+function wedstrijdOverzicht(partijen){
+  const r={wedstrijden:0,trainingen:0,gewonnen:0,gelijk:0,verloren:0,gemWedstrijd:null,gemTraining:null};
+  const som={wedstrijd:[0,0],training:[0,0]};
+  (partijen||[]).forEach(function(p){
+    const s=partijSoort(p);
+    if(s==="wedstrijd")r.wedstrijden++;else r.trainingen++;
+    const u=partijUitslag(p);if(u)r[u]++;
+    p.beurten.forEach(function(b){som[s][0]+=b.caramboles;som[s][1]++;});
+  });
+  if(som.wedstrijd[1])r.gemWedstrijd=som.wedstrijd[0]/som.wedstrijd[1];
+  if(som.training[1])r.gemTraining=som.training[0]/som.training[1];
+  return r;
+}
 function stat(beurten,discipline){
   if(!beurten||!beurten.length)return null;
   const d=beurtDrempels(discipline);

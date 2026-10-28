@@ -2,12 +2,13 @@
 // Log-tab (beurt voor beurt). Beide gebruiken PartijLabels en PartijBeheer (notitie en verwijderen).
 // JSX (vooraf omgezet door bouw-jsx.js), na jsx/vensters.jsx.
 
-// Labels achter de datum van een partij: tafelmaat, badge-punten, geschrapt uit gemiddelde, notitie
+// Labels achter de datum van een partij: tafelmaat, wedstrijd (met uitslag), badge-punten, geschrapt uit gemiddelde, notitie
 function PartijLabels({p,punten,gedropt}){
   const spel=useContext(SpelContext);
   return(
     <>
       {p.tafel&&<span style={{fontSize:13,color:WITD,marginLeft:6,border:"1px solid "+KBDR,borderRadius:4,padding:"1px 5px"}}>{tafelLabel(p.tafel)}</span>}
+      <UitslagLabel p={p}/>
       {spel&&punten>0&&<span style={{fontSize:13,color:GOUD,marginLeft:6,border:"1px solid "+GOUD,borderRadius:4,padding:"1px 5px"}}>{punten}pt</span>}
       {gedropt&&<span style={{fontSize:13,color:"#e8c96a",marginLeft:6}}>🏅 {t("geschrapt uit je vorm")}</span>}
       {p.notitie&&<span style={{fontSize:13,marginLeft:6}}>📝</span>}
@@ -15,9 +16,33 @@ function PartijLabels({p,punten,gedropt}){
   );
 }
 
+// Wedstrijd of training en de tegenstander van een opgeslagen partij wijzigen (in PartijBeheer)
+function WedstrijdBewerken({p,onKlaar}){
+  const wijzig=useContext(PartijWijzigContext);
+  const [soort,setSoort]=useState(partijSoort(p));
+  const [velden,setVelden]=useState(veldenVanTegen(p.tegen));
+  const mijnDoel=p.doelType==="caramboles"?p.doel:null;
+  const tg=soort==="wedstrijd"?tegenVanVelden(velden,mijnDoel):null;
+  const u=tg?partijUitslag(Object.assign({},p,{soort:"wedstrijd",tegen:tg})):null;
+  return(
+    <div data-wedstrijd-bewerken style={{marginTop:8,background:"rgba(0,0,0,0.2)",border:"1px solid "+KBDR,borderRadius:8,padding:"10px 12px"}}>
+      <SoortKeuze soort={soort} setSoort={setSoort} stijl={{marginBottom:10}}/>
+      {soort==="wedstrijd"&&<TegenstanderVelden velden={velden} setVelden={setVelden} mijnDoel={mijnDoel}/>}
+      {u&&<div style={{marginTop:8,textAlign:"center",fontSize:15,fontWeight:"bold",color:uitslagKleur(u)}}>{uitslagNaam(u)} · {partijScore(p)}–{tg.car}</div>}
+      <div style={{display:"flex",gap:6,marginTop:10}}>
+        <button onClick={function(){const w={};w[p.id]={soort:soort,tegen:tg};wijzig(w);onKlaar();}}
+          style={{flex:1,padding:8,background:"var(--c-2d4a1e)",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{t("Opslaan")}</button>
+        <button onClick={onKlaar} style={{flex:1,padding:8,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14}}>{t("Annuleer")}</button>
+      </div>
+    </div>
+  );
+}
+
 // Onderkant van een opengeklapte partij: notitie bewerken en partij verwijderen (met bevestiging)
 function PartijBeheer({p,onNotitie,onVerwijder}){
   const [confVerwijder,setConfVerwijder]=useState(false);
+  const wijzig=useContext(PartijWijzigContext);
+  const [wedstrijdOpen,setWedstrijdOpen]=useState(false);
   const slaOpmerkingenOp=useContext(OpmerkingenContext);
   const [opmOpen,setOpmOpen]=useState(false);
   const [notitieTekst,setNotitieTekst]=useState(p.notitie||"");
@@ -39,8 +64,11 @@ function PartijBeheer({p,onNotitie,onVerwijder}){
         {/* Opmerkingen achteraf aanvullen, ook als de partij zonder (of met weinig) opmerkingen is ingevuld */}
         {slaOpmerkingenOp&&<button onClick={function(){setOpmOpen(true);}}
           style={{padding:"6px 10px",background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>✎ {t("Opmerkingen aanvullen")}</button>}
+        {wijzig&&!wedstrijdOpen&&<button data-wedstrijd-knop onClick={function(){setWedstrijdOpen(true);}}
+          style={{padding:"6px 10px",background:"none",border:"1px solid "+GOUD,borderRadius:6,color:GOUD,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>🏆 {t("Wedstrijd of training")}</button>}
         <DeelKaartKnop partij={p} discipline={p.discipline||"libre"} stijl={{fontSize:13,padding:"6px 10px"}}/>
       </div>
+      {wedstrijdOpen&&<WedstrijdBewerken p={p} onKlaar={function(){setWedstrijdOpen(false);}}/>}
       {opmOpen&&<OpmerkingenBewerken partij={p} discipline={p.discipline||"libre"} onOpslaan={slaOpmerkingenOp} onClose={function(){setOpmOpen(false);}}/>}
       {onVerwijder&&(
         !confVerwijder

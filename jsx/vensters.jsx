@@ -34,7 +34,8 @@ function PartijSamenvatting({partij,st,prestatie,infoNa,nieuweDrop,niveauOmhoog,
           </div>
         )}
         <div style={{fontSize:15,fontWeight:"bold",color:GOUD,marginBottom:4,textAlign:"center"}}>{t("Partij afgesloten")}</div>
-        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:14}}>{new Date(partij.datum).toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long"})}</div>
+        <div style={{fontSize:12,color:WITD,textAlign:"center",marginBottom:partijSoort(partij)==="wedstrijd"?8:14}}>{new Date(partij.datum).toLocaleDateString(taalLocale(),{weekday:"long",day:"numeric",month:"long"})}</div>
+        {partijSoort(partij)==="wedstrijd"&&<div style={{textAlign:"center",marginBottom:14}}><UitslagLabel p={partij} stijl={{marginLeft:0,fontSize:15,padding:"3px 10px"}}/></div>}
         <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:14}}>
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 4px",textAlign:"center"}}>
             <div style={{fontSize:18,fontWeight:"bold",color:GOUD}}>{st.totCar}</div>
@@ -246,6 +247,7 @@ function UitlegVenster({eenvoudig,onClose}){
       t("Vergist? Tik op terug; de laatste beurt wordt weggehaald."),
       t("Tijdens een partij zie je bovenin alleen een smalle balk, zodat alles goed in beeld past. Via ☰ Menu kom je bij de andere tabbladen; je partij blijft gewoon staan."),
       t("Klaar: tik rechtsboven op Afsluiten en dan op Opslaan. Stop je tussendoor, dan onthoudt de app de partij."),
+      t("Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken."),
       t("Op papier gespeeld? Tik op 📷 Partij van een wedstrijdbriefje: je eigen AI-chat leest de foto, jij controleert de beurten en slaat op.")
     ]],
     ["✍️",t("Opmerkingen (mag, hoeft niet)"),[
@@ -790,6 +792,50 @@ function OpmerkingenBewerken({partij,discipline,onOpslaan,onClose}){
             <button onClick={function(){if(stap.soort==="goed")setStap({i:stap.i,soort:"gemist"});else setStap(null);}} style={knopStijl(false)}>{t("terug")}</button>
           </div>
         </>}
+      </div>
+    </div>
+  );
+}
+
+// Wedstrijden aanvinken (Log en Stats → Je niveau): in één keer aangeven welke opgeslagen partijen wedstrijden waren.
+// Zonder keuze is een partij training (een wedstrijdbriefje: wedstrijd); zie partijSoort() in js/berekeningen.js.
+function WedstrijdenAanvinken({partijen,discipline,onClose}){
+  const wijzig=useContext(PartijWijzigContext);
+  const [keuze,setKeuze]=useState(function(){const m={};partijen.forEach(function(p){m[p.id]=partijSoort(p)==="wedstrijd";});return m;});
+  const aantal=partijen.filter(function(p){return keuze[p.id];}).length;
+  const opslaan=function(){
+    const w={};
+    partijen.forEach(function(p){
+      const nu=keuze[p.id]?"wedstrijd":"training";
+      if(nu!==partijSoort(p))w[p.id]={soort:nu};
+    });
+    if(Object.keys(w).length)wijzig(w);
+    onClose();
+  };
+  return(
+    <div onClick={onClose} style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.75)",zIndex:200,display:"flex",alignItems:"center",justifyContent:"center",padding:16}}>
+      <div data-wedstrijden-aanvinken onClick={function(e){e.stopPropagation();}} style={{background:"linear-gradient(160deg,var(--c-1e3a1e),var(--c-0d1f0d))",border:"2px solid "+GOUD,borderRadius:16,padding:"16px 14px",maxWidth:380,width:"100%",maxHeight:"calc(85vh / var(--zoom,1))",display:"flex",flexDirection:"column"}}>
+        <div style={{fontSize:16,fontWeight:"bold",color:GOUD,textAlign:"center"}}>🏆 {t("Wedstrijden aanvinken")}</div>
+        <div style={{fontSize:13,color:WITD,textAlign:"center",margin:"4px 0 10px",lineHeight:1.4}}>{t("Vink aan welke partijen wedstrijden waren; de rest telt als training.")}</div>
+        <div style={{flex:1,minHeight:0,overflowY:"auto"}}>
+          {[].concat(partijen).reverse().map(function(p,i){
+            const aan=!!keuze[p.id],st=stat(p.beurten,discipline);
+            return(
+              <button key={p.id} data-aanvink-rij onClick={function(){const n=Object.assign({},keuze);n[p.id]=!aan;setKeuze(n);}}
+                style={{width:"100%",display:"flex",alignItems:"center",gap:10,padding:"9px 6px",background:aan?"rgba(201,168,76,0.12)":"none",border:"none",borderBottom:"1px solid "+KBDR,color:WIT,cursor:"pointer",fontFamily:"inherit",textAlign:"left"}}>
+                <span style={{width:22,height:22,flexShrink:0,borderRadius:5,border:"2px solid "+(aan?GOUD:KBDR),background:aan?GOUD:"none",color:G,display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,fontWeight:"bold"}}>{aan?"✓":""}</span>
+                <span style={{flex:1,minWidth:0}}>
+                  <span style={{fontSize:14,color:aan?GOUD:WIT}}>p{partijen.length-i} · {new Date(p.datum).toLocaleDateString(taalLocale(),{weekday:"short",day:"numeric",month:"short",year:"2-digit"})}</span>
+                  <span style={{display:"block",fontSize:12,color:WITD}}>{tafelLabel(p.tafel||"230")}{st?" · "+t("{c} car · {b}b · gem {g}",{c:st.totCar,b:st.aantalBeurten,g:decTekst(st.gemPerBeurt)}):""}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <div style={{display:"flex",gap:8,marginTop:12}}>
+          <button onClick={opslaan} style={{flex:1,padding:12,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:15,cursor:"pointer",fontFamily:"inherit"}}>{t("Opslaan ({n} wedstrijden)",{n:aantal})}</button>
+          <button onClick={onClose} style={{padding:"12px 14px",background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Annuleer")}</button>
+        </div>
       </div>
     </div>
   );

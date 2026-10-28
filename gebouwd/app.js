@@ -1,5 +1,5 @@
 // Gebouwd uit jsx/app.jsx door bouw-jsx.js; niet zelf aanpassen.
-const APP_VERSIE = "2026-10-23.2";
+const APP_VERSIE = "2026-10-28.1";
 function BiljartTracker() {
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("spelen");
@@ -16,6 +16,8 @@ function BiljartTracker() {
   const [doelType, setDoelType] = useState("beurten");
   const [tafelKeuze, setTafel] = useState("210");
   const [confPartij, setConfPartij] = useState(false);
+  const [soort, setSoort] = useState("training");
+  const [tegenVelden, setTegenVelden] = useState({ car: "", doel: "", naam: "" });
   const [seizoenArchiefOpen, setSeizoenArchiefOpen] = useState(false);
   const [onboardingStap, setOnboardingStap] = useState(0);
   const [, setIcloudTik] = useState(0);
@@ -114,6 +116,7 @@ function BiljartTracker() {
   useEffect(function() {
     laadData().then(function(d) {
       setData(d);
+      if (d.laatsteSoort === "wedstrijd") setSoort("wedstrijd");
       const lo = d.lopendePartij;
       if (lo && Array.isArray(lo.beurten) && lo.beurten.length > 0) {
         setLp(lo.beurten);
@@ -121,19 +124,20 @@ function BiljartTracker() {
         if (lo.tafel) setTafel(lo.tafel);
         if (lo.doel) setDoel(lo.doel);
         if (lo.doelType) setDoelType(lo.doelType);
+        if (lo.soort) setSoort(lo.soort);
       }
     });
   }, []);
   useEffect(function() {
     if (!data) return;
-    const lopend = lp.length > 0 ? { beurten: lp, tafel, doel, doelType } : null;
+    const lopend = lp.length > 0 ? Object.assign({ beurten: lp, tafel, doel, doelType }, soort === "wedstrijd" ? { soort } : null) : null;
     if (JSON.stringify(data.lopendePartij || null) === JSON.stringify(lopend)) return;
     const nd = Object.assign({}, data);
     if (lopend) nd.lopendePartij = lopend;
     else delete nd.lopendePartij;
     setData(nd);
     slaOp(nd);
-  }, [data, lp, tafel, doel, doelType]);
+  }, [data, lp, tafel, doel, doelType, soort]);
   const themaDiscipline = kaderKiezerOpen ? "kader" : huidigeDiscplineVoorLading;
   React.useLayoutEffect(function() {
     zetThema(themaDiscipline);
@@ -258,7 +262,10 @@ function BiljartTracker() {
     if (doelGehaald) vier({ tekst: "🎯 " + t("Doel gehaald!"), sub: t("Je vorm is nu {v}", { v: getalTekst(infoNa.effectiefGemiddelde, disc === "driebanden" ? 3 : 2) }) });
     else if (niveauOmhoog) vier({ tekst: "🎉 " + niveauOmhoog.naar.naam + "!", sub: t("Je bent een klasse omhoog") });
     else if (besteOoit) vier({ tekst: "👑 " + t("Beste partij ooit!") });
-    if (opties && opties.lopendeWeg) delete nd.lopendePartij;
+    if (opties && opties.lopendeWeg) {
+      delete nd.lopendePartij;
+      nd.laatsteSoort = partijSoort(p);
+    }
     const beurtRecord = prestatie && prestatie.badges && prestatie.badges.some(function(b) {
       return b.label === "Nieuw record beurt";
     });
@@ -276,8 +283,11 @@ function BiljartTracker() {
       return;
     }
     const st = stat(lp, huidigeDiscipline);
-    const p = Object.assign({ id: data.huidigeId, datum: (/* @__PURE__ */ new Date()).toISOString(), tafel, doel, doelType, discipline: huidigeDiscipline, beurten: lp }, st);
+    const p = Object.assign({ id: data.huidigeId, datum: (/* @__PURE__ */ new Date()).toISOString(), tafel, doel, doelType, discipline: huidigeDiscipline, beurten: lp, soort }, st);
+    const tegen = soort === "wedstrijd" ? tegenVanVelden(tegenVelden, doelType === "caramboles" ? doel : null) : null;
+    if (tegen) p.tegen = tegen;
     bewaarPartij(p, { lopendeWeg: true });
+    setTegenVelden({ car: "", doel: "", naam: "" });
     setLp([]);
     setBeurtNr(1);
     setCar(0);
@@ -331,6 +341,21 @@ function BiljartTracker() {
         const n = beurten[i];
         return n ? Object.assign({}, b, { gemist: n.gemist.slice(), goed: n.goed.slice() }) : b;
       }) });
+    }) });
+    setData(nd);
+    slaOp(nd);
+  }
+  function wijzigPartijen(wijzigingen) {
+    const nd = Object.assign({}, data, { partijen: data.partijen.map(function(p) {
+      const w = wijzigingen[p.id];
+      if (!w) return p;
+      const n = Object.assign({}, p);
+      if (w.soort) n.soort = w.soort;
+      if ("tegen" in w) {
+        if (w.tegen) n.tegen = w.tegen;
+        else delete n.tegen;
+      }
+      return n;
     }) });
     setData(nd);
     slaOp(nd);
@@ -437,7 +462,7 @@ function BiljartTracker() {
     setData(nd);
     slaOp(nd);
   }
-  const spel = { alleP, andersGemist, andersGoed, beurtNr, car, straf, setStraf, doel, doelType, huidigeDiscipline, huidigeRecords, inp, inputRef, lp, niveau, noteer, eenvoudig, progPct, sel, setAndersGemist, setAndersGoed, setBeurtNr, setCar, setConfPartij, setDoel, setDoelType, setFase, setInp, setLp, setNiveauOpen, setSel, setTafel, setUitlegOpen, setBriefjeOpen, stL, weergaveTip, zieWeergaveTip, backupHerinnering, maakBackupNu, backupLater, tafel, tijdsvensterMaanden, toggle, totCarLp };
+  const spel = { alleP, andersGemist, andersGoed, beurtNr, car, straf, setStraf, doel, doelType, huidigeDiscipline, huidigeRecords, inp, inputRef, lp, niveau, noteer, eenvoudig, progPct, sel, setAndersGemist, setAndersGoed, setBeurtNr, setCar, setConfPartij, setDoel, setDoelType, setFase, setInp, setLp, setNiveauOpen, setSel, setTafel, setUitlegOpen, setBriefjeOpen, soort, setSoort, stL, weergaveTip, zieWeergaveTip, backupHerinnering, maakBackupNu, backupLater, tafel, tijdsvensterMaanden, toggle, totCarLp };
   const segmentTekst = function(naam) {
     return /* @__PURE__ */ React.createElement("span", { className: "seg-tekst", "data-tekst": naam }, naam);
   };
@@ -502,7 +527,7 @@ function BiljartTracker() {
       );
     })), o.extra));
   };
-  return /* @__PURE__ */ React.createElement(OpmerkingenContext.Provider, { value: slaOpmerkingenOp }, /* @__PURE__ */ React.createElement(KopContext.Provider, { value: inSpel ? null : kopBlok }, /* @__PURE__ */ React.createElement(SpelContext.Provider, { value: spelAan }, /* @__PURE__ */ React.createElement(EenvoudigContext.Provider, { value: eenvoudig }, /* @__PURE__ */ React.createElement("div", { className: "app", style: tekstZoom(tekstgrootte) !== 1 ? { zoom: tekstZoom(tekstgrootte), "--zoom": tekstZoom(tekstgrootte), height: "calc(100vh / " + tekstZoom(tekstgrootte) + ")" } : null }, inSpel && menuTijdensSpel && kopBlok(), inSpel && fase === "invoer" && /* @__PURE__ */ React.createElement("div", { "data-spelbalk": "", style: { display: "flex", alignItems: "center", gap: 8, padding: "7px 12px", background: "var(--c-152015)", borderBottom: "1px solid " + KBDR, flexShrink: 0 } }, /* @__PURE__ */ React.createElement("div", { style: { flex: 1, minWidth: 0, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, /* @__PURE__ */ React.createElement("span", { style: { color: GOUD, fontWeight: "bold" } }, DISCIPLINES[huidigeDiscipline].naam), /* @__PURE__ */ React.createElement("span", { style: { color: WITD } }, " · ", tafelLabel(tafel))), /* @__PURE__ */ React.createElement(
+  return /* @__PURE__ */ React.createElement(OpmerkingenContext.Provider, { value: slaOpmerkingenOp }, /* @__PURE__ */ React.createElement(PartijWijzigContext.Provider, { value: wijzigPartijen }, /* @__PURE__ */ React.createElement(KopContext.Provider, { value: inSpel ? null : kopBlok }, /* @__PURE__ */ React.createElement(SpelContext.Provider, { value: spelAan }, /* @__PURE__ */ React.createElement(EenvoudigContext.Provider, { value: eenvoudig }, /* @__PURE__ */ React.createElement("div", { className: "app", style: tekstZoom(tekstgrootte) !== 1 ? { zoom: tekstZoom(tekstgrootte), "--zoom": tekstZoom(tekstgrootte), height: "calc(100vh / " + tekstZoom(tekstgrootte) + ")" } : null }, inSpel && menuTijdensSpel && kopBlok(), inSpel && fase === "invoer" && /* @__PURE__ */ React.createElement("div", { "data-spelbalk": "", style: { display: "flex", alignItems: "center", gap: 8, padding: "7px 12px", background: "var(--c-152015)", borderBottom: "1px solid " + KBDR, flexShrink: 0 } }, /* @__PURE__ */ React.createElement("div", { style: { flex: 1, minWidth: 0, fontSize: 14, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, /* @__PURE__ */ React.createElement("span", { style: { color: GOUD, fontWeight: "bold" } }, DISCIPLINES[huidigeDiscipline].naam), /* @__PURE__ */ React.createElement("span", { style: { color: WITD } }, " · ", tafelLabel(tafel))), /* @__PURE__ */ React.createElement(
     "button",
     {
       onClick: function() {
@@ -616,7 +641,12 @@ function BiljartTracker() {
       const kleur = categorieKleur(b.categorie);
       return /* @__PURE__ */ React.createElement("div", { key: i, style: { display: "flex", flexDirection: "column", alignItems: "center", width: 88 } }, /* @__PURE__ */ React.createElement("div", { style: { width: 66, height: 66, borderRadius: "50%", background: "radial-gradient(circle at 35% 30%," + kleur + "dd," + kleur + "44)", border: "3px solid " + kleur, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, boxShadow: "0 0 18px " + kleur + "99", marginBottom: 6 } }, b.emoji), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: WIT, fontWeight: "bold", lineHeight: 1.25 } }, badgeLabel(b.label)), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: kleur, fontWeight: "bold" } }, "+", b.punten));
     })), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: WITD, marginTop: 20, opacity: 0.7 } }, t("Tik om te sluiten")))
-  ), confPartij && /* @__PURE__ */ React.createElement("div", { style: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 } }, /* @__PURE__ */ React.createElement("div", { style: { background: "var(--c-1a2e1a)", border: "2px solid " + GOUD, borderRadius: 14, padding: 24, maxWidth: 320, width: "100%" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, color: WIT, marginBottom: 6, textAlign: "center" } }, t("Partij opslaan?")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: WITD, marginBottom: 18, textAlign: "center" } }, t("{n} beurten - {c} car", { n: lp.length, c: totCarLp }), stL ? " - " + t("gem") + " " + decTekst(stL.gemPerBeurt) : ""), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10 } }, /* @__PURE__ */ React.createElement("button", { style: { flex: 1, padding: 14, background: GRNT, border: "none", borderRadius: 8, color: WIT, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }, onClick: sluit }, t("Opslaan")), /* @__PURE__ */ React.createElement("button", { style: { flex: 1, padding: 14, background: "none", border: "1px solid " + KBDR, borderRadius: 8, color: WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }, onClick: function() {
+  ), confPartij && /* @__PURE__ */ React.createElement("div", { style: { position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 20 } }, /* @__PURE__ */ React.createElement("div", { "data-afsluiten": true, style: { background: "var(--c-1a2e1a)", border: "2px solid " + GOUD, borderRadius: 14, padding: 20, maxWidth: 340, width: "100%", maxHeight: "calc(90vh / var(--zoom,1))", overflowY: "auto" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 15, color: WIT, marginBottom: 6, textAlign: "center" } }, t("Partij opslaan?")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 14, color: WITD, marginBottom: 14, textAlign: "center" } }, t("{n} beurten - {c} car", { n: lp.length, c: totCarLp }), stL ? " - " + t("gem") + " " + decTekst(stL.gemPerBeurt) : ""), /* @__PURE__ */ React.createElement(SoortKeuze, { soort, setSoort, stijl: { marginBottom: 12 } }), soort === "wedstrijd" && (function() {
+    const mijnDoel2 = doelType === "caramboles" ? doel : null;
+    const tg = tegenVanVelden(tegenVelden, mijnDoel2);
+    const u = tg ? partijUitslag({ soort: "wedstrijd", beurten: lp, doel, doelType, tegen: tg }) : null;
+    return /* @__PURE__ */ React.createElement("div", { style: { marginBottom: 14 } }, /* @__PURE__ */ React.createElement(TegenstanderVelden, { velden: tegenVelden, setVelden: setTegenVelden, mijnDoel: mijnDoel2 }), u && /* @__PURE__ */ React.createElement("div", { "data-uitslag-voorbeeld": true, style: { marginTop: 10, textAlign: "center", fontSize: 16, fontWeight: "bold", color: uitslagKleur(u) } }, uitslagNaam(u), " · ", totCarLp, "–", tg.car));
+  })(), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 10 } }, /* @__PURE__ */ React.createElement("button", { style: { flex: 1, padding: 14, background: GRNT, border: "none", borderRadius: 8, color: WIT, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }, onClick: sluit }, t("Opslaan")), /* @__PURE__ */ React.createElement("button", { style: { flex: 1, padding: 14, background: "none", border: "1px solid " + KBDR, borderRadius: 8, color: WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }, onClick: function() {
     setConfPartij(false);
   } }, t("Annuleer"))))), kaderKiezerOpen && /* @__PURE__ */ React.createElement("div", { onClick: function() {
     setKaderKiezerOpen(false);
@@ -675,6 +705,6 @@ function BiljartTracker() {
       vervangData,
       backupGemaakt
     }
-  ), tab === "log" && /* @__PURE__ */ React.createElement(LogTab, { lp, alleP, prestatiesMap, niveau, huidigeDiscipline, verwijderPartij, slaNotitieOp }), tab === "dash" && /* @__PURE__ */ React.createElement(Dashboard, { key: huidigeDiscipline, partijen: alleP, niveau, tijdsvensterMaanden, discipline: huidigeDiscipline })))))));
+  ), tab === "log" && /* @__PURE__ */ React.createElement(LogTab, { lp, alleP, prestatiesMap, niveau, huidigeDiscipline, verwijderPartij, slaNotitieOp }), tab === "dash" && /* @__PURE__ */ React.createElement(Dashboard, { key: huidigeDiscipline, partijen: alleP, niveau, tijdsvensterMaanden, discipline: huidigeDiscipline }))))))));
 }
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(BiljartTracker, null));

@@ -5,7 +5,7 @@
 
 // Spelen, voor de start: tafelmaat, partijdoel en Start partij (je klasse staat rechtsboven in de kop)
 function SetupScherm({spel}){
-  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,tafel,totCarLp,weergaveTip,zieWeergaveTip,backupHerinnering,maakBackupNu,backupLater}=spel;
+  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,soort,setSoort,tafel,totCarLp,weergaveTip,zieWeergaveTip,backupHerinnering,maakBackupNu,backupLater}=spel;
   const kopBlok=useContext(KopContext);
   const [bevestigNieuw,setBevestigNieuw]=useState(false); // Start partij terwijl er nog een partij loopt
   const startNieuw=function(){setBevestigNieuw(false);setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");};
@@ -64,6 +64,8 @@ function SetupScherm({spel}){
           </div>
         </div>
       )}
+      {/* Wedstrijd of training (onthoudt de vorige keuze); bij Afsluiten nog te wijzigen */}
+      {setSoort&&<SoortKeuze soort={soort} setSoort={setSoort}/>}
       <div style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px"}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:WITD,marginBottom:8}}>{t("Tafelmaat")}</div>
         {/* Kadervariant: de tafel ligt vast (vasteTafel), dus geen keuze */}

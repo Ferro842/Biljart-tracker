@@ -4,9 +4,14 @@
 // Log-tab: lopende partij en alle partijen beurt voor beurt
 function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij,slaNotitieOp}){
   const kopBlok=useContext(KopContext);
+  const wijzig=useContext(PartijWijzigContext);
+  const [aanvinkOpen,setAanvinkOpen]=useState(false);
   return(
     <div className="scrollvak" style={{overflowY:"auto",padding:kopBlok?"0 14px 12px":"12px 14px",height:"100%"}}>
       {kopBlok&&kopBlok({rand:14,onder:12})}
+      {aanvinkOpen&&<WedstrijdenAanvinken partijen={alleP} discipline={huidigeDiscipline} onClose={function(){setAanvinkOpen(false);}}/>}
+      {wijzig&&alleP.length>0&&<button data-aanvinken-knop onClick={function(){setAanvinkOpen(true);}}
+        style={{width:"100%",marginBottom:10,padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>🏆 {t("Wedstrijden aanvinken")}</button>}
       {lp.length>0&&(
         <div style={{background:KBG,border:"2px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:10}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Lopende partij")}</div>
@@ -164,6 +169,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
   const kopBlok=useContext(KopContext);
   const spel=useContext(SpelContext);
   const [niveauTafels,setNiveauTafels]=useState([]); // weergave in "Je niveau": aangevinkte tafels; leeg = alle tafels
+  const [niveauSoort,setNiveauSoort]=useState("alle"); // weergave in "Je niveau": alle partijen of alleen wedstrijden
+  const [aanvinkOpen,setAanvinkOpen]=useState(false); // Wedstrijden aanvinken
+  const wijzig=useContext(PartijWijzigContext);
   const [confSeizoenAfsluiten,setConfSeizoenAfsluiten]=useState(false);
   // Begindatum van het nieuwe seizoen bij afsluiten (jjjj-mm-dd, standaard vandaag)
   const vandaagStr=(function(){const d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);})();
@@ -237,9 +245,13 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
         const gespeeld=gespeeldeTafels(alleP);
         const tafel=tafelSelectie(gespeeld,niveauTafels); // "alle" of de gekozen tafels (TafelKeuze in jsx/onderdelen.jsx)
         const labels=tafelLabels(tafel);
-        const opTafel=tafel==="alle"?"":" "+t("op {tafel}",{tafel:labels});
-        // Voor een deel van de tafels: zelfde berekening, alleen met de partijen op die tafels
-        const info=tafel==="alle"?niveau:berekenVorm(alleP.filter(function(p){return tafel.indexOf(p.tafel||"230")!==-1;}),spel&&data.schrappen!==false,vormVenster);
+        const wo=wedstrijdOverzicht(alleP);
+        const alleenW=niveauSoort==="wedstrijd"&&wo.wedstrijden>0;
+        const opTafel=(alleenW?" · "+t("wedstrijden"):"")+(tafel==="alle"?"":" "+t("op {tafel}",{tafel:labels}));
+        // Voor een deel van de tafels en/of alleen wedstrijden: zelfde berekening, alleen met die partijen
+        const deel=tafel!=="alle"||alleenW;
+        const info=!deel?niveau:berekenVorm(alleP.filter(function(p){return(tafel==="alle"||tafel.indexOf(p.tafel||"230")!==-1)&&(!alleenW||partijSoort(p)==="wedstrijd");}),spel&&data.schrappen!==false,vormVenster);
+        const decG=function(x){return x===null?"–":getalTekst(x,dec);};
         const niv=bepaalNiveau(info.effectiefGemiddelde,huidigeDiscipline);
         const chip=function(actief){return{flex:1,padding:"7px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:13};};
         return(
@@ -257,7 +269,14 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
             )}
             {/* Tafels kiezen: met twee tafels één tegelijk, vanaf drie aanvinken; Alle tafels = alles */}
             <TafelKeuze gespeeld={gespeeld} keuze={niveauTafels} setKeuze={setNiveauTafels}/>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:tafel==="alle"?10:6}}>
+            {/* Alle partijen of alleen wedstrijden (pas zichtbaar als er wedstrijden zijn) */}
+            {wo.wedstrijden>0&&(
+              <div data-niveau-soort style={{display:"flex",gap:6,marginBottom:10}}>
+                <button onClick={function(){setNiveauSoort("alle");}} style={chip(!alleenW)}>{t("Alle partijen")}</button>
+                <button onClick={function(){setNiveauSoort("wedstrijd");}} style={chip(alleenW)}>🏆 {t("Alleen wedstrijden")}</button>
+              </div>
+            )}
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:deel?6:10}}>
               <div style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px",textAlign:"center"}}>
                 <div style={{fontSize:22,fontWeight:"bold",color:GOUD}}><Telop waarde={info.effectiefGemiddelde} dec={dec}/></div>
                 <div style={{fontSize:11,color:WITD}}>{t("vorm")} · {info.venster?t("laatste {n}",{n:info.aantalPartijen}):!info.aantalDrops?t("alle partijen = moyenne"):t("alle partijen")}{opTafel}</div>
@@ -274,8 +293,21 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                 <div style={{fontSize:10,color:WITD,opacity:0.7}}>{t("officieel, niets geschrapt")}</div>
               </div>
             </div>
-            {tafel!=="alle"&&(
-              <div style={{fontSize:11,color:GOUDL,marginBottom:10}}>{t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.",{tafel:labels})}</div>
+            {deel&&(
+              <div data-niveau-deel style={{fontSize:11,color:GOUDL,marginBottom:10}}>
+                {alleenW
+                  ?(tafel==="alle"?t("Alleen je wedstrijden. Je niveau bovenin de app gaat over al je partijen."):t("Alleen je wedstrijden op de {tafel}. Je niveau bovenin de app gaat over al je partijen.",{tafel:labels}))
+                  :t("Alleen je partijen op de {tafel}. Je niveau bovenin de app gaat over alle tafels.",{tafel:labels})}
+              </div>
+            )}
+            {/* Wedstrijden tegenover trainingen: uitslagen en gemiddelde */}
+            {wo.wedstrijden>0&&(
+              <div data-wedstrijd-overzicht style={{background:"rgba(0,0,0,0.2)",borderRadius:8,padding:"8px 10px",marginBottom:10,fontSize:13,color:WIT,lineHeight:1.5}}>
+                <div>🏆 {t(wo.wedstrijden===1?"1 wedstrijd":"{n} wedstrijden",{n:wo.wedstrijden})}
+                  {wo.gewonnen+wo.gelijk+wo.verloren>0&&<span> · <span style={{color:GRNT}}>{t("{n} gewonnen",{n:wo.gewonnen})}</span> · <span style={{color:GOUD}}>{t("{n} gelijk",{n:wo.gelijk})}</span> · <span style={{color:ROOD}}>{t("{n} verloren",{n:wo.verloren})}</span></span>}
+                </div>
+                <div style={{fontSize:12,color:WITD}}>{t("Gemiddelde in wedstrijden {w} · in trainingen {tr}",{w:decG(wo.gemWedstrijd),tr:decG(wo.gemTraining)})}</div>
+              </div>
             )}
             <div style={{fontSize:11,color:WITD,opacity:0.8,lineHeight:1.45}}>
               {!niveau.venster&&!niveau.aantalDrops
@@ -285,6 +317,9 @@ function StatsTab({data,alleP,huidigeDiscipline,niveau,prestatiesMap,seizoenAfsl
                   +t("; je moyenne gaat altijd over al je partijen.")}
               {" "}{t("Op hoeveel partijen je vorm gebaseerd is (10, 20, 30 of alle) en je doel stel je in bij")} <b style={{color:GOUD}}>{t("je klasse rechtsboven")}</b>.
             </div>
+            {wijzig&&alleP.length>0&&<button data-aanvinken-knop onClick={function(){setAanvinkOpen(true);}}
+              style={{marginTop:10,width:"100%",padding:8,background:"none",border:"1px solid "+KBDR,borderRadius:6,color:WIT,cursor:"pointer",fontSize:13,fontFamily:"inherit"}}>🏆 {t("Wedstrijden aanvinken")}</button>}
+            {aanvinkOpen&&<WedstrijdenAanvinken partijen={alleP} discipline={huidigeDiscipline} onClose={function(){setAanvinkOpen(false);}}/>}
           </div>
         );
       })()}

@@ -1,10 +1,33 @@
 // Gebouwd uit jsx/partijrij.jsx door bouw-jsx.js; niet zelf aanpassen.
 function PartijLabels({ p, punten, gedropt }) {
   const spel = useContext(SpelContext);
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, p.tafel && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: WITD, marginLeft: 6, border: "1px solid " + KBDR, borderRadius: 4, padding: "1px 5px" } }, tafelLabel(p.tafel)), spel && punten > 0 && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: GOUD, marginLeft: 6, border: "1px solid " + GOUD, borderRadius: 4, padding: "1px 5px" } }, punten, "pt"), gedropt && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "#e8c96a", marginLeft: 6 } }, "🏅 ", t("geschrapt uit je vorm")), p.notitie && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, marginLeft: 6 } }, "📝"));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, p.tafel && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: WITD, marginLeft: 6, border: "1px solid " + KBDR, borderRadius: 4, padding: "1px 5px" } }, tafelLabel(p.tafel)), /* @__PURE__ */ React.createElement(UitslagLabel, { p }), spel && punten > 0 && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: GOUD, marginLeft: 6, border: "1px solid " + GOUD, borderRadius: 4, padding: "1px 5px" } }, punten, "pt"), gedropt && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, color: "#e8c96a", marginLeft: 6 } }, "🏅 ", t("geschrapt uit je vorm")), p.notitie && /* @__PURE__ */ React.createElement("span", { style: { fontSize: 13, marginLeft: 6 } }, "📝"));
+}
+function WedstrijdBewerken({ p, onKlaar }) {
+  const wijzig = useContext(PartijWijzigContext);
+  const [soort, setSoort] = useState(partijSoort(p));
+  const [velden, setVelden] = useState(veldenVanTegen(p.tegen));
+  const mijnDoel = p.doelType === "caramboles" ? p.doel : null;
+  const tg = soort === "wedstrijd" ? tegenVanVelden(velden, mijnDoel) : null;
+  const u = tg ? partijUitslag(Object.assign({}, p, { soort: "wedstrijd", tegen: tg })) : null;
+  return /* @__PURE__ */ React.createElement("div", { "data-wedstrijd-bewerken": true, style: { marginTop: 8, background: "rgba(0,0,0,0.2)", border: "1px solid " + KBDR, borderRadius: 8, padding: "10px 12px" } }, /* @__PURE__ */ React.createElement(SoortKeuze, { soort, setSoort, stijl: { marginBottom: 10 } }), soort === "wedstrijd" && /* @__PURE__ */ React.createElement(TegenstanderVelden, { velden, setVelden, mijnDoel }), u && /* @__PURE__ */ React.createElement("div", { style: { marginTop: 8, textAlign: "center", fontSize: 15, fontWeight: "bold", color: uitslagKleur(u) } }, uitslagNaam(u), " · ", partijScore(p), "–", tg.car), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 6, marginTop: 10 } }, /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      onClick: function() {
+        const w = {};
+        w[p.id] = { soort, tegen: tg };
+        wijzig(w);
+        onKlaar();
+      },
+      style: { flex: 1, padding: 8, background: "var(--c-2d4a1e)", border: "1px solid " + GOUD, borderRadius: 6, color: GOUD, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }
+    },
+    t("Opslaan")
+  ), /* @__PURE__ */ React.createElement("button", { onClick: onKlaar, style: { flex: 1, padding: 8, background: "none", border: "1px solid " + KBDR, borderRadius: 6, color: WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 14 } }, t("Annuleer"))));
 }
 function PartijBeheer({ p, onNotitie, onVerwijder }) {
   const [confVerwijder, setConfVerwijder] = useState(false);
+  const wijzig = useContext(PartijWijzigContext);
+  const [wedstrijdOpen, setWedstrijdOpen] = useState(false);
   const slaOpmerkingenOp = useContext(OpmerkingenContext);
   const [opmOpen, setOpmOpen] = useState(false);
   const [notitieTekst, setNotitieTekst] = useState(p.notitie || "");
@@ -37,7 +60,20 @@ function PartijBeheer({ p, onNotitie, onVerwijder }) {
     },
     "✎ ",
     t("Opmerkingen aanvullen")
-  ), /* @__PURE__ */ React.createElement(DeelKaartKnop, { partij: p, discipline: p.discipline || "libre", stijl: { fontSize: 13, padding: "6px 10px" } })), opmOpen && /* @__PURE__ */ React.createElement(OpmerkingenBewerken, { partij: p, discipline: p.discipline || "libre", onOpslaan: slaOpmerkingenOp, onClose: function() {
+  ), wijzig && !wedstrijdOpen && /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      "data-wedstrijd-knop": true,
+      onClick: function() {
+        setWedstrijdOpen(true);
+      },
+      style: { padding: "6px 10px", background: "none", border: "1px solid " + GOUD, borderRadius: 6, color: GOUD, cursor: "pointer", fontSize: 13, fontFamily: "inherit" }
+    },
+    "🏆 ",
+    t("Wedstrijd of training")
+  ), /* @__PURE__ */ React.createElement(DeelKaartKnop, { partij: p, discipline: p.discipline || "libre", stijl: { fontSize: 13, padding: "6px 10px" } })), wedstrijdOpen && /* @__PURE__ */ React.createElement(WedstrijdBewerken, { p, onKlaar: function() {
+    setWedstrijdOpen(false);
+  } }), opmOpen && /* @__PURE__ */ React.createElement(OpmerkingenBewerken, { partij: p, discipline: p.discipline || "libre", onOpslaan: slaOpmerkingenOp, onClose: function() {
     setOpmOpen(false);
   } }), onVerwijder && (!confVerwijder ? /* @__PURE__ */ React.createElement(
     "button",

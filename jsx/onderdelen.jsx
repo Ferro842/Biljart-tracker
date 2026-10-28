@@ -13,6 +13,63 @@ const KopContext=React.createContext(null);
 // Opmerkingen van een opgeslagen partij achteraf aanvullen/wijzigen: slaOpmerkingenOp(partijId,beurten) uit index.html.
 // null (bijv. een oude index.html met nieuwe jsx) = knop niet tonen.
 const OpmerkingenContext=React.createContext(null);
+// Velden van een opgeslagen partij wijzigen (soort, tegenstander): wijzigPartijen({id:{soort,tegen}}) uit jsx/app.jsx.
+// null = knoppen niet tonen.
+const PartijWijzigContext=React.createContext(null);
+
+// Wedstrijd of training (Spelen, Afsluiten, partij in Log/Stats)
+function SoortKeuze({soort,setSoort,stijl}){
+  const chip=function(actief){return{flex:1,padding:"8px 0",background:actief?"var(--c-2d4a1e)":"none",border:"1px solid "+(actief?GOUD:KBDR),borderRadius:8,color:actief?GOUD:WITD,cursor:"pointer",fontFamily:"inherit",fontSize:14,fontWeight:actief?"bold":"normal"};};
+  return(
+    <div data-soort-keuze style={Object.assign({display:"flex",gap:6},stijl)}>
+      <button onClick={function(){setSoort("training");}} style={chip(soort!=="wedstrijd")}>{t("Training")}</button>
+      <button onClick={function(){setSoort("wedstrijd");}} style={chip(soort==="wedstrijd")}>🏆 {t("Wedstrijd")}</button>
+    </div>
+  );
+}
+function uitslagNaam(u){return u==="gewonnen"?t("Gewonnen"):u==="verloren"?t("Verloren"):u==="gelijk"?t("Gelijk"):"";}
+function uitslagKleur(u){return u==="gewonnen"?GRNT:u==="verloren"?ROOD:GOUD;}
+// Tegenstander bij een wedstrijd (allemaal optioneel): caramboles, te maken en naam. Waarden als tekst, zodat een
+// leeg veld leeg mag blijven; omzetten met tegenVanVelden().
+function TegenstanderVelden({velden,setVelden,mijnDoel}){
+  const zet=function(k,v){const n=Object.assign({},velden);n[k]=v;setVelden(n);};
+  const veld={width:"100%",boxSizing:"border-box",padding:"9px 10px",borderRadius:6,border:"1px solid "+KBDR,background:"rgba(0,0,0,0.3)",color:WIT,fontSize:16,fontFamily:"inherit"};
+  const getal=function(v){return v.replace(/[^0-9]/g,"").slice(0,4);};
+  return(
+    <div data-tegenstander>
+      <div style={{fontSize:12,color:WITD,textTransform:"uppercase",letterSpacing:1,marginBottom:6}}>{t("Tegenstander (mag leeg blijven)")}</div>
+      <div style={{display:"flex",gap:8,marginBottom:8}}>
+        <label style={{flex:1,minWidth:0,fontSize:12,color:WITD}}>{t("Caramboles")}
+          <input data-tegen-car inputMode="numeric" value={velden.car} onChange={function(e){zet("car",getal(e.target.value));}} style={Object.assign({marginTop:3},veld)}/>
+        </label>
+        <label style={{flex:1,minWidth:0,fontSize:12,color:WITD}}>{t("Te maken")}
+          <input data-tegen-doel inputMode="numeric" value={velden.doel} placeholder={mijnDoel?String(mijnDoel):""} onChange={function(e){zet("doel",getal(e.target.value));}} style={Object.assign({marginTop:3},veld)}/>
+        </label>
+      </div>
+      <label style={{display:"block",fontSize:12,color:WITD}}>{t("Naam")}
+        <input data-tegen-naam value={velden.naam} maxLength={40} onChange={function(e){zet("naam",e.target.value);}} style={Object.assign({marginTop:3},veld)}/>
+      </label>
+    </div>
+  );
+}
+function veldenVanTegen(tg){return{car:tg&&typeof tg.car==="number"?String(tg.car):"",doel:tg&&tg.doel?String(tg.doel):"",naam:(tg&&tg.naam)||""};}
+// Velden → p.tegen; zonder caramboles geen uitslag, maar een naam alleen mag ook. Leeg te maken = gelijk aan jouw te maken.
+function tegenVanVelden(v,mijnDoel){
+  const o={};
+  if(v.car!=="")o.car=parseInt(v.car,10);
+  if(v.doel!=="")o.doel=parseInt(v.doel,10);else if(mijnDoel&&v.car!=="")o.doel=mijnDoel;
+  if(v.naam.trim())o.naam=v.naam.trim();
+  return Object.keys(o).length?o:null;
+}
+// Kort label met de uitslag (Log, Stats, samenvatting): "Gewonnen 100–85" of alleen "Wedstrijd"
+function UitslagLabel({p,stijl}){
+  if(partijSoort(p)!=="wedstrijd")return null;
+  const u=partijUitslag(p);
+  const kleur=u?uitslagKleur(u):WITD;
+  return <span data-uitslag style={Object.assign({fontSize:13,color:kleur,marginLeft:6,border:"1px solid "+kleur,borderRadius:4,padding:"1px 5px"},stijl)}>
+    🏆 {u?uitslagNaam(u)+" "+partijScore(p)+"–"+p.tegen.car:t("Wedstrijd")}{p.tegen&&p.tegen.naam?" · "+p.tegen.naam:""}
+  </span>;
+}
 
 // Logo in de kop: laken (kleur van de discipline via --c-3f8a3a/--c-1d4a1d), twee gekruiste keus en drie
 // ballen met glimlicht en schaduw. SVG met kleuren via style (var() werkt niet in SVG-attributen).

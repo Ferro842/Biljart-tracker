@@ -1,5 +1,5 @@
 // Gebouwd uit jsx/app.jsx door bouw-jsx.js; niet zelf aanpassen.
-const APP_VERSIE = "2026-10-28.1";
+const APP_VERSIE = "2026-11-16.1";
 function BiljartTracker() {
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("spelen");
@@ -124,7 +124,7 @@ function BiljartTracker() {
         if (lo.tafel) setTafel(lo.tafel);
         if (lo.doel) setDoel(lo.doel);
         if (lo.doelType) setDoelType(lo.doelType);
-        if (lo.soort) setSoort(lo.soort);
+        setSoort(lo.soort === "wedstrijd" ? "wedstrijd" : "training");
       }
     });
   }, []);
@@ -138,6 +138,9 @@ function BiljartTracker() {
     setData(nd);
     slaOp(nd);
   }, [data, lp, tafel, doel, doelType, soort]);
+  useEffect(function() {
+    if (!lp.length) setTegenVelden({ car: "", doel: "", naam: "" });
+  }, [lp.length]);
   const themaDiscipline = kaderKiezerOpen ? "kader" : huidigeDiscplineVoorLading;
   React.useLayoutEffect(function() {
     zetThema(themaDiscipline);

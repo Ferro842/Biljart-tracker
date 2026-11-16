@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-10-28.1";
+const APP_VERSIE="2026-11-16.1";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -127,7 +127,8 @@ function BiljartTracker(){
       if(lo.tafel)setTafel(lo.tafel);
       if(lo.doel)setDoel(lo.doel);
       if(lo.doelType)setDoelType(lo.doelType);
-      if(lo.soort)setSoort(lo.soort);
+      // De lopende partij bepaalt de soort (training staat er niet bij): anders zou laatsteSoort er een wedstrijd van maken
+      setSoort(lo.soort==="wedstrijd"?"wedstrijd":"training");
     }
   });},[]);
   // De lopende partij staat in het optionele veld data.lopendePartij, zodat die een herstart overleeft.
@@ -140,6 +141,8 @@ function BiljartTracker(){
     if(lopend)nd.lopendePartij=lopend;else delete nd.lopendePartij;
     setData(nd);slaOp(nd);
   },[data,lp,tafel,doel,doelType,soort]);
+  // Geen lopende partij meer (afgesloten of opnieuw begonnen): de ingevulde tegenstander hoort daar niet meer bij
+  useEffect(function(){if(!lp.length)setTegenVelden({car:"",doel:"",naam:""});},[lp.length]);
   // Laken-kleur van de gekozen discipline (vóór het tekenen, dus zonder groene flits); met het kader-keuzemenu
   // open al rood, bij annuleren weer terug
   const themaDiscipline=kaderKiezerOpen?"kader":huidigeDiscplineVoorLading;

@@ -1,4 +1,4 @@
-// Test van vierbal: standaard verborgen (Nederlands), aanzetten in Info → Weergave, kiezen in de balk (paars laken),
+// Test van vierbal: standaard zichtbaar (elke taal), verbergen en weer tonen in Info, kiezen in de balk (paars laken),
 // een beurt met strafpunt noteren (partijscore = caramboles − straf, gemiddelde over de caramboles), afsluiten en
 // opslaan, en weer verbergen. Overschrijft de opslag; alles.js zet testdata terug.
 // Draaien: await eval(await fetch("/test/vierbal.js").then(r=>r.text()))
@@ -11,9 +11,11 @@
   const sluit=function(){const o=Array.from(document.querySelectorAll("div")).find(function(d){return d.style.position==="fixed";});if(o)o.click();};
   const uit={};
   kb("Libre").click();await w(150);
-  uit.verborgen=seg().indexOf("Vierbal")===-1;
-  // Aanzetten in Info
+  // Standaard zichtbaar in elke taal; eerst verbergen in Info, dan weer tonen
+  const standaardZichtbaar=data().vierbal===undefined&&seg().indexOf("Vierbal")!==-1;
   k("Info").click();await w(250);
+  Array.from(document.querySelectorAll("[data-vierbal-keuze] button")).find(function(b){return b.textContent.trim()==="Verbergen";}).click();await w(250);
+  uit.verborgen=standaardZichtbaar&&data().vierbal===false&&seg().indexOf("Vierbal")===-1;
   Array.from(document.querySelectorAll("[data-vierbal-keuze] button")).find(function(b){return b.textContent.trim()==="Tonen";}).click();await w(250);
   uit.aangezet=data().vierbal===true&&seg().indexOf("Vierbal")!==-1;
   // Kiezen: paars laken, handicapklassen

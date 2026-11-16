@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-11-16.1";
+const APP_VERSIE="2026-11-16.3";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);

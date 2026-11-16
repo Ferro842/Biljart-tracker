@@ -107,8 +107,9 @@ Top-level `const`/`let` moeten over alle bestanden uniek zijn (anders een fout b
 
 - Vierbal (`vierbal`, 18 okt 2026; Korea "sagu"/4구, Japan): paars laken, klassen = Koreaanse handicap 30–1000
   (`NIVEAUS_VIERBAL`, grens = handicap ÷ 200 als gemiddelde: een schatting), drempels zoals Bandstoten. In de balk via
-  `hoofdDisciplines(data,discipline)`/`vierbalZichtbaar()`: standaard alleen in het Koreaans (en Japans), anders Info →
-  Weergave → Vierbal (`data.vierbal`). Met vijf knoppen is de balk smaller (`vijfKnoppen`; gemeten op 375 breed in alle
+  `hoofdDisciplines(data,discipline)`/`vierbalZichtbaar()`: in elke taal standaard zichtbaar (sinds 16 nov 2026; daarvoor
+  alleen in het Koreaans en Japans, wat bij Apple op een verborgen functie leek), te verbergen in Info → Vierbal
+  (`data.vierbal===false`). Met vijf knoppen is de balk smaller (`vijfKnoppen`; gemeten op 375 breed in alle
   talen, ook met "Kader 47/1"). Strafpunt (speelbal raakt die van de tegenstander): knop alleen bij vierbal, optioneel veld
   `straf` op de beurt; gaat van de partijscore af (`totCarLp`, doel), niet van gemiddelde/niveau (`strafTotaal(p)`).
 - Disciplines: libre, driebanden, bandstoten, kader35/38/471/47/52/57/71 (`KADER_VARIANTEN`, op volgorde van de getallen);
@@ -334,6 +335,11 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    versionCode 3) op 24 okt ingediend bij Apple (wacht op beoordeling): vaste tafel per kadervariant, tafel- en vormkeuze in Je niveau en het klasse-overzicht,
    doelring, caramboles in Inzicht. What's New 1.2 per taal in `store/app-store.md` en `store/talen.md`; de rest van de
    winkelteksten en schermafbeeldingen blijft gelijk aan 1.1.
+5b. **Versie 1.2 afgewezen** (9 nov 2026, guideline 5.6: "functies die verborgen lijken"). Op 10 nov geantwoord in
+   App Store Connect en de notities voor de beoordelaar herschreven; opnieuw indienen kon niet (knop grijs), wachten op
+   Apple, anders beroep bij de App Review Board. Voor 1.3 daarom: vierbal in elke taal zichtbaar, tekst in een leeg Log
+   (`data-log-leeg`), geen functies die van taal of regio afhangen. Notities voor de beoordelaar bij elke versie
+   bijwerken (waar staat wat, wat verschijnt pas met partijen). Wedstrijd of training zit nog in geen winkelversie.
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
    Carom Tracker.

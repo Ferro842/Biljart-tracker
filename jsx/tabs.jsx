@@ -12,6 +12,8 @@ function LogTab({lp,alleP,prestatiesMap,niveau,huidigeDiscipline,verwijderPartij
       {aanvinkOpen&&<WedstrijdenAanvinken partijen={alleP} discipline={huidigeDiscipline} onClose={function(){setAanvinkOpen(false);}}/>}
       {wijzig&&alleP.length>0&&<button data-aanvinken-knop onClick={function(){setAanvinkOpen(true);}}
         style={{width:"100%",marginBottom:10,padding:9,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WIT,cursor:"pointer",fontSize:14,fontFamily:"inherit"}}>🏆 {t("Wedstrijden aanvinken")}</button>}
+      {/* Nog niets gespeeld: zeg dat erbij, anders is dit tabblad een leeg scherm */}
+      {!alleP.length&&!lp.length&&<div data-log-leeg style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"16px 14px",fontSize:14,color:WITD,textAlign:"center",lineHeight:1.5}}>{t("Nog geen partijen. Start je eerste partij op Spelen.")}</div>}
       {lp.length>0&&(
         <div style={{background:KBG,border:"2px solid "+GOUD,borderRadius:10,padding:"12px 14px",marginBottom:10}}>
           <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:8}}>{t("Lopende partij")}</div>
@@ -444,10 +446,10 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
         </div>
       </div>
 
-      {/* Vierbal in de disciplinebalk (standaard alleen in het Koreaans en Japans; zie vierbalZichtbaar) */}
+      {/* Vierbal in de disciplinebalk (standaard zichtbaar, hier te verbergen; zie vierbalZichtbaar) */}
       <div data-vierbal-keuze="" style={{background:KBG,border:"1px solid "+KBDR,borderRadius:10,padding:"12px 14px",marginBottom:12}}>
         <div style={{fontSize:13,textTransform:"uppercase",letterSpacing:2,color:GOUD,marginBottom:6}}>{t("Vierbal")}</div>
-        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>{t("Vierbal (twee rode ballen) wordt vooral in Korea en Japan gespeeld. Zet het aan om het als extra discipline bovenin te tonen.")}</div>
+        <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>{t("Vierbal (twee rode ballen) wordt vooral in Korea en Japan gespeeld. Speel je het niet? Dan kun je het hier verbergen.")}</div>
         <div style={{display:"flex",gap:6}}>
           {[[true,t("Tonen")],[false,t("Verbergen")]].map(function(x){
             const actief=vierbalZichtbaar(data,null)===x[0];

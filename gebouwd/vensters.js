@@ -93,7 +93,7 @@ function WelkomstFlow({ stap, setStap, discipline, wisselDiscipline, onKlaar, te
           return !v;
         });
       },
-      style: { padding: "9px 4px", background: kaderActief ? "var(--c-2d4a1e)" : "none", border: "1px solid " + (kaderActief || kaderOpen ? GOUD : KBDR), borderRadius: 8, color: kaderActief ? GOUD : WITD, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }
+      style: { gridColumn: hoofdDisciplines(null, discipline).length % 2 === 0 ? "1 / -1" : "auto", padding: "9px 4px", background: kaderActief ? "var(--c-2d4a1e)" : "none", border: "1px solid " + (kaderActief || kaderOpen ? GOUD : KBDR), borderRadius: 8, color: kaderActief ? GOUD : WITD, fontSize: 13, cursor: "pointer", fontFamily: "inherit" }
     },
     kaderActief ? DISCIPLINES[discipline].naam : t("Kader"),
     " ",
@@ -201,7 +201,7 @@ function UitlegVenster({ eenvoudig, onClose }) {
       t("📅 Kalender: Dash → Kalender laat per dag zien wanneer je speelde, gekleurd naar je gemiddelde."),
       t("🎯 Doel: tik op je klasse rechtsboven → Stel een doel. Daar laat een ring zien hoe ver je bent, en kies je ook op hoeveel partijen je vorm gebaseerd is."),
       t("🎉 Bij een topserie, record, hogere klasse of gehaald doel volgt een korte viering. Uitzetten kan bij Info → Weergave."),
-      t("🔴 Vierbal (Korea, Japan): aanzetten bij Info → Weergave. Met −1 strafpunt noteer je dat je speelbal die van je tegenstander raakte; dat gaat van je partijscore af, niet van je gemiddelde.")
+      t("🔴 Vierbal (Korea, Japan): met −1 strafpunt noteer je dat je speelbal die van je tegenstander raakte; dat gaat van je partijscore af, niet van je gemiddelde. Speel je geen vierbal, dan verberg je het bij Info.")
     ]],
     ["🔎", t("Weergave"), [
       t("Info → Weergave: kies Normaal, Groot of Extra groot voor grotere letters en knoppen."),

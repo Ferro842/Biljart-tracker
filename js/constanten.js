@@ -164,12 +164,12 @@ const DISCIPLINES={
 // De hoofdknoppen bovenin de app: Libre/Driebanden/Bandstoten zijn losse disciplines, Kader is één
 // knop die daarna een sub-keuze toont tussen de vier varianten.
 const HOOFDDISCIPLINES=["libre","driebanden","bandstoten"];
-// Vierbal staat als extra knop in de balk: standaard in het Koreaans en Japans (daar wordt het veel gespeeld), voor
-// de rest aan te zetten in Info → Weergave (data.vierbal). Wie al op vierbal staat, ziet de knop altijd.
+// Vierbal staat als extra knop in de balk, in elke taal (sinds 16 nov 2026; daarvoor standaard alleen in het Koreaans
+// en Japans, wat voor Apple op een verborgen functie leek). Te verbergen in Info (data.vierbal===false). Wie al op
+// vierbal staat, ziet de knop altijd.
 function vierbalZichtbaar(data,discipline){
   if(discipline==="vierbal")return true;
-  if(data&&data.vierbal!==undefined)return !!data.vierbal;
-  return typeof TAAL!=="undefined"&&(TAAL==="ko"||TAAL==="ja");
+  return !(data&&data.vierbal===false);
 }
 function hoofdDisciplines(data,discipline){
   return vierbalZichtbaar(data,discipline)?HOOFDDISCIPLINES.concat(["vierbal"]):HOOFDDISCIPLINES;

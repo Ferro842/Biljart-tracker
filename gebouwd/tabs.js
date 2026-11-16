@@ -16,7 +16,7 @@ function LogTab({ lp, alleP, prestatiesMap, niveau, huidigeDiscipline, verwijder
     },
     "🏆 ",
     t("Wedstrijden aanvinken")
-  ), lp.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "2px solid " + GOUD, borderRadius: 10, padding: "12px 14px", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 8 } }, t("Lopende partij")), [].concat(lp).reverse().map(function(b, i) {
+  ), !alleP.length && !lp.length && /* @__PURE__ */ React.createElement("div", { "data-log-leeg": true, style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "16px 14px", fontSize: 14, color: WITD, textAlign: "center", lineHeight: 1.5 } }, t("Nog geen partijen. Start je eerste partij op Spelen.")), lp.length > 0 && /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "2px solid " + GOUD, borderRadius: 10, padding: "12px 14px", marginBottom: 10 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 8 } }, t("Lopende partij")), [].concat(lp).reverse().map(function(b, i) {
     return /* @__PURE__ */ React.createElement(LogRij, { key: b.id, b, nr: lp.length - i, discipline: huidigeDiscipline });
   })), [].concat(alleP).reverse().map(function(p, pi) {
     return /* @__PURE__ */ React.createElement(LogPartijRij, { key: p.id, p, nr: alleP.length - pi, prestatie: prestatiesMap[p.id], gedropt: niveau.gedropteIds && niveau.gedropteIds.has(p.id), discipline: huidigeDiscipline, onVerwijder: verwijderPartij, onNotitie: slaNotitieOp });
@@ -423,7 +423,7 @@ function InfoTab({ data, alleP, huidigeDiscipline, niveau, resetAlles, setSpelel
       },
       x[1]
     );
-  }))), /* @__PURE__ */ React.createElement("div", { "data-vierbal-keuze": "", style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 6 } }, t("Vierbal")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: WITD, marginBottom: 10, lineHeight: 1.5 } }, t("Vierbal (twee rode ballen) wordt vooral in Korea en Japan gespeeld. Zet het aan om het als extra discipline bovenin te tonen.")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 6 } }, [[true, t("Tonen")], [false, t("Verbergen")]].map(function(x) {
+  }))), /* @__PURE__ */ React.createElement("div", { "data-vierbal-keuze": "", style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 6 } }, t("Vierbal")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: WITD, marginBottom: 10, lineHeight: 1.5 } }, t("Vierbal (twee rode ballen) wordt vooral in Korea en Japan gespeeld. Speel je het niet? Dan kun je het hier verbergen.")), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: 6 } }, [[true, t("Tonen")], [false, t("Verbergen")]].map(function(x) {
     const actief = vierbalZichtbaar(data, null) === x[0];
     return /* @__PURE__ */ React.createElement(
       "button",

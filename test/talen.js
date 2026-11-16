@@ -41,12 +41,13 @@
   uit.japans=segJa.indexOf("四つ球")!==-1&&getalTekst(2.5,2)==="2.50"&&decTekst("0.64")==="0.64"&&tekst().indexOf("表示")!==-1;
   kb("Tiếng Việt").click();await w(300);
   uit.vietnamees=!!k("3 băng")&&tekst().indexOf("Hiển thị")!==-1&&getalTekst(2.5,2)==="2,50"&&decTekst("0.64")==="0,64"&&decTekst("44%")==="44%"&&getalTekst("—",2)==="—"&&segJa.length>0&&
-    Array.from(document.querySelectorAll("#root button.seg-knop")).every(function(b){return b.textContent.trim()!=="4 bi";});
+    Array.from(document.querySelectorAll("#root button.seg-knop")).some(function(b){return b.textContent.trim()==="4 bi";});
   kb("Português").click();await w(300);
   uit.portugees=!!k("3 tabelas")&&tekst().indexOf("Exibição")!==-1&&t("Gemist door")==="Errou por";
   kb("Nederlands").click();await w(300);
   uit.turks=uit.turks&&procentTekst(0.43)==="43%";
-  uit.koreaans=uit.koreaans&&Array.from(document.querySelectorAll("#root button.seg-knop")).every(function(b){return b.textContent.trim()!=="Vierbal";});
+  // Vierbal staat in elke taal in de balk (sinds 16 nov 2026), dus ook weer in het Nederlands
+  uit.koreaans=uit.koreaans&&Array.from(document.querySelectorAll("#root button.seg-knop")).some(function(b){return b.textContent.trim()==="Vierbal";});
   uit.terug=data().taal==="nl"&&tekst().indexOf("Weergave")!==-1;
   k("Spelen").click();await w(200);
   uit.goed=uit.keuze&&uit.engelsBewaard&&uit.engels&&uit.labelNederlands&&uit.frans&&uit.duits&&uit.spaans&&uit.turks&&uit.koreaans&&uit.japans&&uit.vietnamees&&uit.portugees&&uit.terug;

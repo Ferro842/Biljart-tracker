@@ -71,6 +71,8 @@ controleert ze.
 > • Your goal: the ring shows which form setting reaches it
 > • Each balkline variant now has its own fixed table
 > • Insight: points and innings when you tap a game
+> • Match or practice: mark each game, add your opponent and the result, and view your level for matches only
+> • Four-ball is now shown in every language (you can hide it under Info)
 > • Small improvements
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -140,6 +142,8 @@ carom,billiards,straight rail,three-cushion,balkline,average,run,score,cue,innin
 > • Ton objectif : l'anneau montre avec quel réglage de forme tu l'atteins
 > • Chaque variante de cadre a désormais son billard fixe
 > • Analyse : points et reprises en touchant une partie
+> • Match ou entraînement : indique-le pour chaque partie, avec l'adversaire et le résultat, et consulte ton niveau sur tes matchs uniquement
+> • Quatre billes est maintenant affiché dans toutes les langues (à masquer dans Info)
 > • Petites améliorations
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -209,6 +213,8 @@ carambole,billard,libre,trois bandes,une bande,cadre,moyenne,série,reprise,scor
 > • Dein Ziel: der Ring zeigt, mit welcher Form-Einstellung du es erreichst
 > • Jede Cadre-Variante hat jetzt ihren festen Tisch
 > • Einblick: Punkte und Aufnahmen beim Antippen einer Partie
+> • Wettkampf oder Training: lege es für jede Partie fest, mit Gegner und Ergebnis, und sieh dein Niveau nur über deine Wettkämpfe
+> • Vierball wird jetzt in jeder Sprache angezeigt (unter Info auszublenden)
 > • Kleine Verbesserungen
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -278,6 +284,8 @@ Karambol,Billard,Dreiband,Freie Partie,Einband,Cadre,Durchschnitt,Serie,Aufnahme
 > • Tu objetivo: el anillo muestra con qué ajuste de forma lo alcanzas
 > • Cada variante de cuadro tiene ahora su mesa fija
 > • Análisis: carambolas y entradas al tocar una partida
+> • Competición o entrenamiento: indícalo en cada partida, con rival y resultado, y consulta tu nivel solo con tus competiciones
+> • Cuatro bolas se muestra ahora en todos los idiomas (se puede ocultar en Info)
 > • Pequeñas mejoras
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -347,6 +355,8 @@ carambola,billar,tres bandas,libre,cuadro,una banda,promedio,serie,entrada,parti
 > • Hedefin: halka, hangi form ayarıyla hedefe ulaştığını gösterir
 > • Her Kadr türünün artık kendi sabit masası var
 > • Analiz: bir maça dokununca sayı ve istaka sayısı
+> • Maç mı antrenman mı: her maç için belirt, rakibi ve sonucu ekle, seviyeni yalnızca maçlar üzerinden gör
+> • Dört top artık her dilde görünür (Bilgi bölümünden gizlenebilir)
 > • Küçük iyileştirmeler
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -418,6 +428,8 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > • 내 목표: 링이 어떤 폼 설정으로 목표에 도달하는지 보여줍니다
 > • 보크라인 종목마다 고정 테이블
 > • 분석: 경기를 탭하면 득점과 이닝 표시
+> • 시합 또는 연습: 경기마다 표시하고 상대와 결과를 기록하며, 시합만으로 내 등급을 확인
+> • 4구가 이제 모든 언어에서 표시됩니다 (정보에서 숨길 수 있음)
 > • 작은 개선
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -488,6 +500,8 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > • 目標：どのフォーム設定で目標に届くかをリングで表示
 > • ボークラインの種目ごとに台を固定
 > • 分析：試合をタップすると得点とイニング数を表示
+> • 試合か練習か：試合ごとに設定し、対戦相手と結果を記録。試合だけのレベルも確認できます
+> • 四つ球がすべての言語で表示されるようになりました（情報で非表示にできます）
 > • 細かな改善
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -556,6 +570,8 @@ karambol,bilardo,üç bant,serbest,kadr,tek bant,ortalama,seri,istaka,maç,istek
 > • Mục tiêu: vòng tròn cho biết cài đặt phong độ nào đạt mục tiêu
 > • Mỗi biến thể Balkline có bàn cố định riêng
 > • Nhận định: điểm và số lượt khi chạm vào một trận
+> • Thi đấu hay luyện tập: đánh dấu từng trận, thêm đối thủ và kết quả, xem cấp độ chỉ theo các trận thi đấu
+> • 4 bi nay hiển thị ở mọi ngôn ngữ (có thể ẩn trong Thông tin)
 > • Cải tiến nhỏ
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -624,6 +640,8 @@ bida,carom,3 băng,4 bi,libre,điểm trung bình,seri,ghi điểm,bi-a,lượt,
 > • Sua meta: o anel mostra com qual ajuste de forma você a alcança
 > • Cada variante de quadro agora tem sua mesa fixa
 > • Análise: pontos e entradas ao tocar numa partida
+> • Competição ou treino: marque cada partida, com adversário e resultado, e veja seu nível só com as competições
+> • Quatro bolas agora aparece em todos os idiomas (pode ser ocultado em Info)
 > • Pequenas melhorias
 
 **Wat is er nieuw (versie 1.1, max. 4000)**
@@ -645,6 +663,31 @@ bilhar,carambola,três tabelas,sinuca,média,série,placar,tabela,quadro,taco,li
 ---
 
 ## App Review-notities (Engels, voor de beoordelaar)
+
+Versie 1.2 build 4 (na de afwijzing onder 5.6; bij elke versie bijwerken):
+
+> Carom Tracker is a scorekeeping app for carom billiards (straight rail, three-cushion, one-cushion, balkline, four-ball).
+>
+> NO HIDDEN FEATURES. The app has no server, no accounts, no remote configuration and loads no remote code. It works fully offline and behaves the same for every user, in every language and region. The full source code is public: https://github.com/Ferro842/Biljart-tracker
+>
+> CHANGED IN THIS BUILD (in response to the 5.6 rejection): the four-ball discipline is now visible by default in every language (before, it was on by default only in Korean and Japanese). Nothing in the app depends on language or region any more. An empty Log now shows a text explaining how to start.
+>
+> HOW TO TEST (no login needed):
+> 1. Welcome screens: choose language, discipline and table.
+> 2. Play tab: choose "Match" or "Practice", tap "Start game", set points with + and tap "Record". Repeat for a few innings, then "Finish" → "Save". For a match you can optionally enter the opponent's score.
+> 3. Record two or three games, preferably on two table sizes.
+>
+> FEATURES THAT NEED RECORDED GAMES (empty before that, by design):
+> • Stats → Your level: form over 10/20/30/all games; the table choice appears after games on two table sizes; "All games / Matches only" appears after at least one match.
+> • Level overview (button top right): goal ring, appears after setting a goal there.
+> • Dash → Insight, Trend, Calendar: need several games.
+> • Log: list of games; tap a game for details.
+>
+> SETTINGS (Info tab): language, text size, simple mode, game element (badges and points) on/off, four-ball show/hide, export/import backup. iCloud Drive backup is automatic when iCloud Drive is on.
+>
+> The language can be changed under Info → Display → Language.
+
+Oud (1.0–1.1):
 
 > Carom Tracker works completely offline; there is no account and no server. All data stays on the device.
 > To test: on Play choose a table and tap Start game, set points with + and tap Record. After a few innings: Finish → Save. Stats, Dash and Log are then filled. The language can be changed under Info → Display → Language.

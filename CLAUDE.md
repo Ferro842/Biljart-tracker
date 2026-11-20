@@ -340,6 +340,9 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    Apple, anders beroep bij de App Review Board. Voor 1.3 daarom: vierbal in elke taal zichtbaar, tekst in een leeg Log
    (`data-log-leeg`), geen functies die van taal of regio afhangen. Notities voor de beoordelaar bij elke versie
    bijwerken (waar staat wat, wat verschijnt pas met partijen). Wedstrijd of training zit nog in geen winkelversie.
+   21 nov 2026: Apple antwoordde niet; beroep bij de App Review Board klaargezet en **build 4** van 1.2 gemaakt (iOS
+   `CURRENT_PROJECT_VERSION` 4, Android versionCode 4) met vierbal overal zichtbaar en Wedstrijd of training. What's New 1.2
+   in alle talen aangevuld; nieuwe notities voor de beoordelaar in `store/talen.md` (App Review-notities).
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
    Carom Tracker.

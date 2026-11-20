@@ -64,6 +64,8 @@ Is de naam "Carom Tracker" al bezet, kies dan bijvoorbeeld "Carom Tracker – Ca
 > • Je doel: de ring laat zien met welke vorm-instelling je het haalt
 > • Elke kadervariant heeft zijn eigen vaste tafel
 > • Inzicht: caramboles en beurten bij een aangetikte partij
+> • Wedstrijd of training: geef per partij aan wat het was, met tegenstander en uitslag, en bekijk je niveau over alleen je wedstrijden
+> • Vierbal staat nu in elke taal in de balk (te verbergen bij Info)
 > • Kleine verbeteringen
 
 **Wat is er nieuw (versie 1.1, max. 4000)**

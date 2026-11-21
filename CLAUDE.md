@@ -343,6 +343,9 @@ Lokaal serveren: `python3 -m http.server 8642` in de projectmap, openen op http:
    21 nov 2026: Apple antwoordde niet; beroep bij de App Review Board klaargezet en **build 4** van 1.2 gemaakt (iOS
    `CURRENT_PROJECT_VERSION` 4, Android versionCode 4) met vierbal overal zichtbaar en Wedstrijd of training. What's New 1.2
    in alle talen aangevuld; nieuwe notities voor de beoordelaar in `store/talen.md` (App Review-notities).
+   Beroep verstuurd en build 4 opnieuw ingediend op 21 nov 2026; **1.2 (build 4) dezelfde dag goedgekeurd en in de
+   App Store** (21 nov 2026, 14:19 UTC), met vierbal overal zichtbaar en Wedstrijd of training. Uploaden via de
+   opdrachtregel lukt alleen als in Xcode → Settings → Accounts een Apple-account is aangemeld.
 6. **Google Play-release**: uploadsleutel (.jks, goed bewaren) en ondertekende .aab bouwen zodra het account er is
    (zie `store/play-store.md`). Play-schermafbeeldingen (`store/screenshots/android/play/`) opnieuw maken met de naam
    Carom Tracker.

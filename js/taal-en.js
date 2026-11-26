@@ -873,5 +873,10 @@ VERTALING.en={
   "Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken.":"Choose Practice or Match. For a match you can enter your opponent's score when you tap Finish; then you'll see whether you won. Mark earlier games via Log → Mark matches.",
   "Vink aan welke partijen wedstrijden waren; de rest telt als training.":"Tick the games that were matches; the rest counts as practice.",
   "{c} car · {b}b · gem {g}":"{c} pts · {b}inn · avg {g}",
-  "Opslaan ({n} wedstrijden)":"Save ({n} matches)"
+  "Opslaan ({n} wedstrijden)":"Save ({n} matches)",
+  "Gebruik de app uit de App Store":"Use the App Store app",
+  "Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen.":"On an iPhone the free App Store app works best. It keeps your games safe and backs them up to iCloud automatically. On the website your iPhone may erase your data after a while.",
+  "Open de App Store":"Open the App Store",
+  "Er is nu een app voor je iPhone":"There is now an app for your iPhone",
+  "Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.":"Switch to the free App Store app: it keeps your games safe and backs them up to iCloud automatically. On the website your iPhone may erase your data. To move your games: here Info → Export data, then in the app Info → Import data."
 };

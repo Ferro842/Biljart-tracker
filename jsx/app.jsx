@@ -1,5 +1,5 @@
 // Ophogen bij elke wijziging: staat onderaan de Stats-tab, zo zie je op de telefoon welke versie geladen is
-const APP_VERSIE="2026-11-16.3";
+const APP_VERSIE="2026-11-25.1";
 
 function BiljartTracker(){
   const [data,setData]=useState(null);
@@ -381,6 +381,13 @@ function BiljartTracker(){
     if(bekijken)setTab("info");
   }
 
+  // Website op een iPhone: bestaande gebruikers eenmalig wijzen op de App Store-app (data.appTipGezien)
+  const appTip=!!(data&&data.onboardingGezien&&!data.appTipGezien&&isIPhoneWeb());
+  function zieAppTip(){
+    const nd=Object.assign({},data,{appTipGezien:true});
+    setData(nd);slaOp(nd);
+  }
+
   // Doel per discipline (null = weg); de ring staat bovenaan Spelen
   function zetMijnDoel(doel){
     const doelen=Object.assign({},data.doelen||{});
@@ -390,7 +397,7 @@ function BiljartTracker(){
   }
 
   function sluitOnboarding(){
-    const nd=Object.assign({},data,{onboardingGezien:true,weergaveTipGezien:true});
+    const nd=Object.assign({},data,{onboardingGezien:true,weergaveTipGezien:true,appTipGezien:true});
     setData(nd);slaOp(nd);
   }
 
@@ -422,7 +429,7 @@ function BiljartTracker(){
   }
 
   // Alles wat de Spelen-schermen (jsx/spelen.jsx) nodig hebben
-  const spel={alleP,andersGemist,andersGoed,beurtNr,car,straf,setStraf,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,eenvoudig,progPct,sel,setAndersGemist,setAndersGoed,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,soort,setSoort,stL,weergaveTip,zieWeergaveTip,backupHerinnering,maakBackupNu,backupLater,tafel,tijdsvensterMaanden,toggle,totCarLp};
+  const spel={alleP,andersGemist,andersGoed,beurtNr,car,straf,setStraf,doel,doelType,huidigeDiscipline,huidigeRecords,inp,inputRef,lp,niveau,noteer,eenvoudig,progPct,sel,setAndersGemist,setAndersGoed,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,soort,setSoort,stL,weergaveTip,zieWeergaveTip,appTip,zieAppTip,backupHerinnering,maakBackupNu,backupLater,tafel,tijdsvensterMaanden,toggle,totCarLp};
 
   // Naam in een segment: een onzichtbare vette kopie houdt de breedte vast, zodat er bij wisselen niets verspringt
   const segmentTekst=function(naam){

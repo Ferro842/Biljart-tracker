@@ -873,5 +873,10 @@ VERTALING.ko={
   "Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken.":"연습 또는 시합을 고르세요. 시합이면 종료할 때 상대 점수를 입력할 수 있고, 이겼는지 바로 보입니다. 이전 경기는 로그 → 시합 표시하기에서 표시합니다.",
   "Vink aan welke partijen wedstrijden waren; de rest telt als training.":"시합이었던 경기를 체크하세요. 나머지는 연습으로 계산됩니다.",
   "{c} car · {b}b · gem {g}":"{c}점 · {b}이닝 · 평균 {g}",
-  "Opslaan ({n} wedstrijden)":"저장 (시합 {n}회)"
+  "Opslaan ({n} wedstrijden)":"저장 (시합 {n}회)",
+  "Gebruik de app uit de App Store":"App Store 앱을 사용하세요",
+  "Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen.":"iPhone에서는 App Store의 무료 앱이 가장 잘 작동합니다. 경기를 안전하게 보관하고 iCloud에 자동으로 백업합니다. 웹사이트에서는 시간이 지나면 iPhone이 데이터를 지울 수 있습니다.",
+  "Open de App Store":"App Store 열기",
+  "Er is nu een app voor je iPhone":"이제 iPhone용 앱이 있습니다",
+  "Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.":"App Store의 무료 앱으로 옮기세요. 경기를 안전하게 보관하고 iCloud에 자동으로 백업합니다. 웹사이트에서는 iPhone이 데이터를 지울 수 있습니다. 옮기는 방법: 여기서 정보 → 데이터 내보내기, 그다음 앱에서 정보 → 데이터 가져오기."
 };

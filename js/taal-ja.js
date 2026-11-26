@@ -881,5 +881,10 @@ VERTALING.ja={
   "Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken.":"練習か試合を選びます。試合なら終了時に相手の得点を入力でき、勝ったかどうかがわかります。過去のゲームはログ → 試合にチェックで設定します。",
   "Vink aan welke partijen wedstrijden waren; de rest telt als training.":"試合だったゲームにチェックを入れてください。残りは練習として数えます。",
   "{c} car · {b}b · gem {g}":"{c}点・{b}イニング・平均{g}",
-  "Opslaan ({n} wedstrijden)":"保存（試合{n}回）"
+  "Opslaan ({n} wedstrijden)":"保存（試合{n}回）",
+  "Gebruik de app uit de App Store":"App Store のアプリを使いましょう",
+  "Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen.":"iPhone では App Store の無料アプリが最適です。ゲームを安全に保存し、iCloud に自動でバックアップします。ウェブサイトでは、しばらくすると iPhone がデータを消去することがあります。",
+  "Open de App Store":"App Store を開く",
+  "Er is nu een app voor je iPhone":"iPhone 用のアプリができました",
+  "Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.":"App Store の無料アプリに切り替えましょう。ゲームを安全に保存し、iCloud に自動でバックアップします。ウェブサイトでは iPhone がデータを消去することがあります。移行方法：ここで 情報 → データをエクスポート、次にアプリで 情報 → データをインポート。"
 };

@@ -23,6 +23,12 @@ controleren zijn.
 - Store-materiaal in `store/`: teksten (`app-store.md`, `play-store.md`), voorbeelddata voor schermafbeeldingen
   (`node store/maak-demodata.js` → `demodata.json`, geen echte namen), Play-pictogram en feature graphic (`store/play/`).
 - Privacybeleid (voor App Store Connect): `privacy.html`
+- Website op een iPhone verwijst naar de App Store-app (25 nov 2026, nadat iOS de opslag van het beginscherm-icoon van de
+  eigenaar leek te wissen): `isIPhoneWeb()` in `js/opslag.js` (test: `window.__testIPhone=true`). Welkomstscherm toont dan
+  "Gebruik de app uit de App Store" in plaats van de beginscherm-uitleg (`data-appstore-welkom`), bestaande gebruikers
+  eenmalig een melding op Spelen met de overzetstappen (`data-app-tip`, `data.appTipGezien`), Info een knop
+  (`data-appstore-info`), "Deel deze app" deelt de App Store-link, en Safari toont de balk van `apple-itunes-app`.
+  Android en computer houden de website (nog geen Play-app); zodra die er is daar hetzelfde doen.
 
 ## Opbouw
 

@@ -872,5 +872,10 @@ VERTALING.tr={
   "Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken.":"Antrenman veya Maç seç. Maçta Bitir'e dokununca rakibinin skorunu girebilirsin; böylece kazanıp kazanmadığını görürsün. Önceki maçları Kayıt → Maçları işaretle bölümünden işaretlersin.",
   "Vink aan welke partijen wedstrijden waren; de rest telt als training.":"Maç olan oyunları işaretle; geri kalanı antrenman sayılır.",
   "{c} car · {b}b · gem {g}":"{c} sayı · {b}i · ort {g}",
-  "Opslaan ({n} wedstrijden)":"Kaydet ({n} maç)"
+  "Opslaan ({n} wedstrijden)":"Kaydet ({n} maç)",
+  "Gebruik de app uit de App Store":"App Store'daki uygulamayı kullan",
+  "Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen.":"iPhone'da App Store'daki ücretsiz uygulama en iyi şekilde çalışır. Maçlarını güvenle saklar ve iCloud'a otomatik yedekler. Web sitesinde iPhone'un bir süre sonra verilerini silebilir.",
+  "Open de App Store":"App Store'u aç",
+  "Er is nu een app voor je iPhone":"Artık iPhone'un için bir uygulama var",
+  "Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.":"App Store'daki ücretsiz uygulamaya geç: maçlarını güvenle saklar ve iCloud'a otomatik yedekler. Web sitesinde iPhone'un verilerini silebilir. Aktarmak için: burada Bilgi → Verileri dışa aktar, sonra uygulamada Bilgi → Verileri içe aktar."
 };

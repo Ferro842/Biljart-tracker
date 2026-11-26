@@ -87,7 +87,13 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
       body:t("Kies de tekstgrootte die prettig leest; je ziet het meteen. Eenvoudige modus houdt alleen het belangrijkste over: per beurt je caramboles en Noteer. Standaard staat alles aan. Je kunt dit later altijd wijzigen bij Info → Weergave."),
       weergave:true
     },
-    {
+    // Website op een iPhone: naar de App Store-app verwijzen in plaats van het beginscherm-icoon
+    isIPhoneWeb()?{
+      titel:t("Gebruik de app uit de App Store"),
+      body:t("Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen."),
+      appStore:true,
+      alleenWeb:true
+    }:{
       titel:t("Zet de app op je beginscherm"),
       body:t("Voor het beste gebruik installeer je de app als een normale app-icoon op je beginscherm — dat opent sneller dan steeds de link opzoeken, en voelt als een echte app. Na de eerste keer opent de app ook zonder internet."),
       installeer:true,
@@ -213,6 +219,12 @@ function WelkomstFlow({stap,setStap,discipline,wisselDiscipline,onKlaar,tekstgro
               return <div key={r[0]} style={{marginBottom:i<s.lijst.length-1?8:0}}><span style={{color:GOUD,fontWeight:"bold"}}>{r[0]}</span> — {r[1]}</div>;
             })}
           </div>
+        )}
+        {s.appStore&&(
+          <a data-appstore-welkom href={APP_STORE_URL} target="_blank" rel="noopener"
+            style={{display:"block",textAlign:"center",textDecoration:"none",padding:13,marginBottom:16,background:"rgba(0,0,0,0.2)",border:"1px solid "+GOUD,borderRadius:12,color:GOUD,fontSize:15,fontWeight:"bold"}}>
+             {t("Open de App Store")}
+          </a>
         )}
         {s.installeer&&(
           <div style={{background:"rgba(0,0,0,0.2)",borderRadius:10,padding:"12px 12px",marginBottom:16,fontSize:13,color:WITD,lineHeight:1.6}}>

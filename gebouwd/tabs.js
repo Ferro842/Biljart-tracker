@@ -335,7 +335,7 @@ function InfoTab({ data, alleP, huidigeDiscipline, niveau, resetAlles, setSpelel
   const [confReset, setConfReset] = useState(false);
   const [deelResultaat, setDeelResultaat] = useState("");
   function deelApp() {
-    const url = IS_NATIVE ? APP_STORE_URL || WEB_URL : window.location.href;
+    const url = IS_NATIVE || isIPhoneWeb() ? APP_STORE_URL || WEB_URL : window.location.href;
     const tekst = t("Ik gebruik deze Carom Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?");
     if (navigator.share) {
       navigator.share({ title: "Carom Tracker", text: tekst, url }).catch(function() {
@@ -450,5 +450,15 @@ function InfoTab({ data, alleP, huidigeDiscipline, niveau, resetAlles, setSpelel
     setConfReset(false);
   } }, t("Ja, wis alles")), /* @__PURE__ */ React.createElement("button", { style: { flex: 1, padding: 10, background: "none", border: "1px solid " + KBDR, borderRadius: 6, color: WITD, cursor: "pointer", fontFamily: "inherit", fontSize: 14 }, onClick: function() {
     setConfReset(false);
-  } }, t("Annuleer")))), /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 6 } }, t("Over deze app")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: WITD, marginBottom: 10, lineHeight: 1.5 } }, t("Carom Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.")), /* @__PURE__ */ React.createElement("button", { onClick: deelApp, style: { width: "100%", padding: 11, background: "linear-gradient(135deg," + GOUD + "," + GOUDL + ")", border: "none", borderRadius: 8, color: G, fontWeight: "bold", cursor: "pointer", fontSize: 14, fontFamily: "inherit", marginBottom: 8 } }, "📤 ", t("Deel deze app")), deelResultaat && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", fontSize: 12, color: GRNT } }, deelResultaat), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: WITD, opacity: 0.6, marginTop: 4 } }, t("Versie"), " ", APP_VERSIE, " · ", /* @__PURE__ */ React.createElement("a", { href: WEB_URL + "privacy.html", target: "_blank", rel: "noopener", style: { color: WITD } }, t("Privacybeleid")))));
+  } }, t("Annuleer")))), /* @__PURE__ */ React.createElement("div", { style: { background: KBG, border: "1px solid " + KBDR, borderRadius: 10, padding: "12px 14px", marginBottom: 12 } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, textTransform: "uppercase", letterSpacing: 2, color: GOUD, marginBottom: 6 } }, t("Over deze app")), /* @__PURE__ */ React.createElement("div", { style: { fontSize: 13, color: WITD, marginBottom: 10, lineHeight: 1.5 } }, t("Carom Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.")), isIPhoneWeb() && /* @__PURE__ */ React.createElement(
+    "a",
+    {
+      "data-appstore-info": true,
+      href: APP_STORE_URL,
+      target: "_blank",
+      rel: "noopener",
+      style: { display: "block", textAlign: "center", textDecoration: "none", padding: 11, marginBottom: 8, border: "1px solid " + GOUD, borderRadius: 8, color: GOUD, fontWeight: "bold", fontSize: 14 }
+    },
+    t("Open de App Store")
+  ), /* @__PURE__ */ React.createElement("button", { onClick: deelApp, style: { width: "100%", padding: 11, background: "linear-gradient(135deg," + GOUD + "," + GOUDL + ")", border: "none", borderRadius: 8, color: G, fontWeight: "bold", cursor: "pointer", fontSize: 14, fontFamily: "inherit", marginBottom: 8 } }, "📤 ", t("Deel deze app")), deelResultaat && /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", fontSize: 12, color: GRNT } }, deelResultaat), /* @__PURE__ */ React.createElement("div", { style: { textAlign: "center", fontSize: 11, color: WITD, opacity: 0.6, marginTop: 4 } }, t("Versie"), " ", APP_VERSIE, " · ", /* @__PURE__ */ React.createElement("a", { href: WEB_URL + "privacy.html", target: "_blank", rel: "noopener", style: { color: WITD } }, t("Privacybeleid")))));
 }

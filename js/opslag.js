@@ -5,6 +5,9 @@
 
 // true in de native iOS-app; de class "native" wordt gezet door het script in <head>
 const IS_NATIVE=document.documentElement.classList.contains("native");
+// Website op een iPhone (Safari of het beginscherm-icoon): daar kan iOS de opslag wissen, dus verwijzen we
+// naar de App Store-app. Een functie (geen constante), zodat tests window.__testIPhone kunnen zetten.
+function isIPhoneWeb(){return !IS_NATIVE&&(/iPhone|iPod/.test(navigator.userAgent)||window.__testIPhone===true);}
 
 // Vult tafelmaat aan voor partijen die dit veld nog niet hebben (oude data van vóór deze functie).
 // Regel: 25 beurten -> 2,10-tafel, alle overige -> 2,30-tafel.

@@ -873,5 +873,10 @@ VERTALING.vi={
   "Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken.":"Chọn Luyện tập hoặc Thi đấu. Khi thi đấu, bạn có thể nhập điểm của đối thủ khi chạm Kết thúc; khi đó bạn sẽ biết mình thắng hay không. Các ván trước đánh dấu ở Nhật ký → Đánh dấu trận thi đấu.",
   "Vink aan welke partijen wedstrijden waren; de rest telt als training.":"Đánh dấu các ván là trận thi đấu; phần còn lại tính là luyện tập.",
   "{c} car · {b}b · gem {g}":"{c} điểm · {b} lượt · TB {g}",
-  "Opslaan ({n} wedstrijden)":"Lưu ({n} trận thi đấu)"
+  "Opslaan ({n} wedstrijden)":"Lưu ({n} trận thi đấu)",
+  "Gebruik de app uit de App Store":"Dùng ứng dụng trên App Store",
+  "Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen.":"Trên iPhone, ứng dụng miễn phí trên App Store hoạt động tốt nhất. Ứng dụng lưu các trận của bạn an toàn và tự động sao lưu vào iCloud. Trên trang web, iPhone có thể xóa dữ liệu của bạn sau một thời gian.",
+  "Open de App Store":"Mở App Store",
+  "Er is nu een app voor je iPhone":"Đã có ứng dụng cho iPhone của bạn",
+  "Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.":"Hãy chuyển sang ứng dụng miễn phí trên App Store: ứng dụng lưu các trận của bạn an toàn và tự động sao lưu vào iCloud. Trên trang web, iPhone có thể xóa dữ liệu của bạn. Cách chuyển: ở đây Thông tin → Xuất dữ liệu, sau đó trong ứng dụng Thông tin → Nhập dữ liệu."
 };

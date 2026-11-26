@@ -359,9 +359,9 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
   const [deelResultaat,setDeelResultaat]=useState("");
 
   function deelApp(){
-    // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link (zodra die
-    // er is) of anders de website.
-    const url=IS_NATIVE?(APP_STORE_URL||WEB_URL):window.location.href;
+    // In de iOS-app is location.href een interne capacitor://-link; deel dan de App Store-link. Ook de website
+    // op een iPhone deelt de App Store-link; elders (Android, computer) is de website de enige mogelijkheid.
+    const url=(IS_NATIVE||isIPhoneWeb())?(APP_STORE_URL||WEB_URL):window.location.href;
     const tekst=t("Ik gebruik deze Carom Tracker om mijn carambole-partijen bij te houden — misschien iets voor jou ook?");
     if(navigator.share){
       navigator.share({title:"Carom Tracker",text:tekst,url:url}).catch(function(){});
@@ -478,6 +478,10 @@ function InfoTab({data,alleP,huidigeDiscipline,niveau,resetAlles,setSpelelement,
           <div style={{fontSize:13,color:WITD,marginBottom:10,lineHeight:1.5}}>
             {t("Carom Tracker houdt je carambole-partijen bij (Libre, Driebanden, Bandstoten en Kader) met een niveausysteem op basis van de echte KNBB-klassen, plus badges en mijlpalen om je voortgang leuk te houden. Al je data blijft alleen op dit toestel staan.")}
           </div>
+          {isIPhoneWeb()&&<a data-appstore-info href={APP_STORE_URL} target="_blank" rel="noopener"
+            style={{display:"block",textAlign:"center",textDecoration:"none",padding:11,marginBottom:8,border:"1px solid "+GOUD,borderRadius:8,color:GOUD,fontWeight:"bold",fontSize:14}}>
+            {t("Open de App Store")}
+          </a>}
           <button onClick={deelApp} style={{width:"100%",padding:11,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",cursor:"pointer",fontSize:14,fontFamily:"inherit",marginBottom:8}}>
             📤 {t("Deel deze app")}
           </button>

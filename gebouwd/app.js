@@ -1,5 +1,5 @@
 // Gebouwd uit jsx/app.jsx door bouw-jsx.js; niet zelf aanpassen.
-const APP_VERSIE = "2026-11-16.3";
+const APP_VERSIE = "2026-11-25.1";
 function BiljartTracker() {
   const [data, setData] = useState(null);
   const [tab, setTab] = useState("spelen");
@@ -425,6 +425,12 @@ function BiljartTracker() {
     slaOp(nd);
     if (bekijken) setTab("info");
   }
+  const appTip = !!(data && data.onboardingGezien && !data.appTipGezien && isIPhoneWeb());
+  function zieAppTip() {
+    const nd = Object.assign({}, data, { appTipGezien: true });
+    setData(nd);
+    slaOp(nd);
+  }
   function zetMijnDoel(doel2) {
     const doelen = Object.assign({}, data.doelen || {});
     if (doel2) doelen[huidigeDiscipline] = doel2;
@@ -435,7 +441,7 @@ function BiljartTracker() {
     setDoelOpen(false);
   }
   function sluitOnboarding() {
-    const nd = Object.assign({}, data, { onboardingGezien: true, weergaveTipGezien: true });
+    const nd = Object.assign({}, data, { onboardingGezien: true, weergaveTipGezien: true, appTipGezien: true });
     setData(nd);
     slaOp(nd);
   }
@@ -465,7 +471,7 @@ function BiljartTracker() {
     setData(nd);
     slaOp(nd);
   }
-  const spel = { alleP, andersGemist, andersGoed, beurtNr, car, straf, setStraf, doel, doelType, huidigeDiscipline, huidigeRecords, inp, inputRef, lp, niveau, noteer, eenvoudig, progPct, sel, setAndersGemist, setAndersGoed, setBeurtNr, setCar, setConfPartij, setDoel, setDoelType, setFase, setInp, setLp, setNiveauOpen, setSel, setTafel, setUitlegOpen, setBriefjeOpen, soort, setSoort, stL, weergaveTip, zieWeergaveTip, backupHerinnering, maakBackupNu, backupLater, tafel, tijdsvensterMaanden, toggle, totCarLp };
+  const spel = { alleP, andersGemist, andersGoed, beurtNr, car, straf, setStraf, doel, doelType, huidigeDiscipline, huidigeRecords, inp, inputRef, lp, niveau, noteer, eenvoudig, progPct, sel, setAndersGemist, setAndersGoed, setBeurtNr, setCar, setConfPartij, setDoel, setDoelType, setFase, setInp, setLp, setNiveauOpen, setSel, setTafel, setUitlegOpen, setBriefjeOpen, soort, setSoort, stL, weergaveTip, zieWeergaveTip, appTip, zieAppTip, backupHerinnering, maakBackupNu, backupLater, tafel, tijdsvensterMaanden, toggle, totCarLp };
   const segmentTekst = function(naam) {
     return /* @__PURE__ */ React.createElement("span", { className: "seg-tekst", "data-tekst": naam }, naam);
   };

@@ -5,7 +5,7 @@
 
 // Spelen, voor de start: tafelmaat, partijdoel en Start partij (je klasse staat rechtsboven in de kop)
 function SetupScherm({spel}){
-  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,soort,setSoort,tafel,totCarLp,weergaveTip,zieWeergaveTip,backupHerinnering,maakBackupNu,backupLater}=spel;
+  const {doel,doelType,huidigeDiscipline,lp,niveau,setBeurtNr,setCar,setConfPartij,setDoel,setDoelType,setFase,setInp,setLp,setNiveauOpen,setSel,setTafel,setUitlegOpen,setBriefjeOpen,soort,setSoort,tafel,totCarLp,weergaveTip,zieWeergaveTip,appTip,zieAppTip,backupHerinnering,maakBackupNu,backupLater}=spel;
   const kopBlok=useContext(KopContext);
   const [bevestigNieuw,setBevestigNieuw]=useState(false); // Start partij terwijl er nog een partij loopt
   const startNieuw=function(){setBevestigNieuw(false);setLp([]);setBeurtNr(1);setCar(0);setInp("0");setSel(new Set());setFase("invoer");};
@@ -49,6 +49,16 @@ function SetupScherm({spel}){
           <div style={{display:"flex",gap:8}}>
             <button onClick={maakBackupNu} style={{flex:1,padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",border:"none",borderRadius:8,color:G,fontWeight:"bold",fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Back-up maken")}</button>
             <button onClick={backupLater} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Later")}</button>
+          </div>
+        </div>
+      )}
+      {appTip&&(
+        <div data-app-tip style={{background:"rgba(201,168,76,0.12)",border:"1px solid "+GOUD,borderRadius:10,padding:"12px 14px"}}>
+          <div style={{fontSize:15,color:GOUD,fontWeight:"bold",marginBottom:4}}>📱 {t("Er is nu een app voor je iPhone")}</div>
+          <div style={{fontSize:14,color:WIT,lineHeight:1.5,marginBottom:10}}>{t("Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.")}</div>
+          <div style={{display:"flex",gap:8}}>
+            <a href={APP_STORE_URL} target="_blank" rel="noopener" style={{flex:1,textAlign:"center",textDecoration:"none",padding:10,background:"linear-gradient(135deg,"+GOUD+","+GOUDL+")",borderRadius:8,color:G,fontWeight:"bold",fontSize:14}}>{t("Open de App Store")}</a>
+            <button onClick={zieAppTip} style={{flex:1,padding:10,background:"none",border:"1px solid "+KBDR,borderRadius:8,color:WITD,fontSize:14,cursor:"pointer",fontFamily:"inherit"}}>{t("Niet nodig")}</button>
           </div>
         </div>
       )}

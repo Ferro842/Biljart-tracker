@@ -873,5 +873,10 @@ VERTALING.es={
   "Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken.":"Elige Entrenamiento o Competición. En una competición puedes anotar el resultado de tu rival al tocar Terminar; así ves si ganaste. Las partidas anteriores se marcan en Registro → Marcar competiciones.",
   "Vink aan welke partijen wedstrijden waren; de rest telt als training.":"Marca las partidas que fueron competiciones; el resto cuenta como entrenamiento.",
   "{c} car · {b}b · gem {g}":"{c} car · {b}e · prom {g}",
-  "Opslaan ({n} wedstrijden)":"Guardar ({n} competiciones)"
+  "Opslaan ({n} wedstrijden)":"Guardar ({n} competiciones)",
+  "Gebruik de app uit de App Store":"Usa la app del App Store",
+  "Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen.":"En un iPhone, la app gratuita del App Store funciona mejor. Guarda tus partidas de forma segura y hace una copia automática en iCloud. En el sitio web, tu iPhone puede borrar tus datos al cabo de un tiempo.",
+  "Open de App Store":"Abrir el App Store",
+  "Er is nu een app voor je iPhone":"Ya hay una app para tu iPhone",
+  "Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.":"Pásate a la app gratuita del App Store: guarda tus partidas de forma segura y hace una copia automática en iCloud. En el sitio web, tu iPhone puede borrar tus datos. Para pasarlas: aquí Info → Exportar datos, luego en la app Info → Importar datos."
 };

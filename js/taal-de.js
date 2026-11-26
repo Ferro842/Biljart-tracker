@@ -868,5 +868,10 @@ VERTALING.de={
   "Kies Training of Wedstrijd. Bij een wedstrijd kun je bij Afsluiten de score van je tegenstander invullen; dan zie je of je gewonnen hebt. Eerdere partijen vink je aan via Log → Wedstrijden aanvinken.":"Wähle Training oder Wettkampf. Bei einem Wettkampf kannst du beim Beenden die Punkte deines Gegners eintragen; dann siehst du, ob du gewonnen hast. Frühere Partien markierst du unter Protokoll → Wettkämpfe markieren.",
   "Vink aan welke partijen wedstrijden waren; de rest telt als training.":"Hake die Partien an, die Wettkämpfe waren; der Rest zählt als Training.",
   "{c} car · {b}b · gem {g}":"{c} Pkt. · {b}A · Ø {g}",
-  "Opslaan ({n} wedstrijden)":"Speichern ({n} Wettkämpfe)"
+  "Opslaan ({n} wedstrijden)":"Speichern ({n} Wettkämpfe)",
+  "Gebruik de app uit de App Store":"Nutze die App aus dem App Store",
+  "Op een iPhone werkt de gratis app uit de App Store het best. Die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens na een tijd wissen.":"Auf dem iPhone funktioniert die kostenlose App aus dem App Store am besten. Sie speichert deine Partien sicher und sichert sie automatisch in iCloud. Auf der Website kann dein iPhone deine Daten nach einiger Zeit löschen.",
+  "Open de App Store":"App Store öffnen",
+  "Er is nu een app voor je iPhone":"Es gibt jetzt eine App für dein iPhone",
+  "Stap over op de gratis app uit de App Store: die bewaart je partijen veilig en maakt vanzelf een back-up in iCloud. Op de website kan je iPhone je gegevens wissen. Overzetten: hier Info → Exporteer data, daarna in de app Info → Importeer data.":"Wechsle zur kostenlosen App aus dem App Store: Sie speichert deine Partien sicher und sichert sie automatisch in iCloud. Auf der Website kann dein iPhone deine Daten löschen. Übertragen: hier Info → Daten exportieren, danach in der App Info → Daten importieren."
 };
